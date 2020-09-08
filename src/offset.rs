@@ -1,21 +1,15 @@
 /// get offsets from the dictionary (which is previously decompressed data)
 
 pub(crate) fn fetch_offset(buffer: &Vec<u8>, length: usize, offset: usize) -> Vec<u8> {
-    // let mut buffer: Vec<u8> = buffer.clone();
-    // buffer.reverse();
 
-    // let start = offset;
-    // let end = offset + length;
-
-    // assert!(start < end);
-
-    // let mut slice = buffer[start..end].to_vec();
-    // slice.reverse();
-
-    // slice
 
     let start = buffer.len() - offset;
     let end = start + length;
+
+    if end > buffer.len() || start > buffer.len() {
+        println!("ERROR: bad size {} {}", length, offset);
+        return vec![];
+    }
 
     buffer[start..end].to_vec()
 }

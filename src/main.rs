@@ -6,8 +6,8 @@ mod cb;
 mod offset;
 
 fn main() -> io::Result<()> {
-    // const FILE: &'static [u8] = include_bytes!("../examples/compressed-body");
-    const FILE: &'static [u8] = include_bytes!("../examples/simple");
+    const FILE: &'static [u8] = include_bytes!("../examples/compressed-body");
+    // const FILE: &'static [u8] = include_bytes!("../examples/header-without-filesize");
     let mut stack: Vec<u8> = include_bytes!("../examples/uncompressed-header").to_vec();
     let mut rem = FILE.clone();
 
