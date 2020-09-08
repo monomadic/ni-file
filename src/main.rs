@@ -6,7 +6,8 @@ mod cb;
 mod offset;
 
 fn main() -> io::Result<()> {
-    const FILE: &'static [u8] = include_bytes!("../examples/compressed-body");
+    // const FILE: &'static [u8] = include_bytes!("../examples/compressed-body");
+    const FILE: &'static [u8] = include_bytes!("../examples/simple");
     let mut stack: Vec<u8> = include_bytes!("../examples/uncompressed-header").to_vec();
     let mut rem = FILE.clone();
 
@@ -17,14 +18,25 @@ fn main() -> io::Result<()> {
 
             match o {
                 Offset::Dictionary { length, offset } => {
-                    let mut dict = offset::fetch_offset(&stack, offset, length);
-                    println!("FOUND OFFSET: {:?}", dict);
+                    let mut dict = offset::fetch_offset(&stack, length, offset);
+                    print!("DICT BUFFER PUSH: ");
+                    for byte in dict.clone() {
+                        print!("{:02X} ", byte);
+                    }
+                    println!("\n");
+
                     stack.append(&mut dict);
                     // break;
                 }
                 Offset::Literal { length } => {
                     let (r, bytes) = take_bytes(rem, length).unwrap();
                     rem = r;
+
+                    print!("LITERAL BUFFER PUSH: ");
+                    for byte in bytes.clone() {
+                        print!("{:02X} ", byte);
+                    }
+                    println!("\n");
 
                     stack.append(&mut bytes.to_vec());
                 }

@@ -36,13 +36,31 @@ pub(crate) fn get_control_bytes(i: &[u8]) -> IResult<&[u8], Offset> {
             (
                 rem,
                 Offset::Dictionary {
-                    length: 9+r[0] as usize,
+                    length: 9 + r[0] as usize,
                     offset: ((q << 8) + s[0] as usize + 1),
                 },
             )
         }
         _ => panic!(),
     })
+}
+
+#[test]
+fn test_get_control_bytes() {
+    assert_eq!(
+        &format!("{:?}", get_control_bytes(&[0x02]).unwrap()),
+        "([], Literal { length: 3 })"
+    );
+
+    assert_eq!(
+        &format!("{:?}", get_control_bytes(&[0x20, 0x0E]).unwrap()),
+        "([], Dictionary { length: 3, offset: 15 })"
+    );
+
+    assert_eq!(
+        &format!("{:?}", get_control_bytes(&[0x60, 0x00]).unwrap()),
+        "([], Dictionary { length: 5, offset: 1 })"
+    );
 }
 
 fn cb_mask(i: u8) -> u8 {
