@@ -89,15 +89,15 @@ fn cb_mask(i: u8) -> u8 {
         return 7;
     }
 
-    if i | 0b1100_0001 == 0b1100_0001 {
+    if i | 0b1101_1111 == 0b1101_1111 {
         return 8;
     }
 
-    if i | 0b1110_0001 == 0b1110_0001 {
+    if i | 0b1111_1111 == 0b1111_1111 {
         return 9;
     }
 
-    panic!()
+    panic!("unknown control byte. [{:08b}:{:02X}]", i, i);
 }
 
 #[test]
@@ -108,7 +108,7 @@ fn test_cb_mask() {
     assert_eq!(cb_mask(0b01100001), 5);
     assert_eq!(cb_mask(0b10000001), 6);
     assert_eq!(cb_mask(0b10100001), 7);
-    assert_eq!(cb_mask(0b11000001), 8);
+    assert_eq!(cb_mask(0b11000101), 8);
     assert_eq!(cb_mask(0b11100001), 9);
 }
 

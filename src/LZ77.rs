@@ -25,6 +25,8 @@ pub(crate) fn deflate(i: &[u8], offset: usize) -> IResult<&[u8], Vec<u8>> {
     let mut stack = stack.to_vec();
 
     loop {
+        // println!("IB: [{:08b}:{:02X}] ", rem[0], rem[0]);
+        println!("file offset :{}", i.len() - rem.len());
         if let Ok((r, o)) = crate::cb::get_control_bytes(rem) {
             rem = r;
             println!("{:?}", o);
