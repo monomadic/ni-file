@@ -2,31 +2,13 @@ use nom::{IResult, bytes, number::complete::le_i32};
 use crate::cb::Offset;
 use crate::offset;
 
-// pub fn parse(file: &[u8]) {
-//     // read filesize chunk
-//     let (r, header) = read_file_header(file).unwrap();
-
-//     // check filesize is valid
-//     if header.filesize != file.len() as i32 {
-//         panic!("error: file header does not match up with file size.\n");
-//     } else {
-//         println!("file size: {} bytes.\n", header.filesize);
-//     }
-
-//     // parse
-//     parse_chunks(r);
-// }
-
 pub(crate) fn deflate(i: &[u8], offset: usize) -> IResult<&[u8], Vec<u8>> {
-    // let mut rem = &i.clone()[offset..i.len()];
-    // let mut stack: Vec<u8> = Vec::new();
-
     let (stack, mut rem ) = i.split_at(offset);
     let mut stack = stack.to_vec();
 
     loop {
-        // println!("IB: [{:08b}:{:02X}] ", rem[0], rem[0]);
         println!("file offset :{}", i.len() - rem.len());
+
         if let Ok((r, o)) = crate::cb::get_control_bytes(rem) {
             rem = r;
             println!("{:?}", o);
@@ -44,7 +26,7 @@ pub(crate) fn deflate(i: &[u8], offset: usize) -> IResult<&[u8], Vec<u8>> {
                     // break;
                 }
                 Offset::Literal { length } => {
-                    let (r, bytes) = take_bytes(rem, length).unwrap();
+                    let (r, bytes) = take_bytes(rem, length)?;
                     rem = r;
 
                     print!("LITERAL BUFFER PUSH: ");
