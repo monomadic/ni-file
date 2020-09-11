@@ -7,7 +7,12 @@ pub(crate) fn deflate(i: &[u8], offset: usize) -> IResult<&[u8], Vec<u8>> {
     let mut stack = stack.to_vec();
 
     loop {
-        println!("file offset :{}", i.len() - rem.len());
+        println!("file offset :{} {:?}", i.len() - rem.len(), &rem[0..7]);
+
+        if rem[0..7] == [0x0D, 0x00, 0x00, 0x0D, 0x62, 0x65, 0x85] {
+            // be. (block end) tag found.
+            break;
+        }
 
         if let Ok((r, o)) = crate::cb::get_control_bytes(rem) {
             rem = r;
@@ -23,19 +28,22 @@ pub(crate) fn deflate(i: &[u8], offset: usize) -> IResult<&[u8], Vec<u8>> {
                     println!("\n");
 
                     stack.append(&mut dict);
-                    // break;
                 }
                 Offset::Literal { length } => {
-                    let (r, bytes) = take_bytes(rem, length)?;
-                    rem = r;
+                    // let (r, bytes) = take_bytes(rem, length)?;
+                    if let Ok((r, bytes)) = take_bytes(rem, length) {
+                        rem = r;
 
-                    print!("LITERAL BUFFER PUSH: ");
-                    for byte in bytes.clone() {
-                        print!("{:02X} ", byte);
+                        print!("LITERAL BUFFER PUSH: ");
+                        for byte in bytes.clone() {
+                            print!("{:02X} ", byte);
+                        }
+                        println!("\n");
+    
+                        stack.append(&mut bytes.to_vec());
+                    } else {
+                        break;
                     }
-                    println!("\n");
-
-                    stack.append(&mut bytes.to_vec());
                 }
             }
         } else {

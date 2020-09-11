@@ -1,14 +1,22 @@
-use std::io;
+use std::{fs::File, io};
+use io::Write;
 
 mod cb;
 mod offset;
-mod LZ77;
+mod deflate;
 mod ni;
 
 fn main() -> io::Result<()> {
-    const FILE: &'static [u8] = include_bytes!("../examples/test-se.nmsv");
+    const FILE: &'static [u8] = include_bytes!("../examples/booga.nki");
     // LZ77::parse(FILE);
-    // LZ77::deflate(FILE, 1059);
-    LZ77::deflate(FILE, 1040);
+
+    match deflate::deflate(FILE, 1092) {
+        Ok((_, content)) => {
+            let mut buffer = File::create("booga")?;
+            buffer.write_all(&content)?;
+            println!("done!");
+        },
+        Err(e) => println!("error: {:?}", e)
+    }
     Ok(())
 }
