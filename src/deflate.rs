@@ -7,9 +7,15 @@ pub(crate) fn deflate(i: &[u8], offset: usize) -> IResult<&[u8], Vec<u8>> {
     let mut stack = stack.to_vec();
 
     loop {
-        println!("file offset :{} {:?}", i.len() - rem.len(), &rem[0..7]);
+        println!("file offset :{}", i.len() - rem.len());
+
+        if rem.len() < 7 {
+            println!("end of file reached.");
+            break; // hack
+        }
 
         if rem[0..7] == [0x0D, 0x00, 0x00, 0x0D, 0x62, 0x65, 0x85] {
+            println!("block end found.");
             // be. (block end) tag found.
             break;
         }
@@ -42,6 +48,7 @@ pub(crate) fn deflate(i: &[u8], offset: usize) -> IResult<&[u8], Vec<u8>> {
     
                         stack.append(&mut bytes.to_vec());
                     } else {
+                        println!("error: cannot take any more literal bytes.");
                         break;
                     }
                 }

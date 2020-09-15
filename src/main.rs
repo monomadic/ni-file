@@ -7,12 +7,12 @@ mod deflate;
 mod ni;
 
 fn main() -> io::Result<()> {
-    const FILE: &'static [u8] = include_bytes!("../examples/booga.nki");
+    const FILE: &'static [u8] = include_bytes!("../examples/filterbass.nki");
     // LZ77::parse(FILE);
 
-    match deflate::deflate(FILE, 1092) {
+    match deflate::deflate(FILE, 517) {
         Ok((_, content)) => {
-            let mut buffer = File::create("booga")?;
+            let mut buffer = File::create("filterbass")?;
             buffer.write_all(&content)?;
             println!("done!");
         },

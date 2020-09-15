@@ -2,6 +2,7 @@
 
 pub(crate) fn fetch_offset(buffer: &Vec<u8>, length: usize, offset: usize) -> Vec<u8> {
     if offset > buffer.len() {
+        return vec![];
         panic!("Cannot deflate: offset seek is larger than dictionary.");
     }
 
