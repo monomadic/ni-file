@@ -4,60 +4,51 @@ use nom::{
     IResult,
 };
 
-/// NI FILES
-///
-/// Schematic:
-/// [HEADER]
+pub fn read(file: &'static [u8]) -> Result<(), Box<dyn std::error::Error>> {
+    let (r, file_length) = take_i32(file)?;
+    println!("file-length found: {}", file_length);
 
-pub struct NIFile {
-    header: NIHeader,
-    sections: Vec<NISection>, // todo: needs to be ordered
+    let (r, header) = take_bytes(r, 393)?;
+
+    let (r, metadata_length) = take_i32(r)?;
+    println!("metadata-length found: {}", metadata_length);
+
+    // skip 8 bytes
+    let (r, _) = take_bytes(r, 8)?;
+
+    let (r, metadata) = take_bytes(r, metadata_length as usize)?;
+
+    let (r, unknown_segment_length) = take_i32(r)?;
+    println!("unknown-segment-length found: {}", unknown_segment_length);
+
+    // skip 8 bytes
+    let (r, _) = take_bytes(r, 8)?;
+
+    // read unknown_segment
+    let (r, unknown_segment) = take_bytes(r, unknown_segment_length as usize)?;
+
+    let (r, compressed_segment_length) = take_i32(r)?;
+    println!("compressed-segment-length found: {}", compressed_segment_length);
+
+    let (r, _) = take_bytes(r, 8)?;
+
+    let (r, compressed_segment) = take_bytes(r, compressed_segment_length as usize)?;
+
+    let (r, end_segment_length) = take_i32(r)?;
+    println!("end_segment_length found: {}", end_segment_length);
+
+    // end segments length tag is inclusive
+    let (r, end_segment) = take_bytes(r, (end_segment_length - 4) as usize)?;
+
+    println!("remaining bytes: {}", r.len());
+
+    Ok(())
 }
 
-/// 210 bytes
-pub struct NIHeader {
-    file_length: i32,
-    data: Vec<u8>, // 206 bytes
+fn take_bytes(i: &[u8], l: usize) -> IResult<&[u8], &[u8]> {
+    bytes::complete::take(l)(i)
 }
 
-pub struct NISection {}
-
-/// parse the ni file format
-pub fn parse(file: &[u8]) -> IResult<&[u8], i32> {
-    parse_file_header(file)
-}
-
-pub fn parse_file_header(file: &[u8]) -> IResult<&[u8], i32> {
-    println!("file header");
-
-    // let file_length = &file[0..4];
-    let (r, file_length) = le_i32(file)?;
-
-    // check filesize is valid
-    if file_length != file.len() as i32 {
-        panic!("error: file header does not match up with file size.\n");
-    } else {
-        println!("file_length: {} bytes.", file_length);
-    }
-
-    let (r, file_length) = le_i32(r)?;
-    let (r, file_length) = le_i32(r)?;
-
-    let (r, header_section_tag) = tag("hsin")(r)?;
-
-    let (r, remaining_bytes) = bytes::complete::take(194 as usize)(r)?;
-
-    let (r, remaining_file_length) = le_i32(r)?;
-
-    if remaining_file_length - 4 != r.len() as i32 {
-        panic!(
-            "error: remaining_file_length does not match up with remaining file size. {}, {}\n",
-            remaining_file_length - 4,
-            r.len()
-        );
-    } else {
-        println!("remaining_file_length: {} bytes.\n", remaining_file_length);
-    }
-
-    Ok((r, file_length))
+fn take_i32(i: &[u8]) -> IResult<&[u8], i32> {
+    nom::number::complete::le_i32(i)
 }
