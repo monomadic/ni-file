@@ -10,7 +10,7 @@ fn main() -> io::Result<()> {
     const FILE: &'static [u8] = include_bytes!("../examples/TESTINSTRUMENTBEST.nki");
 
     match ni::read(FILE) {
-        Ok(f) => println!("done\n{:?}", f.0.len()),
+        Ok(f) => println!("done\n{:?}", f.1),
         Err(e) => println!("error: {:?}", e)
     }
 

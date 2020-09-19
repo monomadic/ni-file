@@ -2,7 +2,7 @@ use nom::{
     bytes::complete::{tag, take},
     number::complete::{le_u32, le_u64},
     sequence::tuple,
-    IResult,
+    IResult, combinator::opt,
 };
 
 pub fn read(i: &[u8]) -> IResult<&[u8], NISegment> {
@@ -15,30 +15,44 @@ pub struct NISegment<'a> {
     checksum: &'a [u8], // [u8; 16]
     data: &'a [u8],
     parents: u32,
-    children: u32,
-    unknown_2: u32,
-    unknown_tag: &'a [u8], // usually DSIN <length> or 4KIN
-    content: &'a [u8],
+    unknown_tag: Option<&'a [u8]>, // usually DSIN <length> or 4KIN
+    children: Vec<NISegment<'a>>,
 }
 
 fn take_block(i: &[u8]) -> IResult<&[u8], NISegment> {
-    let (r, (length, unknown_1, tag, unknown_2, checksum, segment_size)) =
+    let (rem, (length, unknown_1, tag, unknown_2, checksum, segment_size)) =
         tuple((le_u64, le_u32, tag("hsin"), le_u64, take(16_usize), le_u64))(i)?;
 
-    println!("segment found. remaining size: {}", length);
-    println!("segment size: {}", segment_size);
+    println!("reading entire segment: {} bytes.", length);
+    println!("data segment size: {}", segment_size);
 
-    let (r, (data, parents, children, unknown_2, unknown_tag)) = tuple((
+    let (rem, (data, parents, children_count)) = tuple((
         take((segment_size - 8) as usize),
         le_u32,
         le_u32,
-        le_u32,
-        take(16_usize),
-    ))(r)?;
+    ))(rem)?;
 
-    println!("children: {}", children);
+    let mut r = rem;
 
-    let (r, content) = take(16_usize)(r)?;
+    println!("rem: {}", r.len());
+
+    let unknown_tag = if r.len() == 0 {
+        None
+    } else {
+        let (rem, tag) = take(12_usize)(r)?;
+        r = rem;
+        Some(tag)
+    };
+
+
+    let mut children = Vec::new();
+
+    println!("looping {} times for children.\n", children_count);
+    for _ in 0..children_count {
+        let (rem, child) = take_block(r)?;
+        r = rem;
+        children.push(child);
+    }
 
     Ok((
         r,
@@ -48,10 +62,8 @@ fn take_block(i: &[u8]) -> IResult<&[u8], NISegment> {
             checksum: &checksum,
             data: &data,
             parents,
-            children,
-            unknown_2,
-            unknown_tag: &unknown_tag,
-            content: &r
+            unknown_tag,
+            children
         },
     ))
 }
