@@ -7,11 +7,10 @@ mod deflate;
 mod ni;
 
 fn main() -> io::Result<()> {
-    const FILE: &'static [u8] = include_bytes!("../examples/booga1.nki");
-    // LZ77::parse(FILE);
+    const FILE: &'static [u8] = include_bytes!("../examples/TESTINSTRUMENTBEST.nki");
 
     match ni::read(FILE) {
-        Ok(_) => println!("done"),
+        Ok(f) => println!("done\n{:?}", f.0.len()),
         Err(e) => println!("error: {:?}", e)
     }
 

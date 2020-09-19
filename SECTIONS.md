@@ -1,3 +1,5 @@
+16-bit strings: 00 comes after. null-terminated by 00 00. spaces 00 20. (le)
+
 HEADER: 210 bytes
 - i32 file-size
 
@@ -47,3 +49,8 @@ SECTION: offset 450
 01 00 00 00 00 00 00 00 30 E1 F8 37 00 14 C0 46 A8 A2 00 0E C8 D5 20 91 6D 00 00 00 00 00 00 00
 
 08 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 01 00 00 00 04 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+
+
+# DSIN
+
+DSIN <offset> <? 1> <size> <? 0>
