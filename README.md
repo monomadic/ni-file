@@ -21,6 +21,8 @@ For example, `[2557][1]["hsin"][1]["ÅÈ¿K 0ÉGlUG"][...][1][1]["4KIN"
 
 The first block length in the file will usually be the entire file size, as it represents one block. Child blocks are nested inside this.
 
+I think this schematic is slightly wrong, as the main block (the one that wraps the rest of the file) seems to only have 2 u32s at the end and not a final tag. It is possible these additional tags are not accounted for in file sizes and instead just parsed as tokens.
+
 ## Data segments
 
 Data blocks seem to also be nested.
@@ -31,6 +33,7 @@ Data blocks seem to also be nested.
 [type? le-u32]
 [? le-u32 almost always 1]
 [... new data segment]
+```
 
 ## Compressed segments
 
