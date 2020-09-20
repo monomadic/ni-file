@@ -23,6 +23,8 @@ The first block length in the file will usually be the entire file size, as it r
 
 I think this schematic is slightly wrong, as the main block (the one that wraps the rest of the file) seems to only have 2 u32s at the end and not a final tag. It is possible these additional tags are not accounted for in file sizes and instead just parsed as tokens.
 
+Most files appear to have a main segment (the same across all file types), then a single child that describes the type of file it is (kontakt, massive, etc), and has the version number string in it, and then this segment has 4 or 5 children, one of which is the preset (compressed), one of which is the 'library database metadata', another short one which is almost empty, and then the owner data (this seems to be decompressed metadata from the preset itself, and if the data doesn't match the compressed versions it will throw an error).
+
 ## Data segments
 
 Data blocks seem to also be nested.
