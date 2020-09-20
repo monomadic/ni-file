@@ -31,3 +31,18 @@ Data blocks seem to also be nested.
 [type? le-u32]
 [? le-u32 almost always 1]
 [... new data segment]
+
+## Compressed segments
+
+The main preset is compressed with a custom LZ77 variant. deflate.rs can deflate a segment. The segment will start as normal, but appears to embed another file (with its own data segments, compressed) as data in a data segment.
+
+IMPORTANT: the compression starts 16 bytes just after the last DSIN of the segment (eg. "DSIN"+16 bytes). This is usually a 01h. There is often 20 bytes between the "hsin" and the start of the compression, but given it is compressed data this should not be relied upon.
+
+## Data
+
+Strings seem to be sometimes LE-UTF16. Sometimes they seem to be terminated with nulls but often not - sometimes they are length delimited (length, then the string values).
+
+## Questions
+
+- how does DSIN work? They appear to use offsets within the section?
+- how is a compressed section marked as such?
