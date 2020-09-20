@@ -49,3 +49,6 @@ Strings seem to be sometimes LE-UTF16. Sometimes they seem to be terminated with
 
 - how does DSIN work? They appear to use offsets within the section?
 - how is a compressed section marked as such?
+- how are checksums calculated? They seem to change with each save, is there a date format embedded somewhere?
+
+Note that checksums and file lengths for the file header are usually SKIPPED in kontakt, you can remove them entirely in some situations and the patch will still load. This also applies to DSIN tags. I think NI might have tried to make their code more efficient by directly reading offsets.
