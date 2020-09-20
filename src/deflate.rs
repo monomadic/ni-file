@@ -9,16 +9,16 @@ pub(crate) fn deflate(i: &[u8], offset: usize) -> IResult<&[u8], Vec<u8>> {
     loop {
         println!("file offset :{}", i.len() - rem.len());
 
-        if rem.len() < 7 {
-            println!("end of file reached.");
-            break; // hack
-        }
+        // if rem.len() < 7 {
+        //     println!("end of file reached.");
+        //     break; // hack
+        // }
 
-        if rem[0..7] == [0x0D, 0x00, 0x00, 0x0D, 0x62, 0x65, 0x85] {
-            println!("block end found.");
-            // be. (block end) tag found.
-            break;
-        }
+        // if rem[0..7] == [0x0D, 0x00, 0x00, 0x0D, 0x62, 0x65, 0x85] {
+        //     println!("block end found.");
+        //     // be. (block end) tag found.
+        //     break;
+        // }
 
         if let Ok((r, o)) = crate::cb::get_control_bytes(rem) {
             rem = r;
