@@ -3,30 +3,32 @@ meta:
   file-extension: nki
   endian: le
 seq:
-  - id: chunk_size
+  - id: length
     type: u8
   - id: chunk_data
     type: header_chunk
-    size: chunk_size - 8
+    size: length - 8
+
 types:
   data_chunk:
     seq:
-      - id: data_tag
+      - id: tag
         type: str
         size: 4
         encoding: UTF-8
-      - id: data_type_id
+      - id: type
         type: u4
-      - id: unk
+      - id: unknown
         type: u4
-      - id: next_data_chunk_size
-        type: u4
-      - id: is_end
-        type: u4
-    instances:
-      data:
-        pos: 142 - next_data_chunk_size
-        size: next_data_chunk_size
+      - id: datachunk_length
+        type: u8
+        if: type != 1
+      - id: datachunk
+        type: data_chunk
+        if: type != 1
+        size: datachunk_length - 8
+      - id: values
+        size-eos: true
 
   header_chunk:
     seq:
@@ -40,10 +42,22 @@ types:
         type: u8
       - id: checksum
         size: 16
-      - id: data_chunk_size
+      - id: datachunk_length
         type: u8
       - id: datachunk
         type: data_chunk
-        # size: data_chunk_size - 8
-        repeat: expr
-        repeat-expr: 3
+        size: datachunk_length - 8
+      - id: no_compression
+        type: u4
+      - id: children
+        type: u4
+      - id: extra_tag
+        size: 12
+        if: children > 0 and no_compression == 1
+      - id: length
+        type: u8
+        if: children > 0 and no_compression == 1
+      - id: chunk_data
+        type: header_chunk
+        size: length - 8
+        if: children > 0 and no_compression == 1
