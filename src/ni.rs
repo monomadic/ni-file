@@ -19,18 +19,28 @@ pub struct NISegment<'a> {
     children: Vec<NISegment<'a>>,
 }
 
+#[derive(Debug)]
+pub struct NIDataSegment<'a> {
+    tag: &'a [u8],
+    value_1: u32,
+    value_2: u32, // always 1?
+    data: &'a [u8],
+}
+
 fn take_block(i: &[u8]) -> IResult<&[u8], NISegment> {
-    let (rem, (length, unknown_1, tag, unknown_2, checksum, segment_size)) =
+    let (rem, (length, unknown_1, tag, unknown_2, checksum, data_segment_size)) =
         tuple((le_u64, le_u32, tag("hsin"), le_u64, take(16_usize), le_u64))(i)?;
 
     println!("reading entire segment: {} bytes.", length);
-    println!("data segment size: {}", segment_size);
+    println!("data_segment_size: {}", data_segment_size);
 
     let (rem, (data, parents, children_count)) = tuple((
-        take((segment_size - 8) as usize),
+        take((data_segment_size - 8) as usize),
         le_u32,
         le_u32,
     ))(rem)?;
+
+    println!("data segment: {:?}", parse_data_segment(&data));
 
     let mut r = rem;
 
@@ -66,4 +76,14 @@ fn take_block(i: &[u8]) -> IResult<&[u8], NISegment> {
             children
         },
     ))
+}
+
+fn parse_data_segment(i: &[u8]) -> IResult<&[u8], u64> {
+    let (r, (tag, _, _, offset)) = tuple((take(4_usize), le_u32, le_u32, le_u64))(i)?;
+
+    let tag = std::str::from_utf8(tag).unwrap_or("error");
+
+    println!("found data tag: {:?}", (tag, offset));
+
+    Ok((r, offset))
 }

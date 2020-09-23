@@ -4,6 +4,8 @@
 
 File is made up of nested blocks, denoted with 'hsin' tags. Basic block format is:
 
+### HSIN - Header Section In
+
 ```
 [block-length: le-u64]
 [? block-type?: le-u32]
@@ -23,19 +25,26 @@ The first block length in the file will usually be the entire file size, as it r
 
 I think this schematic is slightly wrong, as the main block (the one that wraps the rest of the file) seems to only have 2 u32s at the end and not a final tag. It is possible these additional tags are not accounted for in file sizes and instead just parsed as tokens.
 
-Most files appear to have a main segment (the same across all file types), then a single child that describes the type of file it is (kontakt, massive, etc), and has the version number string in it, and then this segment has 4 or 5 children, one of which is the preset (compressed), one of which is the 'library database metadata', another short one which is almost empty, and then the owner data (this seems to be decompressed metadata from the preset itself, and if the data doesn't match the compressed versions it will throw an error).
+Most files appear to have a main segment (the same across all file types), then a single child that describes the type of file it is (kontakt, massive, etc), and has the version number string in it, and then this segment has 4 or 5 children, one of which is the preset (compressed), one of which is the 'library database metadata', another short one which is almost empty, and then the author data (this seems to be decompressed metadata from the preset itself, and if the data doesn't match the compressed versions it will throw an error).
 
-## Data segments
+### DSIN - Data Structure In
 
-Data blocks seem to also be nested.
+DSIN blocks act as maps or slice indexes. The first DSIN is usually the length of the whole data chunk, minus footer data.
 
+format guess new
+[offset]
+[structure-type: [DSIN/4KIN][u32][1]]
+
+Format:
 ```
-[length]
+[offset to data start until end of buffer]
 ["DSIN"] // data segment in
 [type? le-u32]
 [? le-u32 almost always 1]
 [... new data segment]
 ```
+
+Footer data
 
 ## Compressed segments
 
@@ -46,6 +55,22 @@ IMPORTANT: the compression starts 16 bytes just after the last DSIN of the segme
 ## Data
 
 Strings seem to be sometimes LE-UTF16. Sometimes they seem to be terminated with nulls but often not - sometimes they are length delimited (length, then the string values).
+
+DSINs (44 53 49 4E 73 00 00 00) - compressed segment
+DSINe (44 53 49 4E 65 00 00 00) - string? (eg:
+
+    file version string 01 00 00 00 00 02 00 00 00 01 00 00 00 08 00 00
+                        00 35 00 2E 00 36 00 2E 00 30 00 2E 00 34 00 36 00
+
+DSIN1 (44 53 49 4E 01 00 00 00) - last element (?)
+DSINj () - 01 00 00 00 02 00 00 00
+
+    kontakt header
+    01 00 00 00 02 00 00 00
+    
+    header string
+    01 00 00 00 01 00 00 00 01 00 00 00 00 00
+    00 00 00 00 00 00 00 00 00 00 0D 62 65 85
 
 ## Questions
 
