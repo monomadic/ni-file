@@ -1,0 +1,9 @@
+DSINValue {header: "4KIN", id: 3, data: [0, 0], child: Some(
+    DSINValue { header: "DSIN", id: 101, data: [1, 0, 0, 0, 0, 2, 0, 0, 0, 1, 0, 0, 0, 8, 0, 0, 0, 53, 0, 46, 0, 51, 0, 46, 0, 48, 0, 46, 0, 54, 0, 52, 0], child: Some(
+        DSINValue { header: "DSIN", id: 106, data: [1, 0, 0, 0, 2, 0, 0, 0], child: Some(
+            DSINValue { header: "DSIN", id: 1, data: [1, 0, 0, 0], child: None }) }) }) }
+
+DSINValue { header: "4KIN", id: 3, data: [0, 0], child: Some(
+    DSINValue { header: "DSIN", id: 101, data: [1, 0, 0, 0, 0, 2, 0, 0, 0, 1, 0, 0, 0, 10, 0, 0, 0, 53, 0, 46, 0, 51, 0, 46, 0, 48, 0, 46, 0, 54, 0, 52, 0, 54, 0, 52, 0], child: Some(
+        DSINValue { header: "DSIN", id: 106, data: [1, 0, 0, 0, 2, 0, 0, 0], child: Some(
+            DSINValue { header: "DSIN", id: 1, data: [1, 0, 0, 0], child: None }) }) }) }

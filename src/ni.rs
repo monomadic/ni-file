@@ -78,12 +78,51 @@ fn take_block(i: &[u8]) -> IResult<&[u8], NISegment> {
     ))
 }
 
-fn parse_data_segment(i: &[u8]) -> IResult<&[u8], u64> {
-    let (r, (tag, _, _, offset)) = tuple((take(4_usize), le_u32, le_u32, le_u64))(i)?;
+#[derive(Debug, Clone)]
+pub struct DSINValue<'a> {
+    header: String,
+    id: u32,
+    // unknown_1: u32, // always 1
+    data: &'a [u8],
+    child: Option<Box<DSINValue<'a>>>,
+}
+
+pub fn parse_data_segment<'a>(i: &'a [u8]) -> IResult<&[u8], DSINValue> {
+    let (r, (tag, id, unknown_1)) = tuple((take(4_usize), le_u32, le_u32))(i)?;
 
     let tag = std::str::from_utf8(tag).unwrap_or("error");
 
-    println!("found data tag: {:?}", (tag, offset));
+    println!("{:?}-", id);
 
-    Ok((r, offset))
+    if id == 1 {
+        println!("terminator ID found.");
+        let data = r;
+
+        return Ok((r, DSINValue {
+            header: tag.into(),
+            id, data: data.into(),
+            child: None,
+        }));
+    }
+
+    let (r, next_segment_size) = le_u64(r)?;
+
+    let data_length: usize = (r.len() + 8_usize) - next_segment_size as usize;
+    let offset = r.len() - data_length;
+    println!("{}, {}", offset, next_segment_size);
+
+    let child_data = &r[0..offset];
+    let data = &r[offset..r.len()];
+
+    // parse_data_segment(child_data);
+
+    // println!("found data tag: {:?}", (tag, id, unknown_1, &r[offset..r.len()]));
+
+    let (_, child_value) = parse_data_segment(child_data)?;
+
+    Ok((r, DSINValue {
+        header: tag.into(),
+        id, data,
+        child: Some(Box::new(child_value)),
+    }))
 }

@@ -7,12 +7,16 @@ mod deflate;
 mod ni;
 
 fn main() -> io::Result<()> {
-    const FILE: &'static [u8] = include_bytes!("../examples/TESTINSTRUMENTBEST.nki");
+    const FILE: &'static [u8] = include_bytes!("../examples/segments/data-segment-2.dsin");
 
-    match ni::read(FILE) {
-        Ok(f) => println!("done\n{:?}", f.1),
-        Err(e) => println!("error: {:?}", e)
-    }
+    let (_, data) = ni::parse_data_segment(FILE).unwrap();
+
+    println!("{:?}", data);
+
+    // match ni::read(FILE) {
+    //     Ok(f) => println!("done\n{:?}", f.1),
+    //     Err(e) => println!("error: {:?}", e)
+    // }
 
     // match deflate::deflate(FILE, 0) {
     //     Ok((_, content)) => {
