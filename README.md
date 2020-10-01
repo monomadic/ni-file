@@ -29,8 +29,6 @@ File is made up of nested blocks, denoted with 'hsin' tags / magic numbers.
 <EMBEDDED_SEGMENTS (remaining data)>
 ```
 
-For example, `[2557][1]["hsin"][1]["ÅÈ¿K 0ÉGlUG"][...][1][1]["4KIN", 3]`
-
 The first block length in the file will be the entire file size, as it represents one block and other hsin blocks are embedded within.
 
 ### DSIN - Data Structure In
@@ -52,7 +50,7 @@ Footer data
 
 ## Compressed segments
 
-The main preset is compressed with a custom LZ77 variant. deflate.rs can deflate a segment. The segment will start as normal, but appears to embed another file (with its own data segments, compressed) as data in a DSIN (type 115).
+The main preset is compressed with a custom [LZ77](https://en.wikipedia.org/wiki/LZ77_and_LZ78) variant. deflate.rs can deflate a segment. The segment will start as normal, but appears to embed another file (with its own data segments, compressed) as data in a DSIN (type 115).
 
 IMPORTANT: the compression starts 11 bytes into the data slice, but you must provide an initial dictionary of 00.
 
