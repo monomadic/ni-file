@@ -6,15 +6,15 @@ use nom::{
 
 #[derive(Debug)]
 pub struct NIAppVersion {
-    pub unknown_1: u32,
-    pub unknown_2: u8,
-    pub unknown_3: u32,
+    pub unknown_1: u32, // always 1?
+    pub commercial: u8, // 1 commercial / 0 user
+    pub application_id: u32,
     pub unknown_4: u32,
     pub version: String,
 }
 
 pub fn parse_app_version(i: &[u8]) -> IResult<&[u8], NIAppVersion> {
-    let (rem, (unknown_1, unknown_2, unknown_3, unknown_4, string_length)) = tuple((le_u32, le_u8, le_u32, le_u32, le_u32))(i)?;
+    let (rem, (unknown_1, commercial, application_id, unknown_4, string_length)) = tuple((le_u32, le_u8, le_u32, le_u32, le_u32))(i)?;
     // println!("string_length {:?}", &string_length);
     let version_data = &rem[0..(string_length * 2) as usize];
         // String::from_utf8(rem[0..string_length as usize].to_vec()).expect("utf 8 header not found");
@@ -27,10 +27,19 @@ pub fn parse_app_version(i: &[u8]) -> IResult<&[u8], NIAppVersion> {
         &[],
         NIAppVersion {
             unknown_1,
-            unknown_2,
-            unknown_3,
+            commercial,
+            application_id,
             unknown_4,
             version,
         },
     ))
 }
+
+// #[derive(Debug)]
+// pub struct NICompressedSegment {
+//     pub unknown_1: u32, // always 1?
+//     pub commercial: u8, // 1 commercial / 0 user
+//     pub application_id: u32,
+//     pub unknown_4: u32,
+//     pub version: String,
+// }
