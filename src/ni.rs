@@ -106,6 +106,7 @@ pub fn parse_data_segment<'a>(i: &'a [u8]) -> IResult<&[u8], DSINValue> {
     }
 
     let (r, next_segment_size) = le_u64(r)?;
+    println!("next segment size: {}", next_segment_size);
 
     let data_length: usize = (r.len() + 8_usize) - next_segment_size as usize;
     let offset = r.len() - data_length;
@@ -119,6 +120,11 @@ pub fn parse_data_segment<'a>(i: &'a [u8]) -> IResult<&[u8], DSINValue> {
     // println!("found data tag: {:?}", (tag, id, unknown_1, &r[offset..r.len()]));
 
     let (_, child_value) = parse_data_segment(child_data)?;
+
+    use std::{fs::File, io};
+    use io::Write;
+    let mut buffer = File::create(&format!("dsin-data/{}-{}-{}.dsin", tag, id, data.len())).unwrap();
+    buffer.write_all(&data).unwrap();
 
     Ok((r, DSINValue {
         header: tag.into(),
