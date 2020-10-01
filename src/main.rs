@@ -6,9 +6,11 @@ mod offset;
 mod deflate;
 mod ni;
 mod output;
+mod structures;
 
 fn main() -> io::Result<()> {
-    const FILE: &'static [u8] = include_bytes!("../examples/test-se.nmsv");
+    // const FILE: &'static [u8] = include_bytes!("../test-data/kontakt-5.4.1.189/Memory Bell Lowpass.nki");
+    const FILE: &'static [u8] = include_bytes!("../test-data/massive-1.5.5.22/test-se.nmsv");
 
     // let (_, data) = ni::parse_data_segment(FILE).unwrap();
 

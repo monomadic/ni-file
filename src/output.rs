@@ -1,4 +1,4 @@
-use crate::ni::{DSINValue, NISegment};
+use crate::{structures::parse_app_version, ni::{DSINValue, NISegment}};
 
 pub fn print_segment(segment: NISegment) {
     println!("[{}:{}]", segment.tag, segment.unknown_1);
@@ -14,7 +14,7 @@ fn print_data_segment(segment: DSINValue) {
     println!("  [{}:{} ({} bytes)]", segment.tag, segment.id, segment.data.len());
     
     match segment.id {
-        101 => println!("version detected? {:?}", segment.data),
+        101 => println!("version detected? {:?}", parse_app_version(segment.data)),
         _ => (),
     }
     
@@ -22,3 +22,5 @@ fn print_data_segment(segment: DSINValue) {
         print_data_segment(*data);
     }
 }
+
+// fn ds_106_app_version(data: &[u8])
