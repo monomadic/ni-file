@@ -7,7 +7,7 @@ pub(crate) fn deflate(i: &[u8], offset: usize) -> IResult<&[u8], Vec<u8>> {
     let mut stack = stack.to_vec();
 
     loop {
-        println!("file offset :{}", i.len() - rem.len());
+        // println!("file offset :{}", i.len() - rem.len());
 
         // if rem.len() < 7 {
         //     println!("end of file reached.");
@@ -22,16 +22,16 @@ pub(crate) fn deflate(i: &[u8], offset: usize) -> IResult<&[u8], Vec<u8>> {
 
         if let Ok((r, o)) = crate::cb::get_control_bytes(rem) {
             rem = r;
-            println!("{:?}", o);
+            // println!("{:?}", o);
 
             match o {
                 Offset::Dictionary { length, offset } => {
                     let mut dict = offset::fetch_offset(&stack, length, offset);
-                    print!("DICT BUFFER PUSH: ");
-                    for byte in dict.clone() {
-                        print!("{:02X} ", byte);
-                    }
-                    println!("\n");
+                    // print!("DICT BUFFER PUSH: ");
+                    // for byte in dict.clone() {
+                    //     print!("{:02X} ", byte);
+                    // }
+                    // println!("\n");
 
                     stack.append(&mut dict);
                 }
@@ -40,11 +40,11 @@ pub(crate) fn deflate(i: &[u8], offset: usize) -> IResult<&[u8], Vec<u8>> {
                     if let Ok((r, bytes)) = take_bytes(rem, length) {
                         rem = r;
 
-                        print!("LITERAL BUFFER PUSH: ");
-                        for byte in bytes.clone() {
-                            print!("{:02X} ", byte);
-                        }
-                        println!("\n");
+                        // print!("LITERAL BUFFER PUSH: ");
+                        // for byte in bytes.clone() {
+                        //     print!("{:02X} ", byte);
+                        // }
+                        // println!("\n");
     
                         stack.append(&mut bytes.to_vec());
                     } else {
