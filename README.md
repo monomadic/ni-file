@@ -1,10 +1,33 @@
 # Native Instruments File Format
 
-## Block Format
+## Progress
 
-File is made up of nested blocks, denoted with 'hsin' tags. Basic block format is:
+This library is a work in progress. It can read files and do a few other things so far. Any help would be appreciated.
 
-### HSIN - Header Section In
+- [x] Read NI file containers
+- [x] Read type (kontakt, fm8, etc)
+- [x] Read version number
+- [x] Decompress compressed segments
+- [ ] Full support for NI file containers (all fields understood and documented)
+- ...
+
+## File Schematic
+
+### Block Format
+
+File is made up of nested blocks, denoted with 'hsin' tags / magic numbers. Basic block format is:
+
+``` xml
+<LENGTH_OF_SEGMENT: le_u64>
+<HEADER_TAG: "hsin">
+<CHECKSUM>
+<DATA_SEGMENT>
+<NUMBER_OF_CHILDREN>
+<CHILD_TYPEID>
+<EMBEDDED_SEGMENTS>
+```
+
+#### HSIN - Header Section In
 
 ```
 [block-length: le-u64]
