@@ -13,9 +13,9 @@ pub struct NISegment<'a> {
     length: u64,
     unknown_1: u32,          // always 1?
     checksum: &'a [u8], // [u8; 16]
-    data: &'a [u8],
+    data: DSINValue<'a>,
     parents: u32,
-    unknown_tag: Option<&'a [u8]>, // usually DSIN <length> or 4KIN
+    unknown_tag: Option<&'a [u8]>, // data segment id
     children: Vec<NISegment<'a>>,
 }
 
@@ -40,7 +40,7 @@ fn take_block(i: &[u8]) -> IResult<&[u8], NISegment> {
         le_u32,
     ))(rem)?;
 
-    println!("data segment: {:?}", parse_data_segment(&data));
+    let (_, data) = parse_data_segment(&data)?;
 
     let mut r = rem;
 
@@ -70,7 +70,7 @@ fn take_block(i: &[u8]) -> IResult<&[u8], NISegment> {
             length,
             unknown_1,
             checksum: &checksum,
-            data: &data,
+            data,
             parents,
             unknown_tag,
             children
