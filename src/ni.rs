@@ -2,21 +2,24 @@ use nom::{
     bytes::complete::{tag, take},
     number::complete::{le_u32, le_u64},
     sequence::tuple,
-    IResult, combinator::opt,
+    IResult,
 };
 
 pub fn read(i: &[u8]) -> IResult<&[u8], NISegment> {
     take_block(i)
 }
+
+// todo: rename to HSIN or HeaderSegment
 #[derive(Debug)]
 pub struct NISegment<'a> {
-    length: u64,
-    unknown_1: u32,          // always 1?
-    checksum: &'a [u8], // [u8; 16]
-    data: DSINValue<'a>,
-    parents: u32,
-    unknown_tag: Option<&'a [u8]>, // data segment id
-    children: Vec<NISegment<'a>>,
+    pub length: u64,
+    pub unknown_1: u32,          // always 1?
+    pub tag: String,
+    pub checksum: &'a [u8], // [u8; 16]
+    pub data: DSINValue<'a>,
+    pub parents: u32,
+    pub unknown_tag: Option<&'a [u8]>, // data segment id
+    pub children: Vec<NISegment<'a>>,
 }
 
 #[derive(Debug)]
@@ -69,6 +72,7 @@ fn take_block(i: &[u8]) -> IResult<&[u8], NISegment> {
         NISegment {
             length,
             unknown_1,
+            tag: String::from_utf8(tag.to_vec()).expect("utf 8 header not found"),
             checksum: &checksum,
             data,
             parents,
@@ -78,13 +82,14 @@ fn take_block(i: &[u8]) -> IResult<&[u8], NISegment> {
     ))
 }
 
+// todo rename to SegmentData or DataSegment
 #[derive(Debug, Clone)]
 pub struct DSINValue<'a> {
-    header: String,
-    id: u32,
+    pub tag: String,
+    pub id: u32,
     // unknown_1: u32, // always 1
-    data: &'a [u8],
-    child: Option<Box<DSINValue<'a>>>,
+    pub data: &'a [u8],
+    pub child: Option<Box<DSINValue<'a>>>,
 }
 
 pub fn parse_data_segment<'a>(i: &'a [u8]) -> IResult<&[u8], DSINValue> {
@@ -99,7 +104,7 @@ pub fn parse_data_segment<'a>(i: &'a [u8]) -> IResult<&[u8], DSINValue> {
         let data = r;
 
         return Ok((r, DSINValue {
-            header: tag.into(),
+            tag: tag.into(),
             id, data: data.into(),
             child: None,
         }));
@@ -127,7 +132,7 @@ pub fn parse_data_segment<'a>(i: &'a [u8]) -> IResult<&[u8], DSINValue> {
     buffer.write_all(&data).unwrap();
 
     Ok((r, DSINValue {
-        header: tag.into(),
+        tag: tag.into(),
         id, data,
         child: Some(Box::new(child_value)),
     }))

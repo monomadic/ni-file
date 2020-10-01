@@ -5,16 +5,17 @@ mod cb;
 mod offset;
 mod deflate;
 mod ni;
+mod output;
 
 fn main() -> io::Result<()> {
-    const FILE: &'static [u8] = include_bytes!("../examples/OGGR2.nki");
+    const FILE: &'static [u8] = include_bytes!("../examples/test-se.nmsv");
 
     // let (_, data) = ni::parse_data_segment(FILE).unwrap();
 
     // println!("{:?}", data);
 
     match ni::read(FILE) {
-        Ok(f) => println!("done\n{:#?}", f.1),
+        Ok(f) => output::print_segment(f.1),
         Err(e) => println!("error: {:?}", e)
     }
 
