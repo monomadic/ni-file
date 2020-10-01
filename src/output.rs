@@ -1,4 +1,4 @@
-use crate::{structures::{NIAppVersion, parse_app_version}, ni::{DSINValue, NISegment}};
+use crate::{structures::{NIAppVersion, parse_app_version, parse_metadata, NIMetaData}, ni::{DSINValue, NISegment}};
 
 pub fn print_segment(segment: NISegment) {
     println!("[{}:{}]", segment.tag, segment.unknown_1);
@@ -15,6 +15,7 @@ fn print_data_segment(segment: DSINValue) {
     
     match segment.id {
         101 => print_app_version(parse_app_version(segment.data).unwrap().1),
+        108 => print_metadata(parse_metadata(segment.data).unwrap().1),
         115 => print!(" 115: compressed preset detected"),
         _ => (),
     }
@@ -31,6 +32,10 @@ fn print_data_segment(segment: DSINValue) {
     if let Some(data) = segment.child {
         print_data_segment(*data);
     }
+}
+
+fn print_metadata(meta: NIMetaData) {
+    print!(" 108: metadata {:?}", meta);
 }
 
 fn print_app_version(av: NIAppVersion) {
