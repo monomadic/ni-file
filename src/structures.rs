@@ -15,12 +15,12 @@ pub struct NIAppVersion {
 
 pub fn parse_app_version(i: &[u8]) -> IResult<&[u8], NIAppVersion> {
     let (rem, (unknown_1, unknown_2, unknown_3, unknown_4, string_length)) = tuple((le_u32, le_u8, le_u32, le_u32, le_u32))(i)?;
-    println!("string_length {:?}", &string_length);
+    // println!("string_length {:?}", &string_length);
     let version_data = &rem[0..(string_length * 2) as usize];
         // String::from_utf8(rem[0..string_length as usize].to_vec()).expect("utf 8 header not found");
-        println!("UTF8 {:?}", &version_data);
+        // println!("UTF8 {:?}", &version_data);
     let (_, version) = many1(le_u16)(version_data)?;
-    println!("UTF16 {:?}", &version);
+    // println!("UTF16 {:?}", &version);
     let version = String::from_utf16(&version).expect("utf16 did not convert");
 
     Ok((
