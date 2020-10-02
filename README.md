@@ -23,7 +23,7 @@ This is one ugly file format. If anyone recognises this kind of schematic (espec
 
 File is made up of nested blocks, denoted with 'hsin' tags / magic numbers. These tags are spelt backwards. Some of the blocks are:
 
-- **hsin** Native Instruments Start Header
+- `**hsin*` Native Instruments Start Header
 - **DSIN** Native Instruments Start Data
 - **4KIN** Native Instruments Kontakt 4
 - **RTKR** ReaKToR
