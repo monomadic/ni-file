@@ -28,7 +28,7 @@ fn main() -> io::Result<()> {
     if let Some(path) = args.get(1) {
         let file = readfile(&args[1])?;
         match ni::read(&file) {
-            Ok(f) => output::print_segment(f.1),
+            Ok(f) => output::print_segment(&f.1),
             Err(e) => println!("error: {:?}", e)
         }
     } else {

@@ -10,7 +10,7 @@ pub fn read(i: &[u8]) -> IResult<&[u8], NISegment> {
 }
 
 // todo: rename to HSIN or HeaderSegment
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct NISegment<'a> {
     pub length: u64,
     pub unknown_1: u32,          // always 1?
@@ -30,7 +30,7 @@ pub struct NIDataSegment<'a> {
     data: &'a [u8],
 }
 
-fn take_block(i: &[u8]) -> IResult<&[u8], NISegment> {
+pub fn take_block(i: &[u8]) -> IResult<&[u8], NISegment> {
     let (rem, (length, unknown_1, tag, unknown_2, checksum, data_segment_size)) =
         tuple((le_u64, le_u32, tag("hsin"), le_u64, take(16_usize), le_u64))(i)?;
 

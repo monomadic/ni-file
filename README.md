@@ -4,6 +4,8 @@
 
 This library is a work in progress. It can read files and do a few other things so far. Any help would be appreciated.
 
+There is no real code quality at this point, but this will follow once the container format is 100% reversed.
+
 - [x] Read NI file containers
 - [x] Read type (kontakt, fm8, etc)
 - [x] Read version number
@@ -16,9 +18,16 @@ This library is a work in progress. It can read files and do a few other things 
 
 ### Block Format
 
-File is made up of nested blocks, denoted with 'hsin' tags / magic numbers.
+File is made up of nested blocks, denoted with 'hsin' tags / magic numbers. These tags are spelt backwards. Some of the blocks are:
 
-#### HSIN - Header Section In
+- *hsin* Native Instruments Start Header
+- *DSIN* Native Instruments Start Data
+- *4KIN* Native Instruments Kontakt 4
+- *RTKR* ReaKToR
+- *E8MF* FM8 E?
+
+#### HSIN (NISH) - Native Instruments Start Header
+
 ``` xml
 <LENGTH_OF_SEGMENT: le_u64>
 <HEADER_TAG: "hsin" / 4-bytes>
@@ -32,7 +41,7 @@ File is made up of nested blocks, denoted with 'hsin' tags / magic numbers.
 
 The first block length in the file will be the entire file size, as it represents one block and other hsin blocks are embedded within.
 
-### DSIN - Data Structure In
+### DSIN (NISD) - Native Instruments Start Data
 
 DSIN blocks act as maps or slice indexes. The first DSIN is usually the length of the whole data chunk, minus footer data. Each DSIN is embedded inside its parent data. Like inception. Only dumber.
 

@@ -4,6 +4,7 @@ use nom::{
     sequence::tuple,
     IResult,
 };
+use crate::ni::{NISegment, take_block};
 
 #[derive(Debug)]
 pub struct NIAppVersion {
@@ -68,9 +69,7 @@ pub fn parse_metadata(i: &[u8]) -> IResult<&[u8], NIMetaData> {
 
     // let (_, r) = r.split_at(44);
     let (r, a) = take_utf16(r)?;
-    println!("a: {}", a);
     let (r, b) = take_utf16(r)?;
-    println!("b: {}", b);
 
     // FF FF FF FF
     let (_, r) = r.split_at(4);
@@ -80,7 +79,7 @@ pub fn parse_metadata(i: &[u8]) -> IResult<&[u8], NIMetaData> {
 
     let (r, (_, _, has_properties)) = tuple((le_u32, le_u32, le_u32))(r)?;
 
-    println!("has_properties: {:?}", has_properties);
+    // println!("has_properties: {:?}", has_properties);
 
     let (r, application) = take_utf16(r)?;
     let (r, bank_name) = take_utf16(r)?;
