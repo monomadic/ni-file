@@ -6,12 +6,13 @@ This library is a work in progress. It can read files and do a few other things 
 
 There is no real code quality at this point, but this will follow once the container format is 100% reversed.
 
-- [x] Read NI file containers
-- [x] Read type (kontakt, fm8, etc)
-- [x] Read version number
-- [x] Read metadata block (preset name, author, bank, etc)
-- [x] Decompress compressed preset data (parser coming soon)
-- [ ] Full support for NI file containers (all fields understood and documented)
+- [x] Parse NI file containers
+- [x] Extract compressed preset data (kontakt, fm8, etc)
+- [x] Parse version block
+- [x] Parse metadata / library block (preset name, author, bank, etc)
+- [ ] Full support for NI file containers (all fields fully understood and documented)
+- [ ] Parse presets
+- [ ] Write presets?
 - [ ] ... everything else?
 
 ## File Schematic
