@@ -7,8 +7,8 @@ This library is a work in progress. It can read files and do a few other things 
 - [x] Read NI file containers
 - [x] Read type (kontakt, fm8, etc)
 - [x] Read version number
-- [x] Read metadata (preset name, author, bank, etc)
-- [x] Decompress compressed segments
+- [x] Read metadata block (preset name, author, bank, etc)
+- [x] Decompress compressed preset data (parser coming soon)
 - [ ] Full support for NI file containers (all fields understood and documented)
 - [ ] ... everything else?
 
