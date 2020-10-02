@@ -2,7 +2,7 @@
 
 ## Progress
 
-This library is a work in progress. It can read files and do a few other things so far. It has taken many many hours staring at a hex editor to get to this point. Any help would be appreciated, and if you'd like to request anything in particular, I'd love a donation :)
+This library is a work in progress. It can read files and do a few other things so far. It has taken many many hours staring at a hex editor to get to this point. Any help would be appreciated, and if you'd like to request anything in particular, I'd love a [donation](#donations) :)
 
 There is no real code quality at this point, but this will follow once the container format is 100% reversed.
 
@@ -12,7 +12,7 @@ There is no real code quality at this point, but this will follow once the conta
 - [x] Parse metadata / library block (preset name, author, bank, etc)
 - [ ] Full support for NI file containers (all fields fully understood and documented)
 - [ ] Parse presets
-    - [-] FM8 (Partial)
+    - [ ] FM8 (Partial)
     - [ ] Kontakt 4/5
     - [ ] Reaktor
     - [ ] Massive
