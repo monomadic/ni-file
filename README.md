@@ -17,15 +17,17 @@ There is no real code quality at this point, but this will follow once the conta
 
 ## File Schematic
 
+This is one ugly file format. If anyone recognises this kind of schematic (especially the way data blocks are stored), PLEASE get in contact with me and let me know. I have set up a gitter at (https://gitter.im/ni-file)[https://gitter.im/ni-file].
+
 ### Block Format
 
 File is made up of nested blocks, denoted with 'hsin' tags / magic numbers. These tags are spelt backwards. Some of the blocks are:
 
-- *hsin* Native Instruments Start Header
-- *DSIN* Native Instruments Start Data
-- *4KIN* Native Instruments Kontakt 4
-- *RTKR* ReaKToR
-- *E8MF* FM8 E?
+- **hsin** Native Instruments Start Header
+- **DSIN** Native Instruments Start Data
+- **4KIN** Native Instruments Kontakt 4
+- **RTKR** ReaKToR
+- **E8MF** FM8 E?
 
 #### HSIN (NISH) - Native Instruments Start Header
 
@@ -42,7 +44,7 @@ File is made up of nested blocks, denoted with 'hsin' tags / magic numbers. Thes
 
 The first block length in the file will be the entire file size, as it represents one block and other hsin blocks are embedded within.
 
-### DSIN (NISD) - Native Instruments Start Data
+#### DSIN (NISD) - Native Instruments Start Data
 
 DSIN blocks act as maps or slice indexes. The first DSIN is usually the length of the whole data chunk, minus footer data. Each DSIN is embedded inside its parent data. Like inception. Only dumber.
 
