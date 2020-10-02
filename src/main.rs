@@ -7,6 +7,8 @@ mod deflate;
 mod ni;
 mod output;
 mod structures;
+mod fm8;
+mod strings;
 
 pub(crate) fn readfile(path: &str) -> Result<Vec<u8>, std::io::Error> {
     use std::io::prelude::*;

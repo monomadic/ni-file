@@ -33,9 +33,11 @@ fn print_data_segment(segment: &DSINValue) {
     // }
 
     if segment.id == 109 {
-        use std::io::Write;
-        let mut buffer = std::fs::File::create("output/preset.data").unwrap();
-        buffer.write_all(&segment.data).unwrap();
+        // use std::io::Write;
+        // let mut buffer = std::fs::File::create("output/preset.data").unwrap();
+        // buffer.write_all(&segment.data).unwrap();
+
+        println!("{:?}", crate::fm8::fm8_preset(&segment.data).unwrap());
     }
 
     print!("\n");

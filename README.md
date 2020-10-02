@@ -12,6 +12,10 @@ There is no real code quality at this point, but this will follow once the conta
 - [x] Parse metadata / library block (preset name, author, bank, etc)
 - [ ] Full support for NI file containers (all fields fully understood and documented)
 - [ ] Parse presets
+    - [-] FM8 (Partial)
+    - [ ] Kontakt 4/5
+    - [ ] Reaktor
+    - [ ] Massive
 - [ ] Write presets?
 - [ ] ... everything else?
 
@@ -69,5 +73,5 @@ Note that checksums and file lengths for the file header are usually SKIPPED in 
 
 ## Donations
 
-BTC: (I'll post an address soon, please get in touch if you prefer btc)
-ETH: monomadic.eth / `0xd86De8Bf49e2f10341e2fB62ebCb81f286e96f1A`
+- BTC: (I'll post an address soon, please get in touch if you prefer btc)
+- ETH: monomadic.eth / `0xd86De8Bf49e2f10341e2fB62ebCb81f286e96f1A`
