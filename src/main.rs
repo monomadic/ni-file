@@ -9,6 +9,7 @@ mod output;
 mod structures;
 mod fm8;
 mod strings;
+mod kontakt;
 
 pub(crate) fn readfile(path: &str) -> Result<Vec<u8>, std::io::Error> {
     use std::io::prelude::*;

@@ -15,7 +15,7 @@ fn print_data_segment(segment: &DSINValue) {
     
     match segment.id {
         101 => print_app_version(parse_app_version(segment.data).unwrap().1),
-        108 => print_metadata(parse_metadata(segment.data).unwrap().1),
+        // 108 => print_metadata(parse_metadata(segment.data).unwrap().1),
         115 => {
             let (_, deflated_data) = crate::deflate::deflate(segment.data, 11).unwrap();
             let (_, deflated_data) = deflated_data.split_at(12);
@@ -25,19 +25,20 @@ fn print_data_segment(segment: &DSINValue) {
         _ => (),
     }
 
-    // if segment.id == 115 {
-    //     use std::io::Write;
-    //     let mut buffer = std::fs::File::create("output/dsin.data").unwrap();
-    //     let (_, deflated_file) = crate::deflate::deflate(&segment.data, 11).unwrap();
-    //     buffer.write_all(&deflated_file).unwrap();
-    // }
+    if segment.id == 115 {
+        use std::io::Write;
+        let mut buffer = std::fs::File::create("output/dsin.data").unwrap();
+        let (_, deflated_file) = crate::deflate::deflate(&segment.data, 11).unwrap();
+        buffer.write_all(&deflated_file).unwrap();
+    }
 
     if segment.id == 109 {
-        // use std::io::Write;
-        // let mut buffer = std::fs::File::create("output/preset.data").unwrap();
-        // buffer.write_all(&segment.data).unwrap();
+        use std::io::Write;
+        let mut buffer = std::fs::File::create("output/preset.data").unwrap();
+        buffer.write_all(&segment.data).unwrap();
 
-        println!("{:?}", crate::fm8::fm8_preset(&segment.data).unwrap());
+        // println!("{:?}", crate::fm8::fm8_preset(&segment.data).unwrap());
+        // println!("{:?}", crate::kontakt::kontakt4_preset(&segment.data).unwrap());
     }
 
     print!("\n");

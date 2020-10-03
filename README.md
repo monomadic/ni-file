@@ -12,11 +12,12 @@ There is no real code quality at this point, but this will follow once the conta
 - [x] Parse metadata / library block (preset name, author, bank, etc)
 - [ ] Full support for NI file containers (all fields fully understood and documented)
 - [ ] Parse presets
-    - [ ] FM8 (Partial)
-    - [ ] Kontakt 4/5
-    - [ ] Reaktor
-    - [ ] Massive
+    - [ ] FM8 (Partial) (.nfm8)
+    - [ ] Kontakt 4/5 (.nki)
+    - [ ] Reaktor (.ens)
+    - [ ] Massive (.nmsv)
 - [ ] Write presets?
+    - [ ] Understand checksums
 - [ ] ... everything else?
 
 ## File Schematic
@@ -75,3 +76,5 @@ Note that checksums and file lengths for the file header are usually SKIPPED in 
 
 - BTC: (I'll post an address soon, please get in touch if you prefer btc)
 - ETH: monomadic.eth / `0xd86De8Bf49e2f10341e2fB62ebCb81f286e96f1A`
+
+000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f
