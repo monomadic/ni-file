@@ -1,6 +1,7 @@
 use nom::{number::complete::{le_u16, le_u32}, IResult, multi::many1};
 
-/// read a utf16 string with size header
+/// read a pascal-style utf16 string
+/// https://wiki.lazarus.freepascal.org/Character_and_string_types#WideString
 pub(crate) fn take_utf16(i: &[u8]) -> IResult<&[u8], String> {
     let (r, size) = le_u32(i)?;
 

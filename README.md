@@ -2,7 +2,7 @@
 
 ## Progress
 
-This library is a work in progress. It can read files and do a few other things so far. It has taken many many hours staring at a hex editor to get to this point. Any help would be appreciated, and if you'd like to request anything in particular, I'd love a [donation](#donations) :)
+This library is a work in progress. It can read files and do a few other things so far. It has taken many many hours staring at a hex editor to get to this point. Any help would be appreciated, and if you'd like to request anything in particular, please make [contact](mailto:themonomadic@protonmail.com) or [donate](#donations) :)
 
 There is no real code quality at this point, but this will follow once the container format is 100% reversed.
 
@@ -71,6 +71,12 @@ The main preset is compressed with a custom [LZ77](https://en.wikipedia.org/wiki
 IMPORTANT: the compression starts 11 bytes into the data slice, but you must provide an initial dictionary of `00`.
 
 Note that checksums and file lengths for the file header are usually SKIPPED in kontakt, you can remove them entirely in some situations and the patch will still load. This also applies to `DSIN` tags. I think NI might have tried to make their code more efficient by directly reading offsets.
+
+## Serialised Data
+
+### Strings
+
+Most strings are [pascal widestrings](https://wiki.lazarus.freepascal.org/Character_and_string_types#WideString) or [shortstrings](https://wiki.lazarus.freepascal.org/Character_and_string_types#ShortString).
 
 ## Donations
 
