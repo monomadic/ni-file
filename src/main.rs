@@ -1,58 +1,59 @@
-use std::{fs::File, io};
-use io::Write;
+use std::{io, path::PathBuf};
 
 mod cb;
-mod offset;
+mod cmd;
 mod deflate;
-mod ni;
-mod output;
-mod structures;
 mod fm8;
-mod strings;
 mod kontakt;
+mod ni;
+mod ni_file;
+mod offset;
+mod output;
+mod strings;
+mod structures;
 
-pub(crate) fn readfile(path: &str) -> Result<Vec<u8>, std::io::Error> {
-    use std::io::prelude::*;
+use ni_file::NIFile;
+use structopt::StructOpt;
 
-    let mut f = std::fs::File::open(path)?;
-    let mut buffer = Vec::new();
+#[derive(StructOpt, Debug)]
+#[structopt(name = "astryx")]
+struct Opt {
+    /// Input file
+    file: String,
+    
+    /// Command
+    #[structopt(subcommand)]
+    command: Command,
+}
 
-    f.read_to_end(&mut buffer)?;
-
-    Ok(buffer)
+#[derive(StructOpt, Debug)]
+enum Command {
+    /// dump the internet preset
+    Preset {
+        #[structopt(parse(from_os_str))]
+        output: PathBuf,
+    },
+    Print,
 }
 
 fn main() -> io::Result<()> {
-    // const FILE: &'static [u8] = include_bytes!("../test-data/kontakt-5.4.1.189/Memory Bell Lowpass.nki");
-    // const FILE: &'static [u8] = include_bytes!("../test-data/massive-1.5.5.22/test-se.nmsv");
+    let opt = Opt::from_args();
+    let file = std::fs::read(opt.file)?;
 
-    let args: Vec<String> = std::env::args().collect();
+    match ni::read(&file) {
+        Ok((_, segment)) => {
+            match opt.command {
+                Command::Preset { output } => {
+                    std::fs::write(output, NIFile::from(segment).preset)?;
+                }
 
-    if let Some(path) = args.get(1) {
-        let file = readfile(&args[1])?;
-        match ni::read(&file) {
-            Ok(f) => output::print_segment(&f.1),
-            Err(e) => println!("error: {:?}", e)
+                Command::Print => {
+                    output::print_segment(&segment); // todo: don't use stdout inside this fn
+                },
+            };
         }
-    } else {
-        panic!("no input file specified.");
-    }
-    
-
-    // let (_, data) = ni::parse_data_segment(FILE).unwrap();
-
-    // println!("{:?}", data);
-
-
-
-    // match deflate::deflate(FILE, 1) {
-    //     Ok((_, content)) => {
-    //         let mut buffer = File::create("massive.deflate")?;
-    //         buffer.write_all(&content)?;
-    //         println!("done!");
-    //     },
-    //     Err(e) => println!("error: {:?}", e)
-    // }
+        Err(e) => println!("error: {:?}", e),
+    };
 
     Ok(())
 }
