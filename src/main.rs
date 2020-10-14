@@ -29,7 +29,7 @@ struct Opt {
 #[derive(StructOpt, Debug)]
 enum Command {
     /// dump the internet preset
-    Preset {
+    Dump {
         #[structopt(parse(from_os_str))]
         output: PathBuf,
     },
@@ -43,7 +43,7 @@ fn main() -> io::Result<()> {
     match ni::read(&file) {
         Ok((_, segment)) => {
             match opt.command {
-                Command::Preset { output } => {
+                Command::Dump { output } => {
                     std::fs::write(output, NIFile::from(segment).preset)?;
                 }
 

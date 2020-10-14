@@ -1,7 +1,7 @@
 use crate::{structures::{NIAppVersion, parse_app_version, parse_metadata, NIMetaData}, ni::{DSINValue, NISegment, take_block}};
 
 pub fn print_segment(segment: &NISegment) {
-    println!("[{}:{}]", segment.tag, segment.unknown_1);
+    println!("[{}:{}] children:{} {:?}, {:?}", segment.tag, segment.unknown_1, segment.children.len(), segment.child_tag, segment.child_tag_id);
 
     print_data_segment(&segment.data);
 

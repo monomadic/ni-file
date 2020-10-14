@@ -18,7 +18,9 @@ pub struct NISegment<'a> {
     pub checksum: &'a [u8], // [u8; 16]
     pub data: DSINValue<'a>,
     pub parents: u32,
-    pub unknown_tag: Option<&'a [u8]>, // data segment id
+    pub unknown_tag: Option<u32>, // data segment id
+    pub child_tag: Option<String>,
+    pub child_tag_id: Option<u32>,
     pub children: Vec<NISegment<'a>>,
 }
 
@@ -49,12 +51,13 @@ pub fn take_block(i: &[u8]) -> IResult<&[u8], NISegment> {
 
     println!("rem: {}", r.len());
 
-    let unknown_tag = if r.len() == 0 {
-        None
+    let (u, childtag, childtagid) = if r.len() == 0 {
+        (None, None, None)
     } else {
-        let (rem, tag) = take(12_usize)(r)?;
+        let (rem, (u, childtag, childtagid)) = tuple((le_u32, take(4_usize), le_u32))(r)?;
         r = rem;
-        Some(tag)
+        let childtag = std::str::from_utf8(childtag).unwrap_or("error");
+        (Some(u), Some(childtag.to_string()), Some(childtagid))
     };
 
 
@@ -76,8 +79,10 @@ pub fn take_block(i: &[u8]) -> IResult<&[u8], NISegment> {
             checksum: &checksum,
             data,
             parents,
-            unknown_tag,
-            children
+            children,
+            unknown_tag: u,
+            child_tag: childtag,
+            child_tag_id: childtagid,
         },
     ))
 }
@@ -126,10 +131,10 @@ pub fn parse_data_segment<'a>(i: &'a [u8]) -> IResult<&[u8], DSINValue> {
 
     let (_, child_value) = parse_data_segment(child_data)?;
 
-    use std::{fs::File, io};
-    use io::Write;
-    let mut buffer = File::create(&format!("dsin-data/{}-{}-{}.dsin", tag, id, data.len())).unwrap();
-    buffer.write_all(&data).unwrap();
+    // use std::{fs::File, io};
+    // use io::Write;
+    // let mut buffer = File::create(&format!("dsin-data/{}-{}-{}.dsin", tag, id, data.len())).unwrap();
+    // buffer.write_all(&data).unwrap();
 
     Ok((r, DSINValue {
         tag: tag.into(),
