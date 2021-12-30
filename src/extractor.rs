@@ -4,7 +4,7 @@ use std::io::Read;
 
 pub(crate) fn read(buffer: &[u8]) -> Result<(), Box<dyn std::error::Error>> {
     // entire file is a segment, so read it
-    let hsin = header_segment(&buffer, buffer.len());
+    let hsin = header_segment(&buffer);
 
     if hsin.len() != 0 {
         warn!("remaining bytes: {}", hsin.len());
@@ -13,7 +13,7 @@ pub(crate) fn read(buffer: &[u8]) -> Result<(), Box<dyn std::error::Error>> {
     Ok(())
 }
 
-fn header_segment(mut buffer: &[u8], filesize: usize) -> &[u8] {
+fn header_segment(mut buffer: &[u8]) -> &[u8] {
     // size (2 bytes)
     let blocksize = buffer.read_u64::<LittleEndian>().unwrap();
 
@@ -47,7 +47,7 @@ fn header_segment(mut buffer: &[u8], filesize: usize) -> &[u8] {
         (b, c, d)
     );
 
-    let mut data = data_segment(&current_segment, filesize);
+    let mut data = data_segment(&current_segment);
 
     // info!(
     //     "hsin parsed data with remaining {} bytes. checking for embedded hsin",
@@ -87,14 +87,14 @@ fn pre_hsin(mut buffer: &[u8]) -> &[u8] {
             (a, b, d)
         );
 
-        buffer = header_segment(&buffer, 0);
+        buffer = header_segment(&buffer);
         info!("</pre-{}#{:?}>", tag, next_segment_type);
     }
 
     buffer
 }
 
-fn data_segment(mut buffer: &[u8], filesize: usize) -> &[u8] {
+fn data_segment(mut buffer: &[u8]) -> &[u8] {
     // info!("enter dsin at offset {}", filesize - buffer.len());
 
     // size (2 bytes)
@@ -116,11 +116,7 @@ fn data_segment(mut buffer: &[u8], filesize: usize) -> &[u8] {
     let d = current_segment.read_u16::<LittleEndian>().unwrap();
     info!("</{}#{:?} unknown={:?}>", tag, segment_type, (c, d));
     if current_segment.len() != 0 {
-        error!(
-            "data remaining in dsin segment: {} at offset {}",
-            current_segment.len(),
-            filesize - current_segment.len()
-        );
+        error!("data remaining in dsin segment: {}", current_segment.len());
     } else {
         // info!("data successfully consumed for data segment");
     }
