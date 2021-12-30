@@ -56,7 +56,7 @@ impl From<u8> for License {
 pub(crate) fn read(mut buf: &[u8]) {
     let _unknown = buf.read_u32::<LittleEndian>().unwrap();
     let blocksize = buf.read_u64::<LittleEndian>().unwrap();
-    let (current_segment, buffer) = buf.split_at((blocksize - 8) as usize);
+    let (_current_segment, buffer) = buf.split_at((blocksize - 8) as usize);
 
     info!("{}", read_app_version(buffer).to_string());
 }

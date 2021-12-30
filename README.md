@@ -22,11 +22,11 @@ There is no real code quality at this point, but this will follow once the conta
 
 ## File Schematic
 
-This is one ugly file format. If anyone recognises this kind of schematic (especially the way data blocks are stored), PLEASE get in contact with me and let me know. I have set up a gitter at [https://gitter.im/ni-file](https://gitter.im/ni-file).
+The file format is tricky at first, took me a while to work it out.
 
 ### Block Format
 
-File is made up of nested blocks, denoted with 'hsin' tags / magic numbers. These tags are spelt backwards. Some of the blocks are:
+File is made up of nested segments, denoted with 'hsin' tags / magic numbers. These tags are spelt backwards. Some of the blocks are:
 
 - `hsin` Native Instruments Start Header
 - `DSIN` Native Instruments Start Data
