@@ -3,6 +3,7 @@ extern crate log;
 
 mod args;
 mod cb;
+mod container;
 mod deflate;
 mod extract;
 mod extractor;
