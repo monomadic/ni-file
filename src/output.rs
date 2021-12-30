@@ -1,7 +1,17 @@
-use crate::{structures::{NIAppVersion, parse_app_version, parse_metadata, NIMetaData}, ni::{DSINValue, NISegment, take_block}};
+use crate::{
+    extract::{take_block, DSINValue, NISegment},
+    structures::{parse_app_version, NIAppVersion, NIMetaData},
+};
 
 pub fn print_segment(segment: &NISegment) {
-    println!("[{}:{}] children:{} {:?}, {:?}", segment.tag, segment.unknown_1, segment.children.len(), segment.child_tag, segment.child_tag_id);
+    println!(
+        "[{}:{}] children:{} {:?}, {:?}",
+        segment.tag,
+        segment.unknown_1,
+        segment.children.len(),
+        segment.child_tag,
+        segment.child_tag_id
+    );
 
     print_data_segment(&segment.data);
 
@@ -11,8 +21,12 @@ pub fn print_segment(segment: &NISegment) {
 }
 
 fn print_data_segment(segment: &DSINValue) {
-    print!("  [{}:{} ({} bytes)]", segment.tag, segment.id, segment.data.len());
-    
+    print!(
+        "  [{}:{} ({} bytes)]",
+        segment.tag,
+        segment.id,
+        segment.data.len()
+    );
     match segment.id {
         101 => print_app_version(parse_app_version(segment.data).unwrap().1),
         // 108 => print_metadata(parse_metadata(segment.data).unwrap().1),
@@ -21,7 +35,7 @@ fn print_data_segment(segment: &DSINValue) {
             let (_, deflated_data) = deflated_data.split_at(12);
             let (_, preset) = take_block(deflated_data).expect("preset to parse");
             print_segment(&preset);
-        },
+        }
         _ => (),
     }
 
@@ -42,7 +56,6 @@ fn print_data_segment(segment: &DSINValue) {
     }
 
     print!("\n");
-    
     if let Some(data) = segment.child.clone() {
         print_data_segment(&*data);
     }
@@ -64,12 +77,15 @@ fn print_app_version(av: NIAppVersion) {
         _ => print!("UNKNOWN"),
     }
 
-    print!(" {} ({} {} {} {})", av.version, av.unknown_1, av.commercial, av.application_id, av.unknown_4);
+    print!(
+        " {} ({} {} {} {})",
+        av.version, av.unknown_1, av.commercial, av.application_id, av.unknown_4
+    );
 
     match av.commercial {
         0 => print!(" USER"),
         1 => print!(" COMMERCIAL"),
-        _ => print!(" UNKNOWN WRITE STATUS")
+        _ => print!(" UNKNOWN WRITE STATUS"),
     }
 }
 

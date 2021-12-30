@@ -1,10 +1,9 @@
 use nom::{
-    multi::{many_m_n, many1},
+    multi::{many1, many_m_n},
     number::complete::{le_u16, le_u32, le_u8},
     sequence::tuple,
     IResult,
 };
-use crate::ni::{NISegment, take_block};
 
 #[derive(Debug)]
 pub struct NIAppVersion {
@@ -102,22 +101,25 @@ pub fn parse_metadata(i: &[u8]) -> IResult<&[u8], NIMetaData> {
         (r, vec![])
     };
 
-    Ok((r, NIMetaData {
-        preset_name,
-        author,
-        company,
-        application,
-        bank_name,
-        tags,
-        properties,
-    }))
+    Ok((
+        r,
+        NIMetaData {
+            preset_name,
+            author,
+            company,
+            application,
+            bank_name,
+            tags,
+            properties,
+        },
+    ))
 }
 
 fn take_utf16(i: &[u8]) -> IResult<&[u8], String> {
     let (r, size) = le_u32(i)?;
 
     if size == 0 {
-        return Ok((r, String::new()))
+        return Ok((r, String::new()));
     }
 
     // println!("size: {}", size);
