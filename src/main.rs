@@ -1,6 +1,7 @@
 #[macro_use]
 extern crate log;
 
+mod app_version;
 mod args;
 mod cb;
 mod container;

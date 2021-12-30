@@ -8,9 +8,12 @@
 //     data: Vec<u8>,
 // }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub enum SegmentType {
     FileHeader,
+    Version,
+    LibraryMetadata,
+    CompressedSegment,
     Maybe(String),
     Unknown(u32),
 }
@@ -18,12 +21,13 @@ pub enum SegmentType {
 impl From<u32> for SegmentType {
     fn from(id: u32) -> Self {
         match id {
+            3 => SegmentType::Maybe("KontaktFile".into()),
+            101 => SegmentType::Version,
+            108 => SegmentType::LibraryMetadata,
+            115 => SegmentType::CompressedSegment,
             118 => SegmentType::FileHeader,
-            3 => SegmentType::Maybe("Kontakt File".into()),
-            101 => SegmentType::Maybe("Container?".into()),
-            108 => SegmentType::Maybe("Container Part 1".into()),
-            121 => SegmentType::Maybe("Container Part 2".into()),
-            116 => SegmentType::Maybe("Container Part 3".into()),
+            121 => SegmentType::Maybe("ContainerPart2".into()),
+            116 => SegmentType::Maybe("ContainerPart3".into()),
             _ => SegmentType::Unknown(id),
         }
     }

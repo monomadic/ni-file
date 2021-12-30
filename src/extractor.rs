@@ -109,8 +109,18 @@ fn data_segment(mut buffer: &[u8]) -> &[u8] {
 
     info!("<{}#{:?} size={}>", tag, segment_type, blocksize);
 
-    // info!("remaining buffer: {} bytes", current_segment.len());
     let data: Vec<u8> = read_bytes(&mut current_segment, (blocksize - 20) as usize);
+    match segment_type.clone() {
+        SegmentType::Version => {
+            crate::app_version::read(&data);
+        }
+        SegmentType::Maybe(s) => {
+            use std::io::Write;
+            let mut buffer = std::fs::File::create(format!("output/{}.data", &s)).unwrap();
+            buffer.write_all(&data).unwrap();
+        }
+        _ => (),
+    };
 
     let c = current_segment.read_u16::<LittleEndian>().unwrap();
     let d = current_segment.read_u16::<LittleEndian>().unwrap();
