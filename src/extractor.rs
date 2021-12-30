@@ -112,8 +112,9 @@ fn data_segment(mut buffer: &[u8], filesize: usize) -> &[u8] {
     // info!("remaining buffer: {} bytes", current_segment.len());
     let data: Vec<u8> = read_bytes(&mut current_segment, (blocksize - 20) as usize);
 
-    info!("</{}#{:?}>", tag, segment_type);
-    let c = current_segment.read_u32::<LittleEndian>().unwrap();
+    let c = current_segment.read_u16::<LittleEndian>().unwrap();
+    let d = current_segment.read_u16::<LittleEndian>().unwrap();
+    info!("</{}#{:?} unknown={:?}>", tag, segment_type, (c, d));
     if current_segment.len() != 0 {
         error!(
             "data remaining in dsin segment: {} at offset {}",

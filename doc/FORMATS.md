@@ -22,6 +22,8 @@ rex   Recycle REX 1
 rx2   Recycle REX 2
 
 nksf  Native Kontrol Standard Format
+nmsf  Native Massive Standard Format
+nfm8  Native FM8
 
 ```
 

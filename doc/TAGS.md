@@ -28,12 +28,12 @@ hsin // file header?
   dsin [type=118]
 hsin
   dsin [type=101]
-hsin
-  dsin [type=108]
-hsin
-  dsin [type=121]
-hsin
-  dsin [type=116]
+  hsin
+    dsin [type=108]
+  hsin
+    dsin [type=121]
+  hsin
+    dsin [type=116]
 
 
 
@@ -65,4 +65,34 @@ hsin
             </pre-DSIN#Unknown(116)>
         </hsin>
     </pre-DSIN#Maybe( "Massive File")>
+</hsin>
+
+## FM8
+<hsin size=2784 checksum=0f798e3749c7c3c023dea08759f45fd2 unknown=(1, 1, 0)>
+    <DSIN#FileHeader size=150>
+    </DSIN#FileHeader>
+    <pre-DSIN#Maybe( "Container?") unknown=(1, 0, 0)>
+        <hsin size=2574 checksum=37f8e13046c014000e00a2a89120d5c8 unknown=(1, 1, 0)>
+            <DSIN#Maybe( "Container?") size=109>
+            </DSIN#Maybe( "Container?")>
+            <pre-DSIN#Unknown(108) unknown=(1, 0, 0)>
+                <hsin size=996 checksum=ddd73b204a5b2d028cc863bdfbc39baa unknown=(1, 1, 0)>
+                    <DSIN#Unknown(108) size=948>
+                    </DSIN#Unknown(108)>
+                </hsin>
+            </pre-DSIN#Unknown(108)>
+            <pre-DSIN#Unknown(121) unknown=(1, 0, 2)>
+                <hsin size=104 checksum=c28beb464487e99a28323d84a136ba76 unknown=(1, 1, 0)>
+                    <DSIN#Unknown(121) size=56>
+                    </DSIN#Unknown(121)>
+                </hsin>
+            </pre-DSIN#Unknown(121)>
+            <pre-DSIN#Unknown(116) unknown=(1, 0, 1)>
+                <hsin size=1281 checksum=820de2c34e9c2c7380416bb9a4be15c3 unknown=(1, 1, 0)>
+                    <DSIN#Unknown(116) size=1233>
+                    </DSIN#Unknown(116)>
+                </hsin>
+            </pre-DSIN#Unknown(116)>
+        </hsin>
+    </pre-DSIN#Maybe( "Container?")>
 </hsin>
