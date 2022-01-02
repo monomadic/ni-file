@@ -1,3 +1,4 @@
+use crate::detect::NIFileType;
 use std::path::PathBuf;
 use structopt::StructOpt;
 
@@ -11,7 +12,12 @@ pub(crate) fn run() -> Result<(), Box<dyn std::error::Error>> {
 
     let buffer = std::fs::read(input)?;
 
-    let _ = crate::extractor::read(&buffer)?;
+    match crate::detect::filetype(&buffer) {
+        NIFileType::NIContainer => crate::extractor::read(&buffer)?,
+        NIFileType::NIKontaktMonolith => crate::monolith::read(&buffer)?,
+        NIFileType::KoreSound => unimplemented!(),
+        NIFileType::Unknown => panic!("unknown filetype!"),
+    }
 
     // crate::extract::read(&buffer)?;
 

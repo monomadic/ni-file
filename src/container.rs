@@ -1,12 +1,14 @@
-// pub struct NIContainer {
-//     data: NIDataSegment,
-//     children: Node<NIContainer>
-// }
+use rctree::Node;
 
-// pub struct NISegment {
-//     id: u32,
-//     data: Vec<u8>,
-// }
+pub struct NIHeaderSegment {
+    data: NIDataSegment,
+    children: Node<NIDataSegment>,
+}
+
+pub struct NIDataSegment {
+    id: u32,
+    data: Vec<u8>,
+}
 
 #[derive(Debug, Clone)]
 pub enum SegmentType {
