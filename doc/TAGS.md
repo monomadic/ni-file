@@ -1,4 +1,4 @@
-# Native Instruments File Formats
+# Segment Types
 
 ```
 Tag   Type

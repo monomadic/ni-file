@@ -1,5 +1,13 @@
 # Native Instruments File Format
 
+## Why
+
+I don't really know. I don't like the way Native Instruments treats the music industry, locking down file formats and being shady. As a young musician I wanted to be expressive and found music a closed box, with almost all seemingly promising leads actually just trashy salesmen.
+
+Music should be open and inclusive, like development. And it's fun to see how this stuff is put together. These sample libraries are now getting old and support is starting to dwindle on them.
+
+I don't even really do music much any more so this project has become recreational. It may never see a proper release, as I don't think anyone really cares about these old formats much.
+
 ## Progress
 
 This library is a work in progress. It can read files and do a few other things so far. It has taken many many hours staring at a hex editor to get to this point. Any help would be appreciated, and if you'd like to request anything in particular, please make [contact](mailto:themonomadic@protonmail.com) or [donate](#donations) :)
@@ -82,5 +90,3 @@ Most strings are [pascal widestrings](https://wiki.lazarus.freepascal.org/Charac
 
 - BTC: (I'll post an address soon, please get in touch if you prefer btc)
 - ETH: monomadic.eth / `0xd86De8Bf49e2f10341e2fB62ebCb81f286e96f1A`
-
-000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f
