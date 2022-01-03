@@ -15,7 +15,9 @@ pub enum SegmentType {
     FileHeader,
     Version,
     LibraryMetadata,
-    CompressedSegment,
+    CompressedPreset,
+    PresetContainer,
+    PresetInner,
     Maybe(String),
     Unknown(u32),
 }
@@ -23,13 +25,14 @@ pub enum SegmentType {
 impl From<u32> for SegmentType {
     fn from(id: u32) -> Self {
         match id {
+            1 => SegmentType::CompressedPreset,
             3 => SegmentType::Maybe("KontaktFile".into()),
             101 => SegmentType::Version,
             108 => SegmentType::LibraryMetadata,
-            115 => SegmentType::CompressedSegment,
+            115 => SegmentType::PresetInner,
+            116 => SegmentType::PresetContainer,
             118 => SegmentType::FileHeader,
             121 => SegmentType::Maybe("ContainerPart2".into()),
-            116 => SegmentType::Maybe("ContainerPart3".into()),
             _ => SegmentType::Unknown(id),
         }
     }

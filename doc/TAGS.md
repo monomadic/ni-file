@@ -36,6 +36,44 @@ hsin
     dsin [type=116]
 
 
+## Kontakt 4
+<hsin>
+    <DSIN id=118 type='FileHeader'>
+    </DSIN>
+    <pre-4KIN id=3 type='Maybe("KontaktFile")'>
+        <hsin>
+            <4KIN id=3 type='Maybe("KontaktFile")'>
+            </4KIN>
+            <pre-DSIN id=108 type='LibraryMetadata'>
+                <hsin>
+                    <DSIN id=108 type='LibraryMetadata'>
+                    </DSIN>
+                </hsin>
+            </pre-DSIN id=108>
+            <pre-DSIN id=121 type='Maybe("ContainerPart2")'>
+                <hsin>
+                    <DSIN id=121 type='Maybe("ContainerPart2")'>
+                    </DSIN>
+                </hsin>
+            </pre-DSIN id=121>
+            <pre-DSIN id=116 type='Maybe("ContainerPart3")'>
+                <hsin>
+                    <DSIN id=116 type='Maybe("ContainerPart3")'>
+                    </DSIN>
+                </hsin>
+            </pre-DSIN id=116>
+            <pre-4KIN id=4 type='Unknown(4)'>
+                <hsin>
+                    <4KIN id=4 type='Unknown(4)'>
+                      <contains 0x1290A87F>
+                    </4KIN>
+                </hsin>
+            </pre-4KIN id=4>
+        </hsin>
+    </pre-4KIN id=3>
+</hsin>
+
+
 
 ## Massive
 <hsin size=2816 checksum=667104fc447a0d55cbb5c9b79fec660a unknown=(1, 1, 0)>

@@ -1,4 +1,5 @@
 use crate::detect::NIFileType;
+use std::io::Write;
 use std::path::PathBuf;
 use structopt::StructOpt;
 
@@ -10,7 +11,14 @@ pub(crate) fn run() -> Result<(), Box<dyn std::error::Error>> {
 
     info!("Reading {:?}", input);
 
-    let buffer = std::fs::read(input)?;
+    let mut buffer = std::fs::read(input)?;
+
+    if args.deflate {
+        let (_, deflated) = crate::deflate::deflate(&buffer, 11).unwrap();
+        let mut file = std::fs::File::create("output/arg.deflated").unwrap();
+        file.write_all(&deflated).unwrap();
+        buffer = deflated;
+    }
 
     match crate::detect::filetype(&buffer) {
         NIFileType::NIContainer => crate::extractor::read(&buffer)?,
@@ -36,4 +44,8 @@ struct Args {
     /// Extract files
     #[structopt(long = "extract")]
     extract: bool,
+
+    /// Instantly deflate file
+    #[structopt(long = "deflate")]
+    deflate: bool,
 }

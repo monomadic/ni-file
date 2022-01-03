@@ -1,6 +1,7 @@
 use crate::container::SegmentType;
 use byteorder::{LittleEndian, ReadBytesExt};
 use std::io::Read;
+use std::io::Write;
 
 pub(crate) fn read(buffer: &[u8]) -> Result<(), Box<dyn std::error::Error>> {
     // entire file is a segment, so read it
@@ -34,18 +35,12 @@ fn header_segment(mut buffer: &[u8]) -> &[u8] {
         current_segment.read_u32::<LittleEndian>().unwrap(),
     ];
 
-    let checksum = checksum
+    let _checksum = checksum
         .iter()
         .map(|h| format!("{:08x}", h))
         .collect::<String>();
 
-    info!(
-        "<{} size={} checksum={} unknown={:?}>",
-        tag,
-        blocksize,
-        checksum,
-        (b, c, d)
-    );
+    info!("<{}>", tag);
 
     let mut data = data_segment(&current_segment);
 
@@ -78,17 +73,16 @@ fn pre_hsin(mut buffer: &[u8]) -> &[u8] {
 
         let tag: Vec<u8> = read_bytes(&mut buffer, 4);
         let tag: &str = std::str::from_utf8(&tag).unwrap().into();
-        let next_segment_type: SegmentType = buffer.read_u32::<LittleEndian>().unwrap().into();
+        let next_segment_id = buffer.read_u32::<LittleEndian>().unwrap();
+        let next_segment_type: SegmentType = next_segment_id.into();
 
         info!(
-            "<pre-{}#{:?} unknown={:?}>",
-            tag,
-            next_segment_type,
-            (a, b, d)
+            "<pre-{} id={} type='{:?}'>",
+            tag, next_segment_id, next_segment_type
         );
 
         buffer = header_segment(&buffer);
-        info!("</pre-{}#{:?}>", tag, next_segment_type);
+        info!("</pre-{} id={}>", tag, next_segment_id);
     }
 
     buffer
@@ -105,26 +99,51 @@ fn data_segment(mut buffer: &[u8]) -> &[u8] {
     let tag: Vec<u8> = read_bytes(&mut current_segment, 4);
     let tag: &str = std::str::from_utf8(&tag).unwrap().into();
 
-    let segment_type: SegmentType = current_segment.read_u32::<LittleEndian>().unwrap().into();
+    let segment_id = current_segment.read_u32::<LittleEndian>().unwrap();
+    let segment_type: SegmentType = segment_id.into();
 
-    info!("<{}#{:?} size={}>", tag, segment_type, blocksize);
+    info!("<{} id={} type='{:?}'>", tag, segment_id, segment_type);
 
     let data: Vec<u8> = read_bytes(&mut current_segment, (blocksize - 20) as usize);
+
+    let mut file = std::fs::File::create(format!(
+        "output/dsin-{}-{:?}.data",
+        segment_id, segment_type
+    ))
+    .unwrap();
+    file.write_all(&data).unwrap();
+
     match segment_type.clone() {
         SegmentType::Version => {
             crate::app_version::read(&data);
         }
-        SegmentType::Maybe(s) => {
-            use std::io::Write;
-            let mut buffer = std::fs::File::create(format!("output/{}.data", &s)).unwrap();
-            buffer.write_all(&data).unwrap();
+        SegmentType::Maybe(s) => {}
+        SegmentType::PresetContainer => {
+            read_inner_data_segments(&data);
         }
-        _ => (),
+        SegmentType::PresetInner => {
+            let data = read_inner_data_segments(&data);
+            // println!("PresetInner---{:?}", data);
+
+            let mut file = std::fs::File::create("output/preset.compressed").unwrap();
+            file.write_all(&data).unwrap();
+
+            let (_rem, deflated_data) = crate::deflate::deflate(&data, 11).unwrap();
+            let mut file = std::fs::File::create("output/preset.deflated").unwrap();
+            file.write_all(&deflated_data).unwrap();
+        }
+        SegmentType::CompressedPreset => {
+            // info!("found compressed preset {:?}", data);
+            // let (_rem, preset_data) = crate::deflate::deflate(&data, 0).unwrap();
+            // let mut file = std::fs::File::create("output/preset.deflated").unwrap();
+            // file.write_all(&preset_data).unwrap();
+        }
+        _ => {}
     };
 
     let c = current_segment.read_u16::<LittleEndian>().unwrap();
     let d = current_segment.read_u16::<LittleEndian>().unwrap();
-    info!("</{}#{:?} unknown={:?}>", tag, segment_type, (c, d));
+    info!("</{}>", tag);
     if current_segment.len() != 0 {
         error!("data remaining in dsin segment: {}", current_segment.len());
     } else {
@@ -144,4 +163,17 @@ fn read_bytes(buffer: &mut &[u8], size: usize) -> Vec<u8> {
     let buf: &mut Vec<u8> = &mut vec![0u8; size];
     buffer.read_exact(buf).expect("read_bytes");
     buf.clone()
+}
+
+fn read_inner_data_segments(mut buffer: &[u8]) -> &[u8] {
+    let count = buffer.read_u32::<LittleEndian>().unwrap();
+
+    info!("data segment with {} children", count);
+    let buffer = data_segment(buffer);
+
+    // if buffer.len() > 0 {
+    //     warn!("excess buffer {:?}", buffer);
+    // }
+
+    buffer
 }
