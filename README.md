@@ -36,27 +36,19 @@ File is made up of nested segments, denoted with 'hsin' tags / magic numbers. Th
 - `RTKR` ReaKToR
 - `E8MF` FM8 E?
 
-The basic file consists of segments listed below in this format:
+The basic file consists of segments listed below in this format, data segments (`dsin`) can actually be app-specific tags like `4kin` etc.
 
 <HSIN>
-    <DSIN>
-    <HSIN>
-        <DSIN></HSIN>
-    </HSIN>
+    <SEGMENT_SIZE u64>
+    <CHILDREN? u64>
+    <MAGIC (eg. "hsin" etc)>
+    <UNKNOWN u64 (data segments?)>
+    <CHECKSUM 16-bytes, probably md5>
+    [<DSIN> ...]
+    <PRE_HSIN>
+        <HSIN>...</HSIN>
+    </PRE_HSIN>
 </HSIN>
-
-Data segments (`dsin`) can actually be app-specific tags like `4kin` etc.
-
-### HSIN: Native Instruments Start Header
-
-<SEGMENT_SIZE u64>
-<CHILDREN? u64>
-<MAGIC (eg. "hsin" etc)>
-<UNKNOWN u64 (data segments?)>
-<CHECKSUM 16-bytes, probably md5>
-[<DSIN> ...]
-
-
 
 ## Compressed Presets
 

@@ -11,6 +11,7 @@ mod extract;
 mod extractor;
 mod fm8;
 mod kontakt;
+mod lz77;
 mod monolith;
 mod ni_file;
 mod offset;

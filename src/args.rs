@@ -11,24 +11,22 @@ pub(crate) fn run() -> Result<(), Box<dyn std::error::Error>> {
 
     info!("Reading {:?}", input);
 
-    let mut buffer = std::fs::read(input)?;
+    let buffer = std::fs::read(input)?;
 
     if args.deflate {
         let (_, deflated) = crate::deflate::deflate(&buffer, 11).unwrap();
         let mut file = std::fs::File::create("output/arg.deflated").unwrap();
         file.write_all(&deflated).unwrap();
-        buffer = deflated;
-    }
-
-    match crate::detect::filetype(&buffer) {
-        NIFileType::NIContainer => crate::extractor::read(&buffer)?,
-        NIFileType::NIKontaktMonolith => crate::monolith::read(&buffer)?,
-        NIFileType::KoreSound => unimplemented!(),
-        NIFileType::Unknown => panic!("unknown filetype!"),
-    }
-
-    if !args.extract {
-        // std::fs::write(output, crate::ni_file::NIFile::from(segment).preset)?;
+    } else {
+        match crate::detect::filetype(&buffer) {
+            NIFileType::NIContainer => crate::extractor::read(&buffer)?,
+            NIFileType::NIKontaktMonolith => crate::monolith::read(&buffer)?,
+            NIFileType::KoreSound => unimplemented!(),
+            NIFileType::Unknown => panic!("unknown filetype!"),
+        }
+        if !args.extract {
+            // std::fs::write(output, crate::ni_file::NIFile::from(segment).preset)?;
+        }
     }
 
     Ok(())

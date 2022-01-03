@@ -54,17 +54,11 @@ fn header_segment(mut buffer: &[u8]) -> &[u8] {
     info!("<{}>", tag);
 
     let mut data = data_segment(&current_segment);
-
-    // info!(
-    //     "hsin parsed data with remaining {} bytes. checking for embedded hsin",
-    //     data.len()
-    // );
     data = pre_hsin(&data);
 
     if data.len() != 0 {
-        warn!("data remaining in this hsin segment: {}", data.len());
-    } else {
-        // info!("data successfully consumed for hsin segment");
+        error!("data remaining in this hsin segment: {}", data.len());
+        dump("dump", data);
     }
 
     info!("</{}>", tag);
@@ -76,6 +70,11 @@ fn header_segment(mut buffer: &[u8]) -> &[u8] {
 fn pre_hsin(mut buffer: &[u8]) -> &[u8] {
     let a = buffer.read_u16::<LittleEndian>().unwrap();
     let b = buffer.read_u16::<LittleEndian>().unwrap();
+
+    if (a, b) != (1, 0) {
+        error!("expected a, b in pre_hsin to be (1,0), got {:?}", (a, b));
+    }
+
     let children = buffer.read_u32::<LittleEndian>().unwrap();
     info!("{} pre_hsin child nodes found", children);
 
@@ -135,18 +134,31 @@ fn data_segment(mut buffer: &[u8]) -> &[u8] {
         }
         SegmentType::Maybe(s) => {}
         SegmentType::PresetContainer => {
+            info!("preset container found {} bytes", data.len());
             read_inner_data_segments(&data);
         }
         SegmentType::PresetInner => {
-            let data = read_inner_data_segments(&data);
-            // println!("PresetInner---{:?}", data);
+            let mut data = read_inner_data_segments(&data);
 
             let mut file = std::fs::File::create("output/preset.compressed").unwrap();
             file.write_all(&data).unwrap();
 
+            // let _ = data.read_u8().unwrap();
+
+            let data = [data, &[0x00, 0x00, 0x00, 0x00]].concat();
+
+            info!(
+                "passing {} bytes of compressed data to deflator",
+                data.len()
+            );
+
             let (_rem, deflated_data) = crate::deflate::deflate(&data, 11).unwrap();
+            let (_, deflated_fixed) = deflated_data.split_at(1);
+
             let mut file = std::fs::File::create("output/preset.deflated").unwrap();
-            file.write_all(&deflated_data).unwrap();
+            file.write_all(&deflated_fixed).unwrap();
+
+            info!("wrote preset to output/preset.deflated");
         }
         SegmentType::CompressedPreset => {
             // info!("found compressed preset {:?}", data);
@@ -159,9 +171,14 @@ fn data_segment(mut buffer: &[u8]) -> &[u8] {
 
     let c = current_segment.read_u16::<LittleEndian>().unwrap();
     let d = current_segment.read_u16::<LittleEndian>().unwrap();
+
+    if (c, d) != (0, 0) {
+        warn!("expected (c, d) in pre_hsin to be (0,0), got {:?}", (c, d));
+    }
+
     info!("</{}>", tag);
     if current_segment.len() != 0 {
-        error!("data remaining in dsin segment: {}", current_segment.len());
+        warn!("data remaining in dsin segment: {}", current_segment.len());
     } else {
         // info!("data successfully consumed for data segment");
     }
@@ -169,11 +186,11 @@ fn data_segment(mut buffer: &[u8]) -> &[u8] {
     buffer
 }
 
-fn read_shortstring(buffer: &mut &[u8]) -> String {
-    let size = buffer.read_u8().unwrap() as usize;
-    let string: Vec<u8> = read_bytes(buffer, size);
-    std::str::from_utf8(&string).unwrap().into()
-}
+// fn read_shortstring(buffer: &mut &[u8]) -> String {
+//     let size = buffer.read_u8().unwrap() as usize;
+//     let string: Vec<u8> = read_bytes(buffer, size);
+//     std::str::from_utf8(&string).unwrap().into()
+// }
 
 fn read_bytes(buffer: &mut &[u8], size: usize) -> Vec<u8> {
     let buf: &mut Vec<u8> = &mut vec![0u8; size];
@@ -187,9 +204,15 @@ fn read_inner_data_segments(mut buffer: &[u8]) -> &[u8] {
     info!("data segment with {} children", count);
     let buffer = data_segment(buffer);
 
-    // if buffer.len() > 0 {
-    //     warn!("excess buffer {:?}", buffer);
-    // }
+    if count != 1 {
+        error!("only accounted for 1 child in inner data segments.");
+    }
 
     buffer
+}
+
+/// dump bytes to file
+fn dump(file: &str, bytes: &[u8]) {
+    let mut file = std::fs::File::create(file).unwrap();
+    file.write_all(&bytes).unwrap();
 }

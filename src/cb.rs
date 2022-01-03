@@ -11,18 +11,13 @@ pub(crate) enum Offset {
 pub(crate) fn get_control_bytes(i: &[u8]) -> IResult<&[u8], Offset> {
     let (rem, cb) = bytes::complete::take(1u8)(i)?;
 
-    // println!("CB: [{:08b}:{:02X}] ", cb[0], cb[0]);
-
     let q = q_mask(cb[0]) as usize;
     let cb_mask = cb_mask(cb[0]) as usize;
-
-    // println!("cb_mask {:?} {:?}", cb[0], cb_mask(cb[0]));
 
     Ok(match cb_mask {
         1 => (rem, Offset::Literal { length: 1 + q }),
         3..=8 => {
             let (rem, r) = bytes::complete::take(1u8)(rem)?;
-            // println!("RR: [{:08b}:{:02X}] ", r[0], r[0]);
             (
                 rem,
                 Offset::Dictionary {

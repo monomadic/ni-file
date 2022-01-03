@@ -2,7 +2,6 @@
 
 pub(crate) fn fetch_offset(buffer: &Vec<u8>, length: usize, offset: usize) -> Vec<u8> {
     if offset > buffer.len() {
-        return vec![];
         panic!("Cannot deflate: offset seek is larger than dictionary.");
     }
 
@@ -22,35 +21,14 @@ pub(crate) fn fetch_offset(buffer: &Vec<u8>, length: usize, offset: usize) -> Ve
             } else {
                 buffer[offset_pos]
             }
-
         })
         .collect()
-
-    // if offset > buffer.len() {
-    //     println!("ERROR: buffer underrun {} {}", length, offset);
-    //     return vec![];
-    // }
-
-    // let start = buffer.len() - offset;
-    // let end = start + length;
-
-    // if end > buffer.len() || start > buffer.len() {
-    //     println!("ERROR: bad size {} {}", length, offset);
-    //     return vec![];
-    // }
-
-    // buffer[start..end].to_vec()
 }
 
 #[test]
 fn test_fetch_offset() {
     assert_eq!(
-        fetch_offset(
-            &vec![
-                0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07],
-            3,
-            7
-        ),
+        fetch_offset(&vec![0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07], 3, 7),
         vec![0x01, 0x02, 0x03]
     );
 
@@ -61,7 +39,10 @@ fn test_fetch_offset() {
 
     assert_eq!(
         fetch_offset(&vec![0x00, 0x01, 0x00, 0x00, 0x00], 16, 4),
-        vec![0x01, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00]
+        vec![
+            0x01, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x01, 0x00,
+            0x00, 0x00
+        ]
     );
 
     assert_eq!(
