@@ -10,31 +10,25 @@ I don't even really do music much any more so this project has become recreation
 
 ## Progress
 
-This library is a work in progress. It can read files and do a few other things so far. It has taken many many hours staring at a hex editor to get to this point. Any help would be appreciated, and if you'd like to request anything in particular, please make [contact](mailto:themonomadic@protonmail.com) or [donate](#donations) :)
+This library is a work in progress. It can read files and do a few other things so far. It has taken many many hours staring at a hex editor to get to this point. Any help would be appreciated, and if you'd like to request anything in particular, please make [contact](mailto:themonomadic@protonmail.com)
 
-There is no real code quality at this point, but this will follow once the container format is 100% reversed.
+There is no real code quality at this point, but this will follow once the container format is more  reversed.
 
-- [x] Parse NI file containers
-- [x] Extract compressed preset data (kontakt, fm8, etc)
-- [x] Parse version block
-- [x] Parse metadata / library block (preset name, author, bank, etc)
-- [ ] Full support for NI file containers (all fields fully understood and documented)
-- [ ] Parse presets
-    - [ ] FM8 (Partial) (.nfm8)
-    - [ ] Kontakt 4/5 (.nki)
-    - [ ] Reaktor (.ens)
-    - [ ] Massive (.nmsv)
-- [ ] Write presets?
-    - [ ] Understand checksums
-- [ ] ... everything else?
+- [x] NI file containers (many unknown fields, but fully extracts data segments)
+- [x] Extract compressed presets
+- [x] Version
+- [ ] Metadata - partially working
+- [x] Extract Kontakt Monoliths
+- [ ] Kontakt 2 (some progress)
+- [ ] Kontakt 4/5
+  - [ ] Sample List
+- [ ] Kontakt 5 Encrypted
 
-## File Schematic
+## NIContainer File Schematic
 
-The file format is tricky at first, took me a while to work it out.
+The file format is tricky at first, took me a while to work it out. It is used for most NI apps (but not monoliths).
 
-### Block Format
-
-File is made up of nested segments, denoted with 'hsin' tags / magic numbers. These tags are spelt backwards. Some of the blocks are:
+File is made up of nested segments, denoted with 'hsin' tags / magic numbers. These tags are spelt backwards. For example
 
 - `hsin` Native Instruments Start Header
 - `DSIN` Native Instruments Start Data
@@ -42,35 +36,27 @@ File is made up of nested segments, denoted with 'hsin' tags / magic numbers. Th
 - `RTKR` ReaKToR
 - `E8MF` FM8 E?
 
-#### HSIN (NISH) - Native Instruments Start Header
+The basic file consists of segments listed below in this format:
 
-``` xml
-<LENGTH_OF_SEGMENT: le_u64>
-<HEADER_TAG: "hsin" / 4-bytes>
-<CHECKSUM 16-bytes>
-<DATA_SEGMENT_LENGTH le_u64>
-<DATA_SEGMENT {DATA_SEGMENT_LENGTH}-bytes>
-<NUMBER_OF_CHILDREN le_u32> // usually 0
-<CHILD_TYPEID le_u32>
-<EMBEDDED_SEGMENTS (remaining data)>
-```
+<HSIN>
+    <DSIN>
+    <HSIN>
+        <DSIN></HSIN>
+    </HSIN>
+</HSIN>
 
-The first block length in the file will be the entire file size, as it represents one block and other hsin blocks are embedded within.
+Data segments (`dsin`) can actually be app-specific tags like `4kin` etc.
 
-#### DSIN (NISD) - Native Instruments Start Data
+### HSIN: Native Instruments Start Header
 
-DSIN blocks act as maps or slice indexes. The first DSIN is usually the length of the whole data chunk, minus footer data. Each DSIN is embedded inside its parent data. Like inception. Only dumber.
+<SEGMENT_SIZE u64>
+<CHILDREN? u64>
+<MAGIC (eg. "hsin" etc)>
+<UNKNOWN u64 (data segments?)>
+<CHECKSUM 16-bytes, probably md5>
+[<DSIN> ...]
 
-Format:
-``` xml
-<LENGTH_OF_SEGMENT: le_u64>
-<HEADER_TAG: "DSIN" | "4KIN" | "RTKR" | etc / 4-bytes>
-<TYPE: le_u32>
-<UNKNOWN: le_u32> // always 1
-<CHILD_DSIN_LENGTH: le_u64>
-<CHILD_DSIN {CHILD_DSIN_LENGTH}-bytes>
-<DATA (remaining data)>
-```
+
 
 ## Compressed Presets
 
@@ -85,8 +71,3 @@ Note that checksums and file lengths for the file header are usually SKIPPED in 
 ### Strings
 
 Most strings are [pascal widestrings](https://wiki.lazarus.freepascal.org/Character_and_string_types#WideString) or [shortstrings](https://wiki.lazarus.freepascal.org/Character_and_string_types#ShortString).
-
-## Donations
-
-- BTC: (I'll post an address soon, please get in touch if you prefer btc)
-- ETH: monomadic.eth / `0xd86De8Bf49e2f10341e2fB62ebCb81f286e96f1A`

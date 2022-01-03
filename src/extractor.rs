@@ -21,12 +21,23 @@ fn header_segment(mut buffer: &[u8]) -> &[u8] {
     let (mut current_segment, buffer) = buffer.split_at((blocksize - 8) as usize);
 
     let b = current_segment.read_u32::<LittleEndian>().unwrap();
+    if b != 1 {
+        error!("expected b to be 0, got {}", b);
+    }
 
     let tag: Vec<u8> = read_bytes(&mut current_segment, 4);
     let tag: &str = std::str::from_utf8(&tag).unwrap().into();
 
     let c = current_segment.read_u32::<LittleEndian>().unwrap();
+
+    if c != 1 {
+        error!("expected 1 data segment, got {}", c);
+    }
+
     let d = current_segment.read_u32::<LittleEndian>().unwrap();
+    if d != 0 {
+        error!("expected d to be 0, got {}", d);
+    }
 
     let checksum = [
         current_segment.read_u32::<LittleEndian>().unwrap(),
@@ -66,10 +77,15 @@ fn pre_hsin(mut buffer: &[u8]) -> &[u8] {
     let a = buffer.read_u16::<LittleEndian>().unwrap();
     let b = buffer.read_u16::<LittleEndian>().unwrap();
     let children = buffer.read_u32::<LittleEndian>().unwrap();
-    // info!("{} child nodes found", children);
+    info!("{} pre_hsin child nodes found", children);
 
-    for _ in 0..children {
-        let d = buffer.read_u32::<LittleEndian>().unwrap();
+    for _i in 0..children {
+        let child_index = buffer.read_u32::<LittleEndian>().unwrap();
+        info!("child index {}", child_index);
+
+        // if child_index != i {
+        //     error!("incorrect child_index, expected {} got {}", i, child_index);
+        // }
 
         let tag: Vec<u8> = read_bytes(&mut buffer, 4);
         let tag: &str = std::str::from_utf8(&tag).unwrap().into();
