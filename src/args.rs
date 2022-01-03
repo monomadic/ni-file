@@ -19,9 +19,7 @@ pub(crate) fn run() -> Result<(), Box<dyn std::error::Error>> {
         NIFileType::Unknown => panic!("unknown filetype!"),
     }
 
-    // crate::extract::read(&buffer)?;
-
-    if !args.skip_write {
+    if !args.extract {
         // std::fs::write(output, crate::ni_file::NIFile::from(segment).preset)?;
     }
 
@@ -35,7 +33,7 @@ struct Args {
     #[structopt(parse(from_os_str))]
     input: PathBuf,
 
-    /// Skip writing files to disk
-    #[structopt(long = "skip-write")]
-    skip_write: bool,
+    /// Extract files
+    #[structopt(long = "extract")]
+    extract: bool,
 }
