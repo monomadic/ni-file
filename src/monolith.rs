@@ -1,10 +1,8 @@
-use crate::container::SegmentType;
-use binread::{io::Cursor, BinRead, BinReaderExt, NullString, NullWideString};
-use byteorder::{LittleEndian, ReadBytesExt};
+use binread::{io::Cursor, BinReaderExt, NullString, NullWideString};
 use std::io::prelude::*;
 use std::io::Read;
 
-pub(crate) fn read(mut buffer: &[u8]) -> Result<(), Box<dyn std::error::Error>> {
+pub(crate) fn read(buffer: &[u8]) -> Result<(), Box<dyn std::error::Error>> {
     info!("reading monolith table data {} bytes", buffer.len());
 
     let mut file_cursor = Cursor::new(buffer);
@@ -77,12 +75,7 @@ pub(crate) fn read(mut buffer: &[u8]) -> Result<(), Box<dyn std::error::Error>> 
         info!("tag: {:?}", tag);
     }
 
-    // current position
-    // let pos = file_cursor.position();
-
     let mut iter = offsets.iter().peekable();
-
-    info!("{:?}", offsets);
 
     while let Some((offset, filename)) = iter.next() {
         if let Some(next) = iter.peek() {

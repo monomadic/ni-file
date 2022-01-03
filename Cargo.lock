@@ -106,19 +106,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "extract-ni"
-version = "0.1.0"
-dependencies = [
- "binread",
- "byteorder",
- "env_logger",
- "log",
- "nom",
- "rctree",
- "structopt",
-]
-
-[[package]]
 name = "heck"
 version = "0.3.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -174,6 +161,19 @@ name = "minimal-lexical"
 version = "0.2.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "68354c5c6bd36d73ff3feceb05efa59b6acb7626617f4962be322a825e61f79a"
+
+[[package]]
+name = "ni-extract"
+version = "0.1.0"
+dependencies = [
+ "binread",
+ "byteorder",
+ "env_logger",
+ "log",
+ "nom",
+ "rctree",
+ "structopt",
+]
 
 [[package]]
 name = "nom"
