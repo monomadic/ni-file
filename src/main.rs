@@ -19,6 +19,8 @@ mod output;
 mod strings;
 mod structures;
 
+pub type Error = Box<dyn std::error::Error>;
+
 fn main() {
     // set up a logger with default level 'info'
     env_logger::Builder::from_default_env()

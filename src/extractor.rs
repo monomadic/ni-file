@@ -4,6 +4,7 @@ use std::io::Read;
 use std::io::Write;
 
 pub(crate) fn read(buffer: &[u8]) -> Result<(), Box<dyn std::error::Error>> {
+    info!("reading file {} bytes", buffer.len());
     // entire file is a segment, so read it
     let hsin = header_segment(&buffer);
 
@@ -22,7 +23,7 @@ fn header_segment(mut buffer: &[u8]) -> &[u8] {
 
     let b = current_segment.read_u32::<LittleEndian>().unwrap();
     if b != 1 {
-        error!("expected b to be 0, got {}", b);
+        error!("expected b to be 1, got {}", b);
     }
 
     let tag: Vec<u8> = read_bytes(&mut current_segment, 4);
@@ -62,18 +63,21 @@ fn header_segment(mut buffer: &[u8]) -> &[u8] {
     }
 
     info!("</{}>", tag);
-
     buffer
 }
 
 // 20 byte hsin header
 fn pre_hsin(mut buffer: &[u8]) -> &[u8] {
+    info!("reading pre-hsin");
+
     let a = buffer.read_u16::<LittleEndian>().unwrap();
     let b = buffer.read_u16::<LittleEndian>().unwrap();
 
     if (a, b) != (1, 0) {
         error!("expected a, b in pre_hsin to be (1,0), got {:?}", (a, b));
     }
+
+    info!("a, b {:?}", (a,b));
 
     let children = buffer.read_u32::<LittleEndian>().unwrap();
     info!("{} pre_hsin child nodes found", children);
@@ -104,7 +108,7 @@ fn pre_hsin(mut buffer: &[u8]) -> &[u8] {
 }
 
 fn data_segment(mut buffer: &[u8]) -> &[u8] {
-    // info!("enter dsin at offset {}", filesize - buffer.len());
+    info!("reading data segment of {} bytes", buffer.len());
 
     // size (2 bytes)
     let blocksize = buffer.read_u64::<LittleEndian>().unwrap();
@@ -121,6 +125,8 @@ fn data_segment(mut buffer: &[u8]) -> &[u8] {
 
     let data: Vec<u8> = read_bytes(&mut current_segment, (blocksize - 20) as usize);
 
+    info!("data segment data: {} bytes", data.len());
+
     let mut file = std::fs::File::create(format!(
         "output/dsin-{}-{:?}.data",
         segment_id, segment_type
@@ -132,18 +138,24 @@ fn data_segment(mut buffer: &[u8]) -> &[u8] {
         SegmentType::Version => {
             crate::app_version::read(&data);
         }
+        SegmentType::Unknown(id) => {
+            match id {
+                1 => {
+                    warn!("found id 1 (terminator?), data length {} bytes {:?}", data.len(), data);
+                }
+                _ => ()
+            }
+        }
         SegmentType::Maybe(s) => {}
         SegmentType::PresetContainer => {
             info!("preset container found {} bytes", data.len());
             read_inner_data_segments(&data);
         }
         SegmentType::PresetInner => {
-            let mut data = read_inner_data_segments(&data);
+            let data = read_inner_data_segments(&data);
 
             let mut file = std::fs::File::create("output/preset.compressed").unwrap();
             file.write_all(&data).unwrap();
-
-            // let _ = data.read_u8().unwrap();
 
             let data = [data, &[0x00, 0x00, 0x00, 0x00]].concat();
 
@@ -160,12 +172,13 @@ fn data_segment(mut buffer: &[u8]) -> &[u8] {
 
             info!("wrote preset to output/preset.deflated");
         }
-        SegmentType::CompressedPreset => {
-            // info!("found compressed preset {:?}", data);
-            // let (_rem, preset_data) = crate::deflate::deflate(&data, 0).unwrap();
-            // let mut file = std::fs::File::create("output/preset.deflated").unwrap();
-            // file.write_all(&preset_data).unwrap();
-        }
+        SegmentType::KontaktPreset => {
+            // crate::kontakt::read(&data).unwrap();
+            info!("found kontakt preset?");
+            let data = read_inner_data_segments(&data);
+            crate::kontakt::read(&data).unwrap();
+            info!("{}", data.len());
+        },
         _ => {}
     };
 
@@ -176,13 +189,11 @@ fn data_segment(mut buffer: &[u8]) -> &[u8] {
         warn!("expected (c, d) in pre_hsin to be (0,0), got {:?}", (c, d));
     }
 
-    info!("</{}>", tag);
     if current_segment.len() != 0 {
         warn!("data remaining in dsin segment: {}", current_segment.len());
-    } else {
-        // info!("data successfully consumed for data segment");
     }
 
+    info!("</{}>", tag);
     buffer
 }
 
