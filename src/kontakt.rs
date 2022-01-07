@@ -1,41 +1,68 @@
 use byteorder::{LittleEndian, ReadBytesExt};
 use crate::Error;
+use binread::{io::Cursor, prelude::*};
+use std::io::BufRead;
 
 // #[derive(Debug)]
 // pub struct KontaktPreset {}
 
-pub fn read(mut buf: &[u8]) -> Result<(), Error> {
+pub fn read(buf: &[u8]) -> Result<(), Error> {
     info!("reading kontakt preset {} bytes", buf.len());
-    let a = buf.read_u32::<LittleEndian>()?;
-    let b = buf.read_u32::<LittleEndian>()?;
-    let c = buf.read_u32::<LittleEndian>()?;
-    let size = buf.read_u32::<LittleEndian>()?;
+    let mut cursor = Cursor::new(buf);
+
+    let a: u32 = cursor.read_le()?;
+    let b: u32 = cursor.read_le()?;
+    let c: u32 = cursor.read_le()?;
+    info!("unknowns {:?}", (a, b, c));
+
+    let size: u32 = cursor.read_le()?;
     info!("size {:?}", size);
 
-    let d= buf.read_u32::<LittleEndian>()?;
-    let e= buf.read_u16::<LittleEndian>()?;
-    info!("unknowns {:?}", (a, b,c, d, e));
-    let size2= buf.read_u32::<LittleEndian>()?;
-    info!("size2 {:?}", size2);
+    let d: u32 = cursor.read_le()?;
+    let e: u16 = cursor.read_le()?;
+    info!("unknowns {:?}", (d, e));
 
-    // let (mut buf, eof) = buf.split_at(size as usize);
+    let size2: u32 = cursor.read_le()?;
+    info!("size2 {}", size2);
 
-    let (_unknown, mut buf) = buf.split_at(96);
+    let _blob = cursor.consume(96);
 
+    let strings: u32 = cursor.read_le()?;
+    info!("found {} (strings?)", strings);
 
-    let strings = buf.read_u32::<LittleEndian>()?;
-    info!("found {} strings", strings);
+    let f_size: u32 = cursor.read_le()?;
+    info!("f_size {}", f_size);
 
-    let s = buf.read_u32::<LittleEndian>()?;
-    info!("found {}", s);
+    let title = crate::strings::pascal_string_utf16(&mut cursor)?;
+    info!("Title: {}", title);
 
-    for _ in 0..strings {
-        let (string, r) = crate::strings::pascal_string_utf16(buf)?;
-        let buf = r;
-        info!("found {}", string);
-    }
+    let _blob = cursor.consume(42);
 
+    let g_size: u64 = cursor.read_le()?;
+    info!("g_size {}", g_size);
 
+    let app = crate::strings::pascal_string_utf16(&mut cursor)?;
+    info!("App: {}", app);
 
+    let _blob = cursor.consume(16);
+
+    let h_size: u32 = cursor.read_le()?;
+    info!("h_size {}", h_size);
+
+    // jump straight to last section
+    let _blob = cursor.consume(h_size as usize - 4);
+    info!("cursor pos {}", cursor.position() + 168);
+
+    // MAPPINGS SECTION
+    let _blob = cursor.consume(30);
+    let space_remaining: u32 = cursor.read_le()?;
+    info!("space_remaining {}", space_remaining);
+
+    let _blob = cursor.consume(18);
+
+    let app = crate::strings::pascal_string_utf16(&mut cursor)?;
+    info!("App: {}", app);
+
+    info!("cursor pos {}", cursor.position() + 168);
     Ok(())
 }

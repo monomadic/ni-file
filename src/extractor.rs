@@ -153,6 +153,7 @@ fn data_segment(mut buffer: &[u8]) -> &[u8] {
         }
         SegmentType::PresetInner => {
             let data = read_inner_data_segments(&data);
+            
 
             let mut file = std::fs::File::create("output/preset.compressed").unwrap();
             file.write_all(&data).unwrap();
@@ -170,9 +171,9 @@ fn data_segment(mut buffer: &[u8]) -> &[u8] {
             let mut file = std::fs::File::create("output/preset.deflated").unwrap();
             file.write_all(&deflated_fixed).unwrap();
 
-            info!("wrote preset to output/preset.deflated");
+            info!("wrote deflated preset to output/preset.deflated");
         }
-        SegmentType::KontaktPreset => {
+        SegmentType::Preset => {
             // crate::kontakt::read(&data).unwrap();
             info!("found kontakt preset?");
             let data = read_inner_data_segments(&data);

@@ -93,7 +93,7 @@ pub(crate) fn read(buffer: &[u8]) -> Result<(), Box<dyn std::error::Error>> {
             let mut buffer: &mut Vec<u8> = &mut vec![0u8; bytes_remaining as usize];
             file_cursor.read_exact(&mut buffer)?;
             info!("wrote {} ({} bytes)", filename, &buffer.len());
-            std::fs::write(filename, buffer)?;
+            std::fs::write(format!("output/{}", filename), buffer)?;
         }
     }
     Ok(())

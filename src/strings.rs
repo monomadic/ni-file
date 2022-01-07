@@ -1,7 +1,7 @@
 use nom::{number::complete::{le_u16, le_u32}, IResult, multi::many1};
-use byteorder::{LittleEndian, ReadBytesExt};
+// use byteorder::{LittleEndian, ReadBytesExt};
 use crate::Error;
-use binread::{io::Cursor, BinReaderExt, NullString, NullWideString};
+use binread::{io::Cursor, prelude::*};
 
 /// read a pascal-style utf16 string
 /// https://wiki.lazarus.freepascal.org/Character_and_string_types#WideString
@@ -38,17 +38,16 @@ pub(crate) fn take_utf8(i: &[u8]) -> IResult<&[u8], String> {
     Ok((r, String::from_utf8(string_data.to_owned()).unwrap()))
 }
 
-pub fn pascal_string_utf16(mut buf: &[u8]) -> Result<(String, &[u8]), Error> {
-    let size = buf.read_u32::<LittleEndian>()?;
+pub fn pascal_string_utf16(cursor: &mut Cursor<&[u8]>) -> Result<String, Error> {
+    let size: u32 = cursor.read_le()?;
+
+    info!("string length {}", size);
 
     if size == 0 {
-        return Ok((String::new(), buf))
+        return Ok(String::new())
     }
 
-    let (string_data, rem) = buf.split_at(((size as usize) + 1_usize) * 2);
-    buf = rem;
+    let string: String = cursor.read_le::<binread::NullWideString>()?.into_string();
 
-    let string = Cursor::new(string_data).read_le::<binread::NullWideString>().unwrap().into_string();
-
-    Ok((string, rem))
+    Ok(string)
 }
