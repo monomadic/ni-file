@@ -2,18 +2,26 @@ use crate::container::SegmentType;
 use byteorder::{LittleEndian, ReadBytesExt};
 use std::io::Read;
 use std::io::Write;
+use crate::Error;
+use binread::{io::Cursor, prelude::*};
 
-pub(crate) fn read(buffer: &[u8]) -> Result<(), Box<dyn std::error::Error>> {
+pub(crate) fn read(buffer: &[u8]) -> Result<(), Error> {
     info!("reading file {} bytes", buffer.len());
-    // entire file is a segment, so read it
-    let hsin = header_segment(&buffer);
 
-    if hsin.len() != 0 {
-        warn!("remaining bytes: {}", hsin.len());
-    }
+    let mut cursor = Cursor::new(buffer);
+    crate::container::header(&mut cursor)?;
+
+    // // entire file is a segment, so read it
+    // let hsin = header_segment(&buffer);
+
+    // if hsin.len() != 0 {
+    //     warn!("remaining bytes: {}", hsin.len());
+    // }
 
     Ok(())
 }
+
+
 
 fn header_segment(mut buffer: &[u8]) -> &[u8] {
     // size (2 bytes)

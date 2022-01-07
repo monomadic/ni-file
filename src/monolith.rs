@@ -1,5 +1,6 @@
 use binread::{io::Cursor, BinReaderExt, NullString, NullWideString};
-use std::io::prelude::*;
+use std::io::BufRead; // consume
+
 use std::io::Read;
 
 pub(crate) fn read(buffer: &[u8]) -> Result<(), Box<dyn std::error::Error>> {

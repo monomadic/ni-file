@@ -1,3 +1,6 @@
+#![feature(cursor_remaining)]
+#![feature(buf_read_has_data_left)]
+
 #[macro_use]
 extern crate log;
 
@@ -18,6 +21,7 @@ mod offset;
 mod output;
 mod strings;
 mod structures;
+mod checksum;
 
 pub type Error = Box<dyn std::error::Error>;
 

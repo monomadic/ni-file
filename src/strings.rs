@@ -2,6 +2,7 @@ use nom::{number::complete::{le_u16, le_u32}, IResult, multi::many1};
 // use byteorder::{LittleEndian, ReadBytesExt};
 use crate::Error;
 use binread::{io::Cursor, prelude::*};
+use std::io::Read;
 
 /// read a pascal-style utf16 string
 /// https://wiki.lazarus.freepascal.org/Character_and_string_types#WideString
@@ -50,4 +51,14 @@ pub fn pascal_string_utf16(cursor: &mut Cursor<&[u8]>) -> Result<String, Error> 
     let string: String = cursor.read_le::<binread::NullWideString>()?.into_string();
 
     Ok(string)
+}
+
+pub fn read_utf8(cursor: &mut Cursor<&[u8]>, size: usize) -> Result<String, Error> {
+    if size == 0 {
+        return Ok(String::new())
+    }
+
+    let mut buffer = vec![0; size as usize];
+    cursor.read_exact(&mut buffer)?;
+    Ok(String::from_utf8(buffer)?)
 }
