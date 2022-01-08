@@ -6,10 +6,14 @@ hsin  Native Instruments Segment Header
 DSIN  Native Instruments Segment Data
 4KIN  Native Instruments Kontakt 4
 ```
+108 - ---- ---- - kontakt library metadata
+116 - 0111 0100 - kontakt 4 compressed preset
+115 - 0111 0011 - kontakt 4 compressed preset inner
 
 ## Typical Block Layout
 
 ### Kontakt 4
+
 hsin // file header?
   dsin [type=118]
 hsin // file type information

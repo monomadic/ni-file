@@ -1,6 +1,6 @@
 use rctree::Node;
 use crate::Error;
-use binread::{io::Cursor, prelude::*};
+use binread::{io::Cursor, prelude::*, NullWideString};
 use std::io::prelude::*;
 
 pub struct NIHeaderSegment {
@@ -159,13 +159,15 @@ fn data_segment(cursor: &mut Cursor<&[u8]>) -> Result<(), Error> {
 
     info!("segment id: {} {:?}", segment_id, segment_type);
 
+    let unknown: u32 = segment_cursor.read_le()?;
+
     match segment_type {
         _ => warn!("skipping segment {}", segment_id),
     }
 
     {
         // DEBUG DUMP STUFF
-        let mut file = std::fs::File::create(format!("output/{}.dsin", segment_id)).unwrap();
+        let mut file = std::fs::File::create(format!("output/{}.{}.dsin", magic, segment_id)).unwrap();
         let mut buffer = vec![0; size as usize];
         dsin_pointer.read_exact(&mut buffer)?;
         file.write_all(&buffer).unwrap();
@@ -177,11 +179,16 @@ fn data_segment(cursor: &mut Cursor<&[u8]>) -> Result<(), Error> {
         1 => {
             info!("1 - empty segment detected. doing nothing.");
         }
+        108 => {
+            info!("108: library metadata strings");
+            let block: DataSegment = segment_cursor.read_ne().unwrap();
+            let block: Block108 = segment_cursor.read_ne().unwrap();
+            info!("{:?}", block);
+        }
         118 => {
-
         }
         121 => {
-            info!("121 - possibly compressed preset {:?}", cursor.stream_position());
+            info!("121: possibly compressed preset");
         },
         _ => (),
     }
@@ -193,51 +200,66 @@ fn data_segment(cursor: &mut Cursor<&[u8]>) -> Result<(), Error> {
     Ok(())
 }
 
+// #[derive(BinRead, Debug)]
+// struct HSINHeader {
+//     size: u64,
+//     b: u32,
+//     tag: [char;4],
+
+//     #[br(little, count = 16)]
+//     checksum: Vec<u8>,
+
+//     c: u32,
+//     d: u32,
+
+//     data: DataBlock,
+
+//     e: u32, // always 1
+//     children: u64,
+
+//     // inner: Option<Box<HSINHeader>>,
+
+//     // #[br(big, count = size - 88)]
+//     // children: Vec<u8>,
+
+//     // next_size: u32,
+
+//     // data: DataBlock,
+
+//     // #[br(if (next.size != 1))]
+//     // inner: Option<Box<DSINData>>,
+
+//     // child_type: DataType
+// }
+
+// #[derive(BinRead, Debug)]
+// struct DataBlock {
+//     size: u64,
+//     element: DataType,
+//     children_count: u32,
+
+//     #[br(count=children_count)]
+//     children: Vec<DataBlock>,
+// }
+
 #[derive(BinRead, Debug)]
-struct HSINHeader {
+struct DataSegment {
     size: u64,
-    b: u32,
     tag: [char;4],
+    // #[br(magic = b"DSIN", assert(id==108))]
+    id: u32,
+    unknown: u32,
 
-    #[br(little, count = 16)]
-    checksum: Vec<u8>,
+    #[br(little, count = size-20)]
+    data: Vec<u8>,
+}
 
+#[derive(BinRead, Debug)]
+struct Block108 {
+    a: u32,
+    b: u32,
     c: u32,
     d: u32,
-
-    data: DataBlock,
-
-    e: u32, // always 1
-    children: u64,
-
-    // inner: Option<Box<HSINHeader>>,
-
-    // #[br(big, count = size - 88)]
-    // children: Vec<u8>,
-
-    // next_size: u32,
-
-    // data: DataBlock,
-
-    // #[br(if (next.size != 1))]
-    // inner: Option<Box<DSINData>>,
-
-    child_type: DataType
-}
-
-#[derive(BinRead, Debug)]
-struct DataBlock {
-    size: u64,
-    element: DataType,
-    children_count: u32,
-
-    #[br(count=children_count)]
-    children: Vec<DataBlock>,
-}
-
-#[derive(BinRead, Debug)]
-struct DataType {
-    tag: [char;4],
-    id: u32,
-
+    name_size_wide: u32,
+    name: NullWideString
 }
