@@ -31,7 +31,7 @@ impl From<u32> for SegmentType {
             3 => SegmentType::Maybe("KontaktFile".into()),
             101 => SegmentType::Version,
             108 => SegmentType::LibraryMetadata,
-            109 => SegmentType::Preset,
+            109 => SegmentType::Preset, // occurs in first header of deflated kontakt
             115 => SegmentType::PresetInner,
             116 => SegmentType::PresetContainer,
             117 => SegmentType::PresetContainer,
@@ -43,6 +43,18 @@ impl From<u32> for SegmentType {
 }
 
 pub fn header(cursor: &mut Cursor<&[u8]>) -> Result<(), Error> {
+    // let hsin: HSINHeader = cursor.read_le()?;
+    // println!("{:#?}", hsin);
+    
+    // let mut indent = 0;
+    // println!("<{:?}>", hsin.tag);
+
+    _header(cursor)?;
+
+    Ok(())
+}
+
+pub fn _header(cursor: &mut Cursor<&[u8]>) -> Result<(), Error> {
     info!("reading header segment");
 
     let size: u64 = cursor.read_le()?;
@@ -87,22 +99,34 @@ pub fn header(cursor: &mut Cursor<&[u8]>) -> Result<(), Error> {
     data_segment(&mut segment_cursor)?;
 
     // child segments
-    let d: u16 = segment_cursor.read_le()?;
-    let e: u16 = segment_cursor.read_le()?;
-    warn!("unknown u16 values d, e {:?}", (d, e));
+    let d: u32 = segment_cursor.read_le()?;
+    warn!("unknown u32 values (index?) d {:?}", (d));
 
     let child_count: u32 = segment_cursor.read_le()?;
     info!("{} children reported", child_count);
 
+
+
     for _i in 0..child_count {
         let index: u32 = segment_cursor.read_le()?;
-        info!("read child index: {} (or is it child count?)", index);
+        info!("index: {}", index);
 
         let magic: String = crate::strings::read_utf8(&mut segment_cursor, 4)?;
         info!("read next magic {:?}", &magic);
 
         let segment_id: u32 = segment_cursor.read_le()?;
         let segment_type: SegmentType = segment_id.into();
+
+        // DEBUG DUMP STUFF
+        let mut file = std::fs::File::create(format!("output/{}.hsin", segment_id)).unwrap();
+        let mut c = segment_cursor.clone();
+        let mut d = segment_cursor.clone();
+        let s: u32 = c.read_le()?;
+        info!("taking block {} bytes", s);
+        let mut buffer = vec![0; s as usize];
+        d.read_exact(&mut buffer)?;
+        file.write_all(&buffer).unwrap();
+        // END DEBUG DUMP
 
         header(&mut segment_cursor)?;
     }
@@ -116,6 +140,7 @@ pub fn header(cursor: &mut Cursor<&[u8]>) -> Result<(), Error> {
 
 fn data_segment(cursor: &mut Cursor<&[u8]>) -> Result<(), Error> {
     info!("reading data segment");
+    let mut dsin_pointer = cursor.clone();
 
     let size: u64 = cursor.read_le()?;
     info!("reported data segment size: {} bytes", size);
@@ -123,6 +148,8 @@ fn data_segment(cursor: &mut Cursor<&[u8]>) -> Result<(), Error> {
     let mut segment = vec![0; size as usize - 8];
     cursor.read_exact(&mut segment)?;
     let mut segment_cursor: Cursor<&[u8]> = Cursor::new(&segment);
+
+    // let segment_copy = segment.clone(); // remove later, used for dumps
 
     let magic: String = crate::strings::read_utf8(&mut segment_cursor, 4)?;
     info!("read magic {:?}", &magic);
@@ -136,9 +163,81 @@ fn data_segment(cursor: &mut Cursor<&[u8]>) -> Result<(), Error> {
         _ => warn!("skipping segment {}", segment_id),
     }
 
+    {
+        // DEBUG DUMP STUFF
+        let mut file = std::fs::File::create(format!("output/{}.dsin", segment_id)).unwrap();
+        let mut buffer = vec![0; size as usize];
+        dsin_pointer.read_exact(&mut buffer)?;
+        file.write_all(&buffer).unwrap();
+        // END DEBUG DUMP
+    }
+
+
+    match segment_id {
+        1 => {
+            info!("1 - empty segment detected. doing nothing.");
+        }
+        118 => {
+
+        }
+        121 => {
+            info!("121 - possibly compressed preset {:?}", cursor.stream_position());
+        },
+        _ => (),
+    }
+
     if segment_cursor.has_data_left()? {
         error!("data block has {} unused bytes remaining!", segment_cursor.remaining_slice().len());
     }
 
     Ok(())
+}
+
+#[derive(BinRead, Debug)]
+struct HSINHeader {
+    size: u64,
+    b: u32,
+    tag: [char;4],
+
+    #[br(little, count = 16)]
+    checksum: Vec<u8>,
+
+    c: u32,
+    d: u32,
+
+    data: DataBlock,
+
+    e: u32, // always 1
+    children: u64,
+
+    // inner: Option<Box<HSINHeader>>,
+
+    // #[br(big, count = size - 88)]
+    // children: Vec<u8>,
+
+    // next_size: u32,
+
+    // data: DataBlock,
+
+    // #[br(if (next.size != 1))]
+    // inner: Option<Box<DSINData>>,
+
+    child_type: DataType
+}
+
+#[derive(BinRead, Debug)]
+struct DataBlock {
+    size: u64,
+    element: DataType,
+    children_count: u32,
+
+    #[br(count=children_count)]
+    children: Vec<DataBlock>,
+}
+
+#[derive(BinRead, Debug)]
+struct DataType {
+    tag: [char;4],
+    id: u32,
+
 }
