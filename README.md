@@ -43,14 +43,18 @@ The magic part is a char array denoted with 'hsin' tags / magic numbers. These t
 
 There are two major kinds of segments header segments (`hsin`) and data segments (`dsin`). Header segments have more information and nest data segments:
 
+```xml
 <size u64><magic "hsin"><id u32><unknown (always 1) u32>
 <checksum [16-bytes]>
 [data-segments]
 <data>
+```
 
 Segments contain two parts: headers (which can nest other segments) and then the data payload:
 
+```xml
 <segment>[<child segments>]<data>
+```
 
 ## Compressed Presets
 
