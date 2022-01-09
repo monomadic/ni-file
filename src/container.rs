@@ -182,8 +182,29 @@ fn data_segment(cursor: &mut Cursor<&[u8]>) -> Result<(), Error> {
         108 => {
             info!("108: library metadata strings");
             let block: DataSegment = segment_cursor.read_ne().unwrap();
-            let block: Block108 = segment_cursor.read_ne().unwrap();
-            info!("{:?}", block);
+            // let block: Block108 = segment_cursor.read_ne().unwrap();
+            info!("108: remaining bytes {:?}", segment_cursor.remaining_slice());
+        }
+        115 => {
+            info!("115: compressed segment?");
+            data_segment(&mut segment_cursor);
+            // info!("115: remaining bytes {:?}", segment_cursor.remaining_slice());
+            let a: u16 = segment_cursor.read_le()?;
+            info!("115: a unknown: {:?}", a);
+
+            let compressed_file = segment_cursor.remaining_slice();
+
+            let mut file = std::fs::File::create("output/compressed").unwrap();
+            file.write_all(&compressed_file).unwrap();
+
+            let (_, deflated) = crate::deflate::deflate(&compressed_file, 11).unwrap();
+            let mut file = std::fs::File::create("output/deflated").unwrap();
+            file.write_all(&deflated).unwrap();
+        }
+        116 => {
+            info!("116: preset wrapper? used in kontakt");
+            data_segment(&mut segment_cursor);
+            info!("116: remaining bytes {:?}", segment_cursor.remaining_slice());
         }
         118 => {
         }
@@ -250,7 +271,7 @@ struct DataSegment {
     id: u32,
     unknown: u32,
 
-    #[br(little, count = size-20)]
+    #[br(parse_with = binread::until_eof)]
     data: Vec<u8>,
 }
 
@@ -262,4 +283,13 @@ struct Block108 {
     d: u32,
     name_size_wide: u32,
     name: NullWideString
+}
+
+#[derive(BinRead, Debug)]
+struct SegmentHeader {
+    size: u64,
+    tag: [char;4],
+    // #[br(magic = b"DSIN", assert(id==108))]
+    id: u32,
+    unknown: u32,
 }

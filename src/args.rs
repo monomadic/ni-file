@@ -15,7 +15,7 @@ pub(crate) fn run() -> Result<(), Box<dyn std::error::Error>> {
 
     if args.deflate {
         let (_, deflated) = crate::deflate::deflate(&buffer, 11).unwrap();
-        let mut file = std::fs::File::create("output/arg.deflated").unwrap();
+        let mut file = std::fs::File::create("output/deflated").unwrap();
         file.write_all(&deflated).unwrap();
     } else {
         match crate::detect::filetype(&buffer) {
