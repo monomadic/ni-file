@@ -1,5 +1,7 @@
 # Native Instruments File Format
 
+UPDATE: The container format is fairly well understood now, and compressed internal presets are spat out on all files of this type. From here, deciphering individual presets is much more straightforward.
+
 ## Why
 
 I don't really know. I don't like the way Native Instruments treats the music industry, locking down file formats and being shady. As a young musician I wanted to be expressive and found music a closed box, with almost all seemingly promising leads actually just trashy salesmen.
@@ -27,9 +29,9 @@ There is no real code quality at this point, but this will follow once the conta
 
 ## NIContainer File Schematic
 
-First off, the container format (the most used NI format) is one ridiculous file format, I have no idea what NI were thinking.
+First off, the container format (the most used NI format) is one ridiculous file format, my best guess is that it is built for fast reading, rather than something easy or efficient to parse (because it's terribly inefficient). It took many many hours/days of staring into a hex editor to understand.
 
-File is made up of nested segments, very similar to a linked list, which have a header of 20 bytes like the following:
+The file is made up of nested segments, very similar to a linked list, which have a header of 20 bytes like the following:
 
 <size u64><magic [char;4]><id u32><unknown (always 1) u32>
 
@@ -69,3 +71,9 @@ Note that checksums and file lengths for the file header are usually SKIPPED in 
 ### Strings
 
 Most strings are [pascal widestrings](https://wiki.lazarus.freepascal.org/Character_and_string_types#WideString) or [shortstrings](https://wiki.lazarus.freepascal.org/Character_and_string_types#ShortString).
+
+## Running
+
+``` bash
+cargo +nightly run -- test-data/deflated/002-fm7.nfm8.deflated
+```

@@ -57,26 +57,19 @@ pub fn header(cursor: &mut Cursor<&[u8]>) -> Result<(), Error> {
 pub fn _header(cursor: &mut Cursor<&[u8]>) -> Result<(), Error> {
     info!("reading header segment");
 
-    let size: u64 = cursor.read_le()?;
+    let size: u32 = cursor.read_le()?;
     info!("reported segment size: {} bytes", size);
 
-    let mut segment = vec![0; size as usize - 8];
+    // todo: we don't really need to create a new buffer
+    // use seek(-4) instead
+    let mut segment = vec![0; size as usize - 4];
     cursor.read_exact(&mut segment)?;
     let mut segment_cursor: Cursor<&[u8]> = Cursor::new(&segment);
 
-    // continue reading the segment
+    let hsin: HSIN = segment_cursor.read_ne().unwrap();
+    info!("read hsin header (20 bytes) {}", hsin.to_string());
 
-    let a: u32 = segment_cursor.read_le()?;
-    warn!("unknown value a:{} (usually 1)", a);
-
-    let magic: String = crate::strings::read_utf8(&mut segment_cursor, 4)?;
-    info!("read magic {:?}", &magic);
-
-    let b: u32 = segment_cursor.read_le()?;
-    warn!("unknown value a:{} (usually 1)", b);
-
-    let c: u32 = segment_cursor.read_le()?;
-    warn!("unknown value c:{} (usually 0)", c);
+    // temp
 
     let checksum: [u32;4] = [
         segment_cursor.read_le()?,
@@ -139,35 +132,54 @@ pub fn _header(cursor: &mut Cursor<&[u8]>) -> Result<(), Error> {
 }
 
 fn data_segment(cursor: &mut Cursor<&[u8]>) -> Result<(), Error> {
-    info!("reading data segment");
+    info!("reading dsin block");
     let mut dsin_pointer = cursor.clone();
 
-    let size: u64 = cursor.read_le()?;
-    info!("reported data segment size: {} bytes", size);
+    // read header
+    let dsin: DSIN = cursor.read_le().unwrap();
+    info!("read dsin header (20 bytes) {}", dsin.to_string());
 
-    let mut segment = vec![0; size as usize - 8];
+    // let size: u32 = cursor.read_le()?;
+    // info!("reported data segment size: {} bytes", size);
+
+    // seek back 4 bytes
+    // cursor.seek(binread::io::SeekFrom::Current(-20));
+
+    let size = dsin.size;
+
+    // read data chunk (temporary)
+    let mut segment = vec![0; size as usize - 20];
     cursor.read_exact(&mut segment)?;
     let mut segment_cursor: Cursor<&[u8]> = Cursor::new(&segment);
 
+    info!("reading data segment of {} bytes", size - 20);
+
+    // if dsin.id == 1 {
+    //     info!("terminator block found; returning early");
+    //     return Ok(());
+    // }
+
+    // let mut segment = vec![0; size as usize - 4];
+    // cursor.read_exact(&mut segment)?;
+    // let mut segment_cursor: Cursor<&[u8]> = Cursor::new(&segment);
+
     // let segment_copy = segment.clone(); // remove later, used for dumps
 
-    let magic: String = crate::strings::read_utf8(&mut segment_cursor, 4)?;
-    info!("read magic {:?}", &magic);
+    // let magic: String = crate::strings::read_utf8(&mut segment_cursor, 4)?;
+    // info!("read magic {:?}", &magic);
 
-    let segment_id: u32 = segment_cursor.read_le()?;
-    let segment_type: SegmentType = segment_id.into();
+    // let segment_id: u32 = segment_cursor.read_le()?;
+    // let segment_type: SegmentType = segment_id.into();
 
-    info!("segment id: {} {:?}", segment_id, segment_type);
+    // info!("segment id: {} {:?}", segment_id, segment_type);
 
-    let unknown: u32 = segment_cursor.read_le()?;
+    // let unknown: u32 = segment_cursor.read_le()?;
 
-    match segment_type {
-        _ => warn!("skipping segment {}", segment_id),
-    }
+
 
     {
         // DEBUG DUMP STUFF
-        let mut file = std::fs::File::create(format!("output/{}.{}.dsin", magic, segment_id)).unwrap();
+        let mut file = std::fs::File::create(format!("output/{}.{}.dsin", dsin.tag.into_iter().collect::<String>(), dsin.id)).unwrap();
         let mut buffer = vec![0; size as usize];
         dsin_pointer.read_exact(&mut buffer)?;
         file.write_all(&buffer).unwrap();
@@ -175,15 +187,28 @@ fn data_segment(cursor: &mut Cursor<&[u8]>) -> Result<(), Error> {
     }
 
 
-    match segment_id {
+    match dsin.id {
         1 => {
-            info!("1 - empty segment detected. doing nothing.");
+            info!("1: empty segment detected. doing nothing.");
+            // data_segment(&mut segment_cursor);
+            let a: u32 = segment_cursor.read_le()?;
+
+            if a != 1 {
+                error!("1: single unknown (usually  1) {:?}", a);
+            }
         }
         108 => {
             info!("108: library metadata strings");
             let block: DataSegment = segment_cursor.read_ne().unwrap();
             // let block: Block108 = segment_cursor.read_ne().unwrap();
             info!("108: remaining bytes {:?}", segment_cursor.remaining_slice());
+        }
+        109 => {
+            info!("109: internal preset?");
+            // kill off terminator
+            data_segment(&mut segment_cursor);
+
+            // kontakt
         }
         115 => {
             info!("115: compressed segment?");
@@ -207,11 +232,14 @@ fn data_segment(cursor: &mut Cursor<&[u8]>) -> Result<(), Error> {
             info!("116: remaining bytes {:?}", segment_cursor.remaining_slice());
         }
         118 => {
+            info!("118: ???");
         }
         121 => {
             info!("121: possibly compressed preset");
         },
-        _ => (),
+        _ => {
+            warn!("??: unhandled preset {}", dsin.id);
+        },
     }
 
     if segment_cursor.has_data_left()? {
@@ -292,4 +320,39 @@ struct SegmentHeader {
     // #[br(magic = b"DSIN", assert(id==108))]
     id: u32,
     unknown: u32,
+}
+
+#[derive(BinRead, Debug)]
+struct HSIN {
+    a: u32,
+    b: u32,
+    tag: [char;4],
+    // #[br(magic = b"hsin")]
+    c: u32,
+    d: u32,
+}
+
+impl ToString for HSIN {
+    fn to_string(&self) -> String {
+        let magic: String = self.tag.into_iter().collect();
+
+        format!("[{}-{}-{}-{}-{}]", self.a, self.b, magic, self.c, self.d)
+    }
+}
+
+#[derive(BinRead, Debug)]
+struct DSIN {
+    size: u32,
+    b: u32,
+    tag: [char;4],
+    id: u32,
+    d: u32,
+}
+
+impl ToString for DSIN {
+    fn to_string(&self) -> String {
+        let magic: String = self.tag.into_iter().collect();
+
+        format!("[size:{}-{}-{}-{}-{}]", self.size, self.b, magic, self.id, self.d)
+    }
 }
