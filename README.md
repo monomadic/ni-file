@@ -2,6 +2,8 @@
 
 UPDATE: The container format is fairly well understood now, and compressed internal presets are spat out on all files of this type. From here, deciphering individual presets is much more straightforward.
 
+Anyone who wants to do this with me, please get in touch. I'm on telegram at @deathdisco
+
 ## Why
 
 I don't really know. I don't like the way Native Instruments treats the music industry, locking down file formats and being shady. As a young musician I wanted to be expressive and found music a closed box, with almost all seemingly promising leads actually just trashy salesmen.
@@ -33,7 +35,9 @@ First off, the container format (the most used NI format) is one ridiculous file
 
 The file is made up of nested segments, very similar to a linked list, which have a header of 20 bytes like the following:
 
+```xml
 <size u64><magic [char;4]><id u32><unknown (always 1) u32>
+```
 
 The magic part is a char array denoted with 'hsin' tags / magic numbers. These tags are spelt backwards. For example
 
