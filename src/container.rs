@@ -71,22 +71,42 @@ pub fn _header(cursor: &mut Cursor<&[u8]>) -> Result<(), Error> {
 
     // temp
 
-    let checksum: [u32;4] = [
-        segment_cursor.read_le()?,
-        segment_cursor.read_le()?,
-        segment_cursor.read_le()?,
-        segment_cursor.read_le()?,
-    ];
+    // let checksum: [u32;4] = [
+    //     segment_cursor.read_le()?,
+    //     segment_cursor.read_le()?,
+    //     segment_cursor.read_le()?,
+    //     segment_cursor.read_le()?,
+    // ];
 
-    let checksum = checksum
+    // let checksum = checksum
+    //     .iter()
+    //     .map(|h| format!("{:08x}", h))
+    //     .collect::<String>();
+
+    // let checksum: [u16;8] = [
+    //     segment_cursor.read_le()?,
+    //     segment_cursor.read_le()?,
+    //     segment_cursor.read_le()?,
+    //     segment_cursor.read_le()?,
+    //     segment_cursor.read_le()?,
+    //     segment_cursor.read_le()?,
+    //     segment_cursor.read_le()?,
+    //     segment_cursor.read_le()?,
+    // ];
+
+    // let checksum = checksum
+    //     .iter()
+    //     .map(|h| format!("{:04x}", h))
+    //     .collect::<String>();
+
+    // warn!("checksum: {}", checksum);
+
+    let mut checksum = vec![0; 16];
+    segment_cursor.read_exact(&mut checksum)?;
+    warn!("checksum: {}", checksum
         .iter()
-        .map(|h| format!("{:08x}", h))
-        .collect::<String>();
-    
-    warn!("checksum: {}", checksum);
-
-    // let segment_checksum = crate::checksum::calculate(segment_cursor.remaining_slice());
-    // info!("calculated segment checksum: {}", segment_checksum);
+        .map(|h| format!("{:x}", h))
+        .collect::<String>());
 
     // data segment
     data_segment(&mut segment_cursor)?;
