@@ -33,10 +33,13 @@ There is no real code quality at this point, but this will follow once the conta
 
 First off, the container format (the most used NI format) is one ridiculous file format, my best guess is that it is built for fast reading, rather than something easy or efficient to parse (because it's terribly inefficient). It took many many hours/days of staring into a hex editor to understand.
 
-The file is made up of nested segments, very similar to a linked list, which have a header of 20 bytes like the following:
+The file is made up of nested segments, very similar to a linked list. There are two major kinds of segments header segments (`hsin`) and data segments (`dsin`). Header segments have more information and nest data segments:
 
 ```xml
 <size u64><magic [char;4]><id u32><unknown (always 1) u32>
+<checksum [16-bytes]>
+[data-segments]
+<data>
 ```
 
 The magic part is a char array denoted with 'hsin' tags / magic numbers. These tags are spelt backwards. For example
@@ -46,15 +49,6 @@ The magic part is a char array denoted with 'hsin' tags / magic numbers. These t
 - `4KIN` Native Instruments Kontakt 4
 - `RTKR` ReaKToR
 - `E8MF` FM8 E?
-
-There are two major kinds of segments header segments (`hsin`) and data segments (`dsin`). Header segments have more information and nest data segments:
-
-```xml
-<size u64><magic "hsin"><id u32><unknown (always 1) u32>
-<checksum [16-bytes]>
-[data-segments]
-<data>
-```
 
 Segments contain two parts: headers (which can nest other segments) and then the data payload:
 
