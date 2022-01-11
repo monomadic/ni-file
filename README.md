@@ -1,6 +1,6 @@
 # Native Instruments File Format
 
-UPDATE: The container format is fairly well understood now, and compressed internal presets are spat out on all files of this type. From here, deciphering individual presets is much more straightforward.
+UPDATE: The container format is fairly well understood now (enough to read blocks and extract files and presets), and compressed internal presets are spat out on all files of this type. From here, deciphering individual presets is much more straightforward.
 
 Anyone who wants to do this with me, please get in touch. I'm on telegram at @deathdisco
 
@@ -36,8 +36,9 @@ First off, the container format (the most used NI format) is one ridiculous file
 The file is made up of nested segments, very similar to a linked list. There are two major kinds of segments header segments (`hsin`) and data segments (`dsin`). Header segments have more information and nest data segments:
 
 ```xml
-<size u64><magic [char;4]><id u32><unknown (always 1) u32>
-<checksum [16-bytes]>
+<size u64>
+<hsin_header (20 bytes)>
+<checksum (16 bytes)>
 [data-segments]
 <data>
 ```
@@ -50,10 +51,20 @@ The magic part is a char array denoted with 'hsin' tags / magic numbers. These t
 - `RTKR` ReaKToR
 - `E8MF` FM8 E?
 
+### HSIN Header (20 bytes)
+
+```xml
+<unknown u32><unknown u32><magic 'hsin'><id u32><unknown u32 (always 1)>
+```
+
+### DSIN Header (20 bytes)
+
 Segments contain two parts: headers (which can nest other segments) and then the data payload:
 
 ```xml
-<segment>[<child segments>]<data>
+<size u32><unknown u32><magic 'hsin'><id u32><unknown u32 (sometimes size? offset maybe?)>
+[<child segments>]
+<data>
 ```
 
 ## Compressed Presets
