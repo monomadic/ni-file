@@ -1,5 +1,5 @@
 [package]
-name = "ni-extract"
+name = "ni-file"
 version = "0.1.0"
 authors = ["nom"]
 edition = "2018"

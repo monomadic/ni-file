@@ -1,3 +1,7 @@
+/**
+ * NiContainer
+ *  holds embedded segments
+ */
 use rctree::Node;
 use crate::Error;
 use binread::{io::Cursor, prelude::*, NullWideString};
@@ -40,6 +44,11 @@ impl From<u32> for SegmentType {
             _ => SegmentType::Unknown(id),
         }
     }
+}
+
+pub fn read(buf: &[u8]) -> Result<(), Error> {
+    let mut cursor = Cursor::new(buf);
+    _header(&mut cursor)
 }
 
 pub fn header(cursor: &mut Cursor<&[u8]>) -> Result<(), Error> {
@@ -268,48 +277,6 @@ fn data_segment(cursor: &mut Cursor<&[u8]>) -> Result<(), Error> {
 
     Ok(())
 }
-
-// #[derive(BinRead, Debug)]
-// struct HSINHeader {
-//     size: u64,
-//     b: u32,
-//     tag: [char;4],
-
-//     #[br(little, count = 16)]
-//     checksum: Vec<u8>,
-
-//     c: u32,
-//     d: u32,
-
-//     data: DataBlock,
-
-//     e: u32, // always 1
-//     children: u64,
-
-//     // inner: Option<Box<HSINHeader>>,
-
-//     // #[br(big, count = size - 88)]
-//     // children: Vec<u8>,
-
-//     // next_size: u32,
-
-//     // data: DataBlock,
-
-//     // #[br(if (next.size != 1))]
-//     // inner: Option<Box<DSINData>>,
-
-//     // child_type: DataType
-// }
-
-// #[derive(BinRead, Debug)]
-// struct DataBlock {
-//     size: u64,
-//     element: DataType,
-//     children_count: u32,
-
-//     #[br(count=children_count)]
-//     children: Vec<DataBlock>,
-// }
 
 #[derive(BinRead, Debug)]
 struct DataSegment {

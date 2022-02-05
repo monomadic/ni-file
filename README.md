@@ -31,7 +31,7 @@ There is no real code quality at this point, but this will follow once the conta
 
 ## NIContainer File Schematic
 
-First off, the container format (the most used NI format) is one ridiculous file format, my best guess is that it is built for fast reading, rather than something easy or efficient to parse (because it's terribly inefficient). It took many many hours/days of staring into a hex editor to understand.
+NI Containers appear to be binary XML serialized with the [xerces](https://xerces.apache.org/xerces-c/program-3.html) library.
 
 The file is made up of nested segments, very similar to a linked list. There are two major kinds of segments header segments (`hsin`) and data segments (`dsin`). Header segments have more information and nest data segments:
 
