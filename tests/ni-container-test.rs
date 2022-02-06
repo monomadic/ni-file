@@ -12,7 +12,7 @@ fn test_kontakt_4_booga() {
     assert_eq!(container.data_len - 4, container.data_chunk.len() as u32);
     assert_eq!(container.children, 1);
     assert_eq!(container.unknown_b, 1);
-    assert_eq!(container.inner_length - 8, container.inner_chunk.len() as u64);
+    // assert_eq!(container.inner_length - 8, container.inner_chunk.len() as u64);
 }
 
 #[test]
@@ -30,10 +30,17 @@ fn test_k5_4_demo() {
     // u16le;8  17160d88958fe742d6974695bca08a38 
     // u8;16    1617880d8f9542e797d69546a0bc388a
 
-    assert_eq!(container.data_len - 4, container.data_chunk.len() as u32);
+    assert_eq!(container.data_len, container.data_chunk.len() as u32);
     assert_eq!(container.children, 1);
     assert_eq!(container.unknown_b, 1);
-    assert_eq!(container.inner_length - 8, container.inner_chunk.len() as u64);
+
+    assert_eq!(container.inner_id, 3); //4kin:3
+
+    // assert_eq!(container.inner_length - 8, container.inner_chunk.len() as u64);
+
+
+    // second inner segment
+    let container = ni_file::ni_container::read(&container.inner_chunk).unwrap();
 
     assert_eq!(container.to_string(), "<hsin></hsin>");
     // assert_eq!("", format!("{:?}", container));
@@ -53,5 +60,5 @@ fn test_fm8_fm7() {
     assert_eq!(container.data_len - 4, container.data_chunk.len() as u32);
     assert_eq!(container.children, 1);
     assert_eq!(container.unknown_b, 1);
-    assert_eq!(container.inner_length - 8, container.inner_chunk.len() as u64);
+    // assert_eq!(container.inner_length - 8, container.inner_chunk.len() as u64);
 }

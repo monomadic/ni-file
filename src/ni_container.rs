@@ -17,14 +17,18 @@ pub struct HeaderChunk {
     pub id: u64,
     pub checksum: [u8;16], // still unknown, maybe md4?
     pub data_len: u32,
-    #[br(count = data_len - 4)]
+    #[br(count = data_len, seek_before=std::io::SeekFrom::Current(-4))]
     pub data_chunk: Vec<u8>,
     pub unknown_b: u32, // always 1?
     pub children: u64,
     pub inner_tag: [char; 4],
     pub inner_id: u32,
+
+    // #[br(count = children)]
+    // pub inner: Box<HeaderChunk>,
+
     pub inner_length: u64,
-    #[br(count = inner_length - 8)]
+    #[br(count = inner_length, seek_before=std::io::SeekFrom::Current(-8))]
     pub inner_chunk: Vec<u8>,
 }
 
