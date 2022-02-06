@@ -20,7 +20,8 @@ pub struct HeaderChunk {
     #[br(count = data_len, seek_before=std::io::SeekFrom::Current(-4))]
     pub data_chunk: Vec<u8>,
     pub unknown_b: u32, // always 1?
-    pub children: u64,
+    pub children: u32,
+    pub siblings: u32,
     pub inner_tag: [char; 4],
     pub inner_id: u32,
 

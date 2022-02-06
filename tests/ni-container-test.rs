@@ -32,6 +32,7 @@ fn test_k5_4_demo() {
 
     assert_eq!(container.data_len, container.data_chunk.len() as u32);
     assert_eq!(container.children, 1);
+    assert_eq!(container.siblings, 0);
     assert_eq!(container.unknown_b, 1);
 
     assert_eq!(container.inner_id, 3); //4kin:3
