@@ -5,13 +5,13 @@ fn test_kontakt_4_booga() {
 
     assert_eq!(container.length, file.len() as u64);
     assert_eq!(container.unknown_a, 1);
-    assert_eq!(container.unknown_b, 1);
+    assert_eq!(container.current_index, 1);
     assert_eq!(&container.tag(), "hsin");
     assert_eq!(container.id, 1);
 
     assert_eq!(container.data_len - 4, container.data_chunk.len() as u32);
     assert_eq!(container.children, 1);
-    assert_eq!(container.unknown_b, 1);
+    assert_eq!(container.current_index, 1);
     // assert_eq!(container.inner_length - 8, container.inner_chunk.len() as u64);
 }
 
@@ -33,7 +33,7 @@ fn test_k5_4_demo() {
     assert_eq!(container.data_len, container.data_chunk.len() as u32);
     assert_eq!(container.children, 1);
     assert_eq!(container.siblings, 0);
-    assert_eq!(container.unknown_b, 1);
+    assert_eq!(container.current_index, 1);
 
     assert_eq!(container.inner_id, 3); //4kin:3
 
