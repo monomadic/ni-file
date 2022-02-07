@@ -11,7 +11,7 @@ pub fn read(buf: &[u8]) -> Result<HeaderChunk, Error> {
 #[derive(BinRead, Debug)]
 pub struct HeaderChunk {
     pub length: u64,
-    pub unknown_a: u32, // always 1
+    pub unknown_a: u32,
     #[br(assert(tag==['h','s','i','n']))]
     pub tag: [char; 4],
     pub id: u64,
@@ -21,7 +21,7 @@ pub struct HeaderChunk {
     #[br(count = data_len, seek_before=std::io::SeekFrom::Current(-4))]
     pub data_chunk: Vec<u8>,
 
-    pub current_index: u32, // always 1?
+    pub current_index: u32,
     pub children_length: u32,
 
     #[br(count = children_length)]
@@ -88,4 +88,20 @@ pub struct ChildChunkDump {
     pub inner_length: u64,
     // #[br(count = inner_length, seek_before=std::io::SeekFrom::Current(-8))]
     // pub inner_chunk: Vec<u8>,
+}
+
+#[derive(BinRead, Debug)]
+pub struct DataSection {
+    pub length: u64,
+    pub data: Vec<u8>,
+}
+
+#[derive(BinRead, Debug)]
+pub struct DataTag {
+    pub tag: [char; 4],
+    pub type_id: u32,
+    pub unknown_a: u32, // always 1
+    pub inner_length: u32, // could be 1
+    pub terminated: u32, // 1 = end, 0 = read data
+    pub remaining_data: Vec<u8>,
 }
