@@ -93,15 +93,11 @@ pub struct ChildChunkDump {
 #[derive(BinRead, Debug)]
 pub struct DataSection {
     pub length: u64,
-    pub data: Vec<u8>,
-}
-
-#[derive(BinRead, Debug)]
-pub struct DataTag {
     pub tag: [char; 4],
     pub type_id: u32,
     pub unknown_a: u32, // always 1
     pub inner_length: u32, // could be 1
     pub terminated: u32, // 1 = end, 0 = read data
-    pub remaining_data: Vec<u8>,
+    pub inner_section: Vec<DataSection>,
+    pub data: Vec<u8>,
 }
