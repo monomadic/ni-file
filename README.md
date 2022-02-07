@@ -31,7 +31,7 @@ There is no real code quality at this point, but this will follow once the conta
 
 ## NIContainer File Schematic
 
-NI Containers appear to be binary XML serialized with the [xerces](https://xerces.apache.org/xerces-c/program-3.html) library.
+NI Containers are embedded hierarchical chunks of data.
 
 The file is made up of nested segments, very similar to a linked list. There are two major kinds of segments header segments (`hsin`) and data segments (`dsin`). Header segments have more information and nest data segments:
 
@@ -50,6 +50,8 @@ The magic part is a char array denoted with 'hsin' tags / magic numbers. These t
 - `4KIN` Native Instruments Kontakt 4
 - `RTKR` ReaKToR
 - `E8MF` FM8 E?
+
+The checksum is an MD5 of the child section including the childconnector chunk.
 
 ### HSIN Header (20 bytes)
 
@@ -72,8 +74,6 @@ Segments contain two parts: headers (which can nest other segments) and then the
 The main preset is compressed with a custom [LZ77](https://en.wikipedia.org/wiki/LZ77_and_LZ78) variant. deflate.rs can deflate a segment. The segment will start as normal, but appears to embed another file (with its own data segments, compressed) as data in a `DSIN` (type 115).
 
 IMPORTANT: the compression starts 11 bytes into the data slice, but you must provide an initial dictionary of `00`.
-
-Note that checksums and file lengths for the file header are usually SKIPPED in kontakt, you can remove them entirely in some situations and the patch will still load. This also applies to `DSIN` tags. I think NI might have tried to make their code more efficient by directly reading offsets.
 
 ## Serialised Data
 

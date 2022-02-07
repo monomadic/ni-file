@@ -12,25 +12,32 @@ pub fn read(buf: &[u8]) -> Result<HeaderChunk, Error> {
 pub struct HeaderChunk {
     pub length: u64,
     pub unknown_a: u32, // always 1
-    //#[br(magic = b"DSIN", assert(id==108))]
+    #[br(assert(tag==['h','s','i','n']))]
     pub tag: [char; 4],
     pub id: u64,
-    pub checksum: [u8;16], // still unknown, maybe md4?
+    pub checksum: [u8;16], // md5 of child section (including child chunk)
+
     pub data_len: u32,
     #[br(count = data_len, seek_before=std::io::SeekFrom::Current(-4))]
     pub data_chunk: Vec<u8>,
+
     pub current_index: u32, // always 1?
-    pub children: u32,
-    pub siblings: u32,
-    pub inner_tag: [char; 4],
-    pub inner_id: u32,
+    pub children_length: u32,
 
-    // #[br(count = children)]
-    // pub inner: Box<HeaderChunk>,
+    #[br(count = children_length)]
+    pub children: Vec<ChildChunk>,
 
-    pub inner_length: u64,
-    #[br(count = inner_length, seek_before=std::io::SeekFrom::Current(-8))]
-    pub inner_chunk: Vec<u8>,
+    // pub inner_length: u64,
+    // #[br(count = inner_length, seek_before=std::io::SeekFrom::Current(-8))]
+    // pub inner_chunk: Vec<u8>,
+}
+
+#[derive(BinRead, Debug)]
+pub struct ChildChunk {
+    pub unknown_a: u32, // SUSPICIOUS NUMBER - COMPRESSION HAS HIGH VALUE
+    pub tag: [char; 4],
+    pub id: u32,
+    pub chunk: HeaderChunk,
 }
 
 impl HeaderChunk {
@@ -51,11 +58,34 @@ impl ToString for HeaderChunk {
     }
 }
 
+/// for testing: collects child data as bin
 #[derive(BinRead, Debug)]
-struct DataChunk {
-    size: u32,
-    unknown_a: u32,
-    tag: [char; 4],
-    id: u32,
-    unknown_b: u32,
+pub struct HeaderChunkDump {
+    pub length: u64,
+    pub unknown_a: u32, // always 1
+    // #[br(assert(tag==['h','s','i','n']))]
+    pub tag: [char; 4],
+    pub id: u64,
+    pub checksum: [u8;16], // md5 of child section (including child chunk)
+
+    pub data_len: u32,
+    #[br(count = data_len, seek_before=std::io::SeekFrom::Current(-4))]
+    pub data_chunk: Vec<u8>,
+
+    pub unknown_b: u32, // always 1? index?
+    pub children: u32,
+
+    // #[br(count = children)]
+    // pub inner: Vec<ChildChunkDump>,
+}
+
+#[derive(BinRead, Debug)]
+pub struct ChildChunkDump {
+    pub unknown_a: u32, // VERY SUSPICIOUS NUMBER
+    pub tag: [char; 4],
+    pub id: u32,
+
+    pub inner_length: u64,
+    // #[br(count = inner_length, seek_before=std::io::SeekFrom::Current(-8))]
+    // pub inner_chunk: Vec<u8>,
 }
