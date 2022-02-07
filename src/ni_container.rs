@@ -19,7 +19,8 @@ pub struct HeaderChunk {
 
     pub data_len: u32,
     #[br(count = data_len, seek_before=std::io::SeekFrom::Current(-4))]
-    pub data_chunk: Vec<u8>,
+    #[br(parse_with = read_data_chunk)]
+    pub data_chunk: DataChunk,
 
     pub current_index: u32,
     pub children_length: u32,
@@ -90,14 +91,37 @@ pub struct ChildChunkDump {
     // pub inner_chunk: Vec<u8>,
 }
 
+fn read_data_chunk<R: Read + Seek>(
+    reader: &mut R,
+    _ro: &binread::ReadOptions,
+    _: (),
+) -> BinResult<DataChunk> {
+    let length: u64 = reader.read_le()?;
+
+    let mut segment = vec![0; length as usize - 8];
+    reader.read_exact(&mut segment)?;
+
+    println!("length {}", length);
+
+    Ok(DataChunk {
+    })
+}
+
 #[derive(BinRead, Debug)]
-pub struct DataSection {
-    pub length: u64,
+pub struct DataChunk {
+    // pub length: u64,
+    // pub fields: Vec<DataField>,
+}
+
+#[derive(BinRead, Debug)]
+pub struct DataField {
     pub tag: [char; 4],
     pub type_id: u32,
     pub unknown_a: u32, // always 1
     pub inner_length: u32, // could be 1
+
+
     pub terminated: u32, // 1 = end, 0 = read data
-    pub inner_section: Vec<DataSection>,
-    pub data: Vec<u8>,
 }
+
+// pub fn read_data_chunk(buffer: &[u8])
