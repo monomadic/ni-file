@@ -59,38 +59,6 @@ impl ToString for HeaderChunk {
     }
 }
 
-/// for testing: collects child data as bin
-#[derive(BinRead, Debug)]
-pub struct HeaderChunkDump {
-    pub length: u64,
-    pub unknown_a: u32, // always 1
-    // #[br(assert(tag==['h','s','i','n']))]
-    pub tag: [char; 4],
-    pub id: u64,
-    pub checksum: [u8;16], // md5 of child section (including child chunk)
-
-    pub data_len: u32,
-    #[br(count = data_len, seek_before=std::io::SeekFrom::Current(-4))]
-    pub data_chunk: Vec<u8>,
-
-    pub unknown_b: u32, // always 1? index?
-    pub children: u32,
-
-    // #[br(count = children)]
-    // pub inner: Vec<ChildChunkDump>,
-}
-
-#[derive(BinRead, Debug)]
-pub struct ChildChunkDump {
-    pub unknown_a: u32, // VERY SUSPICIOUS NUMBER
-    pub tag: [char; 4],
-    pub id: u32,
-
-    pub inner_length: u64,
-    // #[br(count = inner_length, seek_before=std::io::SeekFrom::Current(-8))]
-    // pub inner_chunk: Vec<u8>,
-}
-
 fn read_data_chunk<R: Read + Seek>(
     reader: &mut R,
     _ro: &binread::ReadOptions,
@@ -101,27 +69,48 @@ fn read_data_chunk<R: Read + Seek>(
     let mut segment = vec![0; length as usize - 8];
     reader.read_exact(&mut segment)?;
 
-    println!("length {}", length);
+    let mut cursor = Cursor::new(segment);
+
+    let mut fields = Vec::new();
+
+    loop {
+        let dsin: DataField = cursor.read_le()?;
+
+        if dsin.terminated != 0 {
+            break;
+        }
+
+        fields.push(match dsin.type_id {
+            118 => NIData::MainHeader(118),
+            _ => NIData::Unknown(dsin.type_id),
+        });
+    }
+
+    println!("data fields: {:?}", fields);
 
     Ok(DataChunk {
+        fields
     })
 }
 
-#[derive(BinRead, Debug)]
+#[derive(Debug)]
+pub enum NIData {
+    MainHeader(u32),
+    Unknown(u32),
+}
+
+#[derive(Debug)]
 pub struct DataChunk {
     // pub length: u64,
-    // pub fields: Vec<DataField>,
+    pub fields: Vec<NIData>,
 }
 
 #[derive(BinRead, Debug)]
 pub struct DataField {
-    pub tag: [char; 4],
+    #[br(map = |val: [u8; 4]| String::from_utf8_lossy(&val).to_string())]
+    pub tag: String,
     pub type_id: u32,
     pub unknown_a: u32, // always 1
     pub inner_length: u32, // could be 1
-
-
     pub terminated: u32, // 1 = end, 0 = read data
 }
-
-// pub fn read_data_chunk(buffer: &[u8])

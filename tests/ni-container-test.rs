@@ -9,13 +9,15 @@ fn test_container_parser() {
         require_literal_leading_dot: false,
     }).unwrap() {
         let path = file.as_ref().unwrap();
-        println!("testing {:?}", &path);
+        println!("\ntesting {:?}", &path);
 
         let buffer = std::fs::read(path).unwrap();
-        let container = ni_file::ni_container::read(&buffer);  
+        let container = ni_file::ni_container::read(&buffer);
 
         assert!(container.is_ok(), "reading container {:?}", path);
         let container = container.unwrap();
+
+        // println!("{:?}", &container);
 
         assert_eq!(container.length, buffer.len() as u64, "container.length {:?}", path);
         assert_eq!(container.unknown_a, 1);
@@ -25,9 +27,7 @@ fn test_container_parser() {
         assert_eq!(container.current_index, 1, "current_index in {:?}", path);
         assert_eq!(container.children_length, container.children.len() as u32);
 
-
-
-        let mut cursor = Cursor::new(&container.data_chunk);
+        // let mut cursor = Cursor::new(&container.data_chunk);
         // let data_segment: ni_file::ni_container::DataChunk = cursor.read_le().unwrap();
 
         // println!("{:?}", data_segment);
@@ -36,10 +36,9 @@ fn test_container_parser() {
             // println!("{}", child.chunk.tag());
             for child in child.chunk.children {
                 if child.chunk.children_length > 0 {
-                    println!("fourth level chunk found {}", child.chunk.children_length);
                     for child in child.chunk.children {
                         if child.chunk.children_length > 0 {
-                            println!("fifth level chunk found {}", child.chunk.children_length);
+                            panic!("fifth level chunk found {}", child.chunk.children_length);
                         }
                     }
                 }
