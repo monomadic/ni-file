@@ -69,40 +69,63 @@ fn read_data_chunk<R: Read + Seek>(
     let mut segment = vec![0; length as usize - 8];
     reader.read_exact(&mut segment)?;
 
+    println!("reset cursor");
     let mut cursor = Cursor::new(segment);
-
     let mut fields = Vec::new();
 
     loop {
         let dsin: DataField = cursor.read_le()?;
-
+       
         if dsin.terminated != 0 {
             break;
         }
 
-        fields.push(match dsin.type_id {
-            118 => NIData::MainHeader(118),
-            _ => NIData::Unknown(dsin.type_id),
-        });
+        fields.push(dsin);
+
+        // let current_pos = cursor.position();
+        // let offset: usize = current_pos as usize + 8 + dsin.inner_length as usize;
+
+        // println!("offset {:?}", (current_pos, offset));
+
+        // let mut data_cursor = cursor.clone();
+        // let mut inner = Vec::with_capacity(dsin.inner_length as usize - 8 - cursor.position() as usize);
+        // print_hex(&inner);
+        // // data_cursor.seek(binread::io::SeekFrom::Start(dsin.inner_length.into()))?;
+        // // println!("reset to {}", dsin.inner_length);
+        // data_cursor.read_exact(&mut inner)?;
+
+        // // data_cursor.set_position(dsin.inner_length.into());
+        // let mut data = Vec::new();
+        // data_cursor.read_to_end(&mut data)?;
+
+        // if dsin.type_id == 106 {
+        //     print_hex(&data);
+        // }
+
+        // fields.push(match dsin.type_id {
+        //     118 => NIData::MainHeader(118),
+        //     _ => NIData::Unknown(dsin.type_id),
+        // });
+
+        // cursor = Cursor::new(inner);
     }
+
+    // read data block remaining
 
     println!("data fields: {:?}", fields);
 
+    let mut data = Vec::new();
+    cursor.read_to_end(&mut data)?;
+
     Ok(DataChunk {
-        fields
+        fields, data
     })
 }
 
 #[derive(Debug)]
-pub enum NIData {
-    MainHeader(u32),
-    Unknown(u32),
-}
-
-#[derive(Debug)]
 pub struct DataChunk {
-    // pub length: u64,
-    pub fields: Vec<NIData>,
+    pub fields: Vec<DataField>,
+    pub data: Vec<u8>,
 }
 
 #[derive(BinRead, Debug)]
@@ -111,6 +134,13 @@ pub struct DataField {
     pub tag: String,
     pub type_id: u32,
     pub unknown_a: u32, // always 1
-    pub inner_length: u32, // could be 1
+
+    // #[br(map = |val: u32| if val == 1 { 4 } else { val })]
+    pub inner_length: u32,
+
     pub terminated: u32, // 1 = end, 0 = read data
 }
+
+// fn print_hex(data: &[u8]) {
+//     println!("{}", data.iter().map(|b| format!("{:02x} ", b)).collect::<String>());
+// }

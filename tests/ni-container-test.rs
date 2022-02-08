@@ -14,20 +14,12 @@ fn test_container_parser() {
         assert!(container.is_ok(), "reading container {:?}", path);
         let container = container.unwrap();
 
-        // println!("{:?}", &container);
-
         assert_eq!(container.length, buffer.len() as u64, "container.length {:?}", path);
         assert_eq!(container.unknown_a, 1);
         assert_eq!(container.tag, ['h', 's', 'i', 'n']);
         assert_eq!(container.id, 1);
-        // assert_eq!(container.data_len, container.data_chunk.len() as u32);
         assert_eq!(container.current_index, 1, "current_index in {:?}", path);
         assert_eq!(container.children_length, container.children.len() as u32);
-
-        // let mut cursor = Cursor::new(&container.data_chunk);
-        // let data_segment: ni_file::ni_container::DataChunk = cursor.read_le().unwrap();
-
-        // println!("{:?}", data_segment);
 
         for child in container.children {
             // println!("{}", child.chunk.tag());
