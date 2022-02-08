@@ -14,7 +14,6 @@ fn test_container_parser() {
         assert!(container.is_ok(), "reading container {:?}", path);
         let container = container.unwrap();
 
-        // println!("\n{:?}", &container);
         println!("{:?}", container.data_chunk);
 
         assert_eq!(container.length, buffer.len() as u64, "container.length {:?}", path);
@@ -24,18 +23,8 @@ fn test_container_parser() {
         assert_eq!(container.current_index, 1, "current_index in {:?}", path);
         assert_eq!(container.children_length, container.children.len() as u32);
 
-        for child in container.children {
-            // println!("{}", child.chunk.tag());
-            for child in child.chunk.children {
-                if child.chunk.children_length > 0 {
-                    for child in child.chunk.children {
-                        if child.chunk.children_length > 0 {
-                            panic!("fifth level chunk found {}", child.chunk.children_length);
-                        }
-                    }
-                }
-            }
-        }
+        // for child in container.children {
+        // }
     }
 }
 
