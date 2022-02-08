@@ -14,6 +14,9 @@ fn test_container_parser() {
         assert!(container.is_ok(), "reading container {:?}", path);
         let container = container.unwrap();
 
+        // println!("\n{:?}", &container);
+        println!("{:?}", container.data_chunk);
+
         assert_eq!(container.length, buffer.len() as u64, "container.length {:?}", path);
         assert_eq!(container.unknown_a, 1);
         assert_eq!(container.tag, ['h', 's', 'i', 'n']);
