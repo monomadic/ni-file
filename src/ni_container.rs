@@ -1,6 +1,7 @@
 use crate::Error;
 use binread::{io::Cursor, prelude::*};
 use std::io::prelude::*;
+use crate::ni_segment::NIData;
 
 pub fn read(buf: &[u8]) -> Result<HeaderChunk, Error> {
     let mut cursor = Cursor::new(buf);
@@ -50,12 +51,6 @@ impl HeaderChunk {
     }
 }
 
-impl ToString for HeaderChunk {
-    fn to_string(&self) -> std::string::String {
-        format!("<{}></{}>", &self.tag(), &self.tag())
-    }
-}
-
 fn read_data_frames<R: Read + Seek>(reader: &mut R, ro: &binread::ReadOptions, _: (),) -> BinResult<DataField> {
     let dsin: DataFieldHeader = reader.read_le()?;
 
@@ -69,8 +64,9 @@ fn read_data_frames<R: Read + Seek>(reader: &mut R, ro: &binread::ReadOptions, _
         _ => Some(Box::new(read_data_frames(&mut data_cursor, ro, ())?)),
     };
 
-    let mut data = Vec::new();
-    data_cursor.read_to_end(&mut data)?;
+    let mut data_bin = Vec::new();
+    data_cursor.read_to_end(&mut data_bin)?;
+    let data = NIData::read(dsin.type_id, &data_bin)?;
 
     Ok(DataField {
         tag: dsin.tag,
@@ -86,7 +82,7 @@ pub struct DataField {
     pub tag: String,
     pub type_id: u32,
     pub unknown_a: u32, // always 1
-    pub data: Vec<u8>,
+    pub data: NIData,
     pub child: Option<Box<DataField>>,
 }
 

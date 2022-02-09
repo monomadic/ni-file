@@ -14,7 +14,7 @@ fn test_container_parser() {
         assert!(container.is_ok(), "reading container {:?}", path);
         let container = container.unwrap();
 
-        println!("{:?}", container.data_chunk);
+        // println!("{:?}", container.data_chunk);
 
         assert_eq!(container.length, buffer.len() as u64, "container.length {:?}", path);
         assert_eq!(container.unknown_a, 1);
@@ -28,11 +28,12 @@ fn test_container_parser() {
     }
 }
 
-// #[test]
-// fn test_kontakt_4_booga() {
-//     let file = include_bytes!("./data/ni_container/kontakt-4--booga.nki");
-//     let container = ni_file::ni_container::read(file).unwrap();
-// }
+#[test]
+fn test_kontakt_4_booga() {
+    let file = include_bytes!("./data/ni_container/kontakt-4--booga.nki");
+    let container = ni_file::ni_container::read(file).unwrap();
+}
+
 
 // #[test]
 // fn test_k5_4_demo() {
@@ -51,11 +52,11 @@ fn test_container_parser() {
 //     let container = ni_file::ni_container::read(file).unwrap();
 // }
 
-// #[test]
-// fn test_massive_mexp() {
-//     let file = include_bytes!("./data/ni_container/massive--mexp.nmsv");
-//     let container = ni_file::ni_container::read(file).unwrap();
-// }
+#[test]
+fn test_massive_mexp() {
+    let file = include_bytes!("./data/ni_container/massive--mexp.nmsv");
+    let container = ni_file::ni_container::read(file).unwrap();
+}
 
 // #[test]
 // fn test_maschine_standard_2() {
