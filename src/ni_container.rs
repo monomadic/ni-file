@@ -64,15 +64,15 @@ fn read_data_frames<R: Read + Seek>(reader: &mut R, ro: &binread::ReadOptions, _
         _ => Some(Box::new(read_data_frames(&mut data_cursor, ro, ())?)),
     };
 
-    let mut data_bin = Vec::new();
-    data_cursor.read_to_end(&mut data_bin)?;
-    let data = NIData::read(dsin.type_id, &data_bin)?;
+    let mut data_raw = Vec::new();
+    data_cursor.read_to_end(&mut data_raw)?;
+    //let data = NIData::read(dsin.type_id, &data_bin)?;
 
     Ok(DataField {
         tag: dsin.tag,
         type_id: dsin.type_id,
         unknown_a: dsin.unknown_a,
-        data,
+        data: data_raw,
         child,
     })
 }
@@ -82,7 +82,7 @@ pub struct DataField {
     pub tag: String,
     pub type_id: u32,
     pub unknown_a: u32, // always 1
-    pub data: NIData,
+    pub data: Vec<u8>,
     pub child: Option<Box<DataField>>,
 }
 

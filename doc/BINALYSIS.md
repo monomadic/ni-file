@@ -7,6 +7,119 @@ external libs:
 - OpenSSL
 - Xerces 3.018 xml
 
+NGL native instruments gui library
+DB database
+
+zlib section could actually be the compressor
+https://en.wikipedia.org/wiki/Zlib
+https://en.wikipedia.org/wiki/Deflate
+https://docs.rs/inflate/0.4.5/inflate/
+
+as simple DEFLATE
+https://en.wikipedia.org/wiki/Deflate
+
+9535  0x002c1b60 0x002c1b60 LOCAL  FUNC 0        NI::GP::ZLibStorage::getPos64() const
+9536  0x002c1b90 0x002c1b90 LOCAL  FUNC 0        NI::GP::ZLibStorage::seek64(long long, NI::GP::IStorage::eSeekMode)
+9609  0x002c3a60 0x002c3a60 LOCAL  FUNC 0        NI::GP::ZLibStorage::write(void const*, unsigned long)
+9610  0x002c3b50 0x002c3b50 LOCAL  FUNC 0        NI::GP::ZLibStorage::read(void*, unsigned long)
+9648  0x002c5240 0x002c5240 LOCAL  FUNC 0        NI::GP::ZLibStorage::rewind()
+9675  0x002c6970 0x002c6970 LOCAL  FUNC 0        NI::GP::ZLibStorage::deInit()
+9676  0x002c6a00 0x002c6a00 LOCAL  FUNC 0        NI::GP::ZLibStorage::~ZLibStorage()
+9677  0x002c6a60 0x002c6a60 LOCAL  FUNC 0        NI::GP::ZLibStorage::~ZLibStorage()
+31924 0x01023f07 0x01023f07 LOCAL  FUNC 0        typeinfo name for NI::GP::ZLibStorage
+39093 0x0155d600 0x0155d600 LOCAL  FUNC 0        vtable for NI::GP::ZLibStorage
+39115 0x0155d8c4 0x0155d8c4 LOCAL  FUNC 0        typeinfo for NI::GP::ZLibStorage
+
+Reading segments could be this enum:
+NI::DB::Item::Item(unsigned int) // could be a 'hsin'
+NI::DB::Item::Item(NI::DB::Property::Key const&, NI::DB::Variant const&)
+NI::DB::Item::Item(NI::DB::Property const&)
+
+Then attributes are dsin blocks
+NI::DB::Item::setAttribute(NI::DB::Attribute const&)
+
+30627 0x00f99f80 0x00f99f80 LOCAL  FUNC 0        NI::DB::Item::Item(unsigned int)
+30628 0x00f99f90 0x00f99f90 LOCAL  FUNC 0        NI::DB::Item::setProperty(NI::DB::Property const&)
+30629 0x00f99fc0 0x00f99fc0 LOCAL  FUNC 0        NI::DB::Item::erase()
+30630 0x00f99ff0 0x00f99ff0 LOCAL  FUNC 0        NI::DB::Item::clearAttributes()
+30631 0x00f9a010 0x00f9a010 LOCAL  FUNC 0        NI::DB::Item::clearAttribute(NI::DB::Attribute const&)
+30632 0x00f9a040 0x00f9a040 LOCAL  FUNC 0        NI::DB::Item::setAttribute(NI::DB::Attribute const&)
+30633 0x00f9a070 0x00f9a070 LOCAL  FUNC 0        NI::DB::Item::hasAttribute(NI::DB::Attribute const&) const
+30634 0x00f9a0a0 0x00f9a0a0 LOCAL  FUNC 0        NI::DB::Item::getAttributes() const
+30635 0x00f9a0d0 0x00f9a0d0 LOCAL  FUNC 0        NI::DB::Item::clearProperty(NI::DB::Property const&)
+30636 0x00f9a100 0x00f9a100 LOCAL  FUNC 0        NI::DB::Item::setProperty(NI::DB::Property::Key const&, NI::DB::Variant const&)
+30637 0x00f9a140 0x00f9a140 LOCAL  FUNC 0        NI::DB::Item::clearProperty(NI::DB::Property::Key const&)
+30638 0x00f9a170 0x00f9a170 LOCAL  FUNC 0        NI::DB::Item::getProperty(NI::DB::Property::Key const&) const
+30639 0x00f9a1a0 0x00f9a1a0 LOCAL  FUNC 0        NI::DB::Item::getProperties() const
+30640 0x00f9a1d0 0x00f9a1d0 LOCAL  FUNC 0        NI::DB::Item::getIdentifier() const
+30641 0x00f9a1f0 0x00f9a1f0 LOCAL  FUNC 0        NI::DB::Item::Item(unsigned int)
+30642 0x00f9a200 0x00f9a200 LOCAL  FUNC 0        NI::DB::Item::Item(NI::DB::Property::Key const&, NI::DB::Variant const&)
+30643 0x00f9a290 0x00f9a290 LOCAL  FUNC 0        NI::DB::Item::Item(NI::DB::Property const&)
+
+## Important Symbols
+44701 0x01682450 0x01682450 LOCAL  FUNC 0        NI::DB::DefaultAttributeSets::init(bool)::s_strDefaultKAD
+45122 0x016f0538 0x016f0538 LOCAL  FUNC 0        NI::DB::DefaultAttributes::SoundFile
+45123 0x016f053c 0x016f053c LOCAL  FUNC 0        NI::DB::DefaultAttributes::Performance
+45124 0x016f0540 0x016f0540 LOCAL  FUNC 0        NI::DB::DefaultAttributes::MIDIFile
+45125 0x016f0544 0x016f0544 LOCAL  FUNC 0        NI::DB::DefaultAttributes::Component
+45126 0x016f0548 0x016f0548 LOCAL  FUNC 0        NI::DB::DefaultAttributes::MaschineProject
+45127 0x016f054c 0x016f054c LOCAL  FUNC 0        NI::DB::DefaultAttributes::MaschineSong
+45128 0x016f0550 0x016f0550 LOCAL  FUNC 0        NI::DB::DefaultAttributes::MaschineGroup
+45129 0x016f0554 0x016f0554 LOCAL  FUNC 0        NI::DB::DefaultAttributes::MaschineTrack
+45130 0x016f0558 0x016f0558 LOCAL  FUNC 0        NI::DB::DefaultAttributes::MaschinePattern
+45131 0x016f055c 0x016f055c LOCAL  FUNC 0        NI::DB::DefaultAttributes::MaschineFX
+45132 0x016f0560 0x016f0560 LOCAL  FUNC 0        NI::DB::DefaultAttributes::Sample
+45133 0x016f0564 0x016f0564 LOCAL  FUNC 0        NI::DB::DefaultAttributes::MaschineSamplerType
+45134 0x016f0568 0x016f0568 LOCAL  FUNC 0        NI::DB::DefaultAttributes::MaschineInputType
+45135 0x016f056c 0x016f056c LOCAL  FUNC 0        NI::DB::DefaultAttributes::MaschineMidiOutType
+45136 0x016f0570 0x016f0570 LOCAL  FUNC 0        NI::DB::DefaultAttributes::MaschineInstrumentBank
+45137 0x016f0574 0x016f0574 LOCAL  FUNC 0        NI::DB::DefaultAttributes::MaschineFXBank
+45138 0x016f0578 0x016f0578 LOCAL  FUNC 0        NI::DB::DefaultAttributes::MaschineMIDIBank
+45139 0x016f057c 0x016f057c LOCAL  FUNC 0        NI::DB::DefaultAttributes::Instrument
+45140 0x016f0580 0x016f0580 LOCAL  FUNC 0        NI::DB::DefaultAttributes::Effect
+45141 0x016f0584 0x016f0584 LOCAL  FUNC 0        NI::DB::DefaultAttributes::MIDI
+45142 0x016f0588 0x016f0588 LOCAL  FUNC 0        NI::DB::DefaultAttributes::VSTPlugIn
+45143 0x016f058c 0x016f058c LOCAL  FUNC 0        NI::DB::DefaultAttributes::AudioUnit
+45144 0x016f0590 0x016f0590 LOCAL  FUNC 0        NI::DB::DefaultAttributes::Internal
+45145 0x016f0594 0x016f0594 LOCAL  FUNC 0        NI::DB::DefaultAttributes::Favorite
+45146 0x016f0598 0x016f0598 LOCAL  FUNC 0        NI::DB::DefaultAttributes::Flagged
+45147 0x016f059c 0x016f059c LOCAL  FUNC 0        NI::DB::DefaultAttributes::BuiltIn
+45148 0x016f05a0 0x016f05a0 LOCAL  FUNC 0        NI::DB::DefaultAttributes::InvalidFile
+45149 0x016f05a4 0x016f05a4 LOCAL  FUNC 0        NI::DB::DefaultAttributes::Kore1Synth
+45150 0x016f05a8 0x016f05a8 LOCAL  FUNC 0        NI::DB::DefaultAttributes::Kore1Lead
+45151 0x016f05ac 0x016f05ac LOCAL  FUNC 0        NI::DB::DefaultAttributes::Kore1Pad
+45152 0x016f05b0 0x016f05b0 LOCAL  FUNC 0        NI::DB::DefaultAttributes::Kore2SynthLead
+45153 0x016f05b4 0x016f05b4 LOCAL  FUNC 0        NI::DB::DefaultAttributes::Kore2SynthPad
+45154 0x016f05b8 0x016f05b8 LOCAL  FUNC 0        NI::DB::DefaultAttributes::Kore2SynthMisc
+45155 0x016f05bc 0x016f05bc LOCAL  FUNC 0        NI::DB::DefaultAttributes::s_collKore1Instruments
+45156 0x016f05d4 0x016f05d4 LOCAL  FUNC 0        NI::DB::DefaultAttributes::s_collKore1EffectTypes
+45157 0x016f05ec 0x016f05ec LOCAL  FUNC 0        NI::DB::DefaultAttributes::s_collKore1Sources
+45158 0x016f0604 0x016f0604 LOCAL  FUNC 0        NI::DB::DefaultAttributes::s_collKore1Modes
+45159 0x016f061c 0x016f061c LOCAL  FUNC 0        NI::DB::DefaultAttributes::s_collKore1Timbres
+45160 0x016f0634 0x016f0634 LOCAL  FUNC 0        NI::DB::DefaultAttributes::s_collKore1Characteristics
+45161 0x016f064c 0x016f064c LOCAL  FUNC 0        NI::DB::DefaultAttributes::s_collKore1Articulations
+45162 0x016f0664 0x016f0664 LOCAL  FUNC 0        NI::DB::DefaultAttributes::s_collKore1Applications
+45163 0x016f067c 0x016f067c LOCAL  FUNC 0        NI::DB::DefaultAttributes::s_collKore1Genres
+45164 0x016f0694 0x016f0694 LOCAL  FUNC 0        NI::DB::DefaultProperties::s_mapStringColor
+45165 0x016f06ac 0x016f06ac LOCAL  FUNC 0        NI::DB::DefaultProperties::s_mapColorString
+45166 0x016f06c4 0x016f06c4 LOCAL  FUNC 0        NI::DB::DefaultProperties::Name
+45167 0x016f06c8 0x016f06c8 LOCAL  FUNC 0        NI::DB::DefaultProperties::URL
+45168 0x016f06cc 0x016f06cc LOCAL  FUNC 0        NI::DB::DefaultProperties::Vendor
+45169 0x016f06d0 0x016f06d0 LOCAL  FUNC 0        NI::DB::DefaultProperties::Author
+45170 0x016f06d4 0x016f06d4 LOCAL  FUNC 0        NI::DB::DefaultProperties::Bank
+45171 0x016f06d8 0x016f06d8 LOCAL  FUNC 0        NI::DB::DefaultProperties::Banks
+45172 0x016f06dc 0x016f06dc LOCAL  FUNC 0        NI::DB::DefaultProperties::Color
+45173 0x016f06e0 0x016f06e0 LOCAL  FUNC 0        NI::DB::DefaultProperties::DateModified
+45174 0x016f06e4 0x016f06e4 LOCAL  FUNC 0        NI::DB::DefaultProperties::Rating
+45175 0x016f06e8 0x016f06e8 LOCAL  FUNC 0        NI::DB::DefaultProperties::Comment
+45176 0x016f06ec 0x016f06ec LOCAL  FUNC 0        NI::DB::DefaultProperties::Inputs
+45177 0x016f06f0 0x016f06f0 LOCAL  FUNC 0        NI::DB::DefaultProperties::Outputs
+45178 0x016f06f4 0x016f06f4 LOCAL  FUNC 0        NI::DB::DefaultProperties::UseCount
+45179 0x016f06f8 0x016f06f8 LOCAL  FUNC 0        NI::DB::DefaultProperties::Flag
+45180 0x016f06fc 0x016f06fc LOCAL  FUNC 0        NI::DB::DefaultProperties::Components
+45181 0x016f0700 0x016f0700 LOCAL  FUNC 0        NI::DB::DefaultProperties::Attributised
+45182 0x016f0704 0x016f0704 LOCAL  FUNC 0        NI::DB::DefaultProperties::ExternalComponents
+
 ## Structure
 /Volumes/BUILD/NIBuild/Kontakt4_2/Kontakt/interface/AboutDialog.cpp
 /Volumes/BUILD/NIBuild/Kontakt4_2/Kontakt/interface/AboutDialog.cpp
