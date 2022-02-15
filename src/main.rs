@@ -1,6 +1,9 @@
 #[macro_use]
 extern crate log;
 
+mod detect;
+mod args;
+
 pub type Error = Box<dyn std::error::Error>;
 
 fn main() {
@@ -9,8 +12,8 @@ fn main() {
         .filter_level(log::LevelFilter::Info)
         .init();
 
-    // match args::run() {
-    //     Ok(_) => info!("done"),
-    //     Err(e) => error!("{}", e), // todo: print error properly
-    // }
+    match args::run() {
+        Ok(_) => info!("done"),
+        Err(e) => error!("{}", e), // todo: print error properly
+    }
 }
