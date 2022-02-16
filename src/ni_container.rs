@@ -1,7 +1,6 @@
 use crate::Error;
 use binread::{io::Cursor, prelude::*};
 use std::io::prelude::*;
-use crate::ni_segment::NIData;
 
 pub fn read(buf: &[u8]) -> Result<HeaderChunk, Error> {
     let mut cursor = Cursor::new(buf);
@@ -17,7 +16,7 @@ pub struct HeaderChunk {
     #[br(assert(tag==['h','s','i','n']))]
     pub tag: [char; 4],
     pub id: u64,
-    pub checksum: [u8;16], // md5 of child section (including child chunk)
+    pub checksum: [u8; 16], // md5 of child section (including child chunk)
     pub data_len: u32,
 
     #[br(count = data_len, seek_before=std::io::SeekFrom::Current(-4))]
@@ -51,7 +50,11 @@ impl HeaderChunk {
     }
 }
 
-fn read_data_frames<R: Read + Seek>(reader: &mut R, ro: &binread::ReadOptions, _: (),) -> BinResult<DataField> {
+fn read_data_frames<R: Read + Seek>(
+    reader: &mut R,
+    ro: &binread::ReadOptions,
+    _: (),
+) -> BinResult<DataField> {
     let dsin: DataFieldHeader = reader.read_le()?;
 
     let mut data = vec![0; dsin.length as usize - 20];
