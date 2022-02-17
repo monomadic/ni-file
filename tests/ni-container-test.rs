@@ -28,11 +28,14 @@ fn test_container_parser() {
     }
 }
 
-// #[test]
-// fn test_kontakt_4_booga() {
-//     let file = include_bytes!("./data/ni_container/kontakt-4--booga.nki");
-//     let container = ni_file::ni_container::read(file).unwrap();
-// }
+#[test]
+fn test_kontakt_4_booga() {
+    let file = include_bytes!("./data/ni_container/kontakt-4--booga.nki");
+    let container = ni_file::ni_container::read(file).unwrap();
+
+    //container.tag
+
+}
 
 
 // #[test]
