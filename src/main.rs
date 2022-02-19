@@ -14,6 +14,6 @@ fn main() {
 
     match args::run() {
         Ok(_) => info!("done"),
-        Err(e) => error!("{}", e), // todo: print error properly
+        Err(e) => error!("{}", e),
     }
 }

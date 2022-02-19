@@ -1,10 +1,15 @@
 #[test]
 fn test_container_parser() {
-    for file in glob::glob_with("./tests/data/ni_container/*.*", glob::MatchOptions {
-        case_sensitive: false,
-        require_literal_separator: false,
-        require_literal_leading_dot: false,
-    }).unwrap() {
+    for file in glob::glob_with(
+        "./tests/data/ni_container/*.*",
+        glob::MatchOptions {
+            case_sensitive: false,
+            require_literal_separator: false,
+            require_literal_leading_dot: false,
+        },
+    )
+    .unwrap()
+    {
         let path = file.as_ref().unwrap();
         println!("\ntesting {:?}", &path);
 
@@ -16,7 +21,12 @@ fn test_container_parser() {
 
         // println!("{:?}", container.data_chunk);
 
-        assert_eq!(container.length, buffer.len() as u64, "container.length {:?}", path);
+        assert_eq!(
+            container.length,
+            buffer.len() as u64,
+            "container.length {:?}",
+            path
+        );
         assert_eq!(container.unknown_a, 1);
         assert_eq!(container.tag, ['h', 's', 'i', 'n']);
         assert_eq!(container.id, 1);
@@ -33,10 +43,12 @@ fn test_kontakt_4_booga() {
     let file = include_bytes!("./data/ni_container/kontakt-4--booga.nki");
     let container = ni_file::ni_container::read(file).unwrap();
 
-    //container.tag
-
+    for childchunk in container.children {
+        match childchunk.id {
+            _ => println!("{}", &childchunk.id),
+        }
+    }
 }
-
 
 // #[test]
 // fn test_k5_4_demo() {
@@ -46,7 +58,7 @@ fn test_kontakt_4_booga() {
 //     // u8;16    1617880d8f9542e797d69546a0bc388a
 
 //     let file = include_bytes!("./data/ni_container/kontakt-5.4-demo.nki");
-//     let container = ni_file::ni_container::read(file).unwrap(); 
+//     let container = ni_file::ni_container::read(file).unwrap();
 // }
 
 // #[test]
