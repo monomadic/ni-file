@@ -43,11 +43,15 @@ fn test_kontakt_4_booga() {
     let file = include_bytes!("./data/ni_container/kontakt-4--booga.nki");
     let container = ni_file::ni_container::read(file).unwrap();
 
+<<<<<<< HEAD
     for childchunk in container.children {
         match childchunk.id {
             _ => println!("{}", &childchunk.id),
         }
     }
+=======
+    
+>>>>>>> f37af67 (bins)
 }
 
 // #[test]
