@@ -33,6 +33,8 @@ fn test_container_parser() {
         assert_eq!(container.current_index, 1, "current_index in {:?}", path);
         assert_eq!(container.children_length, container.children.len() as u32);
 
+        //assert_eq!(container.children[0].id, 101, "{:?}", path);
+
         // for child in container.children {
         // }
     }
@@ -42,16 +44,11 @@ fn test_container_parser() {
 fn test_kontakt_4_booga() {
     let file = include_bytes!("./data/ni_container/kontakt-4--booga.nki");
     let container = ni_file::ni_container::read(file).unwrap();
+    assert_eq!(container.children[0].id, 3);
 
-<<<<<<< HEAD
     for childchunk in container.children {
-        match childchunk.id {
-            _ => println!("{}", &childchunk.id),
-        }
+        assert_eq!(childchunk.id, 3);
     }
-=======
-    
->>>>>>> f37af67 (bins)
 }
 
 // #[test]
