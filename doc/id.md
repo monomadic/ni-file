@@ -7,3 +7,35 @@ segment ids appear to be bitshifted or flags.
 0110 1010 -> second inner dsin of ^
 0110 1100 metadata for library (kontakt)
 0111 0100 kontakt preset, compressed segment
+
+method.NI::SOUND::Preset.isPresetChunkEncrypted___const
+method.NI::SOUND::EncryptionTraits.getEncryptionKey_NI::PA::SNPID_const_
+
+.getDomainID()
+  - returns 'DSIN' - NI S Domain
+
+afl~NI::SOUND
+  BinaryChunkItem
+  BankContainer
+  SoundInfo2
+  SoundInfoItem
+    NI::SOUND::SoundInfoItem::getItemID() -> const;
+      0x6c ; 'l' ; 108
+  PresetChunkItem
+  PresetContainer
+  Preset
+  PictureItem
+    .getItemID() -> 0x72 ; 'r' ; 114
+    .getDomainID() -> 'DSIN'
+  ModuleBank
+  EncryptionItem
+  SubtreeItem
+  GenericItem_
+
+  .fastlz_compress
+  .fastlz1_compress
+  .fastlz2_compress
+  .fastlz_decompress
+
+afl~sym.NI::SOUND
+

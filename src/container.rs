@@ -1,10 +1,10 @@
+use crate::Error;
+use binread::{io::Cursor, prelude::*, NullWideString};
 /**
  * NiContainer
  *  holds embedded segments
  */
 use rctree::Node;
-use crate::Error;
-use binread::{io::Cursor, prelude::*, NullWideString};
 use std::io::prelude::*;
 
 pub struct NIHeaderSegment {
@@ -19,28 +19,57 @@ pub struct NIDataSegment {
 
 #[derive(Debug, Clone)]
 pub enum SegmentType {
-    FileHeader,
-    Version,
-    LibraryMetadata,
+    Item,
+    Authorization,
+    AudioSampleItem,
+    AutomationParameters,
+    AppSpecific,
+    Bank,
+    BankContainer,
+    Resources,
+    SoundInfoItem,
     Preset,
+    EncryptionItem,
+    PresetChunkItem,
     PresetContainer,
     PresetInner,
-    Maybe(String),
+    SubtreeItem,
+    BinaryChunkItem,
+    ExternalFileReference,
+    InternalResourceReferenceItem,
+    ControllerAssignments,
+    ModuleBank,
+    Module,
+    GenericItem(Box<SegmentType>),
     Unknown(u32),
 }
 
 impl From<u32> for SegmentType {
     fn from(id: u32) -> Self {
         match id {
-            3 => SegmentType::Maybe("KontaktFile".into()),
-            101 => SegmentType::Version,
-            108 => SegmentType::LibraryMetadata,
-            109 => SegmentType::Preset, // occurs in first header of deflated kontakt
-            115 => SegmentType::PresetInner,
-            116 => SegmentType::PresetContainer,
-            117 => SegmentType::PresetContainer,
-            118 => SegmentType::FileHeader,
-            121 => SegmentType::Maybe("ContainerPart2".into()),
+            1 => SegmentType::Item,
+            // 3 => SegmentType::Maybe("KontaktFile".into()),
+            100 => SegmentType::Bank,
+            101 => SegmentType::Preset,
+            102 => SegmentType::BankContainer,
+            103 => SegmentType::PresetContainer,
+            104 => SegmentType::BinaryChunkItem,
+            106 => SegmentType::Authorization,
+            108 => SegmentType::SoundInfoItem,
+            109 => SegmentType::PresetChunkItem, // occurs in first header of deflated kontakt
+            110 => SegmentType::ExternalFileReference,
+            111 => SegmentType::Resources,
+            112 => SegmentType::AudioSampleItem,
+            113 => SegmentType::InternalResourceReferenceItem,
+            114 => SegmentType::PictureItem,
+            115 => SegmentType::SubtreeItem,
+            116 => SegmentType::EncryptionItem,
+            117 => SegmentType::AppSpecific,
+            // 118 => SegmentType::FileHeader,
+            120 => SegmentType::AutomationParameters,
+            121 => SegmentType::ControllerAssignments,
+            122 => SegmentType::Module,
+            123 => SegmentType::ModuleBank,
             _ => SegmentType::Unknown(id),
         }
     }
@@ -54,7 +83,7 @@ pub fn read(buf: &[u8]) -> Result<(), Error> {
 pub fn header(cursor: &mut Cursor<&[u8]>) -> Result<(), Error> {
     // let hsin: HSINHeader = cursor.read_le()?;
     // println!("{:#?}", hsin);
-    
+
     // let mut indent = 0;
     // println!("<{:?}>", hsin.tag);
 
@@ -112,10 +141,13 @@ pub fn _header(cursor: &mut Cursor<&[u8]>) -> Result<(), Error> {
 
     let mut checksum = vec![0; 16];
     segment_cursor.read_exact(&mut checksum)?;
-    warn!("checksum: {}", checksum
-        .iter()
-        .map(|h| format!("{:x}", h))
-        .collect::<String>());
+    warn!(
+        "checksum: {}",
+        checksum
+            .iter()
+            .map(|h| format!("{:x}", h))
+            .collect::<String>()
+    );
 
     // data segment
     data_segment(&mut segment_cursor)?;
@@ -126,8 +158,6 @@ pub fn _header(cursor: &mut Cursor<&[u8]>) -> Result<(), Error> {
 
     let child_count: u32 = segment_cursor.read_le()?;
     info!("{} children reported", child_count);
-
-
 
     for _i in 0..child_count {
         let index: u32 = segment_cursor.read_le()?;
@@ -154,7 +184,10 @@ pub fn _header(cursor: &mut Cursor<&[u8]>) -> Result<(), Error> {
     }
 
     if segment_cursor.has_data_left()? {
-        error!("header segment has {} unused bytes remaining!", segment_cursor.remaining_slice().len());
+        error!(
+            "header segment has {} unused bytes remaining!",
+            segment_cursor.remaining_slice().len()
+        );
     }
 
     Ok(())
@@ -204,17 +237,19 @@ fn data_segment(cursor: &mut Cursor<&[u8]>) -> Result<(), Error> {
 
     // let unknown: u32 = segment_cursor.read_le()?;
 
-
-
     {
         // DEBUG DUMP STUFF
-        let mut file = std::fs::File::create(format!("output/{}.{}.dsin", dsin.tag.into_iter().collect::<String>(), dsin.id)).unwrap();
+        let mut file = std::fs::File::create(format!(
+            "output/{}.{}.dsin",
+            dsin.tag.into_iter().collect::<String>(),
+            dsin.id
+        ))
+        .unwrap();
         let mut buffer = vec![0; size as usize];
         dsin_pointer.read_exact(&mut buffer)?;
         file.write_all(&buffer).unwrap();
         // END DEBUG DUMP
     }
-
 
     match dsin.id {
         1 => {
@@ -230,7 +265,10 @@ fn data_segment(cursor: &mut Cursor<&[u8]>) -> Result<(), Error> {
             info!("108: library metadata strings");
             let block: DataSegment = segment_cursor.read_ne().unwrap();
             // let block: Block108 = segment_cursor.read_ne().unwrap();
-            info!("108: remaining bytes {:?}", segment_cursor.remaining_slice());
+            info!(
+                "108: remaining bytes {:?}",
+                segment_cursor.remaining_slice()
+            );
         }
         109 => {
             info!("109: internal preset?");
@@ -258,21 +296,27 @@ fn data_segment(cursor: &mut Cursor<&[u8]>) -> Result<(), Error> {
         116 => {
             info!("116: preset wrapper? used in kontakt");
             data_segment(&mut segment_cursor);
-            info!("116: remaining bytes {:?}", segment_cursor.remaining_slice());
+            info!(
+                "116: remaining bytes {:?}",
+                segment_cursor.remaining_slice()
+            );
         }
         118 => {
             info!("118: ???");
         }
         121 => {
             info!("121: possibly compressed preset");
-        },
+        }
         _ => {
             warn!("??: unhandled preset {}", dsin.id);
-        },
+        }
     }
 
     if segment_cursor.has_data_left()? {
-        error!("data block has {} unused bytes remaining!", segment_cursor.remaining_slice().len());
+        error!(
+            "data block has {} unused bytes remaining!",
+            segment_cursor.remaining_slice().len()
+        );
     }
 
     Ok(())
@@ -281,7 +325,7 @@ fn data_segment(cursor: &mut Cursor<&[u8]>) -> Result<(), Error> {
 #[derive(BinRead, Debug)]
 struct DataSegment {
     size: u64,
-    tag: [char;4],
+    tag: [char; 4],
     // #[br(magic = b"DSIN", assert(id==108))]
     id: u32,
     unknown: u32,
@@ -297,13 +341,13 @@ struct Block108 {
     c: u32,
     d: u32,
     name_size_wide: u32,
-    name: NullWideString
+    name: NullWideString,
 }
 
 #[derive(BinRead, Debug)]
 struct SegmentHeader {
     size: u64,
-    tag: [char;4],
+    tag: [char; 4],
     // #[br(magic = b"DSIN", assert(id==108))]
     id: u32,
     unknown: u32,
@@ -313,7 +357,7 @@ struct SegmentHeader {
 struct HSIN {
     a: u32,
     b: u32,
-    tag: [char;4],
+    tag: [char; 4],
     // #[br(magic = b"hsin")]
     c: u32,
     d: u32,
@@ -331,7 +375,7 @@ impl ToString for HSIN {
 struct DSIN {
     size: u32,
     b: u32,
-    tag: [char;4],
+    tag: [char; 4],
     id: u32,
     d: u32,
 }
@@ -340,6 +384,9 @@ impl ToString for DSIN {
     fn to_string(&self) -> String {
         let magic: String = self.tag.into_iter().collect();
 
-        format!("[size:{}-{}-{}-{}-{}]", self.size, self.b, magic, self.id, self.d)
+        format!(
+            "[size:{}-{}-{}-{}-{}]",
+            self.size, self.b, magic, self.id, self.d
+        )
     }
 }
