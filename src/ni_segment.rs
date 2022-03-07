@@ -1,4 +1,3 @@
-use crate::Error;
 use binread::{io::Cursor, prelude::*};
 use std::io::prelude::*;
 
@@ -18,6 +17,76 @@ impl NIData {
             118 => HeaderInfoB(buffer)?,
             _ => NIData::Unknown(id),
         })
+    }
+}
+
+#[derive(PartialEq, BinRead, Debug, Clone)]
+pub enum SegmentType {
+    AppSpecific,
+    AudioSampleItem,
+    Authorization,
+    AutomationParameters,
+    Bank,
+    BankContainer,
+    BinaryChunkItem,
+    ControllerAssignments,
+    EncryptionItem,
+    ExternalFileReference,
+    GenericItem(Box<SegmentType>),
+    InternalResourceReferenceItem,
+    Item,
+    Module,
+    ModuleBank,
+    PictureItem,
+    Preset,
+    PresetChunkItem,
+    PresetContainer,
+    PresetInner,
+    Resources,
+    SoundInfoItem,
+    SubtreeItem,
+    Unknown(u32),
+}
+
+impl From<u32> for SegmentType {
+    fn from(id: u32) -> Self {
+        match id {
+            1 => SegmentType::Item,
+            // 3 => SegmentType::Maybe("KontaktFile".into()),
+            100 => SegmentType::Bank,
+            101 => SegmentType::Preset,
+            102 => SegmentType::BankContainer,
+            103 => SegmentType::PresetContainer,
+            104 => SegmentType::BinaryChunkItem,
+            106 => SegmentType::Authorization,
+            108 => SegmentType::SoundInfoItem,
+            109 => SegmentType::PresetChunkItem, // occurs in first header of deflated kontakt
+            110 => SegmentType::ExternalFileReference,
+            111 => SegmentType::Resources,
+            112 => SegmentType::AudioSampleItem,
+            113 => SegmentType::InternalResourceReferenceItem,
+            114 => SegmentType::PictureItem,
+            115 => SegmentType::SubtreeItem,
+            116 => SegmentType::EncryptionItem,
+            117 => SegmentType::AppSpecific,
+            // 118 => SegmentType::FileHeader,
+            120 => SegmentType::AutomationParameters,
+            121 => SegmentType::ControllerAssignments,
+            122 => SegmentType::Module,
+            123 => SegmentType::ModuleBank,
+            _ => SegmentType::Unknown(id),
+        }
+    }
+}
+
+impl SegmentType {
+    pub fn binread<R: Read + Seek>(
+        reader: &mut R,
+        _ro: &binread::ReadOptions,
+        _: (),
+    ) -> BinResult<SegmentType> {
+        let id: u32 = reader.read_le()?;
+        Ok(id.into())
     }
 }
 
@@ -58,7 +127,7 @@ pub enum App {
     Unknown(u32),
 }
 
-fn read_app<R: Read + Seek>(reader: &mut R, _ro: &binread::ReadOptions, _: (),) -> BinResult<App> {
+fn read_app<R: Read + Seek>(reader: &mut R, _ro: &binread::ReadOptions, _: ()) -> BinResult<App> {
     let id: u32 = reader.read_le()?;
     Ok(match id {
         1 => App::GuitarRig,
@@ -80,7 +149,13 @@ fn HeaderInfoB(buffer: &[u8]) -> BinResult<NIData> {
 }
 
 fn format_hex(buffer: &[u8]) -> String {
-    format!("{}", &buffer.iter().map(|x| format!("{:02x} ", x)).collect::<String>())
+    format!(
+        "{}",
+        &buffer
+            .iter()
+            .map(|x| format!("{:02x} ", x))
+            .collect::<String>()
+    )
 }
 
 fn format_ascii(buffer: &[u8]) -> String {
@@ -88,13 +163,17 @@ fn format_ascii(buffer: &[u8]) -> String {
     // format!("{}", &buffer.iter().map(|x| if x.is_ascii() {'s'} else {' '})).collect::<String>())
 }
 
-fn pascal_string_utf16<R: Read + Seek>(reader: &mut R, _ro: &binread::ReadOptions, _: (),) -> BinResult<String> {
+fn pascal_string_utf16<R: Read + Seek>(
+    reader: &mut R,
+    _ro: &binread::ReadOptions,
+    _: (),
+) -> BinResult<String> {
     let size: u32 = reader.read_le()?;
 
     info!("string length {}", size);
 
     if size == 0 {
-        return Ok(String::new())
+        return Ok(String::new());
     }
 
     let string: String = reader.read_le::<binread::NullWideString>()?.into_string();

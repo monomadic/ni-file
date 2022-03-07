@@ -1,15 +1,14 @@
 #[test]
 fn test_container_parser() {
-    for file in glob::glob_with(
+    Result::unwrap(glob::glob_with(
         "./tests/data/ni_container/*.*",
         glob::MatchOptions {
             case_sensitive: false,
             require_literal_separator: false,
             require_literal_leading_dot: false,
         },
-    )
-    .unwrap()
-    {
+    ))
+    .for_each(|file| {
         let path = file.as_ref().unwrap();
         println!("\ntesting {:?}", &path);
 
@@ -37,18 +36,39 @@ fn test_container_parser() {
 
         // for child in container.children {
         // }
-    }
+    });
 }
 
 #[test]
 fn test_kontakt_4_booga() {
     let file = include_bytes!("./data/ni_container/kontakt-4--booga.nki");
     let container = ni_file::ni_container::read(file).unwrap();
-    assert_eq!(container.children[0].id, 3);
 
-    for childchunk in container.children {
-        assert_eq!(childchunk.id, 3);
-    }
+    assert_eq!(container.children_length, 1);
+
+    let unknown_segment = &container.children[0];
+    assert_eq!(unknown_segment.id, SegmentType::Unknown(3));
+
+    assert_eq!(unknown_segment.chunk.children_length, 4);
+
+    let soundinfoitem = &unknown_segment.chunk.children[0];
+    assert_eq!(soundinfoitem.id, SegmentType::SoundInfoItem);
+    assert_eq!(soundinfoitem.chunk.children_length, 0);
+
+    let controller_assignments = &unknown_segment.chunk.children[1];
+    assert_eq!(
+        controller_assignments.id,
+        SegmentType::ControllerAssignments
+    );
+    assert_eq!(controller_assignments.chunk.children_length, 0);
+
+    let encryption_item = &unknown_segment.chunk.children[2];
+    assert_eq!(encryption_item.id, SegmentType::EncryptionItem);
+    assert_eq!(encryption_item.chunk.children_length, 0);
+
+    let unknown = &unknown_segment.chunk.children[3];
+    assert_eq!(unknown.id, SegmentType::Unknown(4));
+    assert_eq!(unknown.chunk.children_length, 0);
 }
 
 // #[test]
@@ -85,3 +105,5 @@ fn test_kontakt_4_booga() {
 // //     let file = include_bytes!("./data/ni_container/guitar-rig--rammfire.ngrr");
 // //     let container = ni_file::ni_container::read(file).unwrap();
 // // }
+
+use ni_file::ni_segment::SegmentType;

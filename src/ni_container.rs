@@ -1,3 +1,4 @@
+use crate::ni_segment::SegmentType;
 use crate::Error;
 use binread::{io::Cursor, prelude::*};
 use std::io::prelude::*;
@@ -34,7 +35,9 @@ pub struct HeaderChunk {
 pub struct ChildChunk {
     pub unknown_a: u32, // SUSPICIOUS NUMBER - COMPRESSION HAS HIGH VALUE
     pub tag: [char; 4],
-    pub id: u32,
+
+    #[br(parse_with = SegmentType::binread)]
+    pub id: SegmentType,
     pub chunk: HeaderChunk,
 }
 
