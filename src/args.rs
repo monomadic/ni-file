@@ -9,7 +9,16 @@ pub(crate) fn run() -> Result<(), Box<dyn std::error::Error>> {
     let buffer = std::fs::read(input)?;
 
     // try to detect the type of file we're dealing with
-    crate::detect::filetype(&buffer);
+    match crate::detect::filetype(&buffer) {
+        crate::detect::NIFileType::NIContainer => {
+            let container = ni_file::ni_container::read(&buffer)?;
+            info!("hsin id {}", container.id);
+            info!("{:?}", container);
+        }
+        crate::detect::NIFileType::NIKontaktMonolith => todo!(),
+        crate::detect::NIFileType::KoreSound => todo!(),
+        crate::detect::NIFileType::Unknown => todo!(),
+    }
     Ok(())
 }
 

@@ -76,7 +76,7 @@ fn read_data_frames<R: Read + Seek>(
 
     Ok(DataField {
         tag: dsin.tag,
-        type_id: dsin.type_id,
+        type_id: dsin.type_id.into(),
         unknown_a: dsin.unknown_a,
         data: data_raw,
         child,
@@ -86,7 +86,7 @@ fn read_data_frames<R: Read + Seek>(
 #[derive(Debug)]
 pub struct DataField {
     pub tag: String,
-    pub type_id: u32,
+    pub type_id: SegmentType,
     pub unknown_a: u32, // always 1
     pub data: Vec<u8>,
     pub child: Option<Box<DataField>>,
@@ -97,6 +97,9 @@ pub struct DataFieldHeader {
     pub length: u64,
     #[br(map = |val: [u8; 4]| String::from_utf8_lossy(&val).to_string())]
     pub tag: String,
+
+    // #[br(parse_with = SegmentType::binread)]
+    // pub type_id: SegmentType,
     pub type_id: u32,
     pub unknown_a: u32, // always 1
 }

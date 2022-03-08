@@ -1,12 +1,12 @@
 #[macro_use]
 extern crate log;
 
-mod detect;
 mod args;
+mod detect;
 
 pub type Error = Box<dyn std::error::Error>;
 
-fn main() { 
+fn main() {
     // set up a logger with default level 'info'
     env_logger::Builder::from_default_env()
         .filter_level(log::LevelFilter::Info)
