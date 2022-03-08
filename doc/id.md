@@ -10,9 +10,12 @@ segment ids appear to be bitshifted or flags.
 
 method.NI::SOUND::Preset.isPresetChunkEncrypted___const
 method.NI::SOUND::EncryptionTraits.getEncryptionKey_NI::PA::SNPID_const_
+NI::GP::HASH::getMD5Binary(void const, unsigned long)
 
 .getDomainID()
-  - returns 'DSIN' - NI S Domain
+  - returns 'DSIN' - NI Sound Domain
+
+starts with RepositoryRoot
 
 afl~NI::SOUND
   BinaryChunkItem
