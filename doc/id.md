@@ -8,6 +8,16 @@ segment ids appear to be bitshifted or flags.
 0110 1100 metadata for library (kontakt)
 0111 0100 kontakt preset, compressed segment
 
+headers
+
+NI::MEDIA::ChunkList::readChunkID(&NI::GP::Stream)
+NI::MEDIA::ChunkList::parseStream(&NI::GP::Stream, NI::MEDIA::ChunkList::eChunkFormats)
+
+NI::MEDIA::ChunkBase::getChunkSize()
+NI::MEDIA::StreamedChunk::load(&NI::GP::Stream)
+
+data
+
 method.NI::SOUND::Preset.isPresetChunkEncrypted___const
 method.NI::SOUND::EncryptionTraits.getEncryptionKey_NI::PA::SNPID_const_
 NI::GP::HASH::getMD5Binary(void const, unsigned long)
