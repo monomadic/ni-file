@@ -10,7 +10,14 @@ pub(crate) fn run() -> Result<(), Box<dyn std::error::Error>> {
         }
         Command::Convert { path } => {
             let buffer = std::fs::read(path)?;
-            crate::detect::filetype(&buffer);
+            match crate::detect::filetype(&buffer) {
+                crate::detect::NIFileType::NIContainer => {
+                    println!("{}", ni_file::ni_container::read(&buffer)?.to_xml());
+                },
+                crate::detect::NIFileType::NIKontaktMonolith => todo!(),
+                crate::detect::NIFileType::KoreSound => todo!(),
+                crate::detect::NIFileType::Unknown => todo!(),
+            }
         }
         Command::Info { path } => {
             let buffer = std::fs::read(path)?;
@@ -28,3 +35,8 @@ enum Command {
     Convert { path: PathBuf },
     Info { path: PathBuf },
 }
+
+// #[derive(StructOpt)]
+// enum OutputFormat {
+//     XML
+// }

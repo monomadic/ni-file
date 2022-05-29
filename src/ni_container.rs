@@ -103,3 +103,9 @@ pub struct DataFieldHeader {
     pub type_id: u32,
     pub unknown_a: u32, // always 1
 }
+
+impl HeaderChunk {
+    pub fn to_xml(&self) -> String {
+        format!("<{:?}></{:?}>", self.data_chunk.type_id, self.data_chunk.type_id)
+    }
+}
