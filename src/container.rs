@@ -1,9 +1,9 @@
-use crate::Error;
-use binread::{io::Cursor, prelude::*, NullWideString};
-/**
+/*
  * NiContainer
  *  holds embedded segments
  */
+use crate::Error;
+use binread::{io::Cursor, prelude::*, NullWideString};
 use rctree::Node;
 use std::io::prelude::*;
 
@@ -47,7 +47,7 @@ pub enum SegmentType {
 impl From<u32> for SegmentType {
     fn from(id: u32) -> Self {
         match id {
-            1 => SegmentType::Item,
+            1 => SegmentType::Item, // last item
             // 3 => SegmentType::Maybe("KontaktFile".into()),
             100 => SegmentType::Bank,
             101 => SegmentType::Preset,

@@ -1,22 +1,49 @@
 use crate::ni_segment::SegmentType;
 use crate::Error;
 use binread::{io::Cursor, prelude::*};
+use byteorder::ReadBytesExt;
 use std::io::prelude::*;
 
 pub fn read(buf: &[u8]) -> Result<HeaderChunk, Error> {
+    let mut cursor = Cursor::new(buf);
+    //
+    // // cursor.seek(std::io::SeekFrom::Start(0x20)).unwrap();
+    // // let u8 =
+    // // println!("size:" cursor);
+    //
+    // let major_version: i32 = cursor.read_le().unwrap();
+    // println!("-- {:x}", ByteBuf(&major_version.to_le_bytes()));
+
     let mut cursor = Cursor::new(buf);
     let segment: HeaderChunk = cursor.read_le()?;
     Ok(segment)
 }
 
+// #[derive(BinRead, Debug)]
+// pub struct ItemStreamInfo {
+//     pub a: u64,
+//     pub b: u64,
+//     pub item_header: ItemHeader,
+//     pub c: u8,
+// }
+//
+// #[derive(BinRead, Debug)]
+// pub struct ItemHeader {
+//     pub a: u64, // size (u64 @ +0x00)
+//     pub b: u32, // header flags, deferred flag is header & 1
+//     pub c: u32, // (tag?)
+//     pub d: u32, //
+//     pub e: u32, // ItemUuid (i32 @ +0x18h)
+// }
+
 #[derive(BinRead, Debug)]
 pub struct HeaderChunk {
     pub length: u64,
-    pub unknown_a: u32,
+    pub unknown_a: u32, // item deferred flag?
 
     #[br(assert(tag==['h','s','i','n']))]
     pub tag: [char; 4],
-    pub id: u64,
+    pub id: u64,            // uuid?
     pub checksum: [u8; 16], // md5 of child section (including child chunk)
     pub data_len: u32,
 
@@ -90,6 +117,83 @@ pub struct DataField {
     pub unknown_a: u32, // always 1
     pub data: Vec<u8>,
     pub child: Option<Box<DataField>>,
+}
+
+struct ByteBuf<'a>(&'a [u8]);
+
+impl<'a> std::fmt::LowerHex for ByteBuf<'a> {
+    fn fmt(&self, fmtr: &mut std::fmt::Formatter) -> Result<(), std::fmt::Error> {
+        for byte in self.0 {
+            fmtr.write_fmt(format_args!("{:02x}", byte))?;
+        }
+        Ok(())
+    }
+}
+
+impl DataField {
+    pub fn parse(&self) {
+        let mut cursor = Cursor::new(&self.data);
+
+        println!("self.data.len {}", &self.data.len());
+
+        let has_content = cursor.read_u8().unwrap();
+        println!("{}", has_content);
+
+        let iVar2: u32 = cursor.read_le().unwrap();
+        println!("{}", iVar2);
+
+        match self.type_id {
+            SegmentType::RepositoryRoot => {
+                // cursor.seek(std::io::SeekFrom::Start(0x2c));
+                // let repository_type: i32 = cursor.read_le().unwrap();
+                // println!("{}", repository_type);
+
+                cursor.seek(std::io::SeekFrom::Start(0x20 + 0x04)).unwrap();
+
+                let major_version: i32 = cursor.read_le().unwrap();
+                println!("-- {:x}", ByteBuf(&major_version.to_le_bytes()));
+
+                // let major_version = major_version >> 0x00;
+                println!("--- {:x}", ByteBuf(&major_version.to_le_bytes()));
+
+                // lower 8 bits (al register)
+                let major_version = major_version & 0xFFF;
+                println!("---- {:x}", ByteBuf(&major_version.to_le_bytes()));
+
+                // let major_version: i32 = cursor.read_le().unwrap();
+                // println!("-- {:x}", ByteBuf(&major_version.to_le_bytes()));
+                //
+                // let major_version = major_version >> 0x14;
+                // println!("--- {:x}", ByteBuf(&major_version.to_le_bytes()));
+                //
+                // // lower 8 bits (al register)
+                // let major_version = major_version & 0xFF;
+                // println!("---- {:x}", ByteBuf(&major_version.to_le_bytes()));
+
+                // patch version 0x00 3b
+                // major version: 0x14 2b
+                // minor version 0xc 2b
+
+                cursor.seek(std::io::SeekFrom::Start(0x20 + 0x04)).unwrap();
+
+                let major_version: i32 = cursor.read_le().unwrap();
+                println!("-- {:x}", ByteBuf(&major_version.to_le_bytes()));
+
+                let major_version = major_version >> 0xc;
+                println!("--- {:x}", ByteBuf(&major_version.to_le_bytes()));
+            }
+            SegmentType::Authorization => {
+                println!("aut");
+
+                println!("{:x}", ByteBuf(&self.data));
+                cursor.seek(std::io::SeekFrom::Start(0x14));
+                println!("{:?}", cursor);
+                let license_info: i32 = cursor.read_be().unwrap();
+                println!("{}", license_info);
+            }
+            _ => panic!("{:?}", self.type_id),
+        }
+    }
 }
 
 #[derive(BinRead, Debug)]
