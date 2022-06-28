@@ -6,7 +6,7 @@ pub enum NIFileType {
     Unknown,
 }
 
-pub(crate) fn filetype(buffer: &[u8]) -> NIFileType {
+pub fn filetype(buffer: &[u8]) -> NIFileType {
     // check for 'hsin' at byte 12
     if buffer[12..16] == [104, 115, 105, 110] {
         info!("Detected: NIContainer");

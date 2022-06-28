@@ -87,6 +87,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "cli"
+version = "0.1.0"
+dependencies = [
+ "env_logger",
+ "log",
+ "ni-file",
+ "structopt",
+]
+
+[[package]]
 name = "either"
 version = "1.6.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -186,7 +196,6 @@ dependencies = [
  "md5",
  "nom",
  "rctree",
- "structopt",
 ]
 
 [[package]]
