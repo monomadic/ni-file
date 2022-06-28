@@ -6,6 +6,12 @@ Anyone who wants to do this with me, please get in touch. I'm on telegram at @de
 
 Most of the source files are now unused as I transition to using `binread`. I'll clean everything up shortly.
 
+## Installation
+
+```
+cargo install --path cli
+```
+
 ## Progress
 
 This library is a work in progress.
@@ -18,7 +24,7 @@ This library is a work in progress.
   - [~] FM8
   - [ ] Kontakt 2
 - [ ] Encrypted presets
-  
+
 There is no real code quality at this point, but this will follow once the container format is more discovered.
 
 ## NIContainer File Schematic
