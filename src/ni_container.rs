@@ -25,17 +25,36 @@ pub fn read(buf: &[u8]) -> Result<HeaderChunk, Error> {
 //     pub c: u32, // 'hsin' DomainID (usually 0x4e495344 / NISD, 0x4e494b34 / NIK4)
 //     pub d: u32, // default 1
 //     pub e: u32, // default 0
-//     pub uuid: ItemUuid
+//     pub uuid: ItemUuid // checksum?
 // }
 //
 // // uint __cdecl method.NI::SOUND::ItemFrame.read_NI::GP::Stream_(uint *arg_8h, uint arg_ch)
 // // stream frame size in bytes = 0x14
-// pub struct ItemFrame {
-//  pub size: u64,
-//  pub domain_id: u32, // (+8)
-//  pub item_id: u32, // (+0xc)
-//  pub version: u32, // (+0x10)
-// }
+#[derive(BinRead, Debug)]
+pub struct ItemFrame {
+    pub size: u64,
+    pub domain_id: u32, // (+8)
+    pub item_id: u32,   // (+0xc)
+    pub version: u32,   // (+0x10)
+}
+
+#[derive(BinRead, Debug)]
+pub struct Repository {}
+
+#[derive(BinRead, Debug)]
+pub struct Uuid {
+    pub a: u32,
+    pub b: u16,
+    pub c: u16,
+    pub d: u8,
+    pub e: u8,
+    pub f: u8,
+    pub g: u8,
+    pub h: u8,
+    pub i: u8,
+    pub j: u8,
+    pub k: u8,
+}
 
 #[derive(BinRead, Debug)]
 pub struct HeaderChunk {
@@ -191,6 +210,8 @@ impl DataField {
                 println!("{:?}", cursor);
                 let license_info: i32 = cursor.read_be().unwrap();
                 println!("{}", license_info);
+
+                // self.child.as_ref().unwrap().parse();
             }
             _ => panic!("{:?}", self.type_id),
         }
