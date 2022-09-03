@@ -4,10 +4,23 @@ use binread::{io::Cursor, prelude::*};
 use byteorder::ReadBytesExt;
 use std::io::prelude::*;
 
-pub fn read(buf: &[u8]) -> Result<HeaderChunk, Error> {
-    let mut cursor = Cursor::new(buf);
-    let segment: HeaderChunk = cursor.read_le()?;
-    Ok(segment)
+/// Native Instruments Container object
+/// - represents an entire instrument file
+pub struct NIContainer {
+    pub data: HeaderChunk,
+}
+impl NIContainer {
+    pub fn read(buf: &[u8]) -> Result<Self, Error> {
+        let mut cursor = Cursor::new(buf);
+
+        Ok(Self {
+            data: cursor.read_le()?,
+        })
+    }
+
+    pub fn to_xml(&self) -> String {
+        format!("{}\n", self.data.to_xml())
+    }
 }
 
 // #[derive(BinRead, Debug)]
@@ -86,6 +99,12 @@ pub struct ChildChunk {
     #[br(parse_with = SegmentType::binread)]
     pub id: SegmentType,
     pub chunk: HeaderChunk,
+}
+
+impl ChildChunk {
+    fn to_xml(&self) -> String {
+        self.chunk.to_xml()
+    }
 }
 
 impl HeaderChunk {
@@ -223,7 +242,6 @@ pub struct DataFieldHeader {
     pub length: u64,
     #[br(map = |val: [u8; 4]| String::from_utf8_lossy(&val).to_string())]
     pub tag: String,
-
     // #[br(parse_with = SegmentType::binread)]
     // pub type_id: SegmentType,
     pub type_id: u32,
@@ -232,6 +250,14 @@ pub struct DataFieldHeader {
 
 impl HeaderChunk {
     pub fn to_xml(&self) -> String {
-        format!("<{:?}></{:?}>", self.data_chunk.type_id, self.data_chunk.type_id)
+        format!(
+            "<{:?}>{}</{:?}>",
+            self.data_chunk.type_id,
+            self.children
+                .iter()
+                .map(ChildChunk::to_xml)
+                .collect::<String>(),
+            self.data_chunk.type_id
+        )
     }
 }

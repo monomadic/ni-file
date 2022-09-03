@@ -1,50 +1,14 @@
 #[test]
-fn test_container_parser() {
-    Result::unwrap(glob::glob_with(
-        "./tests/data/ni_container/*.*",
-        glob::MatchOptions {
-            case_sensitive: false,
-            require_literal_separator: false,
-            require_literal_leading_dot: false,
-        },
-    ))
-    .for_each(|file| {
-        let path = file.as_ref().unwrap();
-        println!("\ntesting {:?}", &path);
-
-        let buffer = std::fs::read(path).unwrap();
-        let container = ni_file::ni_container::read(&buffer);
-
-        assert!(container.is_ok(), "reading container {:?}", path);
-        let container = container.unwrap();
-
-        // println!("{:?}", container.data_chunk);
-
-        assert_eq!(
-            container.length,
-            buffer.len() as u64,
-            "container.length {:?}",
-            path
-        );
-        assert_eq!(container.unknown_a, 1);
-        assert_eq!(container.tag, ['h', 's', 'i', 'n']);
-        assert_eq!(container.id, 1);
-        assert_eq!(container.current_index, 1, "current_index in {:?}", path);
-        assert_eq!(container.children_length, container.children.len() as u32);
-
-        //assert_eq!(container.children[0].id, 101, "{:?}", path);
-
-        // for child in container.children {
-        // }
-    });
-}
-
-#[test]
 fn test_kontakt() {
     // let file = include_bytes!("./data/ni_container/kontakt-4--booga.nki");
     let file = include_bytes!("./data/ni_container/kontakt-5.4-demo.nki");
-    let container = ni_file::ni_container::read(file).unwrap();
+    let container = ni_file::ni_container::NIContainer::read(file).expect("file to read");
+    assert_eq!(
+        container.to_xml(),
+        include_str!("./output/kontakt-5.4-demo.xml")
+    );
 
+    let container = container.data;
     assert_eq!(container.children_length, 1);
 
     let unknown_segment = &container.children[0];
@@ -70,6 +34,43 @@ fn test_kontakt() {
     let unknown = &unknown_segment.chunk.children[3];
     assert_eq!(unknown.id, SegmentType::Unknown(4));
     assert_eq!(unknown.chunk.children_length, 0);
+}
+
+#[test]
+fn test_container_parser() {
+    Result::unwrap(glob::glob_with(
+        "./tests/data/ni_container/*.*",
+        glob::MatchOptions {
+            case_sensitive: false,
+            require_literal_separator: false,
+            require_literal_leading_dot: false,
+        },
+    ))
+    .for_each(|file| {
+        let path = file.as_ref().unwrap();
+        println!("\ntesting {:?}", &path);
+
+        let buffer = std::fs::read(path).unwrap();
+        let container = ni_file::ni_container::NIContainer::read(&buffer).expect("file to read");
+        let container = container.data;
+
+        assert_eq!(
+            container.length,
+            buffer.len() as u64,
+            "container.length {:?}",
+            path
+        );
+        assert_eq!(container.unknown_a, 1);
+        assert_eq!(container.tag, ['h', 's', 'i', 'n']);
+        assert_eq!(container.id, 1);
+        assert_eq!(container.current_index, 1, "current_index in {:?}", path);
+        assert_eq!(container.children_length, container.children.len() as u32);
+
+        //assert_eq!(container.children[0].id, 101, "{:?}", path);
+
+        // for child in container.children {
+        // }
+    });
 }
 
 // #[test]

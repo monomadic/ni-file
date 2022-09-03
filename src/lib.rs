@@ -3,6 +3,8 @@ extern crate log;
 
 pub type Error = Box<dyn std::error::Error>;
 
+// pub mod container;
+
 pub mod cb;
 pub mod deflate;
 pub mod detect;

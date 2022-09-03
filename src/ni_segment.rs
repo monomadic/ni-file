@@ -13,8 +13,8 @@ impl NIData {
     pub fn read(id: u32, buffer: &[u8]) -> BinResult<Self> {
         Ok(match id {
             101 => version(buffer)?,
-            106 => HeaderInfoA(buffer)?,
-            118 => HeaderInfoB(buffer)?,
+            106 => header_info_a(buffer)?,
+            118 => header_info_b(buffer)?,
             _ => NIData::Unknown(id),
         })
     }
@@ -121,6 +121,7 @@ pub struct Version {
 }
 
 #[derive(BinRead, Debug, Clone)]
+#[allow(non_camel_case_types)]
 pub enum App {
     GuitarRig,
     Kontakt,
@@ -190,17 +191,17 @@ fn read_app<R: Read + Seek>(reader: &mut R, _ro: &binread::ReadOptions, _: ()) -
         27 => App::FXF_16,
         28 => App::FXF_17,
         29 => App::FXF_18,
-        20 => App::FXF_19,
-        21 => App::Traktor,
+        30 => App::FXF_19,
+        31 => App::Traktor,
         _ => App::Unknown(id),
     })
 }
 
-fn HeaderInfoA(buffer: &[u8]) -> BinResult<NIData> {
+fn header_info_a(_buffer: &[u8]) -> BinResult<NIData> {
     Ok(NIData::HeaderInfoA(118))
 }
 
-fn HeaderInfoB(buffer: &[u8]) -> BinResult<NIData> {
+fn header_info_b(_buffer: &[u8]) -> BinResult<NIData> {
     Ok(NIData::HeaderInfoB(106))
 }
 

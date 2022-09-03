@@ -8,7 +8,7 @@ pub(crate) fn run() -> Result<(), Box<dyn std::error::Error>> {
 
     match detect::filetype(&buffer) {
         detect::NIFileType::NIContainer => {
-            println!("{}", ni_file::ni_container::read(&buffer)?.to_xml());
+            //println!("{}", ni_file::ni_container::read(&buffer)?.to_xml());
             Ok(())
         }
         detect::NIFileType::NIKontaktMonolith => todo!(),
