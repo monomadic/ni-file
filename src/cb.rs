@@ -1,6 +1,7 @@
-use nom::{bytes, IResult};
-
 /// control byte
+/// - control bytes are used by the compression algorithm to determine what kind of data is in the
+///   next chunk.
+use nom::{bytes, IResult};
 
 #[derive(Debug)]
 pub(crate) enum Offset {

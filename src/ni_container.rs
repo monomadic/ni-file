@@ -178,8 +178,8 @@ impl DataField {
         let has_content = cursor.read_u8().unwrap();
         println!("{}", has_content);
 
-        let iVar2: u32 = cursor.read_le().unwrap();
-        println!("{}", iVar2);
+        let i_var2: u32 = cursor.read_le().unwrap();
+        println!("{}", i_var2);
 
         match self.type_id {
             SegmentType::RepositoryRoot => {
@@ -225,7 +225,7 @@ impl DataField {
                 println!("aut");
 
                 println!("{:x}", ByteBuf(&self.data));
-                cursor.seek(std::io::SeekFrom::Start(0x14));
+                cursor.seek(std::io::SeekFrom::Start(0x14)).unwrap();
                 println!("{:?}", cursor);
                 let license_info: i32 = cursor.read_be().unwrap();
                 println!("{}", license_info);
