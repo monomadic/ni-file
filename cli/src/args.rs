@@ -1,19 +1,20 @@
-use ni_file::detect;
 use std::path::PathBuf;
 use structopt::StructOpt;
+
+use ni_file::detect::NIFileType;
 
 pub(crate) fn run() -> Result<(), Box<dyn std::error::Error>> {
     let args = Args::from_args();
     let buffer = std::fs::read(args.input)?;
 
-    match detect::filetype(&buffer) {
-        detect::NIFileType::NIContainer => {
+    match ni_file::detect::filetype(&buffer) {
+        NIFileType::NIContainer => {
             //println!("{}", ni_file::ni_container::read(&buffer)?.to_xml());
             Ok(())
         }
-        detect::NIFileType::NIKontaktMonolith => todo!(),
-        detect::NIFileType::KoreSound => todo!(),
-        detect::NIFileType::Unknown => todo!(),
+        NIFileType::NIKontaktMonolith => todo!(),
+        NIFileType::KoreSound => todo!(),
+        NIFileType::Unknown => todo!(),
     }
 }
 
