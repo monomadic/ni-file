@@ -9,6 +9,7 @@ use std::io::prelude::*;
 pub struct NIContainer {
     pub data: HeaderChunk,
 }
+
 impl NIContainer {
     pub fn read(buf: &[u8]) -> Result<Self, Error> {
         let mut cursor = Cursor::new(buf);
@@ -23,26 +24,29 @@ impl NIContainer {
     }
 }
 
-// #[derive(BinRead, Debug)]
-// pub struct ItemStreamInfo {
-//     pub a: u64,
-//     pub b: u64,
-//     pub item_header: ItemHeader,
-//     pub c: u8,
-// }
-//
-// #[derive(BinRead, Debug)]
-// pub struct ItemHeader {
-//     pub a: u64, // size (u64 @ +0x00)
-//     pub b: u32, // header flags, deferred flag is header & 1 - default 1
-//     pub c: u32, // 'hsin' DomainID (usually 0x4e495344 / NISD, 0x4e494b34 / NIK4)
-//     pub d: u32, // default 1
-//     pub e: u32, // default 0
-//     pub uuid: ItemUuid // checksum?
-// }
-//
-// // uint __cdecl method.NI::SOUND::ItemFrame.read_NI::GP::Stream_(uint *arg_8h, uint arg_ch)
-// // stream frame size in bytes = 0x14
+/*
+#[derive(BinRead, Debug)]
+pub struct ItemStreamInfo {
+    pub a: u64,
+    pub b: u64,
+    pub item_header: ItemHeader,
+    pub c: u8,
+}
+
+#[derive(BinRead, Debug)]
+pub struct ItemHeader {
+    pub a: u64, // size (u64 @ +0x00)
+    pub b: u32, // header flags, deferred flag is header & 1 - default 1
+    pub c: u32, // 'hsin' DomainID (usually 0x4e495344 / NISD, 0x4e494b34 / NIK4)
+    pub d: u32, // default 1
+    pub e: u32, // default 0
+    pub uuid: ItemUuid // checksum?
+}
+
+// uint __cdecl method.NI::SOUND::ItemFrame.read_NI::GP::Stream_(uint *arg_8h, uint arg_ch)
+// stream frame size in bytes = 0x14
+*/
+
 #[derive(BinRead, Debug)]
 pub struct ItemFrame {
     pub size: u64,
