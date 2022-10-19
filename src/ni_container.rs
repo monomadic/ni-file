@@ -7,7 +7,7 @@ use std::io::prelude::*;
 /// Native Instruments Container object
 /// - represents an entire instrument file
 pub struct NIContainer {
-    pub data: HeaderChunk,
+    pub chunk: HeaderChunk,
 }
 
 impl NIContainer {
@@ -15,12 +15,12 @@ impl NIContainer {
         let mut cursor = Cursor::new(buf);
 
         Ok(Self {
-            data: cursor.read_le()?,
+            chunk: cursor.read_le()?,
         })
     }
 
     pub fn to_xml(&self) -> String {
-        format!("{}\n", self.data.to_xml())
+        format!("{}\n", self.chunk.to_xml())
     }
 }
 

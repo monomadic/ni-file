@@ -8,7 +8,7 @@ fn test_kontakt() {
         include_str!("./output/kontakt-5.4-demo.xml")
     );
 
-    let container = container.data;
+    let container = container.chunk;
     assert_eq!(container.children_length, 1);
 
     let unknown_segment = &container.children[0];
@@ -52,7 +52,7 @@ fn test_container_parser() {
 
         let buffer = std::fs::read(path).unwrap();
         let container = ni_file::ni_container::NIContainer::read(&buffer).expect("file to read");
-        let container = container.data;
+        let container = container.chunk;
 
         assert_eq!(
             container.length,
