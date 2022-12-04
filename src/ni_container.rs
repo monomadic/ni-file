@@ -4,6 +4,11 @@ use binread::{io::Cursor, prelude::*};
 use byteorder::ReadBytesExt;
 use std::io::prelude::*;
 
+// TODO:
+// - move to_xml into XMLWriter
+// - NIContainer -> NIFile
+// - don't read greedy
+
 /// Native Instruments Container object
 /// - represents an entire instrument file
 pub struct NIContainer {
