@@ -29,6 +29,7 @@ pub enum SegmentType {
     Bank,
     BankContainer,
     BinaryChunkItem,
+    BNISoundHeader,
     ControllerAssignments,
     EncryptionItem,
     ExternalFileReference,
@@ -54,7 +55,7 @@ impl From<u32> for SegmentType {
         match id {
             // ItemFrame
             1 => SegmentType::Item,
-            // 3 => SegmentType::Maybe("KontaktFile".into()),
+            3 => SegmentType::BNISoundHeader,
             100 => SegmentType::Bank,
             101 => SegmentType::Preset,
             102 => SegmentType::BankContainer,

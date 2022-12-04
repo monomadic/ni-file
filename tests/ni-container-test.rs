@@ -12,7 +12,7 @@ fn test_kontakt() {
     assert_eq!(container.children_length, 1);
 
     let unknown_segment = &container.children[0];
-    assert_eq!(unknown_segment.id, SegmentType::Unknown(3));
+    assert_eq!(unknown_segment.id, SegmentType::BNISoundHeader);
 
     assert_eq!(unknown_segment.chunk.children_length, 4);
 

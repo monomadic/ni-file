@@ -7,4 +7,5 @@ pub mod cb;
 pub mod deflate;
 pub mod detect;
 pub mod ni_container;
+pub mod ni_repository;
 pub mod ni_segment;
