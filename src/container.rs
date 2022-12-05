@@ -1,24 +1,35 @@
-use crate::ni_repository::ItemFrame;
-
 /**
  * Container
  * simplified, rust-like version of NIContainers
  */
 
-type PropertyKind = crate::ni_segment::SegmentType;
+type ContainerKind = crate::ni_segment::SegmentType;
 
 #[derive(Debug)]
 pub struct Container {
+    kind: ContainerKind,
     uuid: [u8; 16],
-    properties: Vec<Property>,
+    data: Vec<u8>,
+    object: Object,
     children: Vec<Container>,
+}
+
+#[derive(Debug)]
+pub struct Object {
+    kind: ContainerKind,
 }
 
 impl From<crate::ni_repository::Repository> for Container {
     fn from(r: crate::ni_repository::Repository) -> Self {
+        let data = r.data().unwrap(); // TODO: remove unwrap
+
         Container {
+            kind: ContainerKind::default(), // TODO: parse
             uuid: r.uuid,
-            properties: vec![],
+            data: vec![],
+            object: Object {
+                kind: data.item_id.into(),
+            },
             children: r
                 .children
                 .iter()
@@ -26,12 +37,4 @@ impl From<crate::ni_repository::Repository> for Container {
                 .collect(),
         }
     }
-}
-
-// impl From<ItemFrame> for
-
-#[derive(Debug)]
-pub struct Property {
-    kind: PropertyKind,
-    data: Vec<u8>,
 }

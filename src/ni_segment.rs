@@ -20,7 +20,7 @@ impl NIData {
     }
 }
 
-#[derive(PartialEq, BinRead, Debug, Clone)]
+#[derive(PartialEq, BinRead, Debug, Clone, Default)]
 pub enum SegmentType {
     AppSpecific,
     AudioSampleItem,
@@ -43,6 +43,7 @@ pub enum SegmentType {
     PresetChunkItem,
     PresetContainer,
     PresetInner,
+    #[default]
     RepositoryRoot,
     Resources,
     SoundInfoItem,

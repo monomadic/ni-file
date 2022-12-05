@@ -1,6 +1,7 @@
 /target
 .DS_Store
 bins
+bins/*
 /old
 *.deflate
 deflate

@@ -1,5 +1,26 @@
 # Bin 4.2
 
+- `afl~writeItem` for write functions.
+
+- `Preset` contains app type (kontakt=2, guitarrig=1, fm8=8)
+
+Inheritance Model
+
+- kontakt-5.4-demo.nki:
+	- RepositoryRoot(118) -> Authorization(106) -> Item(1)
+		- BNISoundHeader(3) -> Preset(101) -> Authorization(106) -> Item(1)
+			- SoundInfoItem(108) -> Item(1)
+			- ControllerAssignments (121) -> Item(1)
+			- EncryptionItem(116) -> SubtreeItem(115) -> Item(1)
+			- BNISoundHeader(4) -> Item(1)
+
+- 000-default.nfm8
+	- RepositoryRoot(118) -> Authorization(106) -> Item(1)
+		- Preset(101) -> Authorization(106) -> Item(1)
+			- SoundInfoItem(108) -> Item(1)
+			-
+			-
+
 external libs:
 - ElastiquePro stretching engine
     https://licensing.zplane.de/uploads/SDK/ELASTIQUE-PRO/V3/manual/elastique_pro_v3_sdk_documentation.pdf

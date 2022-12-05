@@ -1,5 +1,5 @@
 // use crate::ni_segment::SegmentType;
-use crate::Error;
+use crate::{ni_object::NIData, Error};
 use binread::{io::Cursor, prelude::*};
 
 /// Native Instruments Container object
@@ -10,13 +10,22 @@ pub struct Repository {
 
     pub uuid: [u8; 16], // (0x14, int32_t)
 
-    pub data: Data,
+    pub data: Data, // raw data, see NIData for structured
 
     pub unknown: u32,
     pub number_of_children: u32,
 
     #[br(count = number_of_children)]
     pub children: Vec<ItemFrame>,
+}
+
+impl Repository {
+    pub fn data(&self) -> BinResult<NIData> {
+        let raw = self.data.data.to_owned();
+        let mut cursor = Cursor::new(raw);
+        let data: NIData = cursor.read_le()?;
+        Ok(data)
+    }
 }
 
 #[derive(BinRead, Debug, Clone)]
@@ -65,7 +74,8 @@ pub struct ItemHeader {
 // 16 bytes
 #[derive(BinRead, Debug)]
 pub struct Uuid {
-    pub a: u32,
+    pub u: u32,
+
     pub b: u16,
     pub c: u16,
     pub d: u8,
