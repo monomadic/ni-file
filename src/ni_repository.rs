@@ -7,16 +7,16 @@ use binread::{io::Cursor, prelude::*};
 #[derive(BinRead, Debug, Clone)]
 pub struct Repository {
     pub header: ItemHeader,
-
     pub uuid: [u8; 16], // (0x14, int32_t)
 
+    // derived objects
     pub data: Data, // raw data, see NIData for structured
 
     pub unknown: u32,
     pub number_of_children: u32,
 
     #[br(count = number_of_children)]
-    pub children: Vec<ItemFrame>,
+    pub children: Vec<ItemFrameEx>,
 }
 
 impl Repository {
@@ -37,11 +37,20 @@ pub struct Data {
 }
 
 #[derive(BinRead, Debug, Clone)]
-pub struct ItemFrame {
+pub struct ItemFrameEx {
     pub current_index: u32,
     pub domain_id: u32, // 'DSIN'
     pub item_id: u32,   // segment type
     pub repository: Repository,
+}
+
+// correct from re
+#[derive(BinRead, Debug, Clone)]
+pub struct ItemFrame {
+    pub frame_size: u64,
+    pub domain_id: u32, // 'DSIN'
+    pub item_id: u32,   // segment type
+    pub version: u32,
 }
 
 impl Repository {

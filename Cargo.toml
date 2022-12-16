@@ -12,6 +12,7 @@ byteorder = "1.4.3"
 rctree = "0.5.0"
 binread = "2.2.0"
 md5 = "0.7.0"
+thiserror = "1.0.37"
 
 [dev-dependencies]
 glob = "0.3.0"
