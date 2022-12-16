@@ -1,5 +1,6 @@
-// use crate::ni_segment::SegmentType;
-use crate::{ni_object::NIData, Error};
+use crate::ni_object::NIData;
+use crate::prelude::*;
+
 use binread::{io::Cursor, prelude::*};
 
 /// Native Instruments Container object
@@ -54,7 +55,7 @@ pub struct ItemFrame {
 }
 
 impl Repository {
-    pub fn read(buf: &[u8]) -> Result<Self, Error> {
+    pub fn read(buf: &[u8]) -> Result<Self> {
         let mut cursor = Cursor::new(buf);
 
         Ok(cursor.read_le()?)

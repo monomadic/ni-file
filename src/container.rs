@@ -1,22 +1,22 @@
-/**
- * Container
- * simplified, rust-like version of NIContainers
- */
+//!  Container
+//!
+//!  An abstracted model of a container file.
+//!
 
 type ContainerKind = crate::ni_segment::SegmentType;
 
 #[derive(Debug)]
 pub struct Container {
-    kind: ContainerKind,
-    uuid: [u8; 16],
-    data: Vec<u8>,
-    object: Object,
-    children: Vec<Container>,
+    pub kind: ContainerKind,
+    pub uuid: [u8; 16],
+    pub data: Vec<u8>,
+    pub object: Object,
+    pub children: Vec<Container>,
 }
 
 #[derive(Debug)]
 pub struct Object {
-    kind: ContainerKind,
+    pub kind: ContainerKind,
 }
 
 impl From<crate::ni_repository::Repository> for Container {

@@ -4,12 +4,11 @@ extern crate log;
 pub mod error;
 pub mod prelude;
 
-// abstract preset
+// abstract models
 // pub mod Preset
-
-// abstract container
 pub mod container;
 
+// raw objects
 pub mod cb; // control byte
 pub mod deflate;
 pub mod detect;

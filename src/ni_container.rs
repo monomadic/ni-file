@@ -1,5 +1,6 @@
 use crate::ni_segment::SegmentType;
-use crate::Error;
+use crate::prelude::*;
+
 use binread::{io::Cursor, prelude::*};
 use byteorder::ReadBytesExt;
 use std::io::prelude::*;
@@ -16,11 +17,11 @@ pub struct NIContainer {
 }
 
 impl NIContainer {
-    pub fn read(buf: &[u8]) -> Result<Self, Error> {
+    pub fn read(buf: &[u8]) -> Result<Self> {
         let mut cursor = Cursor::new(buf);
 
         Ok(Self {
-            chunk: cursor.read_le()?,
+            chunk: cursor.read_le().context("Failed to parse HeaderChunk")?,
         })
     }
 
@@ -170,7 +171,7 @@ pub struct DataField {
 struct ByteBuf<'a>(&'a [u8]);
 
 impl<'a> std::fmt::LowerHex for ByteBuf<'a> {
-    fn fmt(&self, fmtr: &mut std::fmt::Formatter) -> Result<(), std::fmt::Error> {
+    fn fmt(&self, fmtr: &mut std::fmt::Formatter) -> std::result::Result<(), std::fmt::Error> {
         for byte in self.0 {
             fmtr.write_fmt(format_args!("{:02x}", byte))?;
         }
