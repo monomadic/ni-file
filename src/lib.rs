@@ -11,8 +11,11 @@ extern crate log;
 pub mod error;
 pub mod prelude;
 
-pub mod ni_object;
+// presets
 // pub mod ni_preset;
+
+// abstract objects
+pub mod ni_object;
 
 // raw objects (know nothing of types, just data containers)
 pub mod kinds; // segment type
