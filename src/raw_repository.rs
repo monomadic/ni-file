@@ -1,5 +1,5 @@
-use crate::ni_object::NIData;
 use crate::prelude::*;
+use crate::raw_data::NIData;
 
 use binread::{io::Cursor, prelude::*};
 
@@ -11,7 +11,7 @@ pub struct Repository {
     pub uuid: [u8; 16], // (0x14, int32_t)
 
     // derived objects
-    pub data: Data, // raw data, see NIData for structured
+    pub data: Data, // raw unchecked data chunk
 
     pub unknown: u32,
     pub number_of_children: u32,
@@ -21,6 +21,7 @@ pub struct Repository {
 }
 
 impl Repository {
+    // TODO: remove this, it shouldn't be here.
     pub fn data(&self) -> BinResult<NIData> {
         let raw = self.data.data.to_owned();
         let mut cursor = Cursor::new(raw);
@@ -37,6 +38,7 @@ pub struct Data {
     pub data: Vec<u8>,
 }
 
+// TODO: document this...
 #[derive(BinRead, Debug, Clone)]
 pub struct ItemFrameEx {
     pub current_index: u32,

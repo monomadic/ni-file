@@ -12,11 +12,11 @@ use std::io::prelude::*;
 
 /// Native Instruments Container object
 /// - represents an entire instrument file
-pub struct NIContainer {
+pub struct RawContainer {
     pub chunk: HeaderChunk,
 }
 
-impl NIContainer {
+impl RawContainer {
     pub fn read(buf: &[u8]) -> Result<Self> {
         let mut cursor = Cursor::new(buf);
 

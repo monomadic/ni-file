@@ -1,75 +1,52 @@
-use binread::{io::Cursor, prelude::*};
-use std::io::prelude::*;
+//!  NIObject
+//!
+//!  An abstracted model of a container file.
+//!
 
-pub fn read_data(reader: &mut Cursor<&[u8]>) -> BinResult<NIData> {
-    let size: u64 = reader.read_le()?;
+pub use std::convert::TryInto;
 
-    assert_eq!(reader.bytes().count() + 8, size as usize); // TODO: return error
+use crate::prelude::*;
 
-    let domain_id: u32 = reader.read_le()?;
-    let item_id: u32 = reader.read_le()?;
-    let u: u32 = reader.read_le()?;
+type ContainerKind = crate::kinds::SegmentType;
 
-    let inner_object = match item_id {
-        1 => {
-            reader.read_le::<u32>()?;
-            None
-        }
-        _ => Some(Box::new(read_data(reader)?)),
-    };
-
-    let mut data = Vec::new();
-    reader.read_to_end(&mut data)?;
-
-    // let data = vec![];
-
-    Ok(NIData {
-        size,
-        domain_id,
-        item_id,
-        u,
-        inherits_from: inner_object,
-        data,
-    })
-}
-
-#[derive(BinRead, Debug, Clone)]
-pub struct NIData {
-    pub size: u64,
-    pub domain_id: u32, // (uint, 'hsin')
-    pub item_id: u32,   // (uint)
-    pub u: u32,
-    pub inherits_from: Option<Box<NIData>>,
+#[derive(Debug)]
+pub struct NIObject {
+    pub kind: ContainerKind,
+    pub uuid: [u8; 16],
     pub data: Vec<u8>,
+    pub object: Object,
+    pub children: Vec<NIObject>,
 }
 
-fn _read_object<R: Read + Seek>(
-    reader: &mut R,
-    _ro: &binread::ReadOptions,
-    _: (),
-) -> BinResult<NIData> {
-    let size: u64 = reader.read_le()?;
-    let domain_id: u32 = reader.read_le()?;
-    let item_id: u32 = reader.read_le()?;
-    let u: u32 = reader.read_le()?;
+#[derive(Debug)]
+pub struct Object {
+    pub kind: ContainerKind,
+}
 
-    let inherits_from = match item_id {
-        1 => None,
-        _ => None,
-        // _ => Some(Box::new(read_object(reader, ro, ())?)),
-    };
+impl TryInto<NIObject> for &[u8] {
+    type Error = anyhow::Error;
 
-    // let mut data = Vec::new();
-    // reader.read_to_end(&mut data)?;
+    fn try_into(self) -> Result<NIObject, Self::Error> {
+        crate::raw_repository::Repository::read(self).map(NIObject::from)
+    }
+}
 
-    let data = vec![];
+impl From<crate::raw_repository::Repository> for NIObject {
+    fn from(r: crate::raw_repository::Repository) -> Self {
+        let data = r.data().unwrap(); // TODO: remove unwrap
 
-    Ok(NIData {
-        size,
-        domain_id,
-        item_id,
-        u,
-        inherits_from,
-        data,
-    })
+        NIObject {
+            kind: ContainerKind::default(), // TODO: parse
+            uuid: r.uuid,
+            data: vec![],
+            object: Object {
+                kind: data.item_id.into(),
+            },
+            children: r
+                .children
+                .iter()
+                .map(|frame| frame.repository.clone().into())
+                .collect(),
+        }
+    }
 }
