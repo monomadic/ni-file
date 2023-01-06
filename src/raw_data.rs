@@ -69,6 +69,7 @@ pub struct DataField {
 mod tests {
     use super::*;
 
+    #[test]
     fn read_field_headers_test() -> Result<()> {
         let file =
             include_bytes!("../data/item-data/118-106-Kontakt5-RepositoryRoot-Authorization.data");

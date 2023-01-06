@@ -3,6 +3,7 @@ pub enum NIFileType {
     NIContainer,
     NIKontaktMonolith,
     KoreSound,
+    Kontakt2,
     Unknown,
 }
 
@@ -17,6 +18,11 @@ pub fn filetype(buffer: &[u8]) -> NIFileType {
     if buffer[0..4] == [0x2F, 0x5C, 0x20, 0x4E] {
         info!("Detected: NIKontaktMonolith");
         return NIFileType::NIKontaktMonolith;
+    }
+
+    if buffer[0..4] == [0x12, 0x90, 0xA8, 0x7F] {
+        info!("Detected: Kontakt2");
+        return NIFileType::Kontakt2;
     }
 
     // check for '-ni-' at byte 0

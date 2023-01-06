@@ -15,6 +15,7 @@ pub(crate) fn run() -> Result<(), Box<dyn std::error::Error>> {
         NIFileType::NIKontaktMonolith => todo!(),
         NIFileType::KoreSound => todo!(),
         NIFileType::Unknown => todo!(),
+        NIFileType::Kontakt2 => todo!(),
     }
 }
 

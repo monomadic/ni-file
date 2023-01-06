@@ -1,5 +1,6 @@
+//!
 //! NI-FILE
-//! native instruments file formats
+//! Native Instruments file formats
 //!
 //!  TODO:
 //!  - fix tests
