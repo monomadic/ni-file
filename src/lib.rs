@@ -4,6 +4,7 @@
 //!
 //!  TODO:
 //!  - fix tests
+//!    - integration tests: check file read and export on real files
 //!
 
 #[macro_use]

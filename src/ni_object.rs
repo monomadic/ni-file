@@ -23,6 +23,14 @@ pub struct Object {
     pub kind: ContainerKind,
 }
 
+impl TryInto<NIObject> for Vec<u8> {
+    type Error = anyhow::Error;
+
+    fn try_into(self) -> Result<NIObject, Self::Error> {
+        self.as_slice().try_into()
+    }
+}
+
 impl TryInto<NIObject> for &[u8] {
     type Error = anyhow::Error;
 
