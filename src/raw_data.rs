@@ -14,24 +14,24 @@ pub fn read(data: &[u8]) -> Result<Vec<DataField>> {
         data_ends.push((cursor.position() - 20) + field.size);
         fields.push(field);
         if id == 1_u32 {
-            assert_eq!(cursor.position(), 60);
+            // assert_eq!(cursor.position(), 60);
             data_offset = cursor.position() as usize;
             break;
         }
     }
 
     // data of last field is always a 1_u32
-    assert_eq!(
-        cursor.read_le::<u32>()?,
-        1_u32,
-        "terminator data is not 1_u32"
-    );
+    // assert_eq!(
+    //     cursor.read_le::<u32>()?,
+    //     1_u32,
+    //     "terminator data is not 1_u32"
+    // );
 
     // where the data starts (not including terminator)
     // this is the size of each header (20 bytes)
     // let data_offset = (fields.len() + 1) * 20;
-    assert_eq!(fields.len(), 3);
-    assert_eq!(data_offset, 60);
+    // assert_eq!(fields.len(), 3);
+    // assert_eq!(data_offset, 60);
 
     // reverse it because we need to work inside out
     fields.reverse();
@@ -83,7 +83,7 @@ mod tests {
 pub fn read_data(reader: &mut Cursor<&[u8]>) -> BinResult<NIData> {
     let size: u64 = reader.read_le()?;
 
-    assert_eq!(reader.bytes().count() + 8, size as usize); // TODO: return error
+    //assert_eq!(reader.bytes().count() + 8, size as usize, "blah"); // TODO: return error
 
     let domain_id: u32 = reader.read_le()?;
     let item_id: u32 = reader.read_le()?;

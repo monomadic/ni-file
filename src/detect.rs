@@ -1,4 +1,4 @@
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub enum NIFileType {
     NIContainer,
     NIKontaktMonolith,
@@ -33,4 +33,17 @@ pub fn filetype(buffer: &[u8]) -> NIFileType {
 
     error!("Unknown or unsupported filetype!");
     NIFileType::Unknown
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_kontakt_4() {
+        assert_eq!(
+            filetype(include_bytes!("../test-data/kontakt-4/k4booga2.nki")),
+            NIFileType::NIContainer
+        )
+    }
 }

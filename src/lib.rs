@@ -18,6 +18,7 @@ pub mod prelude;
 
 // abstract objects
 pub mod ni_object;
+pub mod ni_object_data;
 
 // raw objects (know nothing of types, just data containers)
 pub mod kinds; // segment type
@@ -28,6 +29,8 @@ pub mod raw_repository; // file container / repository
 pub mod cb; // control byte
 pub mod deflate; // decompress
 pub mod detect; // detect filetype
+
+pub mod extract;
 
 // old
 // pub mod raw_container; // old version?

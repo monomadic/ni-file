@@ -12,7 +12,7 @@ pub enum NIData {
 impl NIData {
     pub fn read(id: u32, buffer: &[u8]) -> BinResult<Self> {
         Ok(match id {
-            101 => version(buffer)?,
+            101 => version(buffer)?, // preset
             106 => header_info_a(buffer)?,
             118 => header_info_b(buffer)?,
             _ => NIData::Unknown(id),
