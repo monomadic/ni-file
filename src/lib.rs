@@ -16,13 +16,14 @@ pub mod prelude;
 // presets
 // pub mod ni_preset;
 
+mod raw;
+
 // abstract objects
 pub mod ni_object;
 pub mod ni_object_data;
 
 // raw objects (know nothing of types, just data containers)
 pub mod kinds; // segment type
-pub mod raw;
 pub mod raw_data; // data segments (fields)
 pub mod raw_repository; // file container / repository
 
