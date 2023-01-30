@@ -16,7 +16,10 @@ pub mod prelude;
 // presets
 // pub mod ni_preset;
 
-mod raw;
+// TODO: make private:
+pub mod raw;
+
+// TODO: delete:
 
 // abstract objects
 pub mod ni_object;

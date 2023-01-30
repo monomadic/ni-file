@@ -1,7 +1,6 @@
 //! Crate prelude
 
-pub use crate::error::Error;
-pub use anyhow::{Context, Result};
+pub use crate::error::NIFileError;
 
 // Generic Wrapper tuple struct for newtype pattern,
 // mostly for external type to type From/TryFrom conversions

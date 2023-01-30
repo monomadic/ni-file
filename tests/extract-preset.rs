@@ -2,7 +2,7 @@
 use ni_file::prelude::*;
 
 #[test]
-fn via_raw_data_test() -> Result<()> {
+fn via_raw_data_test() -> std::result::Result<(), NIFileError> {
     Ok(())
 }
 

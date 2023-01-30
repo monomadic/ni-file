@@ -1,22 +1,23 @@
+use anyhow::Context;
 use ni_file::{ni_object::*, prelude::*};
 
 #[test]
-fn test_reading_files() -> Result<()> {
-    for entry in glob::glob("data/files/**/*.nki")? {
-        check(entry?)?;
+fn test_reading_files() -> Result<(), NIFileError> {
+    for entry in glob::glob("data/files/**/*.nki").context("glob error")? {
+        check(entry.context("glob error")?)?;
     }
 
-    for entry in glob::glob("data/files/**/*.nfm8")? {
-        check(entry?)?;
+    for entry in glob::glob("data/files/**/*.nfm8").context("glob error")? {
+        check(entry.context("glob error")?)?;
     }
 
     Ok(())
 }
 
-fn check(path: std::path::PathBuf) -> Result<()> {
+fn check(path: std::path::PathBuf) -> Result<(), NIFileError> {
     println!("test reading {:?}", path.display());
 
-    let object: Result<NIObject> = std::fs::read(path)?.try_into();
+    let object: std::result::Result<NIObject, NIFileError> = std::fs::read(path)?.try_into();
     assert!(object.is_ok());
 
     Ok(())

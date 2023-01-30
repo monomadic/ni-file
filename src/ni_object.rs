@@ -3,10 +3,9 @@
 //!  An abstracted model of a container file.
 //!
 
-pub use std::convert::TryInto;
-
 use crate::prelude::*;
 
+pub use std::convert::TryInto;
 type ContainerKind = crate::kinds::SegmentType;
 
 #[derive(Debug)]
@@ -24,18 +23,18 @@ pub struct Object {
 }
 
 impl TryInto<NIObject> for Vec<u8> {
-    type Error = anyhow::Error;
+    type Error = NIFileError;
 
-    fn try_into(self) -> Result<NIObject, Self::Error> {
+    fn try_into(self) -> std::result::Result<NIObject, Self::Error> {
         self.as_slice().try_into()
     }
 }
 
 impl TryInto<NIObject> for &[u8] {
-    type Error = anyhow::Error;
+    type Error = NIFileError;
 
-    fn try_into(self) -> Result<NIObject, Self::Error> {
-        crate::raw_repository::Repository::read(self).map(NIObject::from)
+    fn try_into(self) -> std::result::Result<NIObject, Self::Error> {
+        Ok(crate::raw_repository::Repository::read(self).map(NIObject::from)?)
     }
 }
 

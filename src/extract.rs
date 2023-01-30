@@ -5,7 +5,7 @@ use crate::{
     prelude::*,
 };
 
-pub fn extract_preset(i: &[u8]) -> Result<Vec<u8>> {
+pub fn extract_preset(i: &[u8]) -> std::result::Result<Vec<u8>, NIFileError> {
     match detect::filetype(i) {
         NIFileType::NIContainer => {
             info!("detected NIContainer");
@@ -26,8 +26,8 @@ mod tests {
     use super::*;
 
     #[test]
-    fn test_fm8() -> Result<()> {
-        let preset = extract_preset(include_bytes!("../test-data/fm8/000-default.nfm8"))?;
+    fn test_fm8() -> std::result::Result<(), NIFileError> {
+        let _preset = extract_preset(include_bytes!("../test-data/fm8/000-default.nfm8"))?;
         //write!(preset);
         // assert_eq!(preset, 0);
         Ok(())

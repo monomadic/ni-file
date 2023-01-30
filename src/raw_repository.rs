@@ -57,7 +57,7 @@ pub struct ItemFrame {
 }
 
 impl Repository {
-    pub fn read(buf: &[u8]) -> Result<Self> {
+    pub fn read(buf: &[u8]) -> std::result::Result<Self, NIFileError> {
         let mut cursor = Cursor::new(buf);
 
         Ok(cursor.read_le()?)

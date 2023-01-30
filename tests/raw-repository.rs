@@ -1,7 +1,7 @@
 use ni_file::prelude::*;
 
 #[test]
-fn test_kontakt() -> Result<()> {
+fn test_kontakt() -> std::result::Result<(), NIFileError> {
     let file = include_bytes!("./data/ni_container/kontakt-5.4-demo.nki");
     let container = ni_file::raw_repository::Repository::read(file)?;
 

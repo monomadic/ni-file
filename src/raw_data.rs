@@ -2,7 +2,7 @@ use crate::prelude::*;
 use binread::{io::Cursor, prelude::*};
 use std::io::prelude::*;
 
-pub fn read(data: &[u8]) -> Result<Vec<DataField>> {
+pub fn read(data: &[u8]) -> std::result::Result<Vec<DataField>, NIFileError> {
     let mut cursor: Cursor<&[u8]> = Cursor::new(data);
     let mut fields: Vec<FieldHeader> = Vec::new();
     let mut data_ends: Vec<u64> = Vec::new();
@@ -70,7 +70,7 @@ mod tests {
     use super::*;
 
     #[test]
-    fn read_field_headers_test() -> Result<()> {
+    fn read_field_headers_test() -> std::result::Result<(), NIFileError> {
         let file =
             include_bytes!("../data/item-data/118-106-Kontakt5-RepositoryRoot-Authorization.data");
 
