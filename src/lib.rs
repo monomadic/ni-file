@@ -39,5 +39,7 @@ pub mod detect; // detect filetype
 
 pub mod extract;
 
+pub(crate) mod read_bytes;
+
 // old
 // pub mod raw_container; // old version?

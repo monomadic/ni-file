@@ -10,6 +10,7 @@ where
     let mut chunk = reader.take(bytes_to_read);
     // Do appropriate error handling for your situation
     // Maybe it's OK if you didn't read enough bytes?
+    // TODO: return generic read error here, context error later (for each field)
     let n = chunk.read_to_end(&mut buf).expect("Didn't read enough");
     assert_eq!(bytes_to_read as usize, n);
     buf
