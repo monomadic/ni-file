@@ -1,3 +1,4 @@
+use byteorder::{LittleEndian, ReadBytesExt};
 use std::io::Read;
 
 /// Raw method
@@ -5,8 +6,6 @@ use std::io::Read;
 /// - safer, better error messages
 /// - only parses specific data on demand
 ///
-use byteorder::{LittleEndian, ReadBytesExt};
-
 use thiserror::Error;
 
 pub struct Frame {
@@ -15,6 +14,34 @@ pub struct Frame {
     pub data: Vec<u8>,
     pub children: Vec<Vec<u8>>,
 }
+
+fn read_frame_chunk<'a>(mut buffer: &'a [u8]) -> Result<&'a [u8], FrameError> {
+    // read size field
+    let buffer_size = buffer.len() as u64;
+    log::debug!("Received buffer size: {}", buffer_size);
+
+    let size_field = buffer.read_u64::<LittleEndian>()?;
+    log::debug!("Read size field: {}", size_field);
+
+    if buffer_size != size_field {
+        return Err(FrameError::IncorrectFrameSize {
+            expected: size_field,
+            got: buffer_size,
+        });
+    }
+
+    // TODO: read buffer_size bytes
+    let bytes_to_read: usize = (buffer_size - size_field) as usize;
+    let mut buf = vec![0u8; bytes_to_read];
+    buffer.read_exact(&mut buf)?;
+
+    Ok(&buffer)
+}
+
+/* fn consume_u32_le(bytes: &mut [u8]) -> Result<u32, std::array::TryFromSliceError> {
+    let (u32_buffer, _) = buffer.split_at_mut(std::mem::size_of::<u32>());
+    u32::from_le_bytes(u32_buffer)
+} */
 
 #[derive(Error, Debug)]
 pub enum FrameError {
