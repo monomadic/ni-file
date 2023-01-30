@@ -1,3 +1,4 @@
+use std::convert::TryInto;
 use std::io;
 
 pub trait ReadBytesExt: io::Read {
@@ -5,6 +6,30 @@ pub trait ReadBytesExt: io::Read {
         let mut buf = [0u8; 4];
         self.read_exact(&mut buf)?;
         Ok(u32::from_le_bytes(buf))
+    }
+
+    fn scan_u32_le(bytes: &[u8]) -> Result<u32, std::array::TryFromSliceError> {
+        let buffer: [u8; 4] = bytes.try_into()?;
+        let result = u32::from_le_bytes(buffer);
+        Ok(result)
+    }
+
+    fn read_u64_le(&mut self) -> io::Result<u64> {
+        let mut buf = [0u8; 8];
+        self.read_exact(&mut buf)?;
+        Ok(u64::from_le_bytes(buf))
+    }
+
+    fn scan_u64_le(bytes: &[u8]) -> Result<u64, std::array::TryFromSliceError> {
+        let buffer: [u8; 8] = bytes.try_into()?;
+        let result = u64::from_le_bytes(buffer);
+        Ok(result)
+    }
+
+    fn read_bytes(&mut self, bytes: usize) -> io::Result<Vec<u8>> {
+        let mut buf = vec![0u8; bytes];
+        self.read_exact(&mut buf)?;
+        Ok(buf)
     }
 }
 impl<R: io::Read + ?Sized> ReadBytesExt for R {}
