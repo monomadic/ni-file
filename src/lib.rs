@@ -7,6 +7,10 @@
 //!    - integration tests: check file read and export on real files
 //!
 
+#![warn(clippy::all)]
+// #![warn(missing_docs)]
+// #![warn(clippy::style)]
+
 #[macro_use]
 extern crate log;
 

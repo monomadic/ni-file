@@ -1,74 +1,42 @@
-use byteorder::{LittleEndian, ReadBytesExt};
-use std::io::prelude::*;
+use crate::read_bytes::ReadBytesExt;
 use thiserror::Error;
-
-fn read_bytes<R>(reader: R, bytes_to_read: u64) -> Vec<u8>
-where
-    R: Read,
-{
-    let mut buf = vec![];
-    let mut chunk = reader.take(bytes_to_read);
-    // Do appropriate error handling for your situation
-    // Maybe it's OK if you didn't read enough bytes?
-    // TODO: return generic read error here, context error later (for each field)
-    let n = chunk.read_to_end(&mut buf).expect("Didn't read enough");
-    assert_eq!(bytes_to_read as usize, n);
-    buf
-}
-
-pub struct RawFrame<'a> {
-    pub data: &'a [u8],
-}
-
-impl<'a> RawFrame<'a> {
-    pub fn new(bytes: &'a [u8]) -> Result<RawFrame<'a>, FrameError> {
-        Ok(Self { data: read(bytes)? })
-    }
-
-    pub fn validate(&self) -> Result<(), FrameError> {
-        todo!()
-    }
-
-    pub fn children(&self) -> Result<Vec<RawFrame>, FrameError> {
-        read_bytes(self.data, 20);
-        Ok(vec![])
-    }
-}
 
 #[derive(Error, Debug)]
 pub enum FrameError {
-    #[error("Incorrect Size Field: expected {expected}, got {got}")]
+    #[error("Size field mismatch: expected {expected}, got {got}")]
     IncorrectFrameSize { expected: u64, got: u64 },
 
     #[error("IO Error")]
     IO(#[from] std::io::Error),
 }
 
-pub fn read<'a>(mut bytes: &'a [u8]) -> Result<&'a [u8], FrameError> {
+/// checks a frame is a valid size and returns its contents as a byte array
+pub fn read_frame_data<R>(mut reader: R) -> Result<Vec<u8>, FrameError>
+where
+    R: ReadBytesExt,
+{
     // read size field
-    let buffer_size = bytes.len() as u64;
-    log::debug!("Received buffer size: {}", buffer_size);
+    let size_field = reader.read_u64_le()? as usize;
+    log::debug!("Size field: {}", size_field);
 
-    let size_field = bytes.read_u64::<LittleEndian>()?;
-    log::debug!("Read size field: {}", size_field);
-
-    if buffer_size != size_field {
-        return Err(FrameError::IncorrectFrameSize {
-            expected: size_field,
-            got: buffer_size,
-        });
-    }
-
-    let bytes_to_read: usize = (buffer_size - size_field) as usize;
-    let mut buf = vec![0u8; bytes_to_read];
-    bytes.read_exact(&mut buf)?;
-
-    Ok(&bytes)
+    reader
+        .read_bytes(size_field - 4)
+        .map_err(|_| FrameError::IncorrectFrameSize {
+            expected: size_field as u64,
+            got: 0, // FIXME: don't use 0, make new error type
+        })
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn read_test() -> Result<(), Box<dyn std::error::Error>> {
+        let bytes = [12_u64.to_le_bytes().to_vec(), 64_u32.to_le_bytes().to_vec()].concat();
+        assert_eq!(read_frame_data(bytes.as_slice())?, 64_u32.to_le_bytes());
+        Ok(())
+    }
 
     #[test]
     fn test_reading_files() -> Result<(), Box<dyn std::error::Error>> {
@@ -82,23 +50,10 @@ mod tests {
             println!("reading {:?}", path);
 
             let file = std::fs::read(path)?;
-            let bytes = read(&file)?;
+            let bytes = read_frame_data(file.as_slice())?;
 
             assert_eq!(bytes.len(), file.len() - 8);
         }
         Ok(())
     }
 }
-
-// use std::convert::TryInto;
-// use std::io::Read;
-// fn read_bytes<T, R>(reader: &mut R) -> Result<T, std::io::Error>
-// where
-//     T: TryInto<Vec<u8>, Error = std::array::TryFromSliceError>,
-// {
-//     let size = std::mem::size_of::<T>();
-//     let mut buffer = vec![0; size];
-//     reader.read_exact(&mut buffer)?;
-//     let arr = buffer.as_slice().try_into()?;
-//     Ok(T::from_le_bytes(arr))
-// }
