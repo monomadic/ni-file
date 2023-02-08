@@ -1,6 +1,8 @@
 use crate::read_bytes::ReadBytesExt;
 use thiserror::Error;
 
+pub struct Frame(Vec<u8>);
+
 #[derive(Error, Debug)]
 pub enum FrameError {
     #[error("Size field mismatch: expected {expected}, got {got}")]
@@ -8,6 +10,15 @@ pub enum FrameError {
 
     #[error("IO Error")]
     IO(#[from] std::io::Error),
+}
+
+impl Frame {
+    pub fn read<R>(reader: R) -> Result<Vec<u8>, FrameError>
+    where
+        R: ReadBytesExt,
+    {
+        read_frame_data(reader)
+    }
 }
 
 /// checks a frame is a valid size and returns its contents as a byte array

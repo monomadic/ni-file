@@ -7,4 +7,6 @@
 mod byteorder;
 pub use self::byteorder::*;
 
-// pub mod header;
+pub use self::byteorder::Frame;
+
+pub mod header;
