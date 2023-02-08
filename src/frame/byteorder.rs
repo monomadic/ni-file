@@ -1,7 +1,7 @@
 use crate::read_bytes::ReadBytesExt;
 use thiserror::Error;
 
-pub struct Frame(Vec<u8>);
+pub struct Frame(pub Vec<u8>);
 
 pub struct ParsedFrame {
     pub header: super::header::FrameHeader,
@@ -20,11 +20,11 @@ pub enum FrameError {
 }
 
 impl Frame {
-    pub fn read<R>(reader: R) -> Result<Vec<u8>, FrameError>
+    pub fn read<R>(reader: R) -> Result<Frame, FrameError>
     where
         R: ReadBytesExt,
     {
-        read_frame_data(reader)
+        Ok(Frame(read_frame_data(reader)?))
     }
 
     pub fn parse() -> Result<ParsedFrame, FrameError> {
