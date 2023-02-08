@@ -5,6 +5,7 @@
 //!  TODO:
 //!  - fix tests
 //!    - integration tests: check file read and export on real files
+//!    - add unit tests for all internal functions
 //!
 
 #![warn(clippy::all)]

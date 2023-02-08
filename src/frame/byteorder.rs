@@ -3,6 +3,13 @@ use thiserror::Error;
 
 pub struct Frame(Vec<u8>);
 
+pub struct ParsedFrame {
+    pub header: super::header::FrameHeader,
+    pub data: Vec<u8>,
+    pub children: Vec<Frame>,
+    // pub child_type: u32,
+}
+
 #[derive(Error, Debug)]
 pub enum FrameError {
     #[error("Size field mismatch: expected {expected}, got {got}")]
@@ -18,6 +25,10 @@ impl Frame {
         R: ReadBytesExt,
     {
         read_frame_data(reader)
+    }
+
+    pub fn parse() -> Result<ParsedFrame, FrameError> {
+        todo!()
     }
 }
 
