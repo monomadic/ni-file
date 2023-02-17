@@ -18,3 +18,11 @@ pub(crate) fn get_test_files() -> Result<Vec<PathBuf>, Box<dyn Error>> {
         .filter(|path| path.file_name().unwrap() != ".DS_Store")
         .collect())
 }
+
+#[allow(dead_code)]
+pub(crate) fn glob_paths(path: &str) -> Result<Vec<PathBuf>, Box<dyn Error>> {
+    Ok(glob::glob(path)?
+        .filter_map(|path| path.ok())
+        .filter(|path| path.file_name().unwrap() != ".DS_Store")
+        .collect())
+}

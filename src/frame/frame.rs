@@ -46,6 +46,7 @@ where
     R: ReadBytesExt,
 {
     // read size field
+    // method.NI::SOUND::ItemFrame.getFrameSize
     let size_field = reader.read_u64_le()?;
     log::debug!("size field: {}", size_field);
 

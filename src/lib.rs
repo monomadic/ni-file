@@ -7,7 +7,7 @@
 //!  - use radare2 to explore RepositoryRoot
 //!
 
-#![warn(clippy::all)]
+// #![warn(clippy::all)]
 // #![warn(missing_docs)]
 // #![warn(clippy::style)]
 
