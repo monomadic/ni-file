@@ -15,9 +15,9 @@ md5 = "0.7.0"
 thiserror = "1.0.38"
 anyhow = "1.0.68"
 loggy = "0.5.3"
+glob = "0.3.1"
 
 [dev-dependencies]
-glob = "0.3.1"
 
 [workspace]
 members = ["cli"]

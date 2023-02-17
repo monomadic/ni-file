@@ -3,9 +3,8 @@
 //! Native Instruments file formats
 //!
 //!  TODO:
-//!  - fix tests
-//!    - integration tests: check file read and export on real files
-//!    - add unit tests for all internal functions
+//!  - read RepositoryRoot struct
+//!  - use radare2 to explore RepositoryRoot
 //!
 
 #![warn(clippy::all)]
@@ -19,7 +18,7 @@ pub mod error;
 pub mod prelude;
 
 // presets
-// pub mod ni_preset;
+pub mod preset;
 
 // TODO: make private:
 
@@ -45,6 +44,7 @@ pub mod detect; // detect filetype
 pub mod extract;
 
 pub(crate) mod read_bytes;
+pub(crate) mod utils;
 
 // old
 // pub mod raw_container; // old version?

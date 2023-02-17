@@ -26,9 +26,11 @@ pub trait ReadBytesExt: io::Read {
         Ok(result)
     }
 
+    /// TODO: take any int instead of just usize
     /// read a number of bytes (failable)
     fn read_bytes(&mut self, bytes: usize) -> io::Result<Vec<u8>> {
         let mut buf = vec![0u8; bytes];
+        log::info!("reading {} bytes", buf.len());
         self.read_exact(&mut buf)?;
         Ok(buf)
     }

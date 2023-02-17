@@ -1,3 +1,5 @@
+pub(crate) mod repository_root;
+
 #[derive(PartialEq, Debug, Clone, Default)]
 pub enum ItemType {
     AppSpecific,

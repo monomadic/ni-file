@@ -71,8 +71,9 @@ mod tests {
 
     #[test]
     fn read_field_headers_test() -> std::result::Result<(), NIFileError> {
-        let file =
-            include_bytes!("../data/item-data/118-106-Kontakt5-RepositoryRoot-Authorization.data");
+        let file = include_bytes!(
+            "../data/item-frame-data/118-106-Kontakt5-RepositoryRoot-Authorization.data"
+        );
 
         read(file)?;
 

@@ -1,5 +1,7 @@
 use crate::read_bytes::ReadBytesExt;
 
+use super::FrameError;
+
 #[derive(Debug, Clone)]
 pub struct FrameHeader {
     pub item_id: u32,      // (+0x8, uint)
@@ -9,11 +11,11 @@ pub struct FrameHeader {
 }
 
 impl FrameHeader {
-    pub fn read<R>(mut reader: R) -> Result<FrameHeader, Box<dyn std::error::Error>>
+    pub fn read<R>(mut reader: R) -> Result<FrameHeader, FrameError>
     where
         R: ReadBytesExt,
     {
-        // TODO: add runtime checks
+        // TODO: validation
         Ok(Self {
             item_id: reader.read_u32_le()?,
             domain_id: reader.read_u32_le()?,
