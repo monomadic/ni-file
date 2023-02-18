@@ -10,4 +10,8 @@
 // VersionNumber // method.NI::SOUND::AuthoringApplicationInfo.readVersion_NI::GP::Stream__NI::PA::VersionNumber_
 //   u32
 //   WString
-/
+
+// +20b SoundInfo
+// - name
+// - vendor
+// - author

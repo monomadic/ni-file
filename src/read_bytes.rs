@@ -34,6 +34,16 @@ pub trait ReadBytesExt: io::Read {
         self.read_exact(&mut buf)?;
         Ok(buf)
     }
+
+    /// checks data is a valid size and returns its content as a byte array
+    fn read_sized_data(&mut self) -> io::Result<Vec<u8>> {
+        let size_field = self.read_u64_le()?;
+        log::debug!("size field: {}", size_field);
+
+        // read data into buffer
+        let size_field_len = std::mem::size_of::<u64>();
+        Ok(self.read_bytes(size_field as usize - size_field_len)?)
+    }
 }
 impl<R: io::Read + ?Sized> ReadBytesExt for R {}
 

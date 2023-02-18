@@ -2,6 +2,20 @@ use binread::prelude::*;
 
 use crate::{prelude::NIFileError, read_bytes::ReadBytesExt};
 
+// method.NI::SOUND::RepositoryRoot.readItem_NI::GP::Stream__NI::SOUND::ReadContext_
+
+// getNISoundMajorVersion { return *(arg_8h + 0x20) >> 0x14 & 0xff; }
+// getNISoundMinorVersion
+// getNISoundPatchVersion
+// getNISoundVersion +0x20 (32)
+// getRepositoryMagic +0x24 (36)
+// getRepositoryVersion +0x28
+// getRepositoryType +0x2c (44)
+// getRepositoryReferenceFn
+// getRepositoryItemUuid
+// getDomainID
+// getItemID { return "DSIN" }
+
 /// a data field type representing the topmost level of a repository container.
 #[derive(BinRead)]
 pub struct RepositoryRoot {}

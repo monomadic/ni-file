@@ -1,11 +1,18 @@
 # Item
 
+HSIN: Native Instruments Sound Header
+
 - afl~readItem
 - afl~read_NI
 
 ## 118 RepositoryRoot
 - chunk: 58 bytes
 - @method.NI::SOUND::RepositoryRoot.readItem_NI::GP::Stream__NI::SOUND::ReadContext_
+
+### Magic
+data + 36 bytes
+0x0E701000 ` p  `
+- method.NI::SOUND::RepositoryRoot.getRepositoryMagic___const
 
 Headers (20 bytes)
 u64

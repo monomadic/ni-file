@@ -1,6 +1,6 @@
 use std::{error::Error, fs, io::Read};
 
-use ni_file::frame::Frame;
+use ni_file::frame::Item;
 
 mod utils;
 
@@ -12,7 +12,7 @@ fn test_reading_files() -> Result<(), Box<dyn Error>> {
         log::info!("reading {:?}", path);
 
         let mut file = fs::File::open(path.as_path())?;
-        let _frame = Frame::read(&file)?;
+        let _frame = Item::read(&file)?;
 
         // assure no space left at end of file
         let mut buf = Vec::new();
