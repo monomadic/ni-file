@@ -11,19 +11,19 @@
 // #![warn(missing_docs)]
 // #![warn(clippy::style)]
 
+// TODO: remove
+#![allow(dead_code)]
+
 #[macro_use]
 extern crate log;
 
 pub mod error;
 pub mod prelude;
 
-// presets
-pub mod preset;
-
 // TODO: make private:
 
-pub mod frame;
 pub mod item;
+pub mod item_frame;
 
 // TODO: delete:
 

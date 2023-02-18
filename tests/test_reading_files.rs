@@ -1,6 +1,6 @@
 use std::{error::Error, fs, io::Read};
 
-use ni_file::frame::Item;
+use ni_file::item::Item;
 
 mod utils;
 

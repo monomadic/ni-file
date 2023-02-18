@@ -73,7 +73,7 @@ impl From<u32> for SegmentType {
             115 => SegmentType::SubtreeItem,
             116 => SegmentType::EncryptionItem,
             117 => SegmentType::AppSpecific,
-            118 => SegmentType::RepositoryRoot, // 0x76
+            118 => SegmentType::RepositoryRoot, // 0x76 (v)
             120 => SegmentType::AutomationParameters,
             121 => SegmentType::ControllerAssignments,
             122 => SegmentType::Module,

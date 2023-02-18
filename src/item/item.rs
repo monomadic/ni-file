@@ -1,11 +1,10 @@
 use crate::read_bytes::ReadBytesExt;
 use thiserror::Error;
 
-use super::header::ItemHeader;
+use super::{frame_stack::ItemFrameStack, header::ItemHeader};
 
 /// named type for a raw frame
 pub struct Item(pub Vec<u8>);
-pub struct ItemFrameStack(pub Vec<u8>);
 
 #[derive(Error, Debug)]
 pub enum FrameError {
@@ -25,12 +24,14 @@ impl Item {
         Ok(Item(reader.read_sized_data()?))
     }
 
+    /// read the header data as a byte array
     pub fn header(&self) -> Result<ItemHeader, FrameError> {
         let slice = self.0.as_slice().read_bytes(20)?;
         let frameheader = ItemHeader::read(slice.as_slice())?;
         Ok(frameheader)
     }
 
+    /// read the frame stack as a byte array
     pub fn frame_stack(&self) -> Result<ItemFrameStack, FrameError> {
         let data = self.0.clone();
         let mut data = data.as_slice();

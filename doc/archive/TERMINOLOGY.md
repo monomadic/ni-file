@@ -11,10 +11,11 @@
 			@ uuid method.NI::SOUND::ItemUuid.write_NI::GP::Stream__const
 		- `ItemFrameStack`
 			- `ItemFrame` (Size, DomainID, ItemID)
-				@ u64 FrameSize
-				@ u32 DomainID 0x4e495344 "DSIN"
-				@ u32 ItemID
-				@ u32 Version
+				@ u64 FrameSize +0
+				@ u32 DomainID 0x4e495344 "DSIN" +0x8
+				@ u32 ItemID +0xc(12)
+				@ u32 Version +0x10(16)
+				.getStreamFrameSizeInBytes() -> 0x14(20)
 				.getFrameSize()
 				.isFrameForBase() { DomainID != 'DSIN' || ItemID != 1 }
 
