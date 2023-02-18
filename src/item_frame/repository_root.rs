@@ -68,8 +68,6 @@ mod tests {
     fn test_reading_files() -> Result<(), Box<dyn std::error::Error>> {
         crate::utils::setup_logger();
 
-        panic!("{}", 72_u64 >> 0x20);
-
         let path = "data/item-frame-data-field/kontakt-5/118-RepositoryRoot.data";
         log::info!("reading {:?}", path);
 

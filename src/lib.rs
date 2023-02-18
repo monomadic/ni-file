@@ -3,8 +3,8 @@
 //! Native Instruments file formats
 //!
 //!  TODO:
-//!  - read RepositoryRoot struct
-//!  - use radare2 to explore RepositoryRoot
+//!  - read children
+//!  - detect type
 //!
 
 // #![warn(clippy::all)]
