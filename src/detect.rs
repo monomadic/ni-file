@@ -40,9 +40,9 @@ mod tests {
     use super::*;
 
     #[test]
-    fn test_kontakt_4() {
+    fn test_kontakt_7() {
         assert_eq!(
-            filetype(include_bytes!("../test-data/kontakt-4/k4booga2.nki")),
+            filetype(include_bytes!("../data/files/kontakt-7/000-default.nki")),
             NIFileType::NIContainer
         )
     }

@@ -28,20 +28,20 @@ pub mod item_frame; // move to repository
 // TODO: delete:
 
 // abstract objects
-pub mod ni_object;
-pub mod ni_object_data;
+// pub mod ni_object;
+// pub mod ni_object_data;
 
 // raw objects (know nothing of types, just data containers)
-pub mod kinds; // segment type
-pub mod raw_data; // data segments (fields)
-pub mod raw_repository; // file container / repository
+// pub mod kinds; // segment type
+// pub mod raw_data; // data segments (fields)
+// pub mod raw_repository; // file container / repository
 
 // utils
 pub mod cb; // control byte
 pub mod deflate; // decompress
 pub mod detect; // detect filetype
 
-pub mod extract;
+// pub mod extract;
 
 pub(crate) mod read_bytes;
 pub(crate) mod utils;

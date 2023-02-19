@@ -5,7 +5,7 @@ use ni_file::item::Item;
 mod utils;
 
 #[test]
-fn test_reading_files() -> Result<(), Box<dyn Error>> {
+fn test_reading_test_files() -> Result<(), Box<dyn Error>> {
     utils::setup_logger();
 
     for path in utils::get_test_files()? {

@@ -18,6 +18,3 @@ loggy = "0.5.3"
 glob = "0.3.1"
 
 [dev-dependencies]
-
-[workspace]
-members = ["cli"]
