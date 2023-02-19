@@ -1,6 +1,6 @@
 use crate::read_bytes::ReadBytesExt;
 
-use super::FrameError;
+use super::ItemError;
 
 #[derive(Debug, Clone)]
 pub struct ItemHeader {
@@ -11,7 +11,7 @@ pub struct ItemHeader {
 }
 
 impl ItemHeader {
-    pub fn read<R>(mut reader: R) -> Result<ItemHeader, FrameError>
+    pub fn read<R>(mut reader: R) -> Result<ItemHeader, ItemError>
     where
         R: ReadBytesExt,
     {

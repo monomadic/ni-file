@@ -3,11 +3,11 @@ use thiserror::Error;
 
 use super::{frame_stack::ItemFrameStack, header::ItemHeader};
 
-/// named type for a raw frame
+/// The basic building block of repositories.
 pub struct Item(pub Vec<u8>);
 
 #[derive(Error, Debug)]
-pub enum FrameError {
+pub enum ItemError {
     #[error("Size field mismatch: expected {expected}, got {got}")]
     IncorrectFrameSize { expected: u64, got: u64 },
 
@@ -17,7 +17,7 @@ pub enum FrameError {
 
 impl Item {
     /// read a byte stream into a raw Frame
-    pub fn read<R>(mut reader: R) -> Result<Item, FrameError>
+    pub fn read<R>(mut reader: R) -> Result<Item, ItemError>
     where
         R: ReadBytesExt,
     {
@@ -25,14 +25,14 @@ impl Item {
     }
 
     /// read the header data as a byte array
-    pub fn header(&self) -> Result<ItemHeader, FrameError> {
+    pub fn header(&self) -> Result<ItemHeader, ItemError> {
         let slice = self.0.as_slice().read_bytes(20)?;
         let frameheader = ItemHeader::read(slice.as_slice())?;
         Ok(frameheader)
     }
 
     /// read the frame stack as a byte array
-    pub fn frame_stack(&self) -> Result<ItemFrameStack, FrameError> {
+    pub fn frame_stack(&self) -> Result<ItemFrameStack, ItemError> {
         let data = self.0.clone();
         let mut data = data.as_slice();
         let _ = data.read_bytes(20)?; // header
