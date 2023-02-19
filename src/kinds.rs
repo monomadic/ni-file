@@ -29,6 +29,7 @@ pub enum SegmentType {
     Bank,
     BankContainer,
     BinaryChunkItem,
+    BNISoundPreset,
     BNISoundHeader,
     ControllerAssignments,
     EncryptionItem,
@@ -56,7 +57,8 @@ impl From<u32> for SegmentType {
         match id {
             // ItemFrame
             1 => SegmentType::Item,
-            3 => SegmentType::BNISoundHeader,
+            3 => SegmentType::BNISoundPreset,
+            4 => SegmentType::BNISoundHeader,
             100 => SegmentType::Bank,
             101 => SegmentType::Preset,
             102 => SegmentType::BankContainer,
