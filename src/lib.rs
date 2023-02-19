@@ -22,8 +22,8 @@ pub mod prelude;
 
 // TODO: make private:
 
-pub mod item; // rename to repository
-pub mod item_frame; // move to repository
+pub mod item_frame;
+pub mod repository; // rename to repository // move to repository
 
 // TODO: delete:
 
