@@ -19,10 +19,10 @@
                 .isFrameForBase() { DomainID != 'DSIN' || ItemID != 1 }
 */
 
-mod frame_stack;
-mod frames;
 mod header;
 mod item;
+mod item_frame;
+mod item_frame_stack;
 
 pub use self::item::Item;
 pub use self::item::*;

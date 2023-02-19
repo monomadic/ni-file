@@ -1,5 +1,10 @@
 use crate::{prelude::NIFileError, read_bytes::ReadBytesExt};
 
+// Authorization
+// u32 Value repository-magic 0x24
+// u32 Value repository-version 0x28
+// u32 Value repository-type 0x2c
+
 // method.NI::SOUND::RepositoryRoot.readItem_NI::GP::Stream__NI::SOUND::ReadContext_
 
 // "DSIN"

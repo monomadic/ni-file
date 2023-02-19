@@ -1,7 +1,7 @@
 use crate::read_bytes::ReadBytesExt;
 use thiserror::Error;
 
-use super::{frame_stack::ItemFrameStack, header::ItemHeader};
+use super::{header::ItemHeader, item_frame_stack::ItemFrameStack};
 
 /// The basic building block of repositories.
 pub struct Item(pub Vec<u8>);
