@@ -8,11 +8,12 @@ pub trait ReadBytesExt: io::Read {
         Ok(u32::from_le_bytes(buf))
     }
 
-    fn scan_u32_le(&self) -> Result<u32, std::array::TryFromSliceError> {
-        let buf = [0u8; 4];
-        let result = u32::from_le_bytes(buf);
-        Ok(result)
-    }
+    // fn scan_u32_le(&self) -> Result<u32, std::array::TryFromSliceError> {
+    //     let mut buffer: [u8; 4] = [0; 4];
+    //     buffer.copy_from_slice(self.into());
+    //     let result = u32::from_le_bytes(buffer);
+    //     Ok(result)
+    // }
 
     fn read_u64_le(&mut self) -> io::Result<u64> {
         let mut buf = [0u8; 8];
@@ -78,5 +79,10 @@ mod tests {
 
         assert_eq!(num, 939786528);
         assert_eq!(bytes, [6]);
+    }
+
+    #[test]
+    fn test_scan_32() -> Result<(), Box<dyn std::error::Error>> {
+        Ok(())
     }
 }
