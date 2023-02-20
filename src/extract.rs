@@ -27,7 +27,7 @@ mod tests {
 
     #[test]
     fn test_fm8() -> std::result::Result<(), NIFileError> {
-        let _preset = extract_preset(include_bytes!("../data/files/fm8/000-default.nfm8"))?;
+        let _preset = extract_preset(include_bytes!("../tests/data/files/fm8/000-default.nfm8"))?;
         //write!(preset);
         // assert_eq!(preset, 0);
         Ok(())

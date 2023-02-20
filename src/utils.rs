@@ -12,7 +12,7 @@ pub(crate) fn setup_logger() {
 
 #[allow(dead_code)]
 pub(crate) fn get_test_files() -> Result<Vec<PathBuf>, Box<dyn Error>> {
-    Ok(glob::glob("data/files/**/*.*")?
+    Ok(glob::glob("../tests/data/files/**/*.*")?
         .filter_map(|path| path.ok())
         .filter(|path| path.file_name().unwrap() != ".DS_Store")
         .collect())

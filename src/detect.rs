@@ -42,7 +42,9 @@ mod tests {
     #[test]
     fn test_kontakt_7() {
         assert_eq!(
-            filetype(include_bytes!("../data/files/kontakt-7/000-default.nki")),
+            filetype(include_bytes!(
+                "../tests/data/files/kontakt-7/000-default.nki"
+            )),
             NIFileType::NIContainer
         )
     }
