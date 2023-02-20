@@ -26,11 +26,5 @@ pub mod repository;
 pub mod cb; // control byte
 pub mod deflate; // decompress
 pub mod detect; // detect filetype
-
-// pub mod extract;
-
-pub(crate) mod read_bytes;
-pub(crate) mod utils;
-
-// old
-// pub mod raw_container; // old version?
+pub(crate) mod read_bytes; // for reading bytestreams
+pub(crate) mod utils; // various utils for logging etc

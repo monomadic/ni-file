@@ -25,3 +25,20 @@ pub(crate) fn glob_paths(path: &str) -> Result<Vec<PathBuf>, Box<dyn Error>> {
         .filter(|path| path.file_name().unwrap() != ".DS_Store")
         .collect())
 }
+
+#[allow(dead_code)]
+fn format_hex(buffer: &[u8]) -> String {
+    format!(
+        "{}",
+        &buffer
+            .iter()
+            .map(|x| format!("{:02x} ", x))
+            .collect::<String>()
+    )
+}
+
+#[allow(dead_code)]
+fn format_ascii(buffer: &[u8]) -> String {
+    format!("{}", String::from_utf8_lossy(buffer).to_string())
+    // format!("{}", &buffer.iter().map(|x| if x.is_ascii() {'s'} else {' '})).collect::<String>())
+}

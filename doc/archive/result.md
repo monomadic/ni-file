@@ -17,3 +17,15 @@
 14 = CHECKSUM_MISMATCH_ERROR
 15 = DECRYPTION_FAILED
 > 15 = UNDEFINED(n)
+
+
+int32_t NI::SOUND::Item::read(int32_t* arg1, int32_t* arg2)
+{
+    void var_94;
+    void* var_ac = &var_94;
+    NI::SOUND::ReadContext::ReadContext();
+    int32_t eax = NI::SOUND::Item::read(arg1, arg2, &var_94);
+    void* var_ac_2 = &var_94;
+    NI::SOUND::ReadContext::~ReadContext();
+    return eax;
+}

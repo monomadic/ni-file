@@ -47,6 +47,26 @@ pub trait ReadBytesExt: io::Read {
 }
 impl<R: io::Read + ?Sized> ReadBytesExt for R {}
 
+// TODO: implement read_widestring
+//
+// fn pascal_string_utf16<R: Read + Seek>(
+//     reader: &mut R,
+//     _ro: &binread::ReadOptions,
+//     _: (),
+// ) -> BinResult<String> {
+//     let size: u32 = reader.read_le()?;
+//
+//     info!("string length {}", size);
+//
+//     if size == 0 {
+//         return Ok(String::new());
+//     }
+//
+//     let string: String = reader.read_le::<binread::NullWideString>()?.into_string();
+//
+//     Ok(string)
+// }
+
 #[cfg(test)]
 mod tests {
     use super::ReadBytesExt;

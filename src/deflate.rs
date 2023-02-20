@@ -1,6 +1,14 @@
 use crate::cb::Offset;
 use nom::{bytes, IResult};
 
+// TODO: remove `nom` dependency
+// TODO: rewrite into reader trait form
+
+// pub fn read<R>(mut reader: R) -> Result<Vec<u8>, Box<dyn std::error::Error>> {
+//     let (_, result) = old_deflate(reader, 0)?;
+//     Ok(result)
+// }
+
 pub fn deflate(i: &[u8], offset: usize) -> IResult<&[u8], Vec<u8>> {
     // anything before the offset becomes the dictionary
     let (_dictionary, mut rem) = i.split_at(offset);
@@ -90,5 +98,18 @@ mod tests {
             fetch_offset(&vec![0x01, 0x02, 0xF4, 0x08, 0x00], 3, 1),
             vec![0x00, 0x00, 0x00]
         );
+    }
+
+    #[test]
+    fn test_deflate() {
+        assert_eq!(
+            deflate(
+                include_bytes!("../tests/data/compressed/kontakt-4/001-garbo2.compressed"),
+                0
+            )
+            .unwrap()
+            .1,
+            include_bytes!("../tests/data/decompressed/kontakt-4/001-garbo2.decompressed")
+        )
     }
 }
