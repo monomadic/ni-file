@@ -73,7 +73,7 @@ mod tests {
     fn test_reading_files() -> Result<(), Box<dyn std::error::Error>> {
         crate::utils::setup_logger();
 
-        let path = "tests/data/item-frame-data-field/kontakt-5/118-RepositoryRoot.data";
+        let path = "tests/data/item-frame-property/kontakt-5/118-RepositoryRoot.data";
         log::info!("reading {:?}", path);
 
         let file = std::fs::read(&path)?;
