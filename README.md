@@ -23,7 +23,7 @@ Repositories are embedded hierarchical chunks of data known as Items.
 
 Each file is made up of nested segments. There are two major kinds of segments header segments (`hsin`) and data segments (`dsin`). Header segments have more information and nest data segments. Here's a basic example colored with high level chunks.
 
-![chunks](chunks.png)
+![chunks](assets/chunks.png)
 
 The magic part is a char array denoted with 'hsin' tags / magic numbers. These tags are spelt backwards. For example
 
@@ -54,7 +54,7 @@ Another way to understand this structure is as follows:
 
 `Frames` are data fields, and are grouped together in a `StackFrame`.
 
-![data](data.png)
+![data](assets/data.png)
 
 ### Properties
 
