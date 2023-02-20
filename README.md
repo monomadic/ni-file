@@ -62,7 +62,10 @@ Within a `Frame` are properties, some are compressed though there are several ty
 
 ### Compressed Presets
 
-The main preset is compressed with a custom [LZ77](https://en.wikipedia.org/wiki/LZ77_and_LZ78) variant. deflate.rs can deflate a segment. It is the property that is compressed, not the `Frame`.
+The main preset is compressed with a variant of [LZ77](https://en.wikipedia.org/wiki/LZ77_and_LZ78) called FastLZ. deflate.rs can deflate a segment. It is the property that is compressed, not the `Frame`.
+
+https://github.com/ariya/FastLZ
+https://crates.io/crates/fastlz not native, rust bindings
 
 IMPORTANT: the compression starts 11 bytes into the data slice (depending on the property), but you must provide an initial dictionary of `00`.
 

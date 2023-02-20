@@ -24,7 +24,10 @@ pub mod repository;
 
 // utils
 pub mod cb; // control byte
+pub mod decompress;
 pub mod deflate; // decompress
 pub mod detect; // detect filetype
 pub(crate) mod read_bytes; // for reading bytestreams
 pub(crate) mod utils; // various utils for logging etc
+
+pub use fastlz;

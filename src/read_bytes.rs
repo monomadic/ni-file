@@ -8,9 +8,9 @@ pub trait ReadBytesExt: io::Read {
         Ok(u32::from_le_bytes(buf))
     }
 
-    fn scan_u32_le(bytes: &[u8]) -> Result<u32, std::array::TryFromSliceError> {
-        let buffer: [u8; 4] = bytes.try_into()?;
-        let result = u32::from_le_bytes(buffer);
+    fn scan_u32_le(&self) -> Result<u32, std::array::TryFromSliceError> {
+        let buf = [0u8; 4];
+        let result = u32::from_le_bytes(buf);
         Ok(result)
     }
 

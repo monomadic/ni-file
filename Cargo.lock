@@ -77,6 +77,9 @@ name = "cc"
 version = "1.0.79"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "50d30906286121d95be3d479533b458f87493b30a4b5f79a607db8f5d11aa91f"
+dependencies = [
+ "jobserver",
+]
 
 [[package]]
 name = "cfg-if"
@@ -200,6 +203,24 @@ dependencies = [
 ]
 
 [[package]]
+name = "fastlz"
+version = "0.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "a44c8ced14f9137fbda9602c6c9a29bbfed9d82c2a809d37d4959ebff3a0e988"
+dependencies = [
+ "fastlz-sys",
+]
+
+[[package]]
+name = "fastlz-sys"
+version = "0.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "20de788b4299495a08d2382146bd11ce9c7f6c2f53d3750d9ef49dc558cf5a39"
+dependencies = [
+ "cc",
+]
+
+[[package]]
 name = "glob"
 version = "0.3.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -261,6 +282,15 @@ dependencies = [
  "io-lifetimes",
  "rustix",
  "windows-sys",
+]
+
+[[package]]
+name = "jobserver"
+version = "0.1.25"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "068b1ee6743e4d11fb9c6a1e6064b3693a1b600e7f5f5988047d98b3dc9fb90b"
+dependencies = [
+ "libc",
 ]
 
 [[package]]
@@ -368,6 +398,7 @@ dependencies = [
  "binread",
  "byteorder",
  "env_logger",
+ "fastlz",
  "glob",
  "log",
  "loggy",
