@@ -17,6 +17,9 @@
                 .getStreamFrameSizeInBytes() -> 0x14(20)
                 .getFrameSize()
                 .isFrameForBase() { DomainID != 'DSIN' || ItemID != 1 }
+        - `SubtreeItem` 0x73 'DSIN' = 44 53 49 4E 73 00 00 00
+            .compressData()
+            .decompressData()
 */
 
 mod header;

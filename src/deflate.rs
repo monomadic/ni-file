@@ -1,13 +1,11 @@
+///
+/// fastlz implementation in pure rust
+///
 use crate::cb::Offset;
 use nom::{bytes, IResult};
 
 // TODO: remove `nom` dependency
 // TODO: rewrite into reader trait form
-
-// pub fn read<R>(mut reader: R) -> Result<Vec<u8>, Box<dyn std::error::Error>> {
-//     let (_, result) = old_deflate(reader, 0)?;
-//     Ok(result)
-// }
 
 pub fn deflate(i: &[u8], offset: usize) -> IResult<&[u8], Vec<u8>> {
     // anything before the offset becomes the dictionary
@@ -104,12 +102,12 @@ mod tests {
     fn test_deflate() {
         assert_eq!(
             deflate(
-                include_bytes!("../tests/data/compressed/kontakt-4/001-garbo2.compressed"),
+                include_bytes!("../tests/data/fastlz/kontakt-4/001-garbo2.compressed"),
                 0
             )
             .unwrap()
             .1,
-            include_bytes!("../tests/data/decompressed/kontakt-4/001-garbo2.decompressed")
+            include_bytes!("../tests/data/fastlz/kontakt-4/001-garbo2.decompressed")
         )
     }
 }

@@ -20,14 +20,13 @@ extern crate log;
 pub mod error;
 pub mod prelude;
 
-pub mod repository;
+pub mod detect; // detect filetype
+pub mod repository; // read ni repositories
 
 // utils
 pub mod cb; // control byte
-pub mod decompress;
+pub mod decompress; // fastlz lib
 pub mod deflate; // decompress
-pub mod detect; // detect filetype
+
 pub(crate) mod read_bytes; // for reading bytestreams
 pub(crate) mod utils; // various utils for logging etc
-
-pub use fastlz;

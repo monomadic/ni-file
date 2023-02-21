@@ -2,6 +2,12 @@ use std::convert::TryInto;
 use std::io;
 
 pub trait ReadBytesExt: io::Read {
+    fn read_u8(&mut self) -> io::Result<u8> {
+        let mut buf = [0u8; 1];
+        self.read_exact(&mut buf)?;
+        Ok(u8::from_le_bytes(buf))
+    }
+
     fn read_u32_le(&mut self) -> io::Result<u32> {
         let mut buf = [0u8; 4];
         self.read_exact(&mut buf)?;

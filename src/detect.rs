@@ -3,6 +3,7 @@ pub enum NIFileType {
     Repository,
     NIKontaktMonolith,
     KoreSound,
+    // not entirely sure if this is just k2 or all NI formats in the 90s
     Kontakt2,
     Unknown,
 }
@@ -10,7 +11,7 @@ pub enum NIFileType {
 pub fn filetype(buffer: &[u8]) -> NIFileType {
     // check for 'hsin' at byte 12
     if buffer[12..16] == [104, 115, 105, 110] {
-        info!("Detected: NIContainer");
+        info!("Detected: Repository");
         return NIFileType::Repository;
     }
 
