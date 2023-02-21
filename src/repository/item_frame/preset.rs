@@ -3,12 +3,11 @@
 /// Version +0x28
 // authoring-app 0x24
 // authoring-app-version 0x28
-use super::app_id::AuthoringApplication;
 
-/// Data field type 101
+/// ItemFrame 101: Preset
 pub struct Preset {
-    authoring_application: AuthoringApplication,
-    version: String,
+    authoring_app_id: u32,
+    authoring_app_version: String,
 }
 
 impl Preset {}

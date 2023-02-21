@@ -2,6 +2,13 @@ fn trim(buffer: &[u8]) -> Vec<u8> {
     vec![]
 }
 
+// fn decompress(i: &[u8]) -> Result<Vec<u8>, Box<dyn std::error::Error>> {
+//     let mut buffer: [u8; 10000] = [0; 10000];
+//
+//     fastlz::decompress(compressed_input, &mut buffer).expect("compression failed");
+//     Ok(Vec::new())
+// }
+
 #[cfg(test)]
 mod tests {
     use crate::read_bytes::ReadBytesExt;
