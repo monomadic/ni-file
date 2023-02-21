@@ -4,7 +4,6 @@
 //!
 //!  TODO:
 //!  - read children
-//!  - detect type
 //!
 
 // #![warn(clippy::all)]
@@ -30,3 +29,5 @@ pub mod deflate; // decompress
 
 pub(crate) mod read_bytes; // for reading bytestreams
 pub(crate) mod utils; // various utils for logging etc
+
+pub use detect::NIFileType;
