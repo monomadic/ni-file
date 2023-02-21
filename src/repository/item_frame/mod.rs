@@ -1,6 +1,7 @@
 pub mod app_id;
 pub mod item_id;
 
+pub mod authorization;
 pub mod preset;
 pub mod repository_root;
 pub mod sound_info;

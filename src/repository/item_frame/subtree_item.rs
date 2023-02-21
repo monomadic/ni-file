@@ -39,9 +39,8 @@
     }
 */
 
-use crate::read_bytes::ReadBytesExt;
-
 use crate::prelude::NIFileError;
+use crate::read_bytes::ReadBytesExt;
 
 pub struct SubtreeItem(Vec<u8>);
 
