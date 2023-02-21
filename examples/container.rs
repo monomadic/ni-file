@@ -1,4 +1,4 @@
-use ni_file::{repository::Item, NIFileType};
+use ni_file::{repository::Repository, NIFileType};
 
 pub fn main() {
     // lets read a Kontakt 7 file.
@@ -6,6 +6,6 @@ pub fn main() {
 
     // make sure this is a valid repository
     if NIFileType::detect(file) == NIFileType::Repository {
-        Item::read(file.as_slice()).unwrap();
+        Repository::read(file.as_slice()).unwrap();
     }
 }

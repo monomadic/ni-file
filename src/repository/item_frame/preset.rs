@@ -28,13 +28,13 @@
 //     authoring_app_version: String,
 // }
 
-use crate::prelude::NIFileError;
+use crate::prelude::*;
 use crate::read_bytes::ReadBytesExt;
 
 pub struct Preset(Vec<u8>);
 
 impl Preset {
-    fn read_item(&self) -> Result<Vec<u8>, NIFileError> {
+    fn read(&self) -> Result<Preset, NIFileError> {
         let mut buf = self.0.as_slice();
 
         let prop_version = buf.read_u32_le()?;
@@ -43,6 +43,7 @@ impl Preset {
         let is_compressed = buf.read_u8()?;
         log::debug!("is_compressed: {}", is_compressed);
 
-        Ok(vec![])
+        todo!();
+        Ok(Preset(vec![]))
     }
 }

@@ -1,6 +1,6 @@
 use std::{error::Error, fs, io::Read};
 
-use ni_file::repository::Item;
+use ni_file::repository::Repository;
 
 mod utils;
 
@@ -12,7 +12,7 @@ fn test_reading_test_files() -> Result<(), Box<dyn Error>> {
         log::info!("reading {:?}", path);
 
         let mut file = fs::File::open(path.as_path())?;
-        let _frame = Item::read(&file)?;
+        let _frame = Repository::read(&file)?;
 
         // assure no space left at end of file
         let mut buf = Vec::new();

@@ -26,6 +26,7 @@ mod header;
 mod item;
 mod item_frame;
 mod item_frame_stack;
+mod repository;
 
-pub use self::item::Item;
-pub use self::item::*;
+pub use item::ItemError;
+pub use repository::Repository;
