@@ -6,6 +6,10 @@ pub fn main() {
 
     // make sure this is a valid repository
     if NIFileType::detect(file) == NIFileType::Repository {
-        Repository::read(file.as_slice()).unwrap();
+        let repo = Repository::read(file.as_slice()).unwrap();
+        println!(
+            "major version: {}",
+            repo.root_item().unwrap().major_version()
+        );
     }
 }
