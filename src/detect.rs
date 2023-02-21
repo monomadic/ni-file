@@ -1,6 +1,6 @@
 #[derive(Debug, PartialEq)]
 pub enum NIFileType {
-    NIContainer,
+    Repository,
     NIKontaktMonolith,
     KoreSound,
     Kontakt2,
@@ -11,7 +11,7 @@ pub fn filetype(buffer: &[u8]) -> NIFileType {
     // check for 'hsin' at byte 12
     if buffer[12..16] == [104, 115, 105, 110] {
         info!("Detected: NIContainer");
-        return NIFileType::NIContainer;
+        return NIFileType::Repository;
     }
 
     // check for '/\ NI FC MTD  /\'
@@ -45,7 +45,7 @@ mod tests {
             filetype(include_bytes!(
                 "../tests/data/files/kontakt-7/000-default.nki"
             )),
-            NIFileType::NIContainer
+            NIFileType::Repository
         )
     }
 }
