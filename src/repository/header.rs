@@ -8,6 +8,7 @@ use super::ItemError;
 
 #[derive(Debug, Clone)]
 pub struct ItemHeader {
+    // pub size: u64,
     pub item_id: u32,      // (+0x8, uint, 0x01000000)
     pub domain_id: u32,    // (+0xC, uint, 'hsin')
     pub header_flags: u32, // (0x10, uint, see [ItemID])

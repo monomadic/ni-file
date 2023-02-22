@@ -1,9 +1,12 @@
 #[derive(Debug, PartialEq)]
 pub enum NIFileType {
+    /// Most NI files are Repositories.
     Repository,
+    /// Kontakt files with samples inside are monoliths.
     NIKontaktMonolith,
+    /// Kore has its own simple format.
     KoreSound,
-    // not entirely sure if this is just k2 or all NI formats in the 90s
+    /// Not entirely sure if this is just k2 or all NI formats in the 90s
     Kontakt2,
     Unknown,
 }
