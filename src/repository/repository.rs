@@ -5,7 +5,7 @@ use crate::read_bytes::ReadBytesExt;
 pub struct Repository(pub Item);
 
 impl Repository {
-    pub fn read<R>(mut reader: R) -> Result<Repository, ItemError>
+    pub fn read<R>(reader: R) -> Result<Repository, ItemError>
     where
         R: ReadBytesExt,
     {

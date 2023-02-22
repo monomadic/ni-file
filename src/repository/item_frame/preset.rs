@@ -43,7 +43,9 @@ impl Preset {
         let is_compressed = buf.read_u8()?;
         log::debug!("is_compressed: {}", is_compressed);
 
-        todo!();
+        let authoring_app_id = buf.read_u32_le()?;
+        log::debug!("authoring_app_id: {}", authoring_app_id);
+
         Ok(Preset(vec![]))
     }
 }

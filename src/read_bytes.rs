@@ -55,6 +55,10 @@ pub trait ReadBytesExt: io::Read {
 
         Ok([&size_field.to_le_bytes(), buf].concat())
     }
+
+    fn read_widestring_utf16(&mut self) -> io::Result<String> {
+        Ok(String::from("hi"))
+    }
 }
 impl<R: io::Read + ?Sized> ReadBytesExt for R {}
 

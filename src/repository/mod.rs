@@ -26,6 +26,7 @@ mod header;
 mod item;
 mod item_frame;
 mod item_frame_stack;
+mod property;
 mod repository;
 
 pub use item::ItemError;
