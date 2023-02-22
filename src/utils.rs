@@ -1,4 +1,5 @@
-use std::{error::Error, path::PathBuf};
+use crate::prelude::*;
+use std::path::PathBuf;
 
 #[allow(dead_code)]
 pub(crate) fn setup_logger() {
@@ -11,16 +12,19 @@ pub(crate) fn setup_logger() {
 }
 
 #[allow(dead_code)]
-pub(crate) fn get_test_files() -> Result<Vec<PathBuf>, Box<dyn Error>> {
-    Ok(glob::glob("../tests/data/files/**/*.*")?
+pub(crate) fn get_test_files() -> Result<Vec<PathBuf>> {
+    let path = "../tests/data/files/**/*.*";
+    Ok(glob::glob(path)
+        .map_err(|_| NIFileError::Generic(format!("error globbing: {}", path)))?
         .filter_map(|path| path.ok())
         .filter(|path| path.file_name().unwrap() != ".DS_Store")
         .collect())
 }
 
 #[allow(dead_code)]
-pub(crate) fn glob_paths(path: &str) -> Result<Vec<PathBuf>, Box<dyn Error>> {
-    Ok(glob::glob(path)?
+pub(crate) fn glob_paths(path: &str) -> Result<Vec<PathBuf>> {
+    Ok(glob::glob(path)
+        .map_err(|_| NIFileError::Generic(format!("error globbing: {}", path)))?
         .filter_map(|path| path.ok())
         .filter(|path| path.file_name().unwrap() != ".DS_Store")
         .collect())

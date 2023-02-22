@@ -1,20 +1,21 @@
-use super::{item::Item, item_frame::repository_root::RepositoryRoot, ItemError};
+use super::{item::Item, ItemError};
 use crate::read_bytes::ReadBytesExt;
 
 /// Represents a repository file. Usually has a `RepositoryRoot` as the first enclosing `Item`.
-pub struct Repository(pub Item);
+pub struct Repository(Vec<u8>);
 
 impl Repository {
-    pub fn read<R>(reader: R) -> Result<Repository, ItemError>
+    pub fn read<R>(mut reader: R) -> Result<Repository, ItemError>
     where
         R: ReadBytesExt,
     {
         // fn read(&self) -> Result<Repository, NIFileError> {
-        let item = Item::read(reader)?;
-        Ok(Repository(item))
+        Ok(Repository(reader.read_sized_data()?))
     }
+}
 
-    pub fn root_item(&self) -> Result<RepositoryRoot, ItemError> {
-        Ok(RepositoryRoot::read((self.0).0.as_slice()).expect("fix this"))
+impl From<Repository> for Item {
+    fn from(r: Repository) -> Self {
+        Item(r.0)
     }
 }

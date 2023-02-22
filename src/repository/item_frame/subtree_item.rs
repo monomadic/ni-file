@@ -48,7 +48,7 @@ pub struct SubtreeItem(Vec<u8>);
 
 impl SubtreeItem {
     /// decompress and return compressed internal Item.
-    fn read(&self) -> Result<SubtreeItem, NIFileError> {
+    fn read(&self) -> Result<SubtreeItem> {
         let mut buf = self.0.as_slice();
 
         let prop_version = buf.read_u32_le()?;
@@ -76,10 +76,9 @@ impl SubtreeItem {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use std::error::Error;
 
     #[test]
-    fn test_read_subtree() -> Result<(), Box<dyn Error>> {
+    fn test_read_subtree() -> Result<()> {
         crate::utils::setup_logger();
 
         let data = include_bytes!(

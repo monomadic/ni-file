@@ -29,5 +29,8 @@ mod item_frame_stack;
 mod property;
 mod repository;
 
-pub use item::ItemError;
+// TODO: remove ItemError
+pub use item::{Item, ItemError};
+pub use item_frame::repository_root::RepositoryRoot;
+pub use item_frame_stack::ItemFrame;
 pub use repository::Repository;

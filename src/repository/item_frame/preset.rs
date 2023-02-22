@@ -34,7 +34,7 @@ use crate::read_bytes::ReadBytesExt;
 pub struct Preset(Vec<u8>);
 
 impl Preset {
-    fn read(&self) -> Result<Preset, NIFileError> {
+    fn read(&self) -> Result<Preset> {
         let mut buf = self.0.as_slice();
 
         let prop_version = buf.read_u32_le()?;

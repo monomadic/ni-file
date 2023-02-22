@@ -3,7 +3,7 @@
  *
  */
 
-use crate::read_bytes::ReadBytesExt;
+use crate::{prelude::*, read_bytes::ReadBytesExt};
 use thiserror::Error;
 
 use super::{header::ItemHeader, item_frame_stack::ItemFrameStack};
@@ -22,7 +22,7 @@ pub enum ItemError {
 
 impl Item {
     /// read a byte stream into a raw Frame
-    pub fn read<R>(mut reader: R) -> Result<Item, ItemError>
+    pub fn read<R>(mut reader: R) -> Result<Self>
     where
         R: ReadBytesExt,
     {
@@ -30,14 +30,14 @@ impl Item {
     }
 
     /// read the header data as a byte array
-    pub fn header(&self) -> Result<ItemHeader, ItemError> {
+    pub fn header(&self) -> Result<ItemHeader> {
         let slice = self.0.as_slice().read_bytes(20)?;
         let frameheader = ItemHeader::read(slice.as_slice())?;
         Ok(frameheader)
     }
 
     /// read the frame stack as a byte array
-    pub fn frame_stack(&self) -> Result<ItemFrameStack, ItemError> {
+    pub fn frame_stack(&self) -> Result<ItemFrameStack> {
         let data = self.0.clone();
         let mut data = data.as_slice();
         let _ = data.read_bytes(20)?; // skip header
@@ -46,7 +46,7 @@ impl Item {
     }
 
     /// read the frame stack as a byte array
-    pub fn children(&self) -> Result<Vec<Item>, ItemError> {
+    pub fn children(&self) -> Result<Vec<Item>> {
         let buf = self.0.clone();
         let mut buf = buf.as_slice();
 
@@ -93,29 +93,30 @@ mod tests {
     use super::*;
 
     #[test]
-    fn test_reading_files() -> Result<(), Box<dyn std::error::Error>> {
+    fn test_reading_files() -> Result<()> {
         crate::utils::setup_logger();
 
         for path in crate::utils::get_test_files()? {
             log::info!("reading {:?}", path);
+
             let file = std::fs::read(&path)?;
             let bytes = file.as_slice().read_sized_data()?;
 
             assert_eq!(bytes.len(), file.len() - 8);
         }
+
         Ok(())
     }
 
     #[test]
-    fn test_children() -> Result<(), Box<dyn std::error::Error>> {
+    fn test_children() -> Result<()> {
         crate::utils::setup_logger();
 
         let item =
             Item(include_bytes!("../../tests/data/files/kontakt-7/000-default.nki").to_vec());
-
         let children = item.children()?;
-        assert_eq!(children.len(), 1);
 
+        assert_eq!(children.len(), 1);
         Ok(())
     }
 }

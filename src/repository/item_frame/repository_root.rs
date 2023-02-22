@@ -33,9 +33,17 @@ use crate::{prelude::NIFileError, read_bytes::ReadBytesExt};
 // getItemID { return "DSIN" }
 
 /// a data field type representing the topmost level of a repository container.
+#[derive(Debug)]
 pub struct RepositoryRoot {
     version: u32,
     pub magic: u32,
+}
+
+#[derive(Debug)]
+pub struct RepositoryVersion {
+    major: u32,
+    minor: u32,
+    patch: u32,
 }
 
 impl RepositoryRoot {
@@ -62,6 +70,14 @@ impl RepositoryRoot {
 
     pub fn patch_version(&self) -> u32 {
         self.version & 0xfff
+    }
+
+    pub fn version(&self) -> RepositoryVersion {
+        RepositoryVersion {
+            major: (self.version >> 0x14) & 0xff,
+            minor: (self.version >> 0xc) & 0xff,
+            patch: self.version & 0xfff,
+        }
     }
 }
 
