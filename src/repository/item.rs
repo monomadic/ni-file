@@ -1,3 +1,8 @@
+/* Item
+ * NI::SOUND::Container
+ *
+ */
+
 use crate::read_bytes::ReadBytesExt;
 use thiserror::Error;
 
@@ -35,9 +40,27 @@ impl Item {
     pub fn frame_stack(&self) -> Result<ItemFrameStack, ItemError> {
         let data = self.0.clone();
         let mut data = data.as_slice();
-        let _ = data.read_bytes(20)?; // header
+        let _ = data.read_bytes(20)?; // skip header
         let data_frame = ItemFrameStack(data.read_sized_data()?);
         Ok(data_frame)
+    }
+
+    /// read the frame stack as a byte array
+    pub fn children(&self) -> Result<Vec<Item>, ItemError> {
+        let buf = self.0.clone();
+        let mut buf = buf.as_slice();
+
+        let _ = buf.read_bytes(20)?; // skip header
+        let _ = ItemFrameStack(buf.read_sized_data()?); // skip framestack
+
+        let version = buf.read_u32_le()?;
+        debug_assert_eq!(version, 1);
+
+        let num_children = buf.read_u32_le()?;
+        log::debug!("num_children: {}", num_children);
+        // note: need to switch this out as it doesn't work like this
+
+        Ok(vec![])
     }
 }
 
@@ -46,7 +69,7 @@ mod tests {
     use super::*;
 
     #[test]
-    fn read_test() -> Result<(), Box<dyn std::error::Error>> {
+    fn test_read() -> Result<(), Box<dyn std::error::Error>> {
         let bytes = [12_u64.to_le_bytes().to_vec(), 64_u32.to_le_bytes().to_vec()].concat();
         assert_eq!(bytes.as_slice().read_sized_data()?, 64_u32.to_le_bytes());
         Ok(())

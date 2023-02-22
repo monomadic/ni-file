@@ -39,18 +39,20 @@
     }
 */
 
-use crate::prelude::NIFileError;
+// TODO: should work on frames, not raw property data
+
+use crate::prelude::*;
 use crate::read_bytes::ReadBytesExt;
 
 pub struct SubtreeItem(Vec<u8>);
 
 impl SubtreeItem {
     /// decompress and return compressed internal Item.
-    fn read_item(&self) -> Result<Vec<u8>, NIFileError> {
+    fn read(&self) -> Result<SubtreeItem, NIFileError> {
         let mut buf = self.0.as_slice();
 
         let prop_version = buf.read_u32_le()?;
-        assert_eq!(prop_version, 1);
+        debug_assert_eq!(prop_version, 1);
 
         let is_compressed = buf.read_u8()?;
         log::debug!("is_compressed: {}", is_compressed);
@@ -67,7 +69,7 @@ impl SubtreeItem {
             crate::decompress::decompress(&compressed_data, decompressed_size as usize).unwrap();
         // debug_assert!();
 
-        Ok(inner_data)
+        Ok(SubtreeItem(inner_data))
     }
 }
 
@@ -84,9 +86,9 @@ mod tests {
             "../../../tests/data/item-frame-property/kontakt-4/115-SubtreeItem.data"
         );
         let item = SubtreeItem(data.to_vec());
-        let inner = item.read_item()?;
+        let inner = item.read()?;
 
-        assert_eq!(inner.len(), 4524);
+        assert_eq!(inner.0.len(), 4524);
 
         Ok(())
     }

@@ -2,6 +2,10 @@ use crate::read_bytes::ReadBytesExt;
 
 use super::ItemError;
 
+// TODO: convert to named type
+
+// pub struct ItemHeader(Vec<u8>);
+
 #[derive(Debug, Clone)]
 pub struct ItemHeader {
     pub item_id: u32,      // (+0x8, uint, 0x01000000)
@@ -15,7 +19,6 @@ impl ItemHeader {
     where
         R: ReadBytesExt,
     {
-        // TODO: validation
         Ok(Self {
             item_id: reader.read_u32_le()?,
             domain_id: reader.read_u32_le()?,
