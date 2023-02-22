@@ -35,7 +35,7 @@ use crate::{prelude::NIFileError, read_bytes::ReadBytesExt};
 /// a data field type representing the topmost level of a repository container.
 pub struct RepositoryRoot {
     version: u32,
-    magic: u32,
+    pub magic: u32,
 }
 
 impl RepositoryRoot {

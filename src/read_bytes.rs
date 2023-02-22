@@ -14,12 +14,11 @@ pub trait ReadBytesExt: io::Read {
         Ok(u32::from_le_bytes(buf))
     }
 
-    // fn scan_u32_le(&self) -> Result<u32, std::array::TryFromSliceError> {
-    //     let mut buffer: [u8; 4] = [0; 4];
-    //     buffer.copy_from_slice(self.into());
-    //     let result = u32::from_le_bytes(buffer);
-    //     Ok(result)
-    // }
+    fn scan_u32_le(bytes: &[u8]) -> Result<u32, std::array::TryFromSliceError> {
+        let buffer: [u8; 4] = bytes.try_into()?;
+        let result = u32::from_le_bytes(buffer);
+        Ok(result)
+    }
 
     fn read_u64_le(&mut self) -> io::Result<u64> {
         let mut buf = [0u8; 8];
@@ -49,7 +48,10 @@ pub trait ReadBytesExt: io::Read {
 
         // read data into buffer
         let size_field_len = std::mem::size_of::<u64>();
-        Ok(self.read_bytes(size_field as usize - size_field_len)?)
+        let buf = self.read_bytes(size_field as usize - size_field_len)?;
+        let buf = buf.as_slice();
+
+        Ok([&size_field.to_le_bytes(), buf].concat())
     }
 }
 impl<R: io::Read + ?Sized> ReadBytesExt for R {}
@@ -77,6 +79,7 @@ impl<R: io::Read + ?Sized> ReadBytesExt for R {}
 #[cfg(test)]
 mod tests {
     use super::ReadBytesExt;
+    use crate::utils::setup_logger;
 
     #[test]
     fn test_read_u32_le() {
@@ -90,5 +93,15 @@ mod tests {
     #[test]
     fn test_scan_32() -> Result<(), Box<dyn std::error::Error>> {
         Ok(())
+    }
+
+    #[test]
+    fn test_read_sized_data() {
+        setup_logger();
+
+        let mut bytes: &[u8] = &[9, 0, 0, 0, 0, 0, 0, 0, 4, 5];
+        let content = bytes.read_sized_data().unwrap();
+
+        assert_eq!(content, [9, 0, 0, 0, 0, 0, 0, 0, 4]);
     }
 }

@@ -10,7 +10,13 @@ pub fn main() {
         let repo = Repository::read(file).unwrap();
         // grab the root item
         let root = repo.root_item().unwrap();
+
         // print the major version number
         println!("major version: {}", root.major_version());
+        println!("minor version: {}", root.minor_version());
+        println!("patch version: {}", root.patch_version());
+        println!("magic: {}", root.magic);
+
+        println!("children: {}", repo.0.children().unwrap().len());
     }
 }

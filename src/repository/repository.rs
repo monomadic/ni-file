@@ -2,7 +2,7 @@ use super::{item::Item, item_frame::repository_root::RepositoryRoot, ItemError};
 use crate::read_bytes::ReadBytesExt;
 
 /// Represents a repository file. Usually has a `RepositoryRoot` as the first enclosing `Item`.
-pub struct Repository(Item);
+pub struct Repository(pub Item);
 
 impl Repository {
     pub fn read<R>(mut reader: R) -> Result<Repository, ItemError>
