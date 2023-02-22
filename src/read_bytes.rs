@@ -103,5 +103,17 @@ mod tests {
         let content = bytes.read_sized_data().unwrap();
 
         assert_eq!(content, [9, 0, 0, 0, 0, 0, 0, 0, 4]);
+
+        // test two
+        let bytes = [
+            12_u64.to_le_bytes().to_vec(),
+            64_u32.to_le_bytes().to_vec(),
+            24_u32.to_le_bytes().to_vec(),
+        ]
+        .concat();
+        assert_eq!(
+            bytes.as_slice().read_sized_data().unwrap(),
+            [12_u64.to_le_bytes().to_vec(), 64_u32.to_le_bytes().to_vec()].concat()
+        );
     }
 }

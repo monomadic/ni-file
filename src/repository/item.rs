@@ -50,7 +50,7 @@ impl Item {
         let buf = self.0.clone();
         let mut buf = buf.as_slice();
 
-        let _ = buf.read_bytes(20)?; // skip header
+        let _ = buf.read_bytes(40)?; // skip header
         log::debug!("read item header");
 
         let _ = buf.read_sized_data()?; // skip framestack
@@ -63,14 +63,24 @@ impl Item {
         log::debug!("num_children: {}", num_children);
         // note: need to switch this out as it doesn't work like this
 
+        let mut children = Vec::new();
+
         if num_children > 0 {
-            for _ in 1..num_children {
+            for _ in 0..num_children {
+                let unknown = buf.read_u32_le()?;
+                log::debug!("unknown tag: {}", unknown);
+
                 // There is a wasteful 12 bytes per child here telling the code how to read the next
                 // segment. This should not be necessary as you could read the child generically but
                 // could have been a limitation of the original language or codebase.
-                log::debug!("loop");
+
+                let domain_id = buf.read_u32_le()?;
+                let item_id = buf.read_u32_le()?;
+                log::debug!("child domain_id: {}, item_id: {}", domain_id, item_id);
+
+                children.push(Item::read(buf.read_sized_data()?.as_slice())?);
             }
-            Ok(vec![])
+            Ok(children)
         } else {
             // empty vec as there is no more metadata to read
             Ok(vec![])
@@ -81,21 +91,6 @@ impl Item {
 #[cfg(test)]
 mod tests {
     use super::*;
-
-    #[test]
-    fn test_read() -> Result<(), Box<dyn std::error::Error>> {
-        let bytes = [
-            12_u64.to_le_bytes().to_vec(),
-            64_u32.to_le_bytes().to_vec(),
-            24_u32.to_le_bytes().to_vec(),
-        ]
-        .concat();
-        assert_eq!(
-            bytes.as_slice().read_sized_data()?,
-            [12_u64.to_le_bytes().to_vec(), 64_u32.to_le_bytes().to_vec()].concat()
-        );
-        Ok(())
-    }
 
     #[test]
     fn test_reading_files() -> Result<(), Box<dyn std::error::Error>> {
@@ -112,13 +107,14 @@ mod tests {
     }
 
     #[test]
-    fn test_reading_children() -> Result<(), Box<dyn std::error::Error>> {
+    fn test_children() -> Result<(), Box<dyn std::error::Error>> {
         crate::utils::setup_logger();
 
         let item =
             Item(include_bytes!("../../tests/data/files/kontakt-7/000-default.nki").to_vec());
 
         let children = item.children()?;
+        assert_eq!(children.len(), 1);
 
         Ok(())
     }
