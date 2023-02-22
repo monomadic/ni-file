@@ -1,9 +1,6 @@
 //!
-//! NI-FILE
-//! Native Instruments file formats
-//!
-//!  TODO:
-//!  - read children
+//!  NI-FILE
+//!  Native Instruments file formats
 //!
 
 // #![warn(clippy::all)]
@@ -19,7 +16,7 @@ extern crate log;
 pub mod error;
 pub mod prelude;
 
-pub mod detect; // detect filetype
+mod detect; // detect filetype
 pub mod repository; // read ni repositories
 
 // utils
@@ -30,4 +27,4 @@ pub mod deflate; // decompress
 pub(crate) mod read_bytes; // for reading bytestreams
 pub(crate) mod utils; // various utils for logging etc
 
-pub use detect::NIFileType;
+pub use crate::detect::NIFileType;

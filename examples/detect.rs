@@ -1,3 +1,5 @@
+use ni_file::NIFileType;
+
 pub fn main() -> Result<(), Box<dyn std::error::Error>> {
     let paths: Vec<std::path::PathBuf> = glob::glob("tests/data/files/**/*.*")?
         .filter_map(|path| path.ok())
@@ -9,7 +11,7 @@ pub fn main() -> Result<(), Box<dyn std::error::Error>> {
         println!("checking: {:?}", path);
 
         let file = std::fs::read(path)?;
-        println!("detected: {:?}", ni_file::detect::filetype(&file));
+        println!("detected: {:?}", NIFileType::detect(&file));
     }
 
     Ok(())
