@@ -19,28 +19,39 @@ This library is a work in progress.
 
 ## Repository File Schematic
 
-Repositories are embedded hierarchical chunks of data known as Items.
+Repositories are embedded hierarchical chunks of data known as `Item`s. Items consist of an `ItemHeader`, an `ItemFrameStack` and finally child `Item`s.
 
-Each file is made up of nested segments. There are two major kinds of segments header segments (`hsin`) and data segments (`dsin`). Header segments have more information and nest data segments. Here's a basic example colored with high level chunks.
+### `ItemHeader`
+
+This is the header of an `Item`, listing its size, magic number, and flags such as defered status. It does not carry type information or anything interesting. It has a kind of magic number / string, `hsin`,
+
+- `hsin` Native Instruments Sound Header
 
 ![chunks](assets/chunks.png)
 
-The magic part is a char array denoted with 'hsin' tags / magic numbers. These tags are spelt backwards. For example
+### `ItemFrameStack`
 
-- `hsin` Native Instruments Sound Header
+This is the data portion of the `Item`, `ItemFrameStack` contains `ItemFrame`s organised in a stack structure. The topmost stack denotes the items type. Types are determined by `ItemID` and `DomainID`.
+
+### `DomainID` and `ItemID`
+
+Domains are groups of item types, the most common of which is `dsin`, and most items you find will be in this domain. Each particular file type will have specific domains, here are some I have found:
+
 - `DSIN` Native Instruments Sound Data
 - `4KIN` Native Instruments Kontakt 4
 - `RTKR` ReaKToR
 - `E8MF` FM8 Ensemble
 
-Another way to understand this structure is as follows:
+![data](assets/data.png)
+
+Another way to understand the structure of containers is as follows:
 - `Repository`
     - `Item`
         - `ItemHeader` 20 bytes ('hsin') NI::SOUND::ItemHeader::write(NI::GP::Stream&)
             - @ u64 FrameSize
             - @ u32
             - @ u32 DomainID 0x6e697368 'hsin'
-            - @ u32
+            - @ u32 ItemID
             - @ u32
             - @ uuid method.NI::SOUND::ItemUuid.write_NI::GP::Stream__const
         - `ItemFrameStack`
@@ -50,15 +61,10 @@ Another way to understand this structure is as follows:
                 - @ u32 ItemID +0xc(12)
                 - @ u32 Version +0x10(16)
 
-### Frames
-
-`Frames` are data fields, and are grouped together in a `StackFrame`.
-
-![data](assets/data.png)
 
 ### Properties
 
-Within a `Frame` are properties, some are compressed though there are several types of properties.
+Within some `ItemFrame`s are properties, some are compressed though there are several types of properties.
 
 ### Compressed Presets
 
@@ -66,8 +72,6 @@ The main preset is compressed with a variant of [LZ77](https://en.wikipedia.org/
 
 https://github.com/ariya/FastLZ
 https://crates.io/crates/fastlz not native, rust bindings
-
-IMPORTANT: the compression starts 11 bytes into the data slice (depending on the property), but you must provide an initial dictionary of `00`.
 
 ### Strings
 

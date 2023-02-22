@@ -43,6 +43,8 @@ pub trait ReadBytesExt: io::Read {
 
     /// checks data is a valid size and returns its content as a byte array
     fn read_sized_data(&mut self) -> io::Result<Vec<u8>> {
+        // TODO: idea - just create a new pointer to the byte array and read that first, then read
+        // the original buffer for the actual data.
         let size_field = self.read_u64_le()?;
         log::debug!("size field: {}", size_field);
 
