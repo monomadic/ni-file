@@ -3,6 +3,7 @@ pub mod domain_id;
 pub mod item_id;
 
 pub mod authorization;
+pub mod bni_sound_preset;
 pub mod item_frame_header;
 pub mod preset;
 pub mod repository_root;
