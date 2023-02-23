@@ -1,7 +1,4 @@
-use ni_file::{
-    repository::{Item, ItemFrame, Repository, RepositoryRoot},
-    NIFileType,
-};
+use ni_file::{repository::Repository, NIFileType};
 
 pub fn main() -> Result<(), Box<dyn std::error::Error>> {
     // lets read a Kontakt 7 file.
@@ -10,21 +7,17 @@ pub fn main() -> Result<(), Box<dyn std::error::Error>> {
     // make sure this is a valid repository
     if NIFileType::detect(file) == NIFileType::Repository {
         // read the repository
-        let repo = Repository::read(file)?;
+        let mut repo = Repository::read(file)?;
 
-        // grab the root item
-        let item: Item = repo.into();
-        let frame: ItemFrame = item.frame_stack()?.pop()?;
+        // print the major version number
+        let root = repo.root()?;
+        println!("version: {:?}", root.version());
+        println!("magic: {}", root.magic);
 
-        match frame {
-            ItemFrame::RepositoryRoot(root) => {
-                // print the major version number
-                println!("version: {:?}", root.version());
-                println!("magic: {}", root.magic);
-
-                // println!("children: {}", repo.as_item().children().unwrap().len());
-            }
-            _ => (),
+        // iterate children
+        println!("children found: {}", repo.children()?.len());
+        for item in repo.children()? {
+            println!("{:?}", item.frame_stack()?.frame()?)
         }
     }
 

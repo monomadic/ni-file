@@ -1,7 +1,7 @@
 use crate::prelude::*;
 use crate::read_bytes::ReadBytesExt;
 
-use super::item_frame::repository_root::RepositoryRoot;
+use super::item_frame::{item_id::ItemID, repository_root::RepositoryRoot, ItemFrameHeader};
 
 /// A stack of frames
 pub struct ItemFrameStack(pub Vec<u8>);
@@ -14,10 +14,18 @@ impl ItemFrameStack {
         Ok(Self(reader.read_sized_data()?))
     }
 
-    pub fn pop(&mut self) -> Result<ItemFrame> {
-        Ok(ItemFrame::RepositoryRoot(RepositoryRoot::read(
-            self.0.as_slice(),
-        )?))
+    pub fn frame(&mut self) -> Result<ItemFrame> {
+        let buffer = self.0.as_slice();
+        let header = ItemFrameHeader::read(buffer)?;
+
+        println!("ItemID: {:?}", ItemID::from(header.item_id));
+
+        log::debug!("ItemID found: {:?}", ItemID::from(header.item_id));
+
+        Ok(match ItemID::from(header.item_id) {
+            ItemID::RepositoryRoot => ItemFrame::RepositoryRoot(RepositoryRoot::read(buffer)?),
+            _ => todo!(),
+        })
     }
 }
 

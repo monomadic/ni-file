@@ -21,6 +21,25 @@ This library is a work in progress.
 
 Repositories are embedded hierarchical chunks of data known as `Item`s. Items consist of an `ItemHeader`, an `ItemFrameStack` and finally child `Item`s.
 
+This is the basic structure:
+
+- `Repository`
+    - `Item`
+        - `ItemHeader` 20 bytes ('hsin') NI::SOUND::ItemHeader::write(NI::GP::Stream&)
+            - @ u64 FrameSize
+            - @ u32
+            - @ u32 DomainID 0x6e697368 'hsin'
+            - @ u32 ItemID
+            - @ u32
+            - @ uuid method.NI::SOUND::ItemUuid.write_NI::GP::Stream__const
+        - `ItemFrameStack`
+            - `ItemFrame` (Size, DomainID, ItemID)
+                - @ u64 FrameSize +0
+                - @ u32 DomainID 0x4e495344 "DSIN" +0x8
+                - @ u32 ItemID +0xc(12)
+                - @ u32 Version +0x10(16)
+
+
 ### `ItemHeader`
 
 This is the header of an `Item`, listing its size, magic number, and flags such as defered status. It does not carry type information or anything interesting. It has a kind of magic number / string, `hsin`,
@@ -44,22 +63,6 @@ Domains are groups of item types, the most common of which is `dsin`, and most i
 
 ![data](assets/data.png)
 
-Another way to understand the structure of containers is as follows:
-- `Repository`
-    - `Item`
-        - `ItemHeader` 20 bytes ('hsin') NI::SOUND::ItemHeader::write(NI::GP::Stream&)
-            - @ u64 FrameSize
-            - @ u32
-            - @ u32 DomainID 0x6e697368 'hsin'
-            - @ u32 ItemID
-            - @ u32
-            - @ uuid method.NI::SOUND::ItemUuid.write_NI::GP::Stream__const
-        - `ItemFrameStack`
-            - `ItemFrame` (Size, DomainID, ItemID)
-                - @ u64 FrameSize +0
-                - @ u32 DomainID 0x4e495344 "DSIN" +0x8
-                - @ u32 ItemID +0xc(12)
-                - @ u32 Version +0x10(16)
 
 
 ### Properties

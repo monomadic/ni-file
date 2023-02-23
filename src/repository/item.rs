@@ -38,11 +38,10 @@ impl Item {
 
     /// read the frame stack as a byte array
     pub fn frame_stack(&self) -> Result<ItemFrameStack> {
-        let data = self.0.clone();
-        let mut data = data.as_slice();
-        let _ = data.read_bytes(20)?; // skip header
-        let data_frame = ItemFrameStack(data.read_sized_data()?);
-        Ok(data_frame)
+        let mut data = self.0.as_slice();
+        let _header = ItemHeader::read(&mut data)?;
+        let frame = ItemFrameStack::read(&mut data)?;
+        Ok(frame)
     }
 
     /// read the frame stack as a byte array
