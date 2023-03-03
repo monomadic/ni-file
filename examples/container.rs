@@ -1,7 +1,8 @@
 use std::convert::TryInto;
 
-use ni_file::{BNISoundPreset, NIFileType, NIRepository, RepositoryRoot};
+use ni_file::{BNISoundPreset, NIContainer, NIFileType, RepositoryRoot};
 
+#[allow(dead_code)]
 fn setup_logger() {
     let _ = log::set_logger(&loggy::Loggy {
         prefix: "",
@@ -12,15 +13,15 @@ fn setup_logger() {
 }
 
 pub fn main() -> Result<(), Box<dyn std::error::Error>> {
-    setup_logger();
+    // setup_logger();
 
     // lets read a Kontakt 7 file.
     let file = include_bytes!("../tests/data/files/kontakt-7/000-default.nki").as_slice();
 
     // make sure this is a valid repository
-    if NIFileType::detect(file) == NIFileType::Repository {
+    if NIFileType::detect(file) == NIFileType::NIContainer {
         // read the repository
-        let repo = NIRepository::read(file)?;
+        let repo = NIContainer::read(file)?;
         let root: RepositoryRoot = repo.root()?;
 
         // print the major version number
@@ -32,7 +33,7 @@ pub fn main() -> Result<(), Box<dyn std::error::Error>> {
         );
 
         // iterate children
-        println!("children found: {}", repo.children().len());
+        println!("Children Found: {}", repo.children().len());
         for item in repo.children() {
             let preset: BNISoundPreset = item.clone().try_into()?;
             println!("{:?}", preset)

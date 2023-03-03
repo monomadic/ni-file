@@ -1,7 +1,7 @@
 #[derive(Debug, PartialEq)]
 pub enum NIFileType {
-    /// Most NI files are Repositories.
-    Repository,
+    /// Most NI files are NIContainers.
+    NIContainer,
     /// Kontakt files with samples inside are monoliths.
     NIKontaktMonolith,
     /// Kore has its own simple format.
@@ -20,8 +20,8 @@ impl NIFileType {
 pub fn filetype(buffer: &[u8]) -> NIFileType {
     // check for 'hsin' at byte 12
     if buffer[12..16] == [104, 115, 105, 110] {
-        info!("Detected: Repository");
-        return NIFileType::Repository;
+        info!("Detected: NIContainer");
+        return NIFileType::NIContainer;
     }
 
     // check for '/\ NI FC MTD  /\'
@@ -55,7 +55,7 @@ mod tests {
             filetype(include_bytes!(
                 "../tests/data/files/kontakt-7/000-default.nki"
             )),
-            NIFileType::Repository
+            NIFileType::NIContainer
         )
     }
 }

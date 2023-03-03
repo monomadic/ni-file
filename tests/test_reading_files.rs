@@ -1,6 +1,6 @@
 mod utils;
 
-use ni_file::NIRepository;
+use ni_file::NIContainer;
 use std::{fs, io::Read};
 
 #[test]
@@ -11,7 +11,7 @@ fn test_reading_test_files() -> Result<(), Box<dyn std::error::Error>> {
         log::info!("reading {:?}", path);
 
         let mut file = fs::File::open(path.as_path())?;
-        let _frame = NIRepository::read(&file)?;
+        let _frame = NIContainer::read(&file)?;
 
         // assure no space left at end of file
         let mut buf = Vec::new();

@@ -1,4 +1,4 @@
-use std::convert::{TryFrom, TryInto};
+use std::convert::TryInto;
 
 use super::header::ItemHeader;
 use super::item_frame::ItemFrame;
@@ -92,7 +92,7 @@ mod tests {
             log::info!("reading {:?}", path);
 
             let file = std::fs::File::open(&path)?;
-            let item: Item = Item::read(file)?;
+            let _item: Item = Item::read(file)?;
         }
 
         Ok(())
