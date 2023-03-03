@@ -1,6 +1,5 @@
 use crate::{
-    read_bytes::ReadBytesExt,
-    repository::{item_frame::app_id::AuthoringApplication, ItemError},
+    prelude::*, read_bytes::ReadBytesExt, repository::item_frame::app_id::AuthoringApplication,
 };
 
 pub struct AuthoringApplicationInfo {
@@ -9,7 +8,7 @@ pub struct AuthoringApplicationInfo {
 }
 
 impl AuthoringApplicationInfo {
-    pub fn read<R>(mut reader: R) -> Result<AuthoringApplicationInfo, ItemError>
+    pub fn read<R>(mut reader: R) -> Result<AuthoringApplicationInfo>
     where
         R: ReadBytesExt,
     {

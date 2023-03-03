@@ -14,6 +14,36 @@ pub mod subtree_item;
 
 pub use item_frame_header::ItemFrameHeader;
 
-pub struct ItemFrame(pub Vec<u8>);
+use crate::{prelude::*, read_bytes::ReadBytesExt};
 
-impl ItemFrame {}
+#[derive(Clone)]
+pub struct ItemFrame {
+    pub header: ItemFrameHeader,
+    pub inner: Vec<u8>,
+    pub data: Vec<u8>,
+}
+
+impl std::convert::TryFrom<Vec<u8>> for ItemFrame {
+    type Error = NIFileError;
+
+    fn try_from(buf: Vec<u8>) -> Result<Self> {
+        ItemFrame::read(buf.as_slice())
+    }
+}
+
+impl ItemFrame {
+    pub fn read<R: ReadBytesExt>(mut reader: R) -> Result<Self> {
+        log::debug!("ItemFrame::read");
+
+        let buf = reader.read_sized_data()?;
+        let mut buf = buf.as_slice();
+        let header = ItemFrameHeader::read(&mut buf)?;
+        let inner = buf.read_sized_data()?;
+
+        Ok(Self {
+            header,
+            inner,
+            data: buf.to_vec(),
+        })
+    }
+}

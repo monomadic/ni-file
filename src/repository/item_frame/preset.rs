@@ -15,6 +15,8 @@
             .map_err(INTERNAL_ERROR)?;
     }
 
+    note that the embedded container is a PresetContainer
+
 */
 
 // bool u8 +0x20 ?

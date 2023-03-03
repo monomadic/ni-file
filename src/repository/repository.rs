@@ -1,34 +1,37 @@
-use crate::prelude::*;
-use crate::read_bytes::ReadBytesExt;
+use super::Item;
+use crate::{prelude::*, read_bytes::ReadBytesExt, RepositoryRoot};
+use std::convert::TryInto;
 
-use super::{ItemReader, RepositoryRoot};
+// TODO: in bin this is Container
 
 /// Represents a repository file. Usually has a `RepositoryRoot` as the first enclosing `Item`.
-#[derive(Clone)]
-pub struct NIRepository(Vec<u8>);
+pub struct NIRepository(Item);
 
 impl NIRepository {
-    pub fn read<R: ReadBytesExt>(mut reader: R) -> Result<Self> {
+    pub fn read<R: ReadBytesExt>(reader: R) -> Result<Self> {
         log::debug!("NIRepository::read()");
-        Ok(Self(reader.read_sized_data()?))
+        Ok(Self(Item::read(reader)?))
     }
 
-    pub fn data(&mut self) -> Result<RepositoryRoot> {
-        // TODO: this should be TryFrom trait
-        let stack = self.frame_stack()?;
-        panic!("{:?}", stack);
+    pub fn root(&self) -> Result<RepositoryRoot> {
+        self.0.frame()?.try_into()
+    }
 
-        // RepositoryRoot::read(self.frame_stack()?.as_slice())
+    // pub fn preset(&self) -> Result<BNISoundPreset> {
+    //     for item in &self.0.children {
+    //         match item.frame()?.header.item_id {
+    //             ItemID::BNISoundPreset => (),
+    //             _ => (),
+    //         }
+    //     }
+    //
+    //     todo!()
+    // }
+
+    pub fn children(&self) -> &Vec<Item> {
+        &self.0.children
     }
 }
-
-impl std::io::Read for NIRepository {
-    fn read(&mut self, buf: &mut [u8]) -> std::io::Result<usize> {
-        self.0.as_slice().read(buf)
-    }
-}
-
-impl ItemReader for NIRepository {}
 
 #[cfg(test)]
 mod tests {
@@ -38,10 +41,10 @@ mod tests {
     fn ni_repository_read_test() -> Result<()> {
         crate::utils::setup_logger();
 
-        let mut repo = NIRepository::read(
+        let repo = NIRepository::read(
             include_bytes!("../../tests/data/files/kontakt-7/000-default.nki").as_slice(),
         )?;
-        let _root = repo.data()?;
+        let _root = repo.root()?;
 
         // TODO: repo props
 

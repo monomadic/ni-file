@@ -13,6 +13,7 @@ pub struct ItemHeader {
 
 impl ItemHeader {
     pub fn read<R: ReadBytesExt>(mut reader: R) -> Result<Self> {
+        log::debug!("ItemHeader::read");
         let size = reader.read_u64_le()?;
         // always 1
         let _unknown = reader.read_u32_le()?;

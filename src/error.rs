@@ -1,7 +1,6 @@
 //! Main Crate Error
 pub use thiserror::Error;
 
-use crate::repository::{ItemError, ItemFrame};
 pub type Result<T> = std::result::Result<T, NIFileError>;
 
 #[derive(thiserror::Error, Debug)]
@@ -12,15 +11,11 @@ pub enum NIFileError {
     #[error("Static error: {0}")]
     Static(&'static str),
 
-    #[error("Unexpected Frame: expected {expected:?}, got {got:?}")]
-    UnexpectedFrame { expected: ItemFrame, got: ItemFrame },
-
+    // #[error("Unexpected Frame: expected {expected:?}, got {got:?}")]
+    // UnexpectedFrame { expected: ItemFrame, got: ItemFrame },
     #[error("Incorrect Size Field: expected {expected}, got {got}")]
     IncorrectFrameSize { expected: u64, got: u64 },
 
     #[error(transparent)]
     IO(#[from] std::io::Error),
-
-    #[error(transparent)]
-    ItemError(#[from] ItemError),
 }

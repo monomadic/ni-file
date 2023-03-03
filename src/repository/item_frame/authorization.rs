@@ -10,20 +10,25 @@
 //   @watermark
 // @authorization-level
 
-use crate::{prelude::*, read_bytes::ReadBytesExt, repository::item_frame::ItemFrameHeader};
+use crate::{prelude::*, read_bytes::ReadBytesExt, repository::item_frame::item_id::ItemID};
+
+use super::ItemFrame;
 
 pub struct Authorization(Vec<u8>);
 
+impl std::convert::TryFrom<ItemFrame> for Authorization {
+    type Error = NIFileError;
+
+    fn try_from(frame: ItemFrame) -> std::result::Result<Self, Self::Error> {
+        log::debug!("Authorization::try_from");
+        debug_assert_eq!(frame.header.item_id, ItemID::Authorization);
+        Authorization::read(frame.data.as_slice())
+    }
+}
+
 impl Authorization {
     pub fn read<R: ReadBytesExt>(mut reader: R) -> Result<Self> {
-        log::debug!("Reading Authorization");
-
-        let header = ItemFrameHeader::read(&mut reader)?;
-        log::debug!("ItemFrameHeader: {:?}", &header);
-
-        log::debug!("read");
-        // blank item (24 bytes)
-        let _ = reader.read_sized_data()?;
+        log::debug!("Authorization::read");
 
         // version == 1
         assert_eq!(reader.read_u32_le()?, 1);
@@ -45,7 +50,7 @@ mod tests {
     fn test_authorization_read() -> Result<()> {
         crate::utils::setup_logger();
 
-        let path = "tests/data/item-frame/kontakt-4/106-Authorization.data";
+        let path = "tests/data/item-frame-property/kontakt-5/106-Authorization.data";
         log::info!("reading {:?}", path);
 
         let file = std::fs::read(&path)?;

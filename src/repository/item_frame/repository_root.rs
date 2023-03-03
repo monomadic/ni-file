@@ -1,8 +1,5 @@
-use crate::{
-    prelude::NIFileError,
-    read_bytes::ReadBytesExt,
-    repository::item_frame::{authorization::Authorization, ItemFrameHeader},
-};
+use super::ItemFrame;
+use crate::{prelude::*, read_bytes::ReadBytesExt, repository::item_frame::item_id::ItemID};
 
 /// a data field type representing the topmost level of a repository container.
 #[derive(Debug, Clone)]
@@ -12,14 +9,6 @@ pub struct RepositoryRoot {
     repository_type: u32,
 }
 
-// impl std::io::Read for RepositoryRoot {
-//     fn read(&mut self, buf: &mut [u8]) -> std::io::Result<usize> {
-//         self.0.as_slice().read(buf)
-//     }
-// }
-//
-// impl ItemReader for RepositoryRoot {}
-
 #[derive(Debug)]
 pub struct RepositoryVersion {
     major: u32,
@@ -27,15 +16,19 @@ pub struct RepositoryVersion {
     patch: u32,
 }
 
+impl std::convert::TryFrom<ItemFrame> for RepositoryRoot {
+    type Error = NIFileError;
+
+    fn try_from(frame: ItemFrame) -> std::result::Result<Self, Self::Error> {
+        log::debug!("RepositoryRoot::try_from");
+        debug_assert_eq!(frame.header.item_id, ItemID::RepositoryRoot);
+        RepositoryRoot::read(frame.data.as_slice())
+    }
+}
+
 impl RepositoryRoot {
-    pub fn read<R: ReadBytesExt>(mut reader: R) -> Result<Self, NIFileError> {
-        log::debug!("Reading RepositoryRoot");
-
-        let header = ItemFrameHeader::read(&mut reader)?;
-        log::debug!("ItemFrameHeader: {:?}", &header);
-
-        let buf = reader.read_sized_data()?;
-        let _ = Authorization::read(&mut buf.as_slice())?;
+    pub fn read<R: ReadBytesExt>(mut reader: R) -> Result<Self> {
+        log::debug!("RepositoryRoot::read");
 
         // version == 1
         assert_eq!(reader.read_u32_le()?, 1);
@@ -82,14 +75,14 @@ mod tests {
     use super::*;
 
     #[test]
-    fn test_reading_files() -> Result<(), Box<dyn std::error::Error>> {
+    fn test_repository_root_read() -> Result<()> {
         crate::utils::setup_logger();
 
-        let path = "tests/data/item-frame/kontakt-4/118-RepositoryRoot.data";
+        let path = "tests/data/item-frame-property/kontakt-5/118-RepositoryRoot.data";
         log::info!("reading {:?}", path);
 
-        let file = std::fs::read(&path)?;
-        let root = RepositoryRoot::read(file.as_slice())?;
+        let file = std::fs::File::open(&path)?;
+        let root = RepositoryRoot::read(file)?;
 
         assert_eq!(1, root.major_version());
         assert_eq!(7, root.minor_version());

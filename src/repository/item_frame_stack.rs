@@ -1,36 +1,20 @@
-use crate::prelude::*;
-use crate::read_bytes::ReadBytesExt;
-
-use super::item_frame::{
-    bni_sound_preset::BNISoundPreset, item_id::ItemID, repository_root::RepositoryRoot,
-    ItemFrameHeader,
-};
+use super::item_frame::ItemFrameHeader;
+use crate::{prelude::*, read_bytes::ReadBytesExt};
 
 /// A stack of frames
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct ItemFrameStack(pub Vec<u8>);
 
 impl ItemFrameStack {
     pub fn read<R: ReadBytesExt>(mut reader: R) -> Result<Self> {
-        Ok(Self(reader.read_sized_data()?))
+        log::debug!("Reading ItemFrameStack");
+        let buffer = reader.read_sized_data()?;
+        // let mut buf = buffer.clone().as_slice();
+        Ok(Self(buffer))
     }
 
-    pub fn frame(&mut self) -> Result<ItemFrame> {
-        let buffer = self.0.as_slice();
-        let header = ItemFrameHeader::read(buffer)?;
-
-        log::debug!("ItemID found: {:?}", ItemID::from(header.item_id));
-
-        Ok(match ItemID::from(header.item_id) {
-            ItemID::RepositoryRoot => ItemFrame::RepositoryRoot(RepositoryRoot::read(buffer)?),
-            ItemID::BNISoundPreset => ItemFrame::BNISoundPreset(BNISoundPreset::read(buffer)?),
-            _ => todo!(),
-        })
+    pub fn header(&self) -> Result<ItemFrameHeader> {
+        let buffer = self.0.clone();
+        ItemFrameHeader::read(buffer.as_slice())
     }
-}
-
-#[derive(Debug)]
-pub enum ItemFrame {
-    RepositoryRoot(RepositoryRoot),
-    BNISoundPreset(BNISoundPreset),
 }

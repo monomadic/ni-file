@@ -28,4 +28,4 @@ pub(crate) mod read_bytes; // for reading bytestreams
 pub(crate) mod utils; // various utils for logging etc
 
 pub use detect::NIFileType;
-pub use repository::{ItemReader, NIRepository, RepositoryRoot};
+pub use repository::{BNISoundPreset, NIRepository, RepositoryRoot};

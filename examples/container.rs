@@ -1,4 +1,6 @@
-use ni_file::{NIFileType, NIRepository, RepositoryRoot};
+use std::convert::TryInto;
+
+use ni_file::{BNISoundPreset, NIFileType, NIRepository, RepositoryRoot};
 
 fn setup_logger() {
     let _ = log::set_logger(&loggy::Loggy {
@@ -18,22 +20,23 @@ pub fn main() -> Result<(), Box<dyn std::error::Error>> {
     // make sure this is a valid repository
     if NIFileType::detect(file) == NIFileType::Repository {
         // read the repository
-        let mut repo = NIRepository::read(file)?;
-        let root: RepositoryRoot = repo.data()?;
+        let repo = NIRepository::read(file)?;
+        let root: RepositoryRoot = repo.root()?;
 
-        // // print the major version number
-        // println!(
-        //     "NISound Version: {}.{}.{}",
-        //     root.major_version(),
-        //     root.minor_version(),
-        //     root.patch_version(),
-        // );
+        // print the major version number
+        println!(
+            "NISound Version: {}.{}.{}",
+            root.major_version(),
+            root.minor_version(),
+            root.patch_version(),
+        );
 
-        // // iterate children
-        // println!("children found: {}", repo.children()?.len());
-        // for item in repo.children()? {
-        //     println!("{:?}", item.frame_stack()?.frame()?)
-        // }
+        // iterate children
+        println!("children found: {}", repo.children().len());
+        for item in repo.children() {
+            let preset: BNISoundPreset = item.clone().try_into()?;
+            println!("{:?}", preset)
+        }
     }
 
     Ok(())
