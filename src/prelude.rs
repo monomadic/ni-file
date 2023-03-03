@@ -8,3 +8,4 @@ pub use crate::error::*;
 
 pub use log::debug as d;
 pub use std::format as f;
+pub use std::io;

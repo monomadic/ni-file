@@ -1,43 +1,24 @@
-use crate::{prelude::NIFileError, read_bytes::ReadBytesExt};
-
-// Authorization
-// u32 Value repository-magic 0x24
-// u32 Value repository-version 0x28
-// u32 Value repository-type 0x2c
-
-// method.NI::SOUND::RepositoryRoot.readItem_NI::GP::Stream__NI::SOUND::ReadContext_
-
-// "DSIN"
-// 118
-//
-// Authorization
-//
-// u32 0x1
-// u32 Lib.getCompiledVersion() 0x107004
-// u32 +0x24
-// u32 +0x2c
-// FileReference +0x40
-// Uuid
-//
-
-// getNISoundMajorVersion { return *(arg_8h + 0x20) >> 0x14 & 0xff; }
-// getNISoundMinorVersion
-// getNISoundPatchVersion
-// getNISoundVersion +0x20 (32)
-// getRepositoryMagic +0x24 (36)
-// getRepositoryVersion +0x28
-// getRepositoryType +0x2c (44)
-// getRepositoryReferenceFn
-// getRepositoryItemUuid
-// getDomainID
-// getItemID { return "DSIN" }
+use crate::{
+    prelude::NIFileError,
+    read_bytes::ReadBytesExt,
+    repository::item_frame::{authorization::Authorization, ItemFrameHeader},
+};
 
 /// a data field type representing the topmost level of a repository container.
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct RepositoryRoot {
-    version: u32,
-    pub magic: u32,
+    nisound_version: u32,
+    repository_magic: u32,
+    repository_type: u32,
 }
+
+// impl std::io::Read for RepositoryRoot {
+//     fn read(&mut self, buf: &mut [u8]) -> std::io::Result<usize> {
+//         self.0.as_slice().read(buf)
+//     }
+// }
+//
+// impl ItemReader for RepositoryRoot {}
 
 #[derive(Debug)]
 pub struct RepositoryVersion {
@@ -47,36 +28,51 @@ pub struct RepositoryVersion {
 }
 
 impl RepositoryRoot {
-    pub fn read<R>(mut reader: R) -> Result<Self, NIFileError>
-    where
-        R: ReadBytesExt,
-    {
-        let _ = reader.read_bytes(0x4)?; // skip initial 4 bytes
-        let _ = reader.read_bytes(0x20)?; // skip 20 bytes
+    pub fn read<R: ReadBytesExt>(mut reader: R) -> Result<Self, NIFileError> {
+        log::debug!("Reading RepositoryRoot");
+
+        let header = ItemFrameHeader::read(&mut reader)?;
+        log::debug!("ItemFrameHeader: {:?}", &header);
+
+        let buf = reader.read_sized_data()?;
+        let _ = Authorization::read(&mut buf.as_slice())?;
+
+        // version == 1
+        assert_eq!(reader.read_u32_le()?, 1);
+
+        let nisound_version = reader.read_u32_le()?; // 0x20
+        let repository_magic = reader.read_u32_le()?; // 0x24
+        let repository_type = reader.read_u32_le()?; // 0x2c
+
+        // FileReference::read  NOTE: NOT EQUAL 1
+        // assert_ne!(reader.read_u32_le()?, 1);
+
+        // ItemUuid::read
 
         Ok(Self {
-            version: reader.read_u32_le()?,
-            magic: reader.read_u32_le()?,
+            nisound_version,
+            repository_magic,
+            repository_type,
         })
     }
 
     pub fn major_version(&self) -> u32 {
-        (self.version >> 0x14) & 0xff
+        (self.nisound_version >> 0x14) & 0xff
     }
 
     pub fn minor_version(&self) -> u32 {
-        (self.version >> 0xc) & 0xff
+        (self.nisound_version >> 0xc) & 0xff
     }
 
     pub fn patch_version(&self) -> u32 {
-        self.version & 0xfff
+        self.nisound_version & 0xfff
     }
 
     pub fn version(&self) -> RepositoryVersion {
         RepositoryVersion {
-            major: (self.version >> 0x14) & 0xff,
-            minor: (self.version >> 0xc) & 0xff,
-            patch: self.version & 0xfff,
+            major: (self.nisound_version >> 0x14) & 0xff,
+            minor: (self.nisound_version >> 0xc) & 0xff,
+            patch: self.nisound_version & 0xfff,
         }
     }
 }
@@ -89,17 +85,16 @@ mod tests {
     fn test_reading_files() -> Result<(), Box<dyn std::error::Error>> {
         crate::utils::setup_logger();
 
-        let path = "tests/data/item-frame-property/kontakt-5/118-RepositoryRoot.data";
+        let path = "tests/data/item-frame/kontakt-4/118-RepositoryRoot.data";
         log::info!("reading {:?}", path);
 
         let file = std::fs::read(&path)?;
         let root = RepositoryRoot::read(file.as_slice())?;
 
-        assert_eq!(3, root.major_version());
-        assert_eq!(0, root.minor_version());
-        assert_eq!(48, root.patch_version());
-
-        assert_eq!(48, root.magic);
+        assert_eq!(1, root.major_version());
+        assert_eq!(7, root.minor_version());
+        assert_eq!(14, root.patch_version());
+        assert_eq!(0, root.repository_magic);
 
         Ok(())
     }

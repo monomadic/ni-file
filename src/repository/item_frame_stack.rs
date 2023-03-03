@@ -7,6 +7,7 @@ use super::item_frame::{
 };
 
 /// A stack of frames
+#[derive(Debug)]
 pub struct ItemFrameStack(pub Vec<u8>);
 
 impl ItemFrameStack {

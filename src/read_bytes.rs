@@ -1,4 +1,3 @@
-use std::convert::TryInto;
 use std::io;
 
 pub trait ReadBytesExt: io::Read {
@@ -14,11 +13,11 @@ pub trait ReadBytesExt: io::Read {
         Ok(u32::from_le_bytes(buf))
     }
 
-    fn scan_u32_le(bytes: &[u8]) -> Result<u32, std::array::TryFromSliceError> {
-        let buffer: [u8; 4] = bytes.try_into()?;
-        let result = u32::from_le_bytes(buffer);
-        Ok(result)
-    }
+    // fn scan_u32_le(bytes: &[u8]) -> Result<u32, std::array::TryFromSliceError> {
+    //     let buffer: [u8; 4] = [0u8; 4];
+    //     let result = u32::from_le_bytes(buffer);
+    //     Ok(result)
+    // }
 
     fn read_u64_le(&mut self) -> io::Result<u64> {
         let mut buf = [0u8; 8];
@@ -26,27 +25,26 @@ pub trait ReadBytesExt: io::Read {
         Ok(u64::from_le_bytes(buf))
     }
 
-    fn scan_u64_le(bytes: &[u8]) -> Result<u64, std::array::TryFromSliceError> {
-        let buffer: [u8; 8] = bytes.try_into()?;
-        let result = u64::from_le_bytes(buffer);
-        Ok(result)
-    }
+    // fn scan_u64_le(bytes: &[u8]) -> Result<u64, std::array::TryFromSliceError> {
+    //     let buffer: [u8; 8] = bytes.try_into()?;
+    //     let result = u64::from_le_bytes(buffer);
+    //     Ok(result)
+    // }
 
-    /// TODO: take any int instead of just usize
     /// read a number of bytes (failable)
     fn read_bytes(&mut self, bytes: usize) -> io::Result<Vec<u8>> {
+        log::info!("reading {} bytes", bytes);
         let mut buf = vec![0u8; bytes];
-        log::info!("reading {} bytes", buf.len());
         self.read_exact(&mut buf)?;
         Ok(buf)
     }
 
     /// checks data is a valid size and returns its content as a byte array
     fn read_sized_data(&mut self) -> io::Result<Vec<u8>> {
-        // TODO: idea - just create a new pointer to the byte array and read that first, then read
-        // the original buffer for the actual data.
+        log::debug!("Reading Sized Data");
+
         let size_field = self.read_u64_le()?;
-        log::debug!("size field: {}", size_field);
+        log::debug!("Size Field: {}", size_field);
 
         // read data into buffer
         let size_field_len = std::mem::size_of::<u64>();
@@ -89,11 +87,15 @@ mod tests {
 
     #[test]
     fn test_read_u32_le() {
-        let mut bytes: &[u8] = &[32_u8, 1, 4, 56, 6];
+        let mut bytes: &[u8] = &[32_u8, 1, 4, 56, 6, 6, 90, 4, 7];
         let num = bytes.read_u32_le().unwrap();
 
         assert_eq!(num, 939786528);
-        assert_eq!(bytes, [6]);
+        assert_eq!(bytes, [6, 6, 90, 4, 7]);
+
+        let num = bytes.read_u32_le().unwrap();
+        assert_eq!(num, 73008646);
+        assert_eq!(bytes, [7]);
     }
 
     #[test]
@@ -109,6 +111,7 @@ mod tests {
         let content = bytes.read_sized_data().unwrap();
 
         assert_eq!(content, [9, 0, 0, 0, 0, 0, 0, 0, 4]);
+        assert_eq!(bytes, [5]);
 
         // test two
         let bytes = [

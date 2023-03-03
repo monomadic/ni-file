@@ -13,7 +13,7 @@ pub(crate) fn setup_logger() {
 
 #[allow(dead_code)]
 pub(crate) fn get_test_files() -> Result<Vec<PathBuf>> {
-    let path = "../tests/data/files/**/*.*";
+    let path = "tests/data/files/**/*.*";
     Ok(glob::glob(path)
         .map_err(|_| NIFileError::Generic(format!("error globbing: {}", path)))?
         .filter_map(|path| path.ok())
@@ -22,7 +22,7 @@ pub(crate) fn get_test_files() -> Result<Vec<PathBuf>> {
 }
 
 #[allow(dead_code)]
-pub(crate) fn glob_paths(path: &str) -> Result<Vec<PathBuf>> {
+pub(crate) fn get_files(path: &str) -> Result<Vec<PathBuf>> {
     Ok(glob::glob(path)
         .map_err(|_| NIFileError::Generic(format!("error globbing: {}", path)))?
         .filter_map(|path| path.ok())

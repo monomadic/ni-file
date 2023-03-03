@@ -1,6 +1,7 @@
 use crate::prelude::*;
 use crate::read_bytes::ReadBytesExt;
 
+#[derive(Debug)]
 pub struct ItemFrameHeader {
     size: u64,
     pub domain_id: u32,
@@ -10,6 +11,8 @@ pub struct ItemFrameHeader {
 
 impl ItemFrameHeader {
     pub fn read<R: ReadBytesExt>(mut reader: R) -> Result<Self> {
+        log::debug!("Reading ItemFrameHeader");
+
         // TODO: validation
         Ok(Self {
             size: reader.read_u64_le()?,

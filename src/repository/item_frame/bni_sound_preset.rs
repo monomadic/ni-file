@@ -19,7 +19,7 @@ use crate::read_bytes::ReadBytesExt;
 pub struct BNISoundPreset(Vec<u8>);
 
 impl BNISoundPreset {
-    pub fn read<R: ReadBytesExt>(mut reader: R) -> Result<Self> {
+    pub fn read<R: ReadBytesExt>(_reader: R) -> Result<Self> {
         Ok(Self(vec![]))
     }
 }
