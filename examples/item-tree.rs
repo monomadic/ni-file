@@ -1,3 +1,5 @@
+// This example prints the ItemID of every Item in a Container.
+
 use ni_file::Item;
 use std::error::Error;
 
@@ -16,7 +18,8 @@ fn print_item_ids(item: &Item, indent: usize) -> Result<(), Box<dyn Error>> {
 }
 
 pub fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let file = include_bytes!("../tests/data/files/kontakt-7/000-default.nki").as_slice();
+    // let file = include_bytes!("../tests/data/files/kontakt-7/000-default.nki").as_slice();
+    let file = include_bytes!("../tests/data/files/fm8/001-fm7.nfm8").as_slice();
 
     let item = Item::read(file)?;
     println!("{:?}", item.frame()?.header.item_id);
