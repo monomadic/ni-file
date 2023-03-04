@@ -1,9 +1,9 @@
+use super::{
+    header::ItemHeader,
+    item_frame::{item_id::ItemID, ItemFrame},
+};
+use crate::{prelude::*, read_bytes::ReadBytesExt};
 use std::convert::TryInto;
-
-use super::header::ItemHeader;
-use super::item_frame::ItemFrame;
-use crate::prelude::*;
-use crate::read_bytes::ReadBytesExt;
 
 /// The generic, unparsed container of an Item
 #[derive(Clone)]
@@ -25,6 +25,20 @@ impl Item {
             data: buffer.read_sized_data()?,
             children: Item::read_children(&mut buffer)?,
         })
+    }
+
+    pub fn find(&self, kind: &ItemID) -> Option<ItemFrame> {
+        if let Some(frame) = self.frame().ok() {
+            if &frame.header.item_id == kind {
+                return Some(frame);
+            }
+            for item in &self.children {
+                if let Some(frame) = item.find(kind) {
+                    return Some(frame);
+                }
+            }
+        }
+        None
     }
 
     pub fn frame(&self) -> Result<ItemFrame> {

@@ -12,23 +12,25 @@
     }
 */
 
-use crate::prelude::*;
-use crate::read_bytes::ReadBytesExt;
-use crate::repository::Item;
+use std::convert::TryInto;
 
-#[derive(Debug)]
-pub struct BNISoundPreset(Vec<u8>);
+use super::subtree_item::SubtreeItem;
+use super::ItemFrame;
+use crate::{prelude::*, ItemID};
 
-impl BNISoundPreset {
-    pub fn read<R: ReadBytesExt>(_reader: R) -> Result<Self> {
-        Ok(Self(vec![]))
-    }
+pub struct BNISoundPreset {
+    pub subtree_item: SubtreeItem,
 }
 
-impl std::convert::TryFrom<Item> for BNISoundPreset {
+impl std::convert::TryFrom<ItemFrame> for BNISoundPreset {
     type Error = NIFileError;
 
-    fn try_from(item: Item) -> Result<Self> {
-        Ok(Self::read(item.frame()?.data.as_slice())?)
+    fn try_from(frame: ItemFrame) -> Result<Self> {
+        log::debug!("BNISoundPreset::try_from");
+        debug_assert_eq!(frame.header.item_id, ItemID::BNISoundPreset);
+
+        Ok(Self {
+            subtree_item: frame.try_into()?,
+        })
     }
 }

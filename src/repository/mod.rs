@@ -30,6 +30,8 @@ mod property;
 mod repository;
 
 pub use item::Item;
-pub use item_frame::bni_sound_preset::BNISoundPreset;
-pub use item_frame::repository_root::RepositoryRoot;
+pub use item_frame::{
+    bni_sound_preset::BNISoundPreset, encryption_item::EncryptionItem, item_id::ItemID,
+    repository_root::RepositoryRoot,
+};
 pub use repository::NIContainer;

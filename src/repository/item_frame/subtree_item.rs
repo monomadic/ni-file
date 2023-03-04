@@ -41,14 +41,27 @@
 
 // TODO: should work on frames, not raw property data
 
-use crate::prelude::*;
 use crate::read_bytes::ReadBytesExt;
+use crate::{prelude::*, ItemID};
 
-pub struct SubtreeItem(Vec<u8>);
+use super::ItemFrame;
+
+pub struct SubtreeItem(pub Vec<u8>);
+
+impl std::convert::TryFrom<ItemFrame> for SubtreeItem {
+    type Error = NIFileError;
+
+    fn try_from(frame: ItemFrame) -> Result<Self> {
+        log::debug!("BNISoundPreset::try_from");
+        debug_assert_eq!(frame.header.item_id, ItemID::SubtreeItem);
+
+        Ok(Self(frame.data))
+    }
+}
 
 impl SubtreeItem {
     /// decompress and return compressed internal Item.
-    fn read(&self) -> Result<SubtreeItem> {
+    pub fn read(&self) -> Result<SubtreeItem> {
         let mut buf = self.0.as_slice();
 
         let prop_version = buf.read_u32_le()?;

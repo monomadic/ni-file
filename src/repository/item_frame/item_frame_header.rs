@@ -13,9 +13,7 @@ pub struct ItemFrameHeader {
 
 impl ItemFrameHeader {
     pub fn read<R: ReadBytesExt>(mut reader: R) -> Result<Self> {
-        log::debug!("Reading ItemFrameHeader");
-
-        // TODO: validation
+        log::debug!("ItemFrameHeader::read");
         Ok(Self {
             size: reader.read_u64_le()?,
             domain_id: DomainID(reader.read_u32_le()?),

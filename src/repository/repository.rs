@@ -1,4 +1,7 @@
-use super::{item_frame::item_id::ItemID, Item};
+use super::{
+    item_frame::{item_id::ItemID, ItemFrame},
+    Item,
+};
 use crate::{prelude::*, read_bytes::ReadBytesExt, BNISoundPreset, RepositoryRoot};
 use std::convert::TryInto;
 
@@ -15,6 +18,10 @@ impl NIContainer {
 
     pub fn root(&self) -> Result<RepositoryRoot> {
         self.0.frame()?.try_into()
+    }
+
+    pub fn find(&self, item: ItemID) -> Option<ItemFrame> {
+        self.0.find(&item)
     }
 
     pub fn preset(&self) -> Result<BNISoundPreset> {
