@@ -46,7 +46,9 @@ use crate::{prelude::*, ItemID};
 
 use super::ItemFrame;
 
-pub struct SubtreeItem(pub Vec<u8>);
+pub struct SubtreeItem {
+    pub inner_data: Vec<u8>,
+}
 
 impl std::convert::TryFrom<ItemFrame> for SubtreeItem {
     type Error = NIFileError;
@@ -55,34 +57,34 @@ impl std::convert::TryFrom<ItemFrame> for SubtreeItem {
         log::debug!("BNISoundPreset::try_from");
         debug_assert_eq!(frame.header.item_id, ItemID::SubtreeItem);
 
-        Ok(Self(frame.data))
+        Self::read(frame.data.as_slice())
     }
 }
 
 impl SubtreeItem {
     /// decompress and return compressed internal Item.
-    pub fn read(&self) -> Result<SubtreeItem> {
-        let mut buf = self.0.as_slice();
+    pub fn read<R: ReadBytesExt>(mut reader: R) -> Result<Self> {
+        log::debug!("SubtreeItem::read");
 
-        let prop_version = buf.read_u32_le()?;
+        let prop_version = reader.read_u32_le()?;
         debug_assert_eq!(prop_version, 1);
 
-        let is_compressed = buf.read_u8()?;
+        let is_compressed = reader.read_u8()?;
         log::debug!("is_compressed: {}", is_compressed);
 
-        let decompressed_size = buf.read_u32_le()?;
+        let decompressed_size = reader.read_u32_le()?;
         log::debug!("decompressed_size: {}", decompressed_size);
 
-        let compressed_size = buf.read_u32_le()?;
+        let compressed_size = reader.read_u32_le()?;
         log::debug!("compressed_size: {}", compressed_size);
 
-        let compressed_data = buf.read_bytes(compressed_size as usize)?;
+        let compressed_data = reader.read_bytes(compressed_size as usize)?;
 
         let inner_data =
             crate::decompress::decompress(&compressed_data, decompressed_size as usize).unwrap();
         // debug_assert!();
 
-        Ok(SubtreeItem(inner_data))
+        Ok(SubtreeItem { inner_data })
     }
 }
 
@@ -97,10 +99,9 @@ mod tests {
         let data = include_bytes!(
             "../../../tests/data/item-frame-property/kontakt-4/115-SubtreeItem.data"
         );
-        let item = SubtreeItem(data.to_vec());
-        let inner = item.read()?;
+        let item = SubtreeItem::read(data.as_slice())?;
 
-        assert_eq!(inner.0.len(), 4524);
+        assert_eq!(item.inner_data.len(), 4524);
 
         Ok(())
     }

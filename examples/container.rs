@@ -1,6 +1,6 @@
-use std::convert::{TryFrom, TryInto};
+use std::convert::TryFrom;
 
-use ni_file::{BNISoundPreset, EncryptionItem, ItemID, NIContainer, NIFileType, RepositoryRoot};
+use ni_file::{EncryptionItem, ItemID, NIContainer, NIFileType, RepositoryRoot};
 
 #[allow(dead_code)]
 fn setup_logger() {
@@ -54,7 +54,7 @@ pub fn main() -> Result<(), Box<dyn std::error::Error>> {
             .map(EncryptionItem::try_from)
             .unwrap()?;
 
-        std::fs::write("out.preset", e.subtree.0)?;
+        std::fs::write("out.preset", e.subtree.inner_data)?;
 
         // if let Some(ei) = repo.find(ItemID::EncryptionItem) {
         //     let ei: EncryptionItem = ei.try_into()?;
