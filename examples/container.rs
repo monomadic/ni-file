@@ -54,11 +54,10 @@ pub fn main() -> Result<(), Box<dyn std::error::Error>> {
             .map(EncryptionItem::try_from)
             .unwrap()?;
 
-        std::fs::write("out.preset", e.subtree.inner_data)?;
-
-        // if let Some(ei) = repo.find(ItemID::EncryptionItem) {
-        //     let ei: EncryptionItem = ei.try_into()?;
-        // }
+        let preset = ni_file::Item::read(e.subtree.inner_data.as_slice())?;
+        for item in &preset.children {
+            println!("{:?}", item.frame()?);
+        }
     }
 
     Ok(())

@@ -6,7 +6,7 @@ use crate::{prelude::*, read_bytes::ReadBytesExt};
 use std::convert::TryInto;
 
 /// The generic, unparsed container of an Item
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub struct Item {
     pub header: ItemHeader,
     pub data: Vec<u8>,
