@@ -17,6 +17,7 @@ pub mod error;
 pub mod prelude;
 
 mod detect; // detect filetype
+mod monolith;
 mod repository; // read ni repositories
 
 // utils
