@@ -43,6 +43,11 @@ impl ItemFrame {
         let buf = reader.read_sized_data()?;
         let mut buf = buf.as_slice();
         let header = ItemFrameHeader::read(&mut buf)?;
+
+        if header.item_id == crate::ItemID::Item {
+            panic!("reading terminator frame");
+        }
+
         let inner = ItemFrameStack::read(&mut buf)?;
 
         Ok(Self {

@@ -21,6 +21,8 @@ impl std::convert::TryFrom<ItemFrame> for EncryptionItem {
 
         let subtree_frame = ItemFrame::read(frame.inner.0.as_slice())?;
 
+        // .. data
+
         Ok(Self {
             subtree: subtree_frame.try_into()?,
         })

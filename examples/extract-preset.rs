@@ -8,7 +8,9 @@ pub fn main() -> Result<(), Box<dyn std::error::Error>> {
     if NIFileType::detect(file) == NIFileType::NIContainer {
         // read the repository
         let repo = NIContainer::read(file)?;
-        let preset = repo.preset()?;
+        let chunk = repo.chunk()?;
+
+        std::fs::write("chunk", &chunk)?;
     }
 
     Ok(())

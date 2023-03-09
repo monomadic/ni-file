@@ -2,10 +2,11 @@ use super::{
     item_frame::{item_id::ItemID, preset::Preset, ItemFrame},
     Item,
 };
-use crate::{prelude::*, read_bytes::ReadBytesExt, BNISoundPreset, RepositoryRoot};
-use std::convert::TryFrom;
-
-// TODO: in bin this is Container
+use crate::{
+    prelude::*, read_bytes::ReadBytesExt, BNISoundPreset, EncryptionItem, PresetChunkItem,
+    RepositoryRoot,
+};
+use std::convert::{TryFrom, TryInto};
 
 /// Represents a repository file. Usually has a `RepositoryRoot` as the first enclosing `Item`.
 pub struct NIContainer(Item);
@@ -24,6 +25,16 @@ impl NIContainer {
         self.0.find(&item)
     }
 
+    /// inner container chunk
+    pub fn chunk(&self) -> Result<Vec<u8>> {
+        let inner = Item::read(self.inner_container()?.as_slice())?;
+        let data = inner.children[0].data()?;
+        let chunk_item = PresetChunkItem::try_from(data)?;
+
+        // TODO: lifetime?
+        Ok(chunk_item.chunk().clone())
+    }
+
     pub fn preset(&self) -> Result<Preset> {
         for item in &self.0.children {
             match item.data()?.header.item_id {
@@ -37,6 +48,14 @@ impl NIContainer {
         }
 
         todo!()
+    }
+
+    pub fn inner_container(&self) -> Result<Vec<u8>> {
+        let item = self
+            .find(ItemID::EncryptionItem)
+            .expect("no EncryptionItem");
+        let ei: EncryptionItem = item.try_into()?;
+        Ok(ei.subtree.inner_data)
     }
 
     pub fn children(&self) -> &Vec<Item> {

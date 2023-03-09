@@ -30,5 +30,6 @@ pub(crate) mod utils; // various utils for logging etc
 
 pub use detect::NIFileType;
 pub use repository::{
-    BNISoundPreset, EncryptionItem, Item, ItemID, NIContainer, Preset, RepositoryRoot,
+    BNISoundPreset, EncryptionItem, Item, ItemID, NIContainer, Preset, PresetChunkItem,
+    RepositoryRoot,
 };

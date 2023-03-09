@@ -35,4 +35,5 @@ pub use item_frame::{
     bni_sound_preset::BNISoundPreset, encryption_item::EncryptionItem, item_id::ItemID,
     preset::Preset, repository_root::RepositoryRoot,
 };
+pub use items::preset_chunk_item::PresetChunkItem;
 pub use repository::NIContainer;
