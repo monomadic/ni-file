@@ -22,6 +22,7 @@ pub fn main() -> Result<(), Box<dyn std::error::Error>> {
         .filter_map(|path| path.ok())
         .filter(|path| path.file_name().unwrap() != ".DS_Store")
         .collect();
+
     for path in paths {
         println!("\n{}:", path.as_os_str().to_str().unwrap());
 
@@ -30,14 +31,6 @@ pub fn main() -> Result<(), Box<dyn std::error::Error>> {
 
         print_item_ids(&item, 1)?;
     }
-
-    // // let file = include_bytes!("../tests/data/files/kontakt-7/000-default.nki").as_slice();
-    // let file = include_bytes!("../tests/data/files/fm8/001-fm7.nfm8").as_slice();
-    //
-    // let item = Item::read(file)?;
-    // println!("{:?}", item.frame()?.header.item_id);
-    //
-    // print_item_ids(&item, 1)?;
 
     Ok(())
 }
