@@ -14,8 +14,11 @@ pub fn main() -> Result<(), Box<dyn std::error::Error>> {
     // uncomment this to use debug logging:
     // setup_logger();
 
-    // lets read a Kontakt 7 file.
-    let file = include_bytes!("../tests/data/files/kontakt-7/000-default.nki").as_slice();
+    // // lets read a Kontakt 7 file.
+    // let file = include_bytes!("../tests/data/files/kontakt-7/000-default.nki").as_slice();
+
+    // lets read an FM8 file.
+    let file = include_bytes!("../tests/data/files/fm8/001-fm7.nfm8").as_slice();
 
     // make sure this is a valid NIContainer
     if NIFileType::detect(file) == NIFileType::NIContainer {

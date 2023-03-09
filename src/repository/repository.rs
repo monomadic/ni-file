@@ -31,6 +31,7 @@ impl NIContainer {
                     // TODO: cleaner
                     return Ok(BNISoundPreset::try_from(item.data()?)?.preset);
                 }
+                ItemID::Preset => return Ok(Preset::try_from(item.data()?)?),
                 _ => todo!(),
             }
         }
