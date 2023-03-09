@@ -7,6 +7,7 @@ pub enum NIFileType {
     /// Kore has its own simple format.
     KoreSound,
     /// Not entirely sure if this is just k2 or all NI formats in the 90s
+    Kontakt1,
     Kontakt2,
     Unknown,
 }
@@ -28,6 +29,11 @@ pub fn filetype(buffer: &[u8]) -> NIFileType {
     if buffer[0..4] == [0x2F, 0x5C, 0x20, 0x4E] {
         info!("Detected: NIKontaktMonolith");
         return NIFileType::NIKontaktMonolith;
+    }
+
+    if buffer[0..4] == [0x5E, 0xE5, 0x6E, 0xB3] {
+        info!("Detected: Kontakt1");
+        return NIFileType::Kontakt1;
     }
 
     if buffer[0..4] == [0x12, 0x90, 0xA8, 0x7F] {
