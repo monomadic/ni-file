@@ -1,9 +1,9 @@
 use super::{
-    item_frame::{item_id::ItemID, ItemFrame},
+    item_frame::{item_id::ItemID, preset::Preset, ItemFrame},
     Item,
 };
 use crate::{prelude::*, read_bytes::ReadBytesExt, BNISoundPreset, RepositoryRoot};
-use std::convert::TryInto;
+use std::convert::TryFrom;
 
 // TODO: in bin this is Container
 
@@ -17,18 +17,21 @@ impl NIContainer {
     }
 
     pub fn root(&self) -> Result<RepositoryRoot> {
-        self.0.frame()?.try_into()
+        RepositoryRoot::try_from(self.0.data()?)
     }
 
     pub fn find(&self, item: ItemID) -> Option<ItemFrame> {
         self.0.find(&item)
     }
 
-    pub fn preset(&self) -> Result<BNISoundPreset> {
+    pub fn preset(&self) -> Result<Preset> {
         for item in &self.0.children {
-            match item.frame()?.header.item_id {
-                ItemID::BNISoundPreset => (),
-                _ => (),
+            match item.data()?.header.item_id {
+                ItemID::BNISoundPreset => {
+                    // TODO: cleaner
+                    return Ok(BNISoundPreset::try_from(item.data()?)?.preset);
+                }
+                _ => todo!(),
             }
         }
 

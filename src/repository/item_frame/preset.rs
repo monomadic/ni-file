@@ -30,22 +30,33 @@
 //     authoring_app_version: String,
 // }
 
-use crate::prelude::*;
 use crate::read_bytes::ReadBytesExt;
+use crate::{prelude::*, ItemID};
+
+use super::ItemFrame;
 
 pub struct Preset(Vec<u8>);
 
-impl Preset {
-    fn read(&self) -> Result<Preset> {
-        let mut buf = self.0.as_slice();
+impl std::convert::TryFrom<ItemFrame> for Preset {
+    type Error = NIFileError;
 
-        let prop_version = buf.read_u32_le()?;
+    fn try_from(frame: ItemFrame) -> Result<Self> {
+        log::debug!("Preset::try_from");
+        debug_assert_eq!(frame.header.item_id, ItemID::Preset);
+
+        Preset::read(frame.inner.0.as_slice())
+    }
+}
+
+impl Preset {
+    pub fn read<R: ReadBytesExt>(mut reader: R) -> Result<Self> {
+        let prop_version = reader.read_u32_le()?;
         assert_eq!(prop_version, 1);
 
-        let is_compressed = buf.read_u8()?;
+        let is_compressed = reader.read_u8()?;
         log::debug!("is_compressed: {}", is_compressed);
 
-        let authoring_app_id = buf.read_u32_le()?;
+        let authoring_app_id = reader.read_u32_le()?;
         log::debug!("authoring_app_id: {}", authoring_app_id);
 
         Ok(Preset(vec![]))

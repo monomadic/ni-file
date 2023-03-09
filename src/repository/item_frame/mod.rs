@@ -13,22 +13,26 @@ pub mod sound_info;
 pub mod sound_info_item;
 pub mod subtree_item;
 
+use std::convert::TryFrom;
+
 pub use item_frame_header::ItemFrameHeader;
 
 use crate::{prelude::*, read_bytes::ReadBytesExt};
 
+use super::item_frame_stack::ItemFrameStack;
+
 #[derive(Clone, Debug)]
 pub struct ItemFrame {
     pub header: ItemFrameHeader,
-    pub inner: Vec<u8>,
+    pub inner: ItemFrameStack,
     pub data: Vec<u8>,
 }
 
-impl std::convert::TryFrom<Vec<u8>> for ItemFrame {
+impl std::convert::TryFrom<&ItemFrameStack> for ItemFrame {
     type Error = NIFileError;
 
-    fn try_from(buf: Vec<u8>) -> Result<Self> {
-        ItemFrame::read(buf.as_slice())
+    fn try_from(stack: &ItemFrameStack) -> Result<Self> {
+        ItemFrame::read(stack.0.as_slice())
     }
 }
 
@@ -39,7 +43,7 @@ impl ItemFrame {
         let buf = reader.read_sized_data()?;
         let mut buf = buf.as_slice();
         let header = ItemFrameHeader::read(&mut buf)?;
-        let inner = buf.read_sized_data()?;
+        let inner = ItemFrameStack::read(&mut buf)?;
 
         Ok(Self {
             header,
@@ -48,7 +52,7 @@ impl ItemFrame {
         })
     }
 
-    pub fn frame(&self) -> Result<Self> {
-        Self::read(self.inner.as_slice())
+    pub fn inner(&self) -> Result<ItemFrame> {
+        ItemFrame::try_from(&self.inner)
     }
 }

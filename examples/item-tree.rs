@@ -1,4 +1,4 @@
-// This example prints the ItemID of every Item in a Container.
+// This example shows the basic hierarchical structure of an NIContainer
 
 use ni_file::Item;
 use std::error::Error;
@@ -8,7 +8,7 @@ fn print_item_ids(item: &Item, indent: usize) -> Result<(), Box<dyn Error>> {
         println!(
             "{:>width$}{:?}",
             " ",
-            item.frame()?.header.item_id,
+            item.data()?.header.item_id,
             width = indent
         );
         print_item_ids(&item, indent + 1)?;
@@ -18,13 +18,26 @@ fn print_item_ids(item: &Item, indent: usize) -> Result<(), Box<dyn Error>> {
 }
 
 pub fn main() -> Result<(), Box<dyn std::error::Error>> {
-    // let file = include_bytes!("../tests/data/files/kontakt-7/000-default.nki").as_slice();
-    let file = include_bytes!("../tests/data/files/fm8/001-fm7.nfm8").as_slice();
+    let paths: Vec<std::path::PathBuf> = glob::glob("tests/data/files/**/*.*")?
+        .filter_map(|path| path.ok())
+        .filter(|path| path.file_name().unwrap() != ".DS_Store")
+        .collect();
+    for path in paths {
+        println!("\n{}:", path.as_os_str().to_str().unwrap());
 
-    let item = Item::read(file)?;
-    println!("{:?}", item.frame()?.header.item_id);
+        let item = Item::read(std::fs::File::open(path)?)?;
+        println!("{:?}", item.data()?.header.item_id);
 
-    print_item_ids(&item, 1)?;
+        print_item_ids(&item, 1)?;
+    }
+
+    // // let file = include_bytes!("../tests/data/files/kontakt-7/000-default.nki").as_slice();
+    // let file = include_bytes!("../tests/data/files/fm8/001-fm7.nfm8").as_slice();
+    //
+    // let item = Item::read(file)?;
+    // println!("{:?}", item.frame()?.header.item_id);
+    //
+    // print_item_ids(&item, 1)?;
 
     Ok(())
 }

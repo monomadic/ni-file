@@ -38,14 +38,11 @@ pub fn main() -> Result<(), Box<dyn std::error::Error>> {
         // iterate children
         println!("Children Found: {}", repo.children().len());
         for item in repo.children() {
-            println!("Child Found: {:?}", item.frame()?.header.item_id);
+            println!("Child Found: {:?}", item.data()?.header.item_id);
 
             for item in &item.children {
-                println!(" Child Found: {:?}", item.frame()?.header.item_id);
+                println!(" Child Found: {:?}", item.data()?.header.item_id);
             }
-
-            println!("{:?}", item.frame()?.frame()?.header.item_id);
-            // let preset: BNISoundPreset = item.frame()?.try_into()?;
         }
 
         // lets find an item frame of type EncryptionItem
@@ -56,7 +53,7 @@ pub fn main() -> Result<(), Box<dyn std::error::Error>> {
 
         let preset = ni_file::Item::read(e.subtree.inner_data.as_slice())?;
         for item in &preset.children {
-            println!("{:?}", item.frame()?);
+            println!("{:?}", item.data()?);
         }
     }
 

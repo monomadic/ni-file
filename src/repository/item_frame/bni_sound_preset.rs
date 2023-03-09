@@ -14,12 +14,12 @@
 
 use std::convert::TryInto;
 
-use super::subtree_item::SubtreeItem;
+use super::preset::Preset;
 use super::ItemFrame;
 use crate::{prelude::*, ItemID};
 
 pub struct BNISoundPreset {
-    pub subtree_item: SubtreeItem,
+    pub preset: Preset,
 }
 
 impl std::convert::TryFrom<ItemFrame> for BNISoundPreset {
@@ -29,8 +29,10 @@ impl std::convert::TryFrom<ItemFrame> for BNISoundPreset {
         log::debug!("BNISoundPreset::try_from");
         debug_assert_eq!(frame.header.item_id, ItemID::BNISoundPreset);
 
-        Ok(Self {
-            subtree_item: frame.try_into()?,
-        })
+        let preset: Preset = frame.try_into()?;
+
+        // .. data
+
+        Ok(Self { preset })
     }
 }

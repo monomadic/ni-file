@@ -19,7 +19,7 @@ impl std::convert::TryFrom<ItemFrame> for EncryptionItem {
         log::debug!("BNISoundPreset::try_from");
         debug_assert_eq!(frame.header.item_id, ItemID::EncryptionItem);
 
-        let subtree_frame = ItemFrame::read(frame.inner.as_slice())?;
+        let subtree_frame = ItemFrame::read(frame.inner.0.as_slice())?;
 
         Ok(Self {
             subtree: subtree_frame.try_into()?,

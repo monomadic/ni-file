@@ -8,7 +8,7 @@ Inheritance Model
 
 - kontakt-5.4-demo.nki:
 	- RepositoryRoot(118) -> Authorization(106) -> Item(1)
-		- BNISoundHeader(3) -> Preset(101) -> Authorization(106) -> Item(1)
+		- BNISoundPreset(3) -> Preset(101) -> Authorization(106) -> Item(1)
 			- SoundInfoItem(108) -> Item(1)
 			- ControllerAssignments (121) -> Item(1)
 			- EncryptionItem(116) -> SubtreeItem(115) -> Item(1)

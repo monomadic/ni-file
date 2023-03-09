@@ -1,15 +1,16 @@
 use super::{
     header::ItemHeader,
     item_frame::{item_id::ItemID, ItemFrame},
+    item_frame_stack::ItemFrameStack,
 };
 use crate::{prelude::*, read_bytes::ReadBytesExt};
-use std::convert::TryInto;
+use std::convert::TryFrom;
 
 /// The generic, unparsed container of an Item
 #[derive(Clone, Debug)]
 pub struct Item {
     pub header: ItemHeader,
-    pub data: Vec<u8>,
+    pub data: ItemFrameStack,
     pub children: Vec<Item>,
 }
 
@@ -22,13 +23,19 @@ impl Item {
 
         Ok(Item {
             header: ItemHeader::read(&mut buffer)?,
-            data: buffer.read_sized_data()?,
+            data: ItemFrameStack::read(&mut buffer)?,
             children: Item::read_children(&mut buffer)?,
         })
     }
 
+    pub fn data(&self) -> Result<ItemFrame> {
+        ItemFrame::try_from(&self.data)
+    }
+
+    /// Returns the first instance of Item by ItemID within child Items.
     pub fn find(&self, kind: &ItemID) -> Option<ItemFrame> {
-        if let Some(frame) = self.frame().ok() {
+        // check this Item first
+        if let Some(frame) = self.data().ok() {
             if &frame.header.item_id == kind {
                 return Some(frame);
             }
@@ -39,10 +46,6 @@ impl Item {
             }
         }
         None
-    }
-
-    pub fn frame(&self) -> Result<ItemFrame> {
-        self.data.clone().try_into()
     }
 
     fn read_children<R: ReadBytesExt>(mut buf: R) -> Result<Vec<Item>> {
