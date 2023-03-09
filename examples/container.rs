@@ -1,6 +1,4 @@
-use std::convert::TryFrom;
-
-use ni_file::{EncryptionItem, ItemID, NIContainer, NIFileType, RepositoryRoot};
+use ni_file::{NIContainer, NIFileType, Preset, RepositoryRoot};
 
 #[allow(dead_code)]
 fn setup_logger() {
@@ -35,26 +33,13 @@ pub fn main() -> Result<(), Box<dyn std::error::Error>> {
             root.patch_version(),
         );
 
-        // iterate children
-        println!("Children Found: {}", repo.children().len());
-        for item in repo.children() {
-            println!("Child Found: {:?}", item.data()?.header.item_id);
+        let preset: Preset = repo.preset()?;
+        println!(
+            "Authoring Application: {:?} {}",
+            preset.authoring_app, preset.version
+        );
 
-            for item in &item.children {
-                println!(" Child Found: {:?}", item.data()?.header.item_id);
-            }
-        }
-
-        // lets find an item frame of type EncryptionItem
-        let e: EncryptionItem = repo
-            .find(ItemID::EncryptionItem)
-            .map(EncryptionItem::try_from)
-            .unwrap()?;
-
-        let preset = ni_file::Item::read(e.subtree.inner_data.as_slice())?;
-        for item in &preset.children {
-            println!("{:?}", item.data()?);
-        }
+        println!("Compressed: {:?}", preset.is_compressed);
     }
 
     Ok(())

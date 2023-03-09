@@ -13,23 +13,11 @@ pub trait ReadBytesExt: io::Read {
         Ok(u32::from_le_bytes(buf))
     }
 
-    // fn scan_u32_le(bytes: &[u8]) -> Result<u32, std::array::TryFromSliceError> {
-    //     let buffer: [u8; 4] = [0u8; 4];
-    //     let result = u32::from_le_bytes(buffer);
-    //     Ok(result)
-    // }
-
     fn read_u64_le(&mut self) -> io::Result<u64> {
         let mut buf = [0u8; 8];
         self.read_exact(&mut buf)?;
         Ok(u64::from_le_bytes(buf))
     }
-
-    // fn scan_u64_le(bytes: &[u8]) -> Result<u64, std::array::TryFromSliceError> {
-    //     let buffer: [u8; 8] = bytes.try_into()?;
-    //     let result = u64::from_le_bytes(buffer);
-    //     Ok(result)
-    // }
 
     /// read a number of bytes (failable)
     fn read_bytes(&mut self, bytes: usize) -> io::Result<Vec<u8>> {
@@ -55,30 +43,22 @@ pub trait ReadBytesExt: io::Read {
     }
 
     fn read_widestring_utf16(&mut self) -> io::Result<String> {
-        Ok(String::from("hi"))
+        let size_field = self.read_u32_le()?;
+        if size_field == 0 {
+            return Ok(String::new());
+        }
+
+        let buf = self.read_bytes(size_field as usize * 2)?;
+
+        let u16buf: Vec<u16> = buf
+            .chunks_exact(2)
+            .map(|chunk| u16::from_le_bytes([chunk[0], chunk[1]]))
+            .collect();
+
+        Ok(String::from_utf16(u16buf.as_slice()).unwrap())
     }
 }
 impl<R: io::Read + ?Sized> ReadBytesExt for R {}
-
-// TODO: implement read_widestring
-//
-// fn pascal_string_utf16<R: Read + Seek>(
-//     reader: &mut R,
-//     _ro: &binread::ReadOptions,
-//     _: (),
-// ) -> BinResult<String> {
-//     let size: u32 = reader.read_le()?;
-//
-//     info!("string length {}", size);
-//
-//     if size == 0 {
-//         return Ok(String::new());
-//     }
-//
-//     let string: String = reader.read_le::<binread::NullWideString>()?.into_string();
-//
-//     Ok(string)
-// }
 
 #[cfg(test)]
 mod tests {
