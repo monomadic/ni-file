@@ -10,6 +10,8 @@ pub enum NIFileType {
     Kontakt1,
     Kontakt2,
     Unknown,
+
+    FM8Preset,
 }
 
 impl NIFileType {
@@ -45,6 +47,11 @@ pub fn filetype(buffer: &[u8]) -> NIFileType {
     if buffer[0..4] == [45, 110, 105, 45] {
         info!("Detected: KoreSound");
         return NIFileType::KoreSound;
+    }
+
+    if buffer[0..4] == b"E8MF".to_owned() {
+        info!("Detected: FM8 Preset");
+        return NIFileType::FM8Preset;
     }
 
     error!("Unknown or unsupported filetype!");

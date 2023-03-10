@@ -50,6 +50,7 @@ impl NIContainer {
         todo!()
     }
 
+    // TODO: called InternalPatchData
     pub fn inner_container(&self) -> Result<Vec<u8>> {
         let item = self
             .find(ItemID::EncryptionItem)

@@ -18,6 +18,7 @@ pub mod prelude;
 
 mod detect; // detect filetype
 mod monolith;
+mod preset; // modern NI presets
 mod repository; // read ni repositories
 
 // utils
