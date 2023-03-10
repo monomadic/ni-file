@@ -3,9 +3,22 @@ use crate::read_bytes::ReadBytesExt;
 
 // see dbgPrint, K4PO, K4PL (::read for sizes)
 
+// InternalPatchData::ExtractHeader
+//  - finds BNISoundHeader
+// - md5 hashsum
+
 // SECTIONS:
 //
-// Script (7 params)
+// K4PO::K4PL_Script (7 params)
+//   string
+//   bool
+//   bool
+//   bool
+//   string
+//   string
+//   string
+//   u32
+//   ?string
 //
 // Loop (7 params)      loc         25 bytes?
 //   mode               0x04 i32
