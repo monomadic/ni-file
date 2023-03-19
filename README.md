@@ -2,7 +2,9 @@
 
 Native Instruments file format support for rust. Very basic support at the moment, mostly surrounding the container format (called a Container).
 
-Anyone who wants to do this with me, please get in touch. I'm on telegram at @deathdisco.
+Anyone who wants to join the effort, please join the telegram group at https://t.me/ni_file
+
+I'm on telegram at @deathdisco.
 
 ## Progress
 
