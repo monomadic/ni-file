@@ -1,11 +1,3 @@
 target
 .DS_Store
-bins
-bins/*
-/old
-*.deflate
-deflate
-/output
-dsin-data
-*.preset
-/examples-old
+bin/*
