@@ -12,9 +12,10 @@ pub(crate) fn setup_logger() {
 }
 
 #[allow(dead_code)]
-pub(crate) fn get_test_files() -> Result<Vec<PathBuf>, Box<dyn Error>> {
-    Ok(glob::glob("data/files/**/*.*")?
+pub(crate) fn get_test_files(path: &str) -> Result<Vec<PathBuf>, Box<dyn Error>> {
+    Ok(glob::glob(path)?
         .filter_map(|path| path.ok())
+        .filter(|path| path.is_file())
         .filter(|path| path.file_name().unwrap() != ".DS_Store")
         .collect())
 }

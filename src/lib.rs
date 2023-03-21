@@ -34,3 +34,5 @@ pub use repository::{
     BNISoundPreset, EncryptionItem, Item, ItemID, NIContainer, Preset, PresetChunkItem,
     RepositoryRoot,
 };
+
+pub use monolith::NIMonolith;

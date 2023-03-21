@@ -11,6 +11,8 @@ pub enum NIFileType {
     Kontakt2,
     Unknown,
 
+    NICompressedWave,
+
     FM8Preset,
 }
 
@@ -21,12 +23,14 @@ impl NIFileType {
 }
 
 pub fn filetype(buffer: &[u8]) -> NIFileType {
+    // .nki, .nfm8, etc
     // check for 'hsin' at byte 12
     if buffer[12..16] == [104, 115, 105, 110] {
         info!("Detected: NIContainer");
         return NIFileType::NIContainer;
     }
 
+    // .nkm
     // check for '/\ NI FC MTD  /\' (NI FileContainer Metadata)
     if buffer[0..4] == [0x2F, 0x5C, 0x20, 0x4E] {
         info!("Detected: NIKontaktMonolith");
@@ -38,9 +42,16 @@ pub fn filetype(buffer: &[u8]) -> NIFileType {
         return NIFileType::Kontakt1;
     }
 
+    // .nki
     if buffer[0..4] == [0x12, 0x90, 0xA8, 0x7F] {
         info!("Detected: Kontakt2");
         return NIFileType::Kontakt2;
+    }
+
+    // .ncw
+    if buffer[0..4] == [0x01, 0xA8, 0x9E, 0xD6] {
+        info!("Detected: NICompressedWave");
+        return NIFileType::NICompressedWave;
     }
 
     // check for '-ni-' at byte 0
