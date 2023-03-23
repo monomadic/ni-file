@@ -16,6 +16,7 @@ extern crate log;
 pub mod error;
 pub mod prelude;
 
+mod container;
 mod detect; // detect filetype
 mod monolith; // monolith / FileContainer
 mod preset; // inner presets

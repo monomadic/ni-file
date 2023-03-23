@@ -9,11 +9,12 @@ pub enum NIFileType {
     /// Not entirely sure if this is just k2 or all NI formats in the 90s
     Kontakt1,
     Kontakt2,
-    Unknown,
 
     NICompressedWave,
 
     FM8Preset,
+
+    Unknown,
 }
 
 impl NIFileType {

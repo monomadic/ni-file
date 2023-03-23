@@ -26,6 +26,7 @@ pub(crate) fn get_files(path: &str) -> Result<Vec<PathBuf>> {
     Ok(glob::glob(path)
         .map_err(|_| NIFileError::Generic(format!("error globbing: {}", path)))?
         .filter_map(|path| path.ok())
+        .filter(|path| path.is_file())
         .filter(|path| path.file_name().unwrap() != ".DS_Store")
         .collect())
 }

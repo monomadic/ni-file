@@ -86,10 +86,63 @@ pub struct KontaktPreset();
 impl KontaktPreset {
     pub fn read<R: ReadBytesExt>(mut reader: R) -> Result<Self> {
         log::debug!("PresetChunkItem::read");
+
         // ChunkData::doRead
-        let _a = reader.read_u16_le()?; // 40, 0x28
+        let _u = reader.read_u16_le()?; // 40, 0x28
         let _size = reader.read_i32_le(); // actually i32
 
-        todo!();
+        // StructuredObject::doRead
+        let _u: bool = reader.read_u8()? == 1; // if 0, read raw
+
+        // seems always 175... id?
+        let _u = reader.read_u16_le()?;
+
+        // header chunk?
+        let chunk_size = reader.read_i32_le()?;
+        let _data = reader.read_bytes(chunk_size as usize)?;
+
+        // metadata chunk?
+        let chunk_size = reader.read_i32_le()?;
+        let _data = reader.read_bytes(chunk_size as usize)?;
+
+        // patch chunk?
+        let chunk_size = reader.read_i32_le()?;
+        let _data = reader.read_bytes(chunk_size as usize)?;
+
+        // seems always 71... id?
+        let _u = reader.read_u16_le()?;
+
+        // unknown chunk
+        let chunk_size = reader.read_i32_le()?;
+        let _data = reader.read_bytes(chunk_size as usize)?;
+
+        // seems always 75... id?
+        let _u = reader.read_u16_le()?;
+
+        // footer chunk?
+        let chunk_size = reader.read_i32_le()?;
+        let _data = reader.read_bytes(chunk_size as usize)?;
+
+        Ok(Self {})
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_kontakt_preset_read() -> Result<()> {
+
+        crate::utils::setup_logger();
+
+        for path in crate::utils::get_files("tests/files/nicontainer/preset-chunk/kontakt/**/*")? {
+            log::info!("reading {:?}", path);
+
+            let file = std::fs::File::open(&path)?;
+            KontaktPreset::read(file)?;
+        }
+
+        Ok(())
     }
 }
