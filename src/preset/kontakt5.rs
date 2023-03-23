@@ -87,9 +87,9 @@ impl KontaktPreset {
     pub fn read<R: ReadBytesExt>(mut reader: R) -> Result<Self> {
         log::debug!("PresetChunkItem::read");
         // ChunkData::doRead
-        let a = reader.read_u16_le()?; // 40, 0x28
-        let size = reader.read_i32_le(); // actually i32
+        let _a = reader.read_u16_le()?; // 40, 0x28
+        let _size = reader.read_i32_le(); // actually i32
 
-        Ok(Self())
+        todo!();
     }
 }
