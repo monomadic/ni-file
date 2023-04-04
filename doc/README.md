@@ -46,7 +46,7 @@ This is the header of an `Item`, listing its size, magic number, and flags such 
 
 - `hsin` Native Instruments Sound Header
 
-![chunks](assets/chunks.png)
+![chunks](../assets/chunks.png)
 
 ### `ItemFrameStack`
 
@@ -61,7 +61,7 @@ Domains are groups of item types, the most common of which is `dsin`, and most i
 - `RTKR` ReaKToR
 - `E8MF` FM8 Ensemble
 
-![data](assets/data.png)
+![data](../assets/data.png)
 
 
 
