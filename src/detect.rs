@@ -1,3 +1,5 @@
+use crate::read_bytes::ReadBytesExt;
+
 #[derive(Debug, PartialEq)]
 pub enum NIFileType {
     /// Most NI files are NIContainers.
@@ -24,6 +26,13 @@ impl NIFileType {
 }
 
 pub fn filetype(buffer: &[u8]) -> NIFileType {
+    let mut reader = buffer.clone();
+    let header_signature = reader.read_u32_le().unwrap();
+    match header_signature {
+        0x7fa89012 => {}
+        _ => (),
+    }
+
     // .nki, .nfm8, etc
     // check for 'hsin' at byte 12
     if buffer[12..16] == [104, 115, 105, 110] {

@@ -63,6 +63,8 @@ impl Preset {
         log::debug!("authoring_app_id: {:?}", authoring_app);
 
         // AuthoringApplicationInfo
+
+        // check ver
         assert_eq!(reader.read_u32_le()?, 1);
 
         let version = reader.read_widestring_utf16()?;

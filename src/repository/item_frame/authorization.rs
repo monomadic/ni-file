@@ -38,6 +38,10 @@ impl Authorization {
             // LicenseInfo::read
         }
 
+        // authorizationLevel
+        let _authorization_level = reader.read_u32_le()?; // 24, default: 1
+        let _read_checksum = reader.read_u32_le()?; // 28, default: 0
+
         Ok(Authorization(vec![]))
     }
 }
