@@ -33,3 +33,7 @@ A: Yes, files mostly use FastLZ compression internally and tdecompression is sup
 
 Q: Is decryption supported?
 A: No, but this will be eventually implemented and supported through legal means.
+
+## Special Thanks
+
+To Native Instruments, for monopolising and being a driving force in making the audio software industry so proprietary that I learned how to reverse engineer to open up your formats to everyone. I learned so much due to your ability to be evil.

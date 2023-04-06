@@ -15,9 +15,15 @@ pub enum NIFileType {
     Kontakt2,
     Kontakt42,
 
+    NIPresetKontakt,
+
     FM8Preset,
     Unknown,
 }
+
+//*
+// other magic numbers:
+// 0x464d3845   'FM8E'
 
 impl NIFileType {
     pub fn detect(buffer: &[u8]) -> NIFileType {
@@ -38,6 +44,9 @@ pub fn filetype(buffer: &[u8]) -> NIFileType {
             info!("Detected: Kontakt2 (Little Endian)");
             NIFileType::Kontakt2
         }
+        0xa4d6e55a | 0x74b5a69b => {
+            panic!("kontakt: unknown");
+        }
         _ => {
             // .nki, .nfm8, etc
             // check for 'hsin' at byte 12
@@ -45,6 +54,9 @@ pub fn filetype(buffer: &[u8]) -> NIFileType {
                 info!("Detected: NIContainer");
                 return NIFileType::NIContainer;
             }
+
+            // BE monolith byte 35: 0x4916e63c
+            // 0x16ccf80a : valid sample magic?
 
             // .nkm
             // check for '/\ NI FC MTD  /\' (NI FileContainer Metadata)

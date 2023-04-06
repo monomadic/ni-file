@@ -1,5 +1,10 @@
 # Kontakt
 
+- `GetHeaderVersionPreNIS(file);` returns:
+	- 1: 36 bytes
+	- 2: 170 bytes
+	- 3: 222 bytes
+
 ## BPatchHeaderV2
 - Size: 170 bytes
 

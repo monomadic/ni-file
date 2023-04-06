@@ -21,3 +21,29 @@ uint32_t BNISoundHeader::readItem(BNISoundHeader *this, Stream *stream, ReadCont
     NI::SOUND::ItemFrame::~ItemFrame((ItemFrame *)frameReader);
     return result;
 }
+
+ResultType BNISoundHeader::readItem(BNISoundHeader *this, Stream *stream, ReadContext *ctx) {
+    bool isSuccess;
+    int bytesRead;
+    ResultType localResult;
+    ItemFrameReader itemFrame;
+    ResultType result;
+
+    ItemFrameReader::ItemFrameReader(&itemFrame, stream, ctx);
+    result.value = Item::readItem((Item *)this, stream, ctx);
+    isSuccess = ResultType::operator.cast.to.bool(&result);
+
+    if (isSuccess) {
+        bytesRead = Stream::readRaw(stream, &(this->item).field_0x8, 0xde);
+				// if correct amount of bytes were not read, return error
+        if (bytesRead != 0xde) {
+            ResultType::ResultType((ResultType *)&localResult, 8);
+            result.value = localResult.value;
+        }
+    }
+
+		// destroy temporary item frame
+    ItemFrame::~ItemFrame((ItemFrame *)&itemFrame);
+
+    return result;
+}
