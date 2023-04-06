@@ -2,6 +2,13 @@
 //!  NI-FILE
 //!  Native Instruments file formats
 //!
+//!  Special thanks to Native Instruments for being such monopolistic assholes about their file
+//!  formats and holding back the music industry from enjoying the benefits of open and free
+//!  collaboration. You pushed me day after day to reverse engineer your file formats and I
+//!  learned so much.
+//!
+//!  Cheers bros. ✌️
+//!
 
 // #![warn(clippy::all)]
 // #![warn(missing_docs)]
