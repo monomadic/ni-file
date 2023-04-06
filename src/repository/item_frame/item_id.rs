@@ -35,8 +35,8 @@ impl From<u32> for ItemID {
         match id {
             // ItemFrame
             1 => ItemID::Item,
-            3 => ItemID::BNISoundPreset,
-            4 => ItemID::BNISoundHeader,
+            3 => ItemID::BNISoundPreset, // domainID NIK4 only
+            4 => ItemID::BNISoundHeader, // NIK4 only
             100 => ItemID::Bank,
             101 => ItemID::Preset,
             102 => ItemID::BankContainer,

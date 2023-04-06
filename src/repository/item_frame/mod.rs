@@ -3,16 +3,6 @@ pub mod domain_id;
 pub mod item_frame_header;
 pub mod item_id;
 
-// frame data
-pub mod authorization;
-pub mod bni_sound_preset;
-pub mod encryption_item;
-pub mod preset;
-pub mod repository_root;
-pub mod sound_info;
-pub mod sound_info_item;
-pub mod subtree_item;
-
 use std::convert::TryFrom;
 
 pub use item_frame_header::ItemFrameHeader;

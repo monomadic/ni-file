@@ -26,14 +26,13 @@ mod repository; // read ni repositories
 pub(crate) mod cb; // control byte
 pub(crate) mod decompress; // fastlz lib
 pub(crate) mod deflate; // decompress
-
 pub(crate) mod read_bytes; // for reading bytestreams
 pub(crate) mod utils; // various utils for logging etc
 
 pub use detect::NIFileType;
-pub use repository::{
-    BNISoundPreset, EncryptionItem, Item, ItemID, NIContainer, Preset, PresetChunkItem,
-    RepositoryRoot,
-};
 
+// NIRepository
+pub use repository::{item::Item, items::*, ItemID, NIContainer, PresetChunkItem};
+
+// NIMonolith
 pub use monolith::NIMonolith;

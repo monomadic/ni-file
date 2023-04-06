@@ -42,9 +42,8 @@
 // TODO: should work on frames, not raw property data
 
 use crate::read_bytes::ReadBytesExt;
+use crate::repository::item_frame::ItemFrame;
 use crate::{prelude::*, ItemID};
-
-use super::ItemFrame;
 
 pub struct SubtreeItem {
     pub inner_data: Vec<u8>,

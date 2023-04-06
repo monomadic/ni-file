@@ -1,8 +1,8 @@
 use std::convert::TryInto;
 
-use crate::{prelude::*, ItemID};
+use crate::{prelude::*, repository::item_frame::ItemFrame, ItemID};
 
-use super::{subtree_item::SubtreeItem, ItemFrame};
+use super::subtree_item::SubtreeItem;
 
 /// EncryptionItem
 /// Usually a container for compressed presets.

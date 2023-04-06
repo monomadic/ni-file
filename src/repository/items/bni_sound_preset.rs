@@ -14,9 +14,9 @@
 
 use std::convert::TryInto;
 
+use crate::{prelude::*, repository::item_frame::ItemFrame, ItemID};
+
 use super::preset::Preset;
-use super::ItemFrame;
-use crate::{prelude::*, ItemID};
 
 pub struct BNISoundPreset {
     pub preset: Preset,

@@ -23,18 +23,14 @@
 */
 
 mod header;
-mod item;
+pub mod item;
 mod item_frame;
 mod item_frame_stack;
-mod items;
+pub mod items;
 mod preset;
 mod property;
 mod repository;
 
-pub use item::Item;
-pub use item_frame::{
-    bni_sound_preset::BNISoundPreset, encryption_item::EncryptionItem, item_id::ItemID,
-    preset::Preset, repository_root::RepositoryRoot,
-};
+pub use item_frame::item_id::ItemID;
 pub use items::preset_chunk_item::PresetChunkItem;
 pub use repository::NIContainer;

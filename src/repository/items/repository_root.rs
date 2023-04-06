@@ -1,5 +1,8 @@
-use super::ItemFrame;
-use crate::{prelude::*, read_bytes::ReadBytesExt, repository::item_frame::item_id::ItemID};
+use crate::{
+    prelude::*,
+    read_bytes::ReadBytesExt,
+    repository::item_frame::{item_id::ItemID, ItemFrame},
+};
 
 /// a data field type representing the topmost level of a repository container.
 #[derive(Debug, Clone)]

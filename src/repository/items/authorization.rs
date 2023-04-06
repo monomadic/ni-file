@@ -10,9 +10,11 @@
 //   @watermark
 // @authorization-level
 
-use crate::{prelude::*, read_bytes::ReadBytesExt, repository::item_frame::item_id::ItemID};
-
-use super::ItemFrame;
+use crate::{
+    prelude::*,
+    read_bytes::ReadBytesExt,
+    repository::item_frame::{item_id::ItemID, ItemFrame},
+};
 
 pub struct Authorization(Vec<u8>);
 
