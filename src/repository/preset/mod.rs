@@ -1,6 +1,8 @@
 //! NIPresets
 //! Presets stored inside NIContainers
 
+mod kontakt;
+
 #[derive(Debug)]
 enum NIPreset {
     Kontakt,

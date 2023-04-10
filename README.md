@@ -26,7 +26,7 @@ Q: Can I extract any meaningful information besides library and file metadata fr
 A: Not **yet** but this is coming very very soon. The container format took years to reverse engineer part-time but that was most of the tricky work done. This work also opens the door for other reversers to document simpler internal preset structures.
 
 Q: Will there be write support?
-A: Yes, eventually, but not until reading the majority of files are done.
+A: I don't really care about keeping people inside the NI ecosystem, just helping them escape it, so probably not unless someone PRs it.
 
 Q: Are compressed samples/presets supported?
 A: Yes, files mostly use FastLZ compression internally and tdecompression is supported by the library.
@@ -36,4 +36,6 @@ A: No, but this will be eventually implemented and supported through legal means
 
 ## Special Thanks
 
-To Native Instruments, for monopolising and being a driving force in making the audio software industry so proprietary that I learned how to reverse engineer to open up your formats to everyone. I learned so much due to your ability to be evil.
+To Native Instruments, for being a driving force in monopolising the audio software industry, helping to make it so proprietary that I learned how to reverse engineer to open up your formats to everyone. I learned so much due to your propensity for evil. As anyone who has ever delved into audio software knows, proprietary formats have killed the experience ever since it first existed. So many projects destroyed midway due to 'compatibility issues' and whatnot. If you want to make samplers or dildos best of luck I don't care, but you don't own what people make with your software, including the patch metadata itself.
+
+Fair use exists for a reason, and this is it.

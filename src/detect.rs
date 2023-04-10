@@ -2,8 +2,8 @@ use crate::read_bytes::ReadBytesExt;
 
 #[derive(Debug, PartialEq)]
 pub enum NIFileType {
-    /// Most NI files are NIContainers.
-    NIContainer,
+    /// Most NI files are NISound containers.
+    NISound,
     /// Kontakt files with samples inside are monoliths.
     NIKontaktMonolith,
     NICompressedWave,
@@ -50,9 +50,10 @@ pub fn filetype(buffer: &[u8]) -> NIFileType {
         _ => {
             // .nki, .nfm8, etc
             // check for 'hsin' at byte 12
+            // TODO: NISound::detect()
             if buffer[12..16] == [104, 115, 105, 110] {
                 info!("Detected: NIContainer");
-                return NIFileType::NIContainer;
+                return NIFileType::NISound;
             }
 
             // BE monolith byte 35: 0x4916e63c
