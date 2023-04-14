@@ -24,7 +24,7 @@ pub fn main() -> Result<(), Box<dyn std::error::Error>> {
     let file = include_bytes!("../tests/data/files/massive/000-new.nmsv").as_slice();
 
     // make sure this is a valid NIContainer
-    if NIFileType::detect(file) == NIFileType::NIContainer {
+    if NIFileType::detect(file) == NIFileType::NISound {
         // read the repository
         let repo = NIContainer::read(file)?;
 

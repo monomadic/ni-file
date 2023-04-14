@@ -107,7 +107,7 @@ mod tests {
             filetype(include_bytes!(
                 "../tests/data/files/kontakt-7/000-default.nki"
             )),
-            NIFileType::NIContainer
+            NIFileType::NISound
         );
     }
 }
