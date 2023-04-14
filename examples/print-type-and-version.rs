@@ -2,12 +2,12 @@ use ni_file::{NIContainer, NIFileType, Preset, RepositoryRoot};
 
 #[allow(dead_code)]
 fn setup_logger() {
-    let _ = log::set_logger(&loggy::Loggy {
-        prefix: "",
-        show_time: false,
-        show_thread: true,
-    });
-    log::set_max_level(log::LevelFilter::Debug); // Or whatever level you want.
+    // let _ = log::set_logger(&loggy::Loggy {
+    //     prefix: "",
+    //     show_time: false,
+    //     show_thread: true,
+    // });
+    // log::set_max_level(log::LevelFilter::Debug); // Or whatever level you want.
 }
 
 pub fn main() -> Result<(), Box<dyn std::error::Error>> {

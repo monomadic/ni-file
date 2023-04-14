@@ -3,12 +3,12 @@ use std::path::PathBuf;
 
 #[allow(dead_code)]
 pub(crate) fn setup_logger() {
-    let _ = log::set_logger(&loggy::Loggy {
-        prefix: "",
-        show_time: false,
-        show_thread: true,
-    });
-    log::set_max_level(log::LevelFilter::Debug); // Or whatever level you want.
+    // let _ = log::set_logger(&loggy::Loggy {
+    //     prefix: "",
+    //     show_time: false,
+    //     show_thread: true,
+    // });
+    // log::set_max_level(log::LevelFilter::Debug); // Or whatever level you want.
 }
 
 #[allow(dead_code)]

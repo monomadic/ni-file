@@ -12,7 +12,6 @@ byteorder = "1.4.3"
 binread = "2.2.0"
 thiserror = "1.0.40"
 anyhow = "1.0.70"
-loggy = { git = "https://github.com/orenbenkiki/loggy", branch = "master" }
 glob = "0.3.1"
 fastlz = "0.1.0"
 
