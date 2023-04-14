@@ -29,7 +29,6 @@ mod monolith; // monolith / FileContainer
 mod preset; // inner presets
 mod repository; // read ni repositories
 
-// utils
 pub(crate) mod cb; // control byte
 pub(crate) mod decompress; // fastlz lib
 pub(crate) mod deflate; // decompress

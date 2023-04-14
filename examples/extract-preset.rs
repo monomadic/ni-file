@@ -16,8 +16,8 @@ pub fn main() -> Result<()> {
     // // lets read a Massive 1.0.0.0 file.
     // let file = include_bytes!("../tests/data/files/massive/000-new.nmsv").as_slice();
 
-    // make sure this is a valid NIContainer
-    if NIFileType::detect(file) == NIFileType::NIContainer {
+    // make sure this is a valid NISound container
+    if NIFileType::detect(file) == NIFileType::NISound {
         // read the repository
         let repo = NIContainer::read(file)?;
         let chunk = repo.chunk()?;
