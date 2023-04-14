@@ -1,5 +1,6 @@
 use std::io;
 
+/// Extensions to io::Read for simplifying reading bytes.
 pub trait ReadBytesExt: io::Read {
     fn read_u8(&mut self) -> io::Result<u8> {
         let mut buf = [0u8; 1];

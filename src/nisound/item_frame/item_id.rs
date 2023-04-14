@@ -1,5 +1,7 @@
+/// ID representing an Item type.
 #[derive(PartialEq, Debug, Clone, Default)]
 pub enum ItemID {
+    /// [`AppSpecific`](crate::items::AppSpecific) item.
     AppSpecific,
     AudioSampleItem,
     Authorization,

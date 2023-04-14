@@ -4,7 +4,7 @@ use crate::{
     read_bytes::ReadBytesExt,
 };
 
-/// a data field type representing the topmost level of a repository container.
+/// Usually the top-level [`Item`][crate::Item] of a repository. Contains NISound version information.
 #[derive(Debug, Clone)]
 pub struct RepositoryRoot {
     nisound_version: u32,

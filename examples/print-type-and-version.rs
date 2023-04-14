@@ -1,4 +1,7 @@
-use ni_file::{NIContainer, NIFileType, Preset, RepositoryRoot};
+use ni_file::{
+    items::{Preset, RepositoryRoot},
+    NIContainer, NIFileType,
+};
 
 #[allow(dead_code)]
 fn setup_logger() {

@@ -1,6 +1,7 @@
 use crate::prelude::*;
 use crate::read_bytes::ReadBytesExt;
 
+/// Kontakt archive that bundles a preset, samples and other files.
 pub struct NIMonolith(Vec<u8>);
 
 impl NIMonolith {

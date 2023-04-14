@@ -4,12 +4,12 @@ use super::{
     items::{encryption_item::EncryptionItem, RepositoryRoot},
 };
 use crate::{
-    nisound::items::bni_sound_preset::BNISoundPreset, prelude::*, read_bytes::ReadBytesExt, Preset,
-    PresetChunkItem,
+    items::Preset, nisound::items::bni_sound_preset::BNISoundPreset, prelude::*,
+    read_bytes::ReadBytesExt, PresetChunkItem,
 };
 use std::convert::{TryFrom, TryInto};
 
-/// Represents a repository file. Usually has a `RepositoryRoot` as the first enclosing `Item`.
+/// Convenience wrapper for NISound containers.
 pub struct NIContainer(Item);
 
 impl NIContainer {

@@ -1,4 +1,8 @@
-pub mod app_specific;
+//! Kinds of [`Item`](crate::Item) - the building blocks of NISound containers.
+
+mod app_specific;
+pub use app_specific::AppSpecific;
+
 pub mod audio_sample_item;
 pub mod authorization;
 pub mod automation_parameters;
@@ -19,8 +23,8 @@ pub mod resources;
 pub mod sound_info_item;
 pub mod subtree_item;
 
-pub use preset::*;
 mod preset;
+pub use preset::Preset;
 
 mod repository_root;
 pub use repository_root::*;

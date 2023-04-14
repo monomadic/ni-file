@@ -1,5 +1,6 @@
 use crate::read_bytes::ReadBytesExt;
 
+/// Supported NI filetypes.
 #[derive(Debug, PartialEq)]
 pub enum NIFileType {
     /// Most NI files are NISound containers.
@@ -26,6 +27,17 @@ pub enum NIFileType {
 // 0x464d3845   'FM8E'
 
 impl NIFileType {
+    /// Scan a buffer for magic numbers to detect NI filetypes.
+    ///
+    /// ```
+    /// use ni_file::NIFileType;
+    ///
+    /// let file = std::fs::read("tests/data/kontakt-1/000-crunchy.nki").unwrap();
+    ///
+    /// if NIFileType::detect(&file) == NIFileType::NISound {
+    ///     println!("NISound detected!");
+    /// }
+    /// ```
     pub fn detect(buffer: &[u8]) -> NIFileType {
         filetype(buffer)
     }
