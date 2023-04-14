@@ -1,7 +1,8 @@
 use ni_file::NIFileType;
+use std::path::PathBuf;
 
 pub fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let paths: Vec<std::path::PathBuf> = glob::glob("tests/data/files/**/*.*")?
+    let paths: Vec<PathBuf> = glob::glob("tests/data/files/**/*.*")?
         .filter_map(|path| path.ok())
         .filter(|path| path.file_name().unwrap() != ".DS_Store")
         .collect();

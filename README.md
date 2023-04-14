@@ -16,6 +16,17 @@ After several years doing this part time, the container format is around 80% rev
 
 More is coming very shortly, please check the examples directory for usage.
 
+## Installation
+
+This is a library, but several helper binaries will be included.
+
+- `ni-info` prints information about ni files
+- `ni-extract` (coming soon) dumps presets and samples from ni files
+- `ni-convert` (coming soon) converts between formats
+
+```
+cargo install --path . --example ni-info
+```
 
 ## FAQ
 

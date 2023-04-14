@@ -102,12 +102,12 @@ mod tests {
     fn test_deflate() {
         assert_eq!(
             deflate(
-                include_bytes!("../tests/data/fastlz/kontakt-4/001-garbo2.compressed"),
+                include_bytes!("../tests/data/nisound/fastlz/kontakt-4/001-garbo2.compressed"),
                 0
             )
             .unwrap()
             .1,
-            include_bytes!("../tests/data/fastlz/kontakt-4/001-garbo2.decompressed")
+            include_bytes!("../tests/data/nisound/fastlz/kontakt-4/001-garbo2.decompressed")
         )
     }
 }

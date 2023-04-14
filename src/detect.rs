@@ -96,7 +96,9 @@ mod tests {
     #[test]
     fn test_kontakt_1() {
         assert_eq!(
-            filetype(include_bytes!("../tests/files/kontakt-1/000-crunchy.nki")),
+            filetype(include_bytes!(
+                "../tests/data/nisound/file/kontakt/000-crunchy.nki"
+            )),
             NIFileType::Kontakt1
         );
     }

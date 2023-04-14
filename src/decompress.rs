@@ -18,9 +18,9 @@ mod tests {
         crate::utils::setup_logger();
 
         let compressed_input =
-            include_bytes!("../tests/data/fastlz/kontakt-4/001-garbo2.compressed");
+            include_bytes!("../tests/data/nisound/fastlz/kontakt-4/001-garbo2.compressed");
         let expected_output =
-            include_bytes!("../tests/data/fastlz/kontakt-4/001-garbo2.decompressed");
+            include_bytes!("../tests/data/nisound/fastlz/kontakt-4/001-garbo2.decompressed");
         let decompressed_output = decompress(compressed_input, expected_output.len()).unwrap();
 
         assert_eq!(expected_output.to_vec(), decompressed_output);

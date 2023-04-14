@@ -36,6 +36,7 @@ pub(crate) mod read_bytes; // for reading bytestreams
 pub(crate) mod utils; // various utils for logging etc
 
 pub use detect::NIFileType;
+pub use read_bytes::*;
 
 // NIRepository
 pub use repository::{item::Item, items::*, ItemID, NIContainer, PresetChunkItem};
