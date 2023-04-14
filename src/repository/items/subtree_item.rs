@@ -96,7 +96,7 @@ mod tests {
         crate::utils::setup_logger();
 
         let data = include_bytes!(
-            "../../../tests/data/item-frame-property/kontakt-4/115-SubtreeItem.data"
+            "../../../tests/data/nisound/chunks/item-frame-property/kontakt-4/115-SubtreeItem.data"
         );
         let item = SubtreeItem::read(data.as_slice())?;
 

@@ -119,7 +119,7 @@ mod tests {
     fn test_children() -> Result<()> {
         // crate::utils::setup_logger();
 
-        let data = include_bytes!("../../tests/data/files/kontakt-7/000-default.nki");
+        let data = include_bytes!("../../tests/data/nisound/file/kontakt/7.1.3.0/000-default.nki");
         let mut data = data.as_slice();
 
         let item = Item::read(&mut data)?;

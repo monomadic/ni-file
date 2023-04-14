@@ -81,11 +81,10 @@ mod tests {
     fn test_repository_root_read() -> Result<()> {
         crate::utils::setup_logger();
 
-        let path = "tests/data/item-frame-property/kontakt-5/118-RepositoryRoot.data";
-        log::info!("reading {:?}", path);
+        let file =
+            include_bytes!("../../../tests/data/nisound/chunks/item-frame-property/kontakt-5/118-RepositoryRoot.data");
 
-        let file = std::fs::File::open(&path)?;
-        let root = RepositoryRoot::read(file)?;
+        let root = RepositoryRoot::read(file.as_slice())?;
 
         assert_eq!(1, root.major_version());
         assert_eq!(7, root.minor_version());

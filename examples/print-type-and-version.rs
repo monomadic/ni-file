@@ -21,7 +21,7 @@ pub fn main() -> Result<(), Box<dyn std::error::Error>> {
     // let file = include_bytes!("../tests/data/files/fm8/001-fm7.nfm8").as_slice();
 
     // lets read a Massive 1.0.0.0 file.
-    let file = include_bytes!("../tests/data/files/massive/000-new.nmsv").as_slice();
+    let file = include_bytes!("../tests/data/nisound/file/massive/1.0.0.0/000-new.nmsv").as_slice();
 
     // make sure this is a valid NIContainer
     if NIFileType::detect(file) == NIFileType::NISound {

@@ -56,10 +56,10 @@ mod tests {
     fn test_authorization_read() -> Result<()> {
         crate::utils::setup_logger();
 
-        let path = "tests/data/item-frame-property/kontakt-5/106-Authorization.data";
-        log::info!("reading {:?}", path);
+        let file = include_bytes!(
+            "../../../tests/data/nisound/chunks/item-frame-property/kontakt-5/106-Authorization.data"
+        );
 
-        let file = std::fs::read(&path)?;
         let _auth = Authorization::read(file.as_slice())?;
 
         // TODO: auth props

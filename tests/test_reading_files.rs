@@ -24,9 +24,7 @@ fn test_reading_ni_containers() -> Result<(), Box<dyn std::error::Error>> {
 
 #[test]
 fn test_reading_ni_monolith() -> Result<(), Box<dyn std::error::Error>> {
-    utils::setup_logger();
-
-    for path in utils::get_test_files("tests/files/monolith/**/*.*")? {
+    for path in utils::get_test_files("tests/data/monolith/**/*.*")? {
         log::info!("reading {:?}", path);
 
         let file = fs::File::open(path.as_path())?;

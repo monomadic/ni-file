@@ -74,7 +74,8 @@ mod tests {
         crate::utils::setup_logger();
 
         let repo = NIContainer::read(
-            include_bytes!("../../tests/data/files/kontakt-7/000-default.nki").as_slice(),
+            include_bytes!("../../tests/data/nisound/file/kontakt/7.1.3.0/000-default.nki")
+                .as_slice(),
         )?;
         let _root = repo.root()?;
 
