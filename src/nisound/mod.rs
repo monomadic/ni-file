@@ -32,5 +32,4 @@ mod property;
 mod repository;
 
 pub use item_frame::item_id::ItemID;
-pub use items::preset_chunk_item::PresetChunkItem;
 pub use repository::NIContainer;

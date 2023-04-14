@@ -17,11 +17,13 @@ pub mod internal_resource_reference_item;
 pub mod module;
 pub mod module_bank;
 pub mod picture_item;
-pub mod preset_chunk_item;
 pub mod preset_container;
 pub mod resources;
 pub mod sound_info_item;
 pub mod subtree_item;
+
+mod preset_chunk_item;
+pub use preset_chunk_item::PresetChunkItem;
 
 mod preset;
 pub use preset::Preset;

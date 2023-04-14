@@ -30,8 +30,8 @@ pub fn main() -> Result<()> {
                 println!("authoring_app:\t{:?}", preset.authoring_app);
                 println!("version:\t{}", preset.version);
             }
-            NIFileType::NIKontaktMonolith => {
-                println!("format:\t\tNIKontaktMonolith");
+            NIFileType::NIMonolith => {
+                println!("format:\t\tNIMonolith");
             }
             NIFileType::NICompressedWave => todo!(),
             NIFileType::KoreSound => todo!(),

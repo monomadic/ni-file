@@ -12,10 +12,31 @@
 //!  It might be worth reading [TERMINOLOGY.md](https://github.com/monomadic/ni-file/tree/master/doc/TERMINOLOGY.md)
 //!  which describes terms used throughout the code and this documentation.
 //!
-//!  # Detecting filetypes
+//!  # Reading files
 //!
 //!  You first need to know what filetype you are dealing with, so use
-//!  [NIFileType::detect](crate::NIFileType::detect).
+//!  [`NIFileType::detect`]. Most NI presets these days are
+//!  [`NIFileType::NISound`], unless they are a bundle of files (Kontact instruments and samples),
+//!  where they could be a [`NIFileType::NIMonolith`].
+//!
+//!  Each NISound is like a mini database of sorts, and you can read these repositories with low
+//!  level structs (embedded [`Item`]s) or use high-level structs such as [`NIContainer`].
+//!
+//! ```
+//! use ni_file::{NIFileType, NIContainer, NIMonolith};
+//!
+//! let file = std::fs::read("tests/data/nisound/file/fm8/1.2.0.1010/001-fm7.nfm8").unwrap();
+//!
+//! match NIFileType::detect(&file) {
+//!     NIFileType::NISound => {
+//!         let container = NIContainer::read(file.as_slice()).unwrap();
+//!     }
+//!     NIFileType::NIMonolith => {
+//!         let monolith = NIMonolith::read(file.as_slice()).unwrap();
+//!     }
+//!     // ...
+//!     _ => unimplemented!(),
+//! }
 //!
 
 // #![warn(clippy::all)]
@@ -46,6 +67,6 @@ pub use detect::NIFileType;
 pub use read_bytes::*;
 
 // NIRepository
-pub use nisound::{item::Item, items, ItemID, NIContainer, PresetChunkItem};
+pub use nisound::{item::Item, items, ItemID, NIContainer};
 
 pub use monolith::NIMonolith;

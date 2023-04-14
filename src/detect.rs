@@ -6,7 +6,7 @@ pub enum NIFileType {
     /// Most NI files are NISound containers.
     NISound,
     /// Kontakt files with samples inside are monoliths.
-    NIKontaktMonolith,
+    NIMonolith,
     NICompressedWave,
     /// Kore has its own simple format.
     KoreSound,
@@ -74,8 +74,8 @@ pub fn filetype(buffer: &[u8]) -> NIFileType {
             // .nkm
             // check for '/\ NI FC MTD  /\' (NI FileContainer Metadata)
             if buffer[0..4] == [0x2F, 0x5C, 0x20, 0x4E] {
-                info!("Detected: NIKontaktMonolith");
-                return NIFileType::NIKontaktMonolith;
+                info!("Detected: NIMonolith");
+                return NIFileType::NIMonolith;
             }
 
             // .ncw
