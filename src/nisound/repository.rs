@@ -4,8 +4,8 @@ use super::{
     items::{encryption_item::EncryptionItem, RepositoryRoot},
 };
 use crate::{
-    prelude::*, read_bytes::ReadBytesExt, repository::items::bni_sound_preset::BNISoundPreset,
-    Preset, PresetChunkItem,
+    nisound::items::bni_sound_preset::BNISoundPreset, prelude::*, read_bytes::ReadBytesExt, Preset,
+    PresetChunkItem,
 };
 use std::convert::{TryFrom, TryInto};
 

@@ -1,7 +1,6 @@
+use crate::nisound::item_frame::{domain_id::DomainID, item_id::ItemID};
 use crate::prelude::*;
 use crate::read_bytes::ReadBytesExt;
-use crate::repository::item_frame::domain_id::DomainID;
-use crate::repository::item_frame::item_id::ItemID;
 
 #[derive(Debug, Clone)]
 pub struct ItemFrameHeader {

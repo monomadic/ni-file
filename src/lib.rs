@@ -26,8 +26,8 @@ pub mod prelude;
 mod container;
 mod detect; // detect filetype
 mod monolith; // monolith / FileContainer
-mod preset; // inner presets
-mod repository; // read ni repositories
+mod nisound; // nisound repositories
+mod preset; // inner presets // read ni repositories
 
 pub(crate) mod cb; // control byte
 pub(crate) mod decompress; // fastlz lib
@@ -39,7 +39,7 @@ pub use detect::NIFileType;
 pub use read_bytes::*;
 
 // NIRepository
-pub use repository::{item::Item, items::*, ItemID, NIContainer, PresetChunkItem};
+pub use nisound::{item::Item, items::*, ItemID, NIContainer, PresetChunkItem};
 
 // NIMonolith
 pub use monolith::NIMonolith;

@@ -1,5 +1,5 @@
 use crate::{
-    prelude::*, read_bytes::ReadBytesExt, repository::item_frame::app_id::AuthoringApplication,
+    nisound::item_frame::app_id::AuthoringApplication, prelude::*, read_bytes::ReadBytesExt,
 };
 
 pub struct AuthoringApplicationInfo {

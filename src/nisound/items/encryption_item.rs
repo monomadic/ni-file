@@ -1,6 +1,6 @@
 use std::convert::TryInto;
 
-use crate::{prelude::*, repository::item_frame::ItemFrame, ItemID};
+use crate::{nisound::item_frame::ItemFrame, prelude::*, ItemID};
 
 use super::subtree_item::SubtreeItem;
 
