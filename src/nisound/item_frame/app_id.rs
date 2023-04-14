@@ -1,3 +1,4 @@
+/// NI app the preset was created in.
 #[allow(non_camel_case_types)]
 #[derive(Debug)]
 pub enum AuthoringApplication {

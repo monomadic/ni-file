@@ -31,5 +31,5 @@ mod preset;
 mod property;
 mod repository;
 
-pub use item_frame::item_id::ItemID;
+pub use item_frame::{app_id::AuthoringApplication, domain_id::*, item_id::ItemID};
 pub use repository::NIContainer;

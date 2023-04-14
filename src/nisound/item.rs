@@ -6,7 +6,7 @@ use super::{
 use crate::{prelude::*, read_bytes::ReadBytesExt};
 use std::convert::TryFrom;
 
-/// NISound chunks are made up of nested Items.
+/// NISound documents are made up of nested [`Item`]s.
 #[derive(Clone, Debug)]
 pub struct Item {
     pub header: ItemHeader,

@@ -1,18 +1,19 @@
-//! NIPresets
+//! NISPreset
 //! Presets stored inside NIContainers
 
 mod kontakt;
 
+/// NISPreset
 #[derive(Debug)]
-enum NIPreset {
+enum NISPreset {
     Kontakt,
     Massive,
     Unknown,
 }
 
-impl From<u16> for NIPreset {
+impl From<u16> for NISPreset {
     fn from(value: u16) -> Self {
-        use NIPreset::*;
+        use NISPreset::*;
 
         match value {
             0x2800 => Kontakt,
