@@ -1,0 +1,126 @@
+ni-file v0.1.0 (/Users/nom/workspaces/reverse-engineering.workspace/ni-file)
+├── anyhow v1.0.70
+├── binread v2.2.0
+│   ├── binread_derive v2.1.0 (proc-macro)
+│   │   ├── either v1.8.1
+│   │   ├── proc-macro2 v1.0.56
+│   │   │   └── unicode-ident v1.0.8
+│   │   ├── quote v1.0.26
+│   │   │   └── proc-macro2 v1.0.56 (*)
+│   │   └── syn v1.0.109
+│   │       ├── proc-macro2 v1.0.56 (*)
+│   │       ├── quote v1.0.26 (*)
+│   │       └── unicode-ident v1.0.8
+│   └── rustversion v1.0.12 (proc-macro)
+├── byteorder v1.4.3
+├── env_logger v0.10.0
+│   ├── humantime v2.1.0
+│   ├── is-terminal v0.4.7
+│   │   ├── io-lifetimes v1.0.10
+│   │   │   └── libc v0.2.141
+│   │   └── rustix v0.37.11
+│   │       ├── bitflags v1.3.2
+│   │       ├── errno v0.3.1
+│   │       │   └── libc v0.2.141
+│   │       ├── io-lifetimes v1.0.10 (*)
+│   │       └── libc v0.2.141
+│   ├── log v0.4.17
+│   │   └── cfg-if v1.0.0
+│   ├── regex v1.7.3
+│   │   ├── aho-corasick v0.7.20
+│   │   │   └── memchr v2.5.0
+│   │   ├── memchr v2.5.0
+│   │   └── regex-syntax v0.6.29
+│   └── termcolor v1.2.0
+├── fastlz v0.1.0
+│   └── fastlz-sys v0.1.0
+│       [build-dependencies]
+│       └── cc v1.0.79
+│           └── jobserver v0.1.26
+│               └── libc v0.2.141
+├── glob v0.3.1
+├── log v0.4.17 (*)
+├── loggy v0.5.3
+│   ├── chrono v0.4.24
+│   │   ├── iana-time-zone v0.1.56
+│   │   │   └── core-foundation-sys v0.8.4
+│   │   ├── num-integer v0.1.45
+│   │   │   └── num-traits v0.2.15
+│   │   │       [build-dependencies]
+│   │   │       └── autocfg v1.1.0
+│   │   │   [build-dependencies]
+│   │   │   └── autocfg v1.1.0
+│   │   ├── num-traits v0.2.15 (*)
+│   │   └── time v0.1.45
+│   │       └── libc v0.2.141
+│   ├── lazy_static v1.4.0
+│   ├── log v0.4.17 (*)
+│   ├── loggy-macros v0.2.0 (proc-macro)
+│   │   ├── quote v1.0.26 (*)
+│   │   └── syn v1.0.109 (*)
+│   ├── parking_lot v0.12.1
+│   │   ├── lock_api v0.4.9
+│   │   │   └── scopeguard v1.1.0
+│   │   │   [build-dependencies]
+│   │   │   └── autocfg v1.1.0
+│   │   └── parking_lot_core v0.9.7
+│   │       ├── cfg-if v1.0.0
+│   │       ├── libc v0.2.141
+│   │       └── smallvec v1.10.0
+│   └── unindent v0.1.11
+├── nom v7.1.3
+│   ├── memchr v2.5.0
+│   └── minimal-lexical v0.2.1
+└── thiserror v1.0.40
+    └── thiserror-impl v1.0.40 (proc-macro)
+        ├── proc-macro2 v1.0.56 (*)
+        ├── quote v1.0.26 (*)
+        └── syn v2.0.15
+            ├── proc-macro2 v1.0.56 (*)
+            ├── quote v1.0.26 (*)
+            └── unicode-ident v1.0.8
+[dev-dependencies]
+├── color-eyre v0.6.2
+│   ├── backtrace v0.3.67
+│   │   ├── addr2line v0.19.0
+│   │   │   └── gimli v0.27.2
+│   │   ├── cfg-if v1.0.0
+│   │   ├── libc v0.2.141
+│   │   ├── miniz_oxide v0.6.2
+│   │   │   └── adler v1.0.2
+│   │   ├── object v0.30.3
+│   │   │   └── memchr v2.5.0
+│   │   └── rustc-demangle v0.1.22
+│   │   [build-dependencies]
+│   │   └── cc v1.0.79 (*)
+│   ├── color-spantrace v0.2.0
+│   │   ├── once_cell v1.17.1
+│   │   ├── owo-colors v3.5.0
+│   │   ├── tracing-core v0.1.30
+│   │   │   └── once_cell v1.17.1
+│   │   └── tracing-error v0.2.0
+│   │       ├── tracing v0.1.37
+│   │       │   ├── cfg-if v1.0.0
+│   │       │   ├── pin-project-lite v0.2.9
+│   │       │   └── tracing-core v0.1.30 (*)
+│   │       └── tracing-subscriber v0.3.16
+│   │           ├── sharded-slab v0.1.4
+│   │           │   └── lazy_static v1.4.0
+│   │           ├── thread_local v1.1.7
+│   │           │   ├── cfg-if v1.0.0
+│   │           │   └── once_cell v1.17.1
+│   │           └── tracing-core v0.1.30 (*)
+│   ├── eyre v0.6.8
+│   │   ├── indenter v0.3.3
+│   │   └── once_cell v1.17.1
+│   ├── indenter v0.3.3
+│   ├── once_cell v1.17.1
+│   ├── owo-colors v3.5.0
+│   └── tracing-error v0.2.0 (*)
+└── tui-tree-widget v0.11.0
+    ├── tui v0.19.0
+    │   ├── bitflags v1.3.2
+    │   ├── cassowary v0.3.0
+    │   ├── unicode-segmentation v1.10.1
+    │   └── unicode-width v0.1.10
+    └── unicode-width v0.1.10
