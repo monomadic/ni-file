@@ -76,6 +76,5 @@ pub(crate) mod utils; // various utils for logging etc
 pub use detect::NIFileType;
 pub use read_bytes::*;
 
-pub use nisound::{ItemID, NISound};
-
 pub use monolith::NIMonolith;
+pub use nisound::NISound;
