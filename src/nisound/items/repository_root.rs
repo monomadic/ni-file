@@ -9,9 +9,9 @@ use crate::{
 /// Usually the top-level [`Item`][crate::nisound::Item] of a repository. Contains NISound version information.
 #[derive(Debug, Clone)]
 pub struct RepositoryRoot {
-    nisound_version: u32,
-    repository_magic: u32,
-    repository_type: u32,
+    pub nisound_version: u32,
+    pub repository_magic: u32,
+    pub repository_type: u32,
 }
 
 #[derive(Debug)]

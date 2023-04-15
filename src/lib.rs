@@ -49,18 +49,13 @@
 //!  [`crate::preset`] module.
 //!
 
-// #![warn(clippy::all)]
-// #![warn(missing_docs)]
-// #![warn(clippy::style)]
-
-// TODO: remove
 #![allow(dead_code)]
 
 #[macro_use]
 extern crate log;
 
 mod error;
-mod prelude;
+pub use error::*;
 
 mod detect; // detect filetype
 mod monolith; // monolith / FileContainer
@@ -70,11 +65,10 @@ pub mod preset; // older NI preset types
 pub(crate) mod cb; // control byte
 pub(crate) mod decompress; // fastlz lib
 pub(crate) mod deflate; // decompress
+pub(crate) mod prelude;
 pub(crate) mod read_bytes; // for reading bytestreams
 pub(crate) mod utils; // various utils for logging etc
-                      // pub(crate) use read_bytes::*;
 
 pub use detect::NIFileType;
-
 pub use monolith::NIMonolith;
 pub use nisound::NISound;

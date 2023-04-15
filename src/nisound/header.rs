@@ -13,9 +13,9 @@ use crate::read_bytes::ReadBytesExt;
 ///
 #[derive(Debug, Clone)]
 pub struct ItemHeader {
-    /// Size in bytes of the entire [`Item`].
+    /// Size in bytes of the entire [`Item`](super::Item).
     pub size: u64,
-    /// Integer that resolves to a [`DomainID`].
+    /// Integer that resolves to a [`DomainID`](super::DomainID).
     pub domain_id: u32, // (+0xC, uint, 'hsin')
     pub header_flags: u32, // (0x10, uint)
     pub uuid: Vec<u8>,     // (0x14, 16 bytes, randomly generated)

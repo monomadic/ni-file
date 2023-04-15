@@ -1,4 +1,4 @@
-//! Domains are a namespace for [`Item`]s. Couple with an [`ItemID`] to find the correct [`Item`].
+//! Domains are a namespace for [`Item`](crate::nisound::Item)s. Couple with an [`ItemID`](crate::nisound::ItemID) to find the correct [`Item`](crate::nisound::Item).
 //!
 //! NISound documents use 'NISD' as their domain, and this is the base domain.
 //! Kontakt for example adds the 'NIK4' domain.
