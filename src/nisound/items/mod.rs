@@ -1,4 +1,4 @@
-//! Kinds of [`Item`](crate::Item) - the building blocks of NISound containers.
+//! Kinds of [`Item`](crate::nisound::Item) - the building blocks of NISound containers.
 
 mod app_specific;
 pub use app_specific::AppSpecific;

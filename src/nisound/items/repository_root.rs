@@ -4,7 +4,7 @@ use crate::{
     read_bytes::ReadBytesExt,
 };
 
-/// Usually the top-level [`Item`][crate::Item] of a repository. Contains NISound version information.
+/// Usually the top-level [`Item`][crate::nisound::Item] of a repository. Contains NISound version information.
 #[derive(Debug, Clone)]
 pub struct RepositoryRoot {
     nisound_version: u32,

@@ -1,5 +1,5 @@
 use ni_file::{
-    items::{Preset, RepositoryRoot},
+    nisound::items::{Preset, RepositoryRoot},
     NIFileType, NISound,
 };
 

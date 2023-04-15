@@ -5,8 +5,9 @@ use super::{
     AuthoringApplication,
 };
 use crate::{
-    items::Preset, items::PresetChunkItem, nisound::items::bni_sound_preset::BNISoundPreset,
-    prelude::*, read_bytes::ReadBytesExt,
+    nisound::items::{bni_sound_preset::BNISoundPreset, Preset, PresetChunkItem},
+    prelude::*,
+    read_bytes::ReadBytesExt,
 };
 use std::convert::{TryFrom, TryInto};
 

@@ -22,7 +22,7 @@
 //!  ## NISound Containers
 //!
 //!  Each [`NISound`] is like a mini database of sorts, and you can read these repositories with low
-//!  level structs (embedded [`Item`]s) or use high-level structs such as [`NISound`]. It is
+//!  level structs (embedded [`Item`](crate::nisound::Item)s) or use high-level structs such as [`NISound`]. It is
 //!  recommended and much easier to use the latter unless you are dealing with filetypes still
 //!  undocumented by the library.
 //!
@@ -76,6 +76,6 @@ pub(crate) mod utils; // various utils for logging etc
 pub use detect::NIFileType;
 pub use read_bytes::*;
 
-pub use nisound::{item::Item, items, ItemID, NISound};
+pub use nisound::{ItemID, NISound};
 
 pub use monolith::NIMonolith;
