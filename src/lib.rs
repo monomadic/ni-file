@@ -72,9 +72,9 @@ pub(crate) mod decompress; // fastlz lib
 pub(crate) mod deflate; // decompress
 pub(crate) mod read_bytes; // for reading bytestreams
 pub(crate) mod utils; // various utils for logging etc
+                      // pub(crate) use read_bytes::*;
 
 pub use detect::NIFileType;
-pub use read_bytes::*;
 
 pub use monolith::NIMonolith;
 pub use nisound::NISound;

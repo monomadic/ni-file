@@ -15,7 +15,6 @@ pub enum Domain {
 
 impl From<u32> for Domain {
     fn from(value: u32) -> Self {
-        //let id = value.to_le_bytes().to_vec();
         let id = value.to_string();
         match id.as_str() {
             "NISD" => Domain::NISD,
