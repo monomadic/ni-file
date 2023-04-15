@@ -1,3 +1,5 @@
+use std::fmt::Display;
+
 use crate::{
     nisound::item_frame::{item_id::ItemID, ItemFrame},
     prelude::*,
@@ -14,9 +16,15 @@ pub struct RepositoryRoot {
 
 #[derive(Debug)]
 pub struct RepositoryVersion {
-    major: u32,
-    minor: u32,
-    patch: u32,
+    pub major: u32,
+    pub minor: u32,
+    pub patch: u32,
+}
+
+impl Display for RepositoryVersion {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_fmt(format_args!("{}.{}.{}", self.major, self.minor, self.patch))
+    }
 }
 
 impl std::convert::TryFrom<ItemFrame> for RepositoryRoot {

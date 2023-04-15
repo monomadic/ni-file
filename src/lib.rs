@@ -60,7 +60,7 @@
 extern crate log;
 
 mod error;
-pub mod prelude;
+mod prelude;
 
 mod detect; // detect filetype
 mod monolith; // monolith / FileContainer

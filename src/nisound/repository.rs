@@ -1,7 +1,7 @@
 use super::{
     item::Item,
     item_frame::item_id::ItemID,
-    items::{encryption_item::EncryptionItem, RepositoryRoot},
+    items::{encryption_item::EncryptionItem, RepositoryRoot, RepositoryVersion},
     AuthoringApplication,
 };
 use crate::{
@@ -30,6 +30,15 @@ impl NISound {
         Ok(Self(Item::read(reader)?))
     }
 
+    /// Returns the [`RepositoryVersion`], also referred to sometimes as the NISD Version.
+    pub fn version(&self) -> Result<RepositoryVersion> {
+        self.0
+            .find(&ItemID::RepositoryRoot)
+            .ok_or(NIFileError::Static("Missing RepositoryRoot"))
+            .and_then(|item| RepositoryRoot::try_from(item))
+            .map(|root| root.version())
+    }
+
     /// Returns the [`AuthoringApplication`] which created this document.
     pub fn authoring_application(&self) -> Option<AuthoringApplication> {
         self.0
@@ -56,7 +65,7 @@ impl NISound {
         &self.0
     }
 
-    /// inner container chunk
+    /// Inner preset chunk.
     pub fn chunk(&self) -> Result<Vec<u8>> {
         let inner = Item::read(self.inner_container()?.as_slice())?;
         let data = inner.children[0].data()?;
