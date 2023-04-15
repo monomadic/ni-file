@@ -42,8 +42,9 @@
 // TODO: should work on frames, not raw property data
 
 use crate::nisound::item_frame::ItemFrame;
+use crate::nisound::ItemID;
+use crate::prelude::*;
 use crate::read_bytes::ReadBytesExt;
-use crate::{prelude::*, ItemID};
 
 pub struct SubtreeItem {
     pub inner_data: Vec<u8>,

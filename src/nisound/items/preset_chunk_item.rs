@@ -1,4 +1,8 @@
-use crate::{nisound::item_frame::ItemFrame, prelude::*, read_bytes::ReadBytesExt, ItemID};
+use crate::{
+    nisound::{item_frame::ItemFrame, ItemID},
+    prelude::*,
+    read_bytes::ReadBytesExt,
+};
 
 #[derive(Debug, Clone)]
 pub struct PresetChunkItem(Vec<u8>);

@@ -6,6 +6,7 @@ pub mod item_id;
 use std::convert::TryFrom;
 
 pub use item_frame_header::ItemFrameHeader;
+use item_id::ItemID;
 
 use crate::{prelude::*, read_bytes::ReadBytesExt};
 
@@ -34,7 +35,7 @@ impl ItemFrame {
         let mut buf = buf.as_slice();
         let header = ItemFrameHeader::read(&mut buf)?;
 
-        if header.item_id == crate::ItemID::Item {
+        if header.item_id == ItemID::Item {
             panic!("reading terminator frame");
         }
 
