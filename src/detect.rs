@@ -64,7 +64,7 @@ pub fn filetype(buffer: &[u8]) -> NIFileType {
             // check for 'hsin' at byte 12
             // TODO: NISound::detect()
             if buffer[12..16] == [104, 115, 105, 110] {
-                info!("Detected: NIContainer");
+                info!("Detected: NISound");
                 return NIFileType::NISound;
             }
 

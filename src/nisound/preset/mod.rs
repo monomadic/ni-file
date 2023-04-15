@@ -1,5 +1,5 @@
 //! NISPreset
-//! Presets stored inside NIContainers
+//! Presets stored deep inside NISound documents
 
 mod kontakt;
 

@@ -9,12 +9,14 @@ use crate::{
 };
 use std::convert::{TryFrom, TryInto};
 
-/// Convenience wrapper for NISound containers.
-pub struct NIContainer(Item);
+/// High level wrapper for NISound containers. As this file format is very complex, this wrapper
+/// was created for most users. Unless you are exploring unknown parts of the standards NI created,
+/// this is probably the way you want to use this library.
+pub struct NISound(Item);
 
-impl NIContainer {
+impl NISound {
     pub fn read<R: ReadBytesExt>(reader: R) -> Result<Self> {
-        log::debug!("NIContainer::read()");
+        log::debug!("NISound::read()");
         Ok(Self(Item::read(reader)?))
     }
 
@@ -73,7 +75,7 @@ mod tests {
     fn ni_container_read_test() -> Result<()> {
         crate::utils::setup_logger();
 
-        let repo = NIContainer::read(
+        let repo = NISound::read(
             include_bytes!("../../tests/data/nisound/file/kontakt/7.1.3.0/000-default.nki")
                 .as_slice(),
         )?;

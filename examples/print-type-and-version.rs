@@ -1,6 +1,6 @@
 use ni_file::{
     items::{Preset, RepositoryRoot},
-    NIContainer, NIFileType,
+    NIFileType, NISound,
 };
 
 #[allow(dead_code)]
@@ -26,10 +26,10 @@ pub fn main() -> Result<(), Box<dyn std::error::Error>> {
     // lets read a Massive 1.0.0.0 file.
     let file = include_bytes!("../tests/data/nisound/file/massive/1.0.0.0/000-new.nmsv").as_slice();
 
-    // make sure this is a valid NIContainer
+    // make sure this is a valid NISound container
     if NIFileType::detect(file) == NIFileType::NISound {
         // read the repository
-        let repo = NIContainer::read(file)?;
+        let repo = NISound::read(file)?;
 
         // parse the data fields of the base frame
         let root: RepositoryRoot = repo.root()?;

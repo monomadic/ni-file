@@ -20,16 +20,16 @@
 //!  where they could be a [`NIFileType::NIMonolith`].
 //!
 //!  Each NISound is like a mini database of sorts, and you can read these repositories with low
-//!  level structs (embedded [`Item`]s) or use high-level structs such as [`NIContainer`].
+//!  level structs (embedded [`Item`]s) or use high-level structs such as [`NISound`].
 //!
 //! ```
-//! use ni_file::{NIFileType, NIContainer, NIMonolith};
+//! use ni_file::{NIFileType, NISound, NIMonolith};
 //!
 //! let file = std::fs::read("tests/data/nisound/file/fm8/1.2.0.1010/001-fm7.nfm8").unwrap();
 //!
 //! match NIFileType::detect(&file) {
 //!     NIFileType::NISound => {
-//!         let container = NIContainer::read(file.as_slice()).unwrap();
+//!         let container = NISound::read(file.as_slice()).unwrap();
 //!     }
 //!     NIFileType::NIMonolith => {
 //!         let monolith = NIMonolith::read(file.as_slice()).unwrap();
@@ -66,7 +66,6 @@ pub(crate) mod utils; // various utils for logging etc
 pub use detect::NIFileType;
 pub use read_bytes::*;
 
-// NIRepository
-pub use nisound::{item::Item, items, ItemID, NIContainer};
+pub use nisound::{item::Item, items, ItemID, NISound};
 
 pub use monolith::NIMonolith;

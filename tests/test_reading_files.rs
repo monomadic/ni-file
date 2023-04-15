@@ -1,6 +1,6 @@
 mod utils;
 
-use ni_file::{NIContainer, NIMonolith};
+use ni_file::{NIMonolith, NISound};
 use std::{fs, io::Read};
 
 #[test]
@@ -11,7 +11,7 @@ fn test_reading_ni_containers() -> Result<(), Box<dyn std::error::Error>> {
         log::info!("reading {:?}", path);
 
         let mut file = fs::File::open(path.as_path())?;
-        let _frame = NIContainer::read(&file)?;
+        let _frame = NISound::read(&file)?;
 
         // assure no space left at end of file
         let mut buf = Vec::new();

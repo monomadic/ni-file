@@ -1,5 +1,5 @@
 use color_eyre::eyre::Result;
-use ni_file::{self, NIContainer, NIFileType};
+use ni_file::{self, NIFileType, NISound};
 
 pub fn main() -> Result<()> {
     std::env::set_var("RUST_BACKTRACE", "1");
@@ -24,7 +24,7 @@ pub fn main() -> Result<()> {
             NIFileType::NISound => {
                 println!("format:\t\tNISound");
 
-                let container = NIContainer::read(file.as_slice())?;
+                let container = NISound::read(file.as_slice())?;
                 let preset = container.preset()?;
 
                 println!("authoring_app:\t{:?}", preset.authoring_app);

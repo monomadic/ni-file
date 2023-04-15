@@ -1,5 +1,5 @@
 use ni_file::prelude::*;
-use ni_file::{NIContainer, NIFileType};
+use ni_file::{NIFileType, NISound};
 
 pub fn main() -> Result<()> {
     // lets read a Maschine file.
@@ -17,7 +17,7 @@ pub fn main() -> Result<()> {
     // make sure this is a valid NISound container
     if NIFileType::detect(file) == NIFileType::NISound {
         // read the repository
-        let repo = NIContainer::read(file.as_slice())?;
+        let repo = NISound::read(file.as_slice())?;
         let chunk = repo.chunk()?;
         let preset = repo.preset()?;
         println!(

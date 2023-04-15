@@ -1,4 +1,4 @@
-// This example shows the basic hierarchical structure of an NIContainer
+// This example shows the basic hierarchical structure of an NISound container
 
 use std::error::Error;
 
