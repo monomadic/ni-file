@@ -1,6 +1,6 @@
 /// NI app the preset was created in.
 #[allow(non_camel_case_types)]
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub enum AuthoringApplication {
     GuitarRig,
     Kontakt,

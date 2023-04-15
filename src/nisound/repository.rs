@@ -32,19 +32,16 @@ impl NISound {
 
     /// Returns the [`RepositoryVersion`], also referred to sometimes as the NISD Version.
     pub fn version(&self) -> Result<RepositoryVersion> {
-        self.0
-            .find(&ItemID::RepositoryRoot)
-            .ok_or(NIFileError::Static("Missing RepositoryRoot"))
-            .and_then(|item| RepositoryRoot::try_from(item))
-            .map(|root| root.version())
+        RepositoryRoot::try_from(self.0.data()?).map(|root| root.version())
     }
 
     /// Returns the [`AuthoringApplication`] which created this document.
-    pub fn authoring_application(&self) -> Option<AuthoringApplication> {
+    pub fn authoring_application(&self) -> Result<AuthoringApplication> {
         self.0
-            .find(&ItemID::Preset)
-            .and_then(|item| Preset::try_from(item).ok())
-            .map(|preset| preset.authoring_app)
+            .find(&ItemID::BNISoundPreset)
+            .ok_or(NIFileError::Static("Missing chunk: BNISoundPreset"))
+            .and_then(|item| BNISoundPreset::try_from(item))
+            .map(|preset| preset.preset.authoring_app)
     }
 
     /// Returns the version of the embedded preset.

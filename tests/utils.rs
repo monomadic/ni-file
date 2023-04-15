@@ -13,9 +13,15 @@ pub(crate) fn setup_logger() {
 
 #[allow(dead_code)]
 pub(crate) fn get_test_files(path: &str) -> Result<Vec<PathBuf>, Box<dyn Error>> {
-    Ok(glob::glob(path)?
+    let files: Vec<PathBuf> = glob::glob(path)?
         .filter_map(|path| path.ok())
         .filter(|path| path.is_file())
         .filter(|path| path.file_name().unwrap() != ".DS_Store")
-        .collect())
+        .collect();
+
+    if files.len() > 0 {
+        return Ok(files);
+    } else {
+        panic!("no test files found at {}", path);
+    }
 }
