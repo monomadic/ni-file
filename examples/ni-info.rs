@@ -44,8 +44,6 @@ pub fn main() -> Result<()> {
             NIFileType::Kontakt42 => {
                 println!("format:\t\tKontakt42");
             }
-            NIFileType::NIPresetKontakt => todo!(),
-            NIFileType::FM8Preset => todo!(),
             NIFileType::Unknown => todo!(),
         };
     }

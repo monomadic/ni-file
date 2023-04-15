@@ -3,10 +3,11 @@ use crate::read_bytes::ReadBytesExt;
 /// Supported NI filetypes.
 #[derive(Debug, PartialEq)]
 pub enum NIFileType {
-    /// Most NI files are NISound containers.
+    /// All presets created after Kontakt5 are generally [`NISound`](NIFileType::NISound) containers.
     NISound,
-    /// Kontakt files with samples inside are monoliths.
+    /// Kontakt archives with samples inside are [`NIMonolith`](crate::NIMonolith) containers.
     NIMonolith,
+    /// Generally .ncw files created with Kontakt
     NICompressedWave,
     /// Kore has its own simple format.
     KoreSound,
@@ -16,9 +17,6 @@ pub enum NIFileType {
     Kontakt2,
     Kontakt42,
 
-    NIPresetKontakt,
-
-    FM8Preset,
     Unknown,
 }
 
@@ -90,10 +88,10 @@ pub fn filetype(buffer: &[u8]) -> NIFileType {
                 return NIFileType::KoreSound;
             }
 
-            if buffer[0..4] == b"E8MF".to_owned() {
-                info!("Detected: FM8 Preset");
-                return NIFileType::FM8Preset;
-            }
+            // if buffer[0..4] == b"E8MF".to_owned() {
+            //     info!("Detected: FM8 Preset");
+            //     return NIFileType::FM8Preset;
+            // }
 
             error!("Unknown or unsupported filetype!");
             NIFileType::Unknown
