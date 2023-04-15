@@ -4,6 +4,7 @@ use crate::{
     read_bytes::ReadBytesExt,
 };
 
+/// Typically contains the binary chunk for the inner NISound document.
 #[derive(Debug, Clone)]
 pub struct PresetChunkItem(Vec<u8>);
 

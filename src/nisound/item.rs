@@ -2,6 +2,7 @@ use super::{
     header::ItemHeader,
     item_frame::{item_id::ItemID, ItemFrame},
     item_frame_stack::ItemFrameStack,
+    Domain,
 };
 use crate::{prelude::*, read_bytes::ReadBytesExt};
 use std::convert::TryFrom;
@@ -26,6 +27,10 @@ impl Item {
             data: ItemFrameStack::read(&mut buffer)?,
             children: Item::read_children(&mut buffer)?,
         })
+    }
+
+    pub fn domain(&self) -> Domain {
+        self.header.domain_id.into()
     }
 
     pub fn data(&self) -> Result<ItemFrame> {
