@@ -19,8 +19,12 @@
 //!  [`NIFileType::NISound`], unless they are a bundle of files (Kontact instruments and samples),
 //!  where they could be a [`NIFileType::NIMonolith`].
 //!
-//!  Each NISound is like a mini database of sorts, and you can read these repositories with low
-//!  level structs (embedded [`Item`]s) or use high-level structs such as [`NISound`].
+//!  ## NISound Containers
+//!
+//!  Each [`NISound`] is like a mini database of sorts, and you can read these repositories with low
+//!  level structs (embedded [`Item`]s) or use high-level structs such as [`NISound`]. It is
+//!  recommended and much easier to use the latter unless you are dealing with filetypes still
+//!  undocumented by the library.
 //!
 //! ```
 //! use ni_file::{NIFileType, NISound, NIMonolith};
@@ -37,6 +41,12 @@
 //!     // ...
 //!     _ => unimplemented!(),
 //! }
+//! ```
+//!
+//!  ## Other presets
+//!
+//!  Older preset types are much simpler flat structures. These are collected together in the
+//!  [`crate::preset`] module.
 //!
 
 // #![warn(clippy::all)]
@@ -54,8 +64,8 @@ pub mod prelude;
 
 mod detect; // detect filetype
 mod monolith; // monolith / FileContainer
-mod nisound; // nisound repositories
-mod preset; // older NI preset types
+pub mod nisound; // nisound repositories
+pub mod preset; // older NI preset types
 
 pub(crate) mod cb; // control byte
 pub(crate) mod decompress; // fastlz lib

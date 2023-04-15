@@ -1,7 +1,8 @@
 use super::{
     item::Item,
-    item_frame::{item_id::ItemID, ItemFrame},
+    item_frame::item_id::ItemID,
     items::{encryption_item::EncryptionItem, RepositoryRoot},
+    AuthoringApplication,
 };
 use crate::{
     items::Preset, items::PresetChunkItem, nisound::items::bni_sound_preset::BNISoundPreset,
@@ -15,17 +16,43 @@ use std::convert::{TryFrom, TryInto};
 pub struct NISound(Item);
 
 impl NISound {
+    /// Read a NISound repository from a [`std::io::Read`] source.
+    ///
+    /// ```
+    /// use ni_file::NISound;
+    ///
+    /// let file = std::fs::read("tests/data/nisound/file/fm8/1.2.0.1010/001-fm7.nfm8").unwrap();
+    /// let sound = NISound::read(file.as_slice()).unwrap();
+    /// ```
     pub fn read<R: ReadBytesExt>(reader: R) -> Result<Self> {
         log::debug!("NISound::read()");
         Ok(Self(Item::read(reader)?))
+    }
+
+    /// Returns the [`AuthoringApplication`] which created this document.
+    pub fn authoring_application(&self) -> Option<AuthoringApplication> {
+        self.0
+            .find(&ItemID::Preset)
+            .and_then(|item| Preset::try_from(item).ok())
+            .map(|preset| preset.authoring_app)
+    }
+
+    /// Returns the version of the embedded preset.
+    pub fn preset_version(&self) -> Option<String> {
+        self.0
+            .find(&ItemID::Preset)
+            .and_then(|item| Preset::try_from(item).ok())
+            .map(|preset| preset.version)
     }
 
     pub fn root(&self) -> Result<RepositoryRoot> {
         RepositoryRoot::try_from(self.0.data()?)
     }
 
-    pub fn find(&self, item: ItemID) -> Option<ItemFrame> {
-        self.0.find(&item)
+    /// Get a reference to the underlying [`Item`]. This is switching to the lower level components
+    /// that make up the embedded structure of [`NISound`] documents.
+    pub fn item(&self) -> &Item {
+        &self.0
     }
 
     /// inner container chunk
@@ -56,7 +83,8 @@ impl NISound {
     // TODO: called InternalPatchData
     pub fn inner_container(&self) -> Result<Vec<u8>> {
         let item = self
-            .find(ItemID::EncryptionItem)
+            .0
+            .find(&ItemID::EncryptionItem)
             .expect("no EncryptionItem");
         let ei: EncryptionItem = item.try_into()?;
         Ok(ei.subtree.inner_data)

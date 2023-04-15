@@ -1,3 +1,5 @@
+//! Functionality relating to [`NISound`] documents.
+//!
 /*
 - `Repository`
     - `Item`
