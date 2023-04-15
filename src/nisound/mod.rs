@@ -25,6 +25,8 @@
 */
 
 mod header;
+pub use header::ItemHeader;
+
 mod item;
 pub use item::Item;
 mod item_frame;

@@ -1,12 +1,22 @@
 use crate::prelude::*;
 use crate::read_bytes::ReadBytesExt;
 
-// pub struct ItemHeader(Vec<u8>);
-
+/// The header chunk of an [`Item`](crate::nisound::Item).
+///
+/// | Offset | Length | Type      | Meaning                     | Default    | Other                                    |
+/// |--------|--------|-----------|-----------------------------|------------|------------------------------------------|
+/// | 0      | 8      | uint64_t  | size                        |  |                                          |
+/// | 8      | 4      | uint32_t  | version                     | 1 |                                          |
+/// | 12     | 4      | uint32_t  | domainID                     |  |                                          |
+/// | 16     | 4      | uint32_t  | headerFlags                     |  |                                          |
+/// | 20     | 4      | ItemUuid* | itemUuid                     |  |                                          |
+///
 #[derive(Debug, Clone)]
 pub struct ItemHeader {
+    /// Size in bytes of the entire [`Item`].
     pub size: u64,
-    pub domain_id: u32,    // (+0xC, uint, 'hsin')
+    /// Integer that resolves to a [`DomainID`].
+    pub domain_id: u32, // (+0xC, uint, 'hsin')
     pub header_flags: u32, // (0x10, uint)
     pub uuid: Vec<u8>,     // (0x14, 16 bytes, randomly generated)
 }
