@@ -8,7 +8,7 @@ fn print_item_ids(item: &Item, indent: usize) -> Result<(), Box<dyn Error>> {
     for item in &item.children {
         print!(
             "{:>width$}{:?}",
-            "  ",
+            " ",
             item.data()?.header.item_id,
             width = indent
         );
@@ -56,7 +56,19 @@ pub fn main() -> Result<(), Box<dyn std::error::Error>> {
     for path in paths {
         println!("\n{}:", path.as_os_str().to_str().unwrap());
 
-        let item = Item::read(std::fs::File::open(path)?)?;
+        let file = std::fs::File::open(path)?;
+        let sound = ni_file::NISound::read(&file)?;
+
+        // let item = Item::read(&file)?;
+        let item = sound.item();
+
+        println!("format:\t\t\tNISound {}", sound.nisound_version()?);
+        println!(
+            "authoring_app:\t\t{:?} {}",
+            sound.authoring_application()?,
+            sound.preset_version()?
+        );
+
         println!("{:?}", item.data()?.header.item_id);
 
         print_item_ids(&item, 1)?;
