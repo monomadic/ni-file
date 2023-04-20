@@ -1,10 +1,10 @@
 # Native Instruments File Format
 
-Native Instruments file format support for rust. Very basic support at the moment, mostly surrounding the container format (called a Container).
+Native Instruments file format support for rust. Very basic support at the moment, mostly surrounding the container format (called a `NISound` document).
 
 Anyone who wants to join the effort, please join the telegram group at https://t.me/ni_file
 
-I'm on telegram at @deathdisco.
+I'm on telegram at `@deathdisco`.
 
 ## Progress
 
@@ -20,12 +20,19 @@ More is coming very shortly, please check the examples directory for usage.
 
 This is a library, but several helper binaries will be included.
 
-- `ni-info` prints information about ni files
+- `ni-info` prints information about NISD containers.
+- `ni-tree` prints the tree structure of NISD containers.
 - `ni-extract` (coming soon) dumps presets and samples from ni files
 - `ni-convert` (coming soon) converts between formats
 
 ```
 cargo install --path . --example ni-info
+```
+
+To just run the examples in place, try:
+```
+cargo run --example ni-info -- tests/data/nisound/file/**/*.nki
+cargo run --example ni-info -- tests/data/nisound/file/**/*.nkm
 ```
 
 ## FAQ

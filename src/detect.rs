@@ -50,6 +50,7 @@ pub fn filetype(buffer: &[u8]) -> NIFileType {
             info!("Detected: Kontakt1");
             NIFileType::Kontakt1
         }
+        // these are actually kontakt42 valid
         0x7fa89012 | 0x10874353 | 0xab85ef01 => {
             info!("Detected: Kontakt2 (Little Endian)");
             NIFileType::Kontakt2
