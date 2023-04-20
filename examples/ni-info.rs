@@ -22,13 +22,13 @@ pub fn main() -> Result<()> {
 
         match NIFileType::detect(&file) {
             NIFileType::NISound => {
-                println!("format:\t\tNISound");
+                println!("format:\t\t\tNISound");
 
-                let container = NISound::read(file.as_slice())?;
-                let preset = container.preset()?;
+                let sound = NISound::read(file.as_slice())?;
 
-                println!("authoring_app:\t{:?}", preset.authoring_app);
-                println!("version:\t{}", preset.version);
+                println!("nisound_version:\t{}", sound.nisound_version()?);
+                println!("authoring_app:\t\t{:?}", sound.authoring_application()?);
+                println!("preset_version:\t\t{}", sound.preset_version()?);
             }
             NIFileType::NIMonolith => {
                 println!("format:\t\tNIMonolith");

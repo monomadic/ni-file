@@ -19,7 +19,7 @@ fn print_item_ids(item: &Item, indent: usize) -> Result<(), Box<dyn Error>> {
 }
 
 pub fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let paths: Vec<std::path::PathBuf> = glob::glob("tests/data/files/**/*.*")?
+    let paths: Vec<std::path::PathBuf> = glob::glob("tests/data/nisound/file/**/*.nki")?
         .filter_map(|path| path.ok())
         .filter(|path| path.file_name().unwrap() != ".DS_Store")
         .collect();

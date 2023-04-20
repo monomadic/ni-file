@@ -31,25 +31,43 @@ impl NISound {
     }
 
     /// Returns the [`RepositoryVersion`], also referred to sometimes as the NISD Version.
-    pub fn version(&self) -> Result<RepositoryVersion> {
+    pub fn nisound_version(&self) -> Result<RepositoryVersion> {
         RepositoryRoot::try_from(self.0.data()?).map(|root| root.version())
     }
 
     /// Returns the [`AuthoringApplication`] which created this document.
     pub fn authoring_application(&self) -> Result<AuthoringApplication> {
-        self.0
-            .find(&ItemID::BNISoundPreset)
-            .ok_or(NIFileError::Static("Missing chunk: BNISoundPreset"))
-            .and_then(|item| BNISoundPreset::try_from(item))
-            .map(|preset| preset.preset.authoring_app)
+        // not a good way of detecting the authoring app
+        // there must be a better solution
+        match self.0.find(&ItemID::BNISoundPreset) {
+            Some(item) => Ok(BNISoundPreset::try_from(item)?.preset.authoring_app),
+            None => self
+                .0
+                .find(&ItemID::Preset)
+                .and_then(|item_frame| Preset::try_from(item_frame).ok())
+                .map(|preset| preset.authoring_app)
+                .ok_or(NIFileError::Generic("not found".to_owned())),
+        }
+
+        // match self.authoring_application()? {
+        //     AuthoringApplication::Kontakt => self
+        //         .0
+        //         .find(&ItemID::BNISoundPreset)
+        //         .ok_or(NIFileError::Static("Missing chunk: BNISoundPreset"))
+        //         .and_then(|item| BNISoundPreset::try_from(item))
+        //         .map(|preset| preset.preset),
+        //     _ => self
+        //         .0
+        //         .find(&ItemID::Preset)
+        //         .ok_or(NIFileError::Static("Missing chunk: Preset"))
+        //         .and_then(|item| Preset::try_from(item))
+        //         .map(|preset| preset),
+        // }
     }
 
     /// Returns the version of the embedded preset.
-    pub fn preset_version(&self) -> Option<String> {
-        self.0
-            .find(&ItemID::Preset)
-            .and_then(|item| Preset::try_from(item).ok())
-            .map(|preset| preset.version)
+    pub fn preset_version(&self) -> Result<String> {
+        self.preset_item().map(|p| p.version)
     }
 
     pub fn root(&self) -> Result<RepositoryRoot> {
@@ -72,19 +90,21 @@ impl NISound {
         Ok(chunk_item.chunk().clone())
     }
 
-    pub fn preset(&self) -> Result<Preset> {
-        for item in &self.0.children {
-            match item.data()?.header.item_id {
-                ItemID::BNISoundPreset => {
-                    // TODO: cleaner
-                    return Ok(BNISoundPreset::try_from(item.data()?)?.preset);
-                }
-                ItemID::Preset => return Ok(Preset::try_from(item.data()?)?),
-                _ => todo!(),
-            }
+    fn preset_item(&self) -> Result<Preset> {
+        match self.authoring_application()? {
+            AuthoringApplication::Kontakt => self
+                .0
+                .find(&ItemID::BNISoundPreset)
+                .ok_or(NIFileError::Static("Missing chunk: BNISoundPreset"))
+                .and_then(|item| BNISoundPreset::try_from(item))
+                .map(|preset| preset.preset),
+            _ => self
+                .0
+                .find(&ItemID::Preset)
+                .ok_or(NIFileError::Static("Missing chunk: Preset"))
+                .and_then(|item| Preset::try_from(item))
+                .map(|preset| preset),
         }
-
-        todo!()
     }
 
     // TODO: called InternalPatchData

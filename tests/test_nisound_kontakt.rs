@@ -5,11 +5,8 @@ use std::fs;
 
 #[test]
 fn test_reading_nisound_kontakt() -> Result<(), Box<dyn std::error::Error>> {
-    utils::setup_logger();
-
     // TODO: .nkm support
     for path in utils::get_test_files("tests/data/nisound/file/kontakt/**/*.nki")? {
-        log::info!("reading {:?}", path);
         println!("reading {:?}", path);
 
         let file = fs::File::open(path.as_path())?;

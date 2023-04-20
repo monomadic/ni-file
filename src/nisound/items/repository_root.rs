@@ -41,15 +41,18 @@ impl RepositoryRoot {
     pub fn read<R: ReadBytesExt>(mut reader: R) -> Result<Self> {
         log::debug!("RepositoryRoot::read");
 
-        // version == 1
+        // itemVersion == 1
         assert_eq!(reader.read_u32_le()?, 1);
 
         let nisound_version = reader.read_u32_le()?; // 0x20
         let repository_magic = reader.read_u32_le()?; // 0x24
         let repository_type = reader.read_u32_le()?; // 0x2c
 
-        // FileReference::read  NOTE: NOT EQUAL 1
+        // repositoryReferenceFn
+        // FileReference::read NOT EQUAL 1
         // assert_ne!(reader.read_u32_le()?, 1);
+        // usually 1
+        // panic!("repo ref: {:?}", reader.read_u32_le()?);
 
         // ItemUuid::read
 

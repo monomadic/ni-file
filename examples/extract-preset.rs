@@ -8,7 +8,7 @@ pub fn main() -> Result<(), Box<dyn std::error::Error>> {
         // read the repository
         let repo = NISound::read(file.as_slice())?;
 
-        println!("Detected NISound version: {}", repo.version()?);
+        println!("Detected NISound version: {}", repo.nisound_version()?);
 
         println!(
             "Writing preset chunk for {:?} {:?}",
