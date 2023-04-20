@@ -15,7 +15,6 @@ fn print_item_ids(item: &Item, indent: usize) -> Result<(), Box<dyn Error>> {
 
         if let Some(inner) = item.data()?.inner() {
             print!(", {:?}", inner.header.item_id);
-
             // two levels down?
             if let Some(inner) = inner.inner() {
                 print!(", {:?}", inner.header.item_id);

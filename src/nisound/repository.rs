@@ -1,7 +1,7 @@
 use super::{
     item::Item,
     item_frame::item_id::ItemID,
-    items::{EncryptionItem, RepositoryRoot, RepositoryVersion},
+    items::{AppSpecific, EncryptionItem, RepositoryRoot, RepositoryVersion},
     AuthoringApplication,
 };
 use crate::{
@@ -37,6 +37,12 @@ impl NISound {
 
     /// Returns the [`AuthoringApplication`] which created this document.
     pub fn authoring_application(&self) -> Result<AuthoringApplication> {
+        // first, lets try find the AppSpecific item
+        // (which means this is a multi)
+        if let Some(item) = self.0.find(&ItemID::AppSpecific) {
+            return Ok(AppSpecific::try_from(item)?.authoring_app);
+        }
+
         // not a good way of detecting the authoring app
         // there must be a better solution
         match self.0.find(&ItemID::BNISoundPreset) {
@@ -67,6 +73,12 @@ impl NISound {
 
     /// Returns the version of the embedded preset.
     pub fn preset_version(&self) -> Result<String> {
+        // first, lets try find the AppSpecific item
+        // (which means this is a multi)
+        if let Some(item) = self.0.find(&ItemID::AppSpecific) {
+            return Ok(AppSpecific::try_from(item)?.version);
+        }
+
         self.preset_item().map(|p| p.version)
     }
 

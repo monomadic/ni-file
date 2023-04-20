@@ -1,8 +1,22 @@
-use crate::{nisound::AuthoringApplication, prelude::*};
+use crate::{
+    nisound::{item_frame::ItemFrame, AuthoringApplication, ItemID},
+    prelude::*,
+};
 
 pub struct AppSpecific {
-    authoring_app: AuthoringApplication,
+    pub authoring_app: AuthoringApplication,
+    pub version: String,
     // subtree_item: SubtreeItem,
+}
+
+impl std::convert::TryFrom<ItemFrame> for AppSpecific {
+    type Error = NIFileError;
+
+    fn try_from(frame: ItemFrame) -> Result<Self> {
+        log::debug!("AppSpecific::try_from");
+        debug_assert_eq!(frame.header.item_id, ItemID::AppSpecific);
+        AppSpecific::read(frame.data.as_slice())
+    }
 }
 
 impl AppSpecific {
@@ -15,6 +29,11 @@ impl AppSpecific {
         let authoring_app: AuthoringApplication = reader.read_u32_le()?.into();
         log::debug!("authoring_app_id: {:?}", authoring_app);
 
-        Ok(AppSpecific { authoring_app })
+        let version = reader.read_widestring_utf16()?;
+
+        Ok(AppSpecific {
+            authoring_app,
+            version,
+        })
     }
 }
