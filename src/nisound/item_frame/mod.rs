@@ -3,14 +3,12 @@ pub mod domain_id;
 pub mod item_frame_header;
 pub mod item_id;
 
-use std::convert::TryFrom;
-
 pub use item_frame_header::ItemFrameHeader;
-use item_id::ItemID;
-
-use crate::{prelude::*, read_bytes::ReadBytesExt};
 
 use super::item_frame_stack::ItemFrameStack;
+use crate::{prelude::*, read_bytes::ReadBytesExt};
+use item_id::ItemID;
+use std::convert::TryFrom;
 
 #[derive(Clone, Debug)]
 pub struct ItemFrame {
@@ -36,7 +34,7 @@ impl ItemFrame {
         let header = ItemFrameHeader::read(&mut buf)?;
 
         if header.item_id == ItemID::Item {
-            panic!("reading terminator frame");
+            return Err(NIFileError::ItemTerminator);
         }
 
         let inner = ItemFrameStack::read(&mut buf)?;
@@ -48,7 +46,11 @@ impl ItemFrame {
         })
     }
 
-    pub fn inner(&self) -> Result<ItemFrame> {
-        ItemFrame::try_from(&self.inner)
+    pub fn inner(&self) -> Option<ItemFrame> {
+        ItemFrame::try_from(&self.inner).ok()
+        // match ItemFrame::try_from(&self.inner) {
+        //     Ok(item_frame) => Some(item_frame),
+        //     Err(e) => None,
+        // }
     }
 }

@@ -32,7 +32,7 @@ impl std::convert::TryFrom<ItemFrame> for BNISoundPreset {
         log::debug!("BNISoundPreset::try_from");
         debug_assert_eq!(frame.header.item_id, ItemID::BNISoundPreset);
 
-        let preset: Preset = frame.inner()?.try_into()?;
+        let preset: Preset = frame.inner().expect("inner frame missing").try_into()?;
 
         // .. data
 

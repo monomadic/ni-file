@@ -6,12 +6,24 @@ use ni_file::nisound::Item;
 
 fn print_item_ids(item: &Item, indent: usize) -> Result<(), Box<dyn Error>> {
     for item in &item.children {
-        println!(
+        print!(
             "{:>width$}{:?}",
-            " ",
+            "  ",
             item.data()?.header.item_id,
             width = indent
         );
+
+        if let Some(inner) = item.data()?.inner() {
+            print!(", {:?}", inner.header.item_id);
+
+            // two levels down?
+            if let Some(inner) = inner.inner() {
+                print!(", {:?}", inner.header.item_id);
+            }
+        }
+
+        print!("\n");
+
         print_item_ids(&item, indent + 1)?;
     }
 

@@ -16,6 +16,9 @@ pub enum NIFileError {
     #[error("Incorrect Size Field: expected {expected}, got {got}")]
     IncorrectFrameSize { expected: u64, got: u64 },
 
+    #[error("Encountered Item Terminator")]
+    ItemTerminator,
+
     #[error(transparent)]
     IO(#[from] std::io::Error),
 }
