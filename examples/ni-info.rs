@@ -10,25 +10,36 @@ pub fn main() -> Result<()> {
         return Ok(());
     };
 
-    let paths: Vec<std::path::PathBuf> = glob::glob(&path)
-        .expect("glob error")
-        .filter_map(|path| path.ok())
+    let paths: Vec<std::path::PathBuf> = wax::Glob::new(&path)
+        .unwrap()
+        .walk(".")
+        .flatten()
+        .map(|entry| entry.into_path())
+        .filter(|entry| entry.is_file())
         .filter(|path| path.file_name().unwrap() != ".DS_Store")
         .collect();
+
+    // let paths: Vec<std::path::PathBuf> = glob::glob(&path)
+    //     .expect("glob error")
+    //     .filter_map(|path| path.ok())
+    //     .filter(|path| path.file_name().unwrap() != ".DS_Store")
+    //     .collect();
 
     // repository containers (used in most instruments)
     for path in paths {
         let file = std::fs::read(&path)?;
+        println!("\n{}:", path.as_os_str().to_str().unwrap());
 
         match NIFileType::detect(&file) {
             NIFileType::NISound => {
-                println!("format:\t\t\tNISound");
-
                 let sound = NISound::read(file.as_slice())?;
+                println!("format:\t\t\tNISound {}", sound.nisound_version()?);
 
-                println!("nisound_version:\t{}", sound.nisound_version()?);
-                println!("authoring_app:\t\t{:?}", sound.authoring_application()?);
-                println!("preset_version:\t\t{}", sound.preset_version()?);
+                println!(
+                    "authoring_app:\t\t{:?} {}",
+                    sound.authoring_application()?,
+                    sound.preset_version()?
+                );
             }
             NIFileType::NIMonolith => {
                 println!("format:\t\tNIMonolith");

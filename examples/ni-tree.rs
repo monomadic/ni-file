@@ -27,11 +27,19 @@ pub fn main() -> Result<(), Box<dyn std::error::Error>> {
         return Ok(());
     };
 
-    let paths: Vec<std::path::PathBuf> = glob::glob(&path)
-        .expect("glob error")
-        .filter_map(|path| path.ok())
+    let paths: Vec<std::path::PathBuf> = wax::Glob::new(&path)
+        .unwrap()
+        .walk(".")
+        .flatten()
+        .map(|entry| entry.into_path())
+        .filter(|entry| entry.is_file())
         .filter(|path| path.file_name().unwrap() != ".DS_Store")
         .collect();
+
+    // let paths: Vec<std::path::PathBuf> = glob::glob(&path)?
+    //     .filter_map(|path| path.ok())
+    //     .filter(|path| path.file_name().unwrap() != ".DS_Store")
+    //     .collect();
 
     // repository containers (used in most instruments)
     for path in paths {

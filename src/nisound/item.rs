@@ -70,12 +70,10 @@ impl Item {
                 let unknown = buf.read_u32_le()?;
                 log::debug!("unknown tag: {}", unknown);
 
-                // There is a wasteful 12 bytes per child here telling the code how to read the next
-                // segment. This should not be necessary as you could read the child generically but
-                // could have been a limitation of the original language or codebase.
-
+                // childs domain id
                 let domain_id = buf.read_u32_le()?;
                 let item_id = buf.read_u32_le()?;
+
                 log::debug!("child domain_id: {}, item_id: {}", domain_id, item_id);
 
                 children.push(Item::read(buf.read_sized_data()?.as_slice())?);
