@@ -88,18 +88,29 @@ impl KontaktPreset {
         log::debug!("PresetChunkItem::read");
 
         // ChunkData::doRead
-        let _u = reader.read_u16_le()?; // 40, 0x28
-        let _size = reader.read_i32_le(); // actually i32
+        let preset_kind = reader.read_u16_le()?; // 40, 0x28
+        assert_eq!(preset_kind, 40);
+
+        let _size = reader.read_i32_le()?; // actually i32
 
         // StructuredObject::doRead
         let _u: bool = reader.read_u8()? == 1; // if 0, read raw
 
-        // seems always 175... id?
-        let _u = reader.read_u16_le()?;
+        // header chunk
+        let header_chunk_id = reader.read_u16_le()?;
+        assert!(vec![172_u16, 175].contains(&header_chunk_id));
 
-        // header chunk?
+        // Types of header chunk:
+        //
+        // 172 kontakt 6
+        //     103 bytes
+        //
+        // 175 kontakt 7
+        //     113 bytes
+
         let chunk_size = reader.read_i32_le()?;
         let _data = reader.read_bytes(chunk_size as usize)?;
+        println!("{}", chunk_size);
 
         // metadata chunk?
         let chunk_size = reader.read_i32_le()?;
