@@ -4,6 +4,7 @@ pub use thiserror::Error;
 pub type Result<T> = std::result::Result<T, NIFileError>;
 
 #[derive(thiserror::Error, Debug)]
+#[non_exhaustive]
 pub enum NIFileError {
     #[error("Generic error: {0}")]
     Generic(String),

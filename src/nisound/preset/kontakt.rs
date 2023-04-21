@@ -133,11 +133,10 @@ mod tests {
 
     #[test]
     fn test_kontakt_preset_read() -> Result<()> {
+        //crate::utils::setup_logger();
 
-        crate::utils::setup_logger();
-
-        for path in crate::utils::get_files("tests/files/nicontainer/preset-chunk/kontakt/**/*")? {
-            log::info!("reading {:?}", path);
+        for path in crate::utils::get_files("tests/data/nisound/preset/kontakt/**/*")? {
+            println!("reading {:?}", path);
 
             let file = std::fs::File::open(&path)?;
             KontaktPreset::read(file)?;
