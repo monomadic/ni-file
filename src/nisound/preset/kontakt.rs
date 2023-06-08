@@ -1,6 +1,12 @@
 use crate::prelude::*;
 use crate::read_bytes::ReadBytesExt;
 
+// defaultFactory:
+// if id < 0xF (15)
+//   if id == 5 ( new ? )
+//   if id == 6 ( new ? )
+// 0x2b (43)
+
 // see dbgPrint, K4PO, K4PL (::read for sizes)
 
 // InternalPatchData::ExtractHeader
@@ -88,19 +94,25 @@ impl KontaktPreset {
         log::debug!("PresetChunkItem::read");
 
         // ChunkData::doRead
-        let preset_kind = reader.read_u16_le()?; // 40, 0x28
-        assert_eq!(preset_kind, 40);
+        let magic = reader.read_u16_le()?; // 40, 0x28
+        assert_eq!(magic, 40);
 
-        let _size = reader.read_i32_le()?; // actually i32
+        let _preset_size = reader.read_i32_le()?; // actually i32
 
         // StructuredObject::doRead
-        let _u: bool = reader.read_u8()? == 1; // if 0, read raw
+        let _parse_object: bool = reader.read_u8()? == 1; // if 0, read raw
 
-        // header chunk
+        // BLOCK 1
+
+        // ID
         let header_chunk_id = reader.read_u16_le()?;
-        assert!(vec![172_u16, 175].contains(&header_chunk_id));
+        println!("{}", header_chunk_id);
+        assert!(vec![165_u16, 172, 175].contains(&header_chunk_id));
 
         // Types of header chunk:
+        //
+        // 165 kontakt 5
+        //     97 bytes
         //
         // 172 kontakt 6
         //     103 bytes
@@ -115,6 +127,8 @@ impl KontaktPreset {
         // metadata chunk?
         let chunk_size = reader.read_i32_le()?;
         let _data = reader.read_bytes(chunk_size as usize)?;
+
+        // BLOCK 2
 
         // patch chunk?
         let chunk_size = reader.read_i32_le()?;

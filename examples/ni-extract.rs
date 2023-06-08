@@ -1,10 +1,15 @@
 use ni_file::{NIFileType, NISound};
 
 pub fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let file = include_bytes!("../tests/data/nisound/file/kontakt/7.1.3.0/002-single-sample-2.nki");
+    let Some(path) = std::env::args().nth(1) else {
+        println!("usage: ni-extract <FILE>");
+        return Ok(());
+    };
+
+    let file = std::fs::read(&path)?;
 
     // make sure this is a valid NISound container
-    if NIFileType::detect(file) == NIFileType::NISound {
+    if NIFileType::detect(file.as_slice()) == NIFileType::NISound {
         // read the repository
         let repo = NISound::read(file.as_slice())?;
 
@@ -19,7 +24,7 @@ pub fn main() -> Result<(), Box<dyn std::error::Error>> {
         let chunk = repo.chunk()?;
         std::fs::write("chunk", &chunk)?;
     } else {
-        println!("no file detected.")
+        println!("error: file is not a valid nisound container.")
     }
 
     Ok(())
