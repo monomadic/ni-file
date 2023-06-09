@@ -1,3 +1,5 @@
+use std::io::Read;
+
 use crate::prelude::*;
 use crate::read_bytes::ReadBytesExt;
 
@@ -95,21 +97,25 @@ impl KontaktPreset {
 
         // ChunkData::doRead
         let magic = reader.read_u16_le()?; // 40, 0x28
-        assert_eq!(magic, 40);
+        assert_eq!(magic, 0x28);
+        println!("magic {}", magic);
 
-        let _preset_size = reader.read_i32_le()?; // actually i32
+        let first_data_block_size = reader.read_i32_le()?; // actually i32
+        println!("first_data_block_size {}", first_data_block_size);
 
         // StructuredObject::doRead
-        let _parse_object: bool = reader.read_u8()? == 1; // if 0, read raw
+        let parse_object: bool = reader.read_u8()? == 1; // if 0, read raw
+        println!("parse_object {}", parse_object);
 
         // BLOCK 1
 
         // ID
         let header_chunk_id = reader.read_u16_le()?;
-        println!("{}", header_chunk_id);
+        println!("header_chunk_id {}", header_chunk_id);
+        // known ids
         assert!(vec![165_u16, 172, 175].contains(&header_chunk_id));
 
-        // Types of header chunk:
+        // Versions of block 1 chunks:
         //
         // 165 kontakt 5
         //     97 bytes
@@ -120,19 +126,54 @@ impl KontaktPreset {
         // 175 kontakt 7
         //     113 bytes
 
-        let chunk_size = reader.read_i32_le()?;
-        let _data = reader.read_bytes(chunk_size as usize)?;
-        println!("{}", chunk_size);
+        let chunk_size = reader.read_i32_le()? as usize;
+        let data = reader.read_bytes(chunk_size)?;
 
         // metadata chunk?
         let chunk_size = reader.read_i32_le()?;
-        let _data = reader.read_bytes(chunk_size as usize)?;
+        let data = reader.read_bytes(chunk_size as usize)?;
+
+        let data = data.clone();
+        let mut data = data.as_slice();
+
+        let name = data.read_widestring_utf16()?;
+        println!("name: {}", name);
+
+        let unknown = data.read_bytes(44)?;
+
+        let icon = data.read_u32_le()?;
+        println!("icon: {}", icon);
+
+        let desc = data.read_widestring_utf16()?;
+        println!("desc: {}", desc);
+
+        let author = data.read_widestring_utf16()?;
+        println!("author: {}", author);
+
+        let weblink = data.read_widestring_utf16()?;
+        println!("weblink: {}", weblink);
+
+        let mut buf = Vec::new();
+        let _ = data.read_to_end(&mut buf)?;
+        println!("remaining data({}): {:x?}", buf.len(), buf);
 
         // BLOCK 2
 
+        println!("reading block 2");
+
         // patch chunk?
-        let chunk_size = reader.read_i32_le()?;
-        let _data = reader.read_bytes(chunk_size as usize)?;
+        let chunk_size = reader.read_i32_le()? as usize;
+        let data = reader.read_bytes(chunk_size)?;
+        //std::fs::write("patch-data", &data)?;
+
+        let data = data.clone();
+        let mut data = data.as_slice();
+
+        let id = data.read_u16_le()?;
+        assert_eq!(id, 58);
+        // let some_data = data.read_sized_data()?;
+
+        // end patch chunk
 
         // seems always 71... id?
         let _u = reader.read_u16_le()?;
