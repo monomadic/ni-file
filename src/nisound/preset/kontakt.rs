@@ -3,6 +3,12 @@ use std::io::Read;
 use crate::prelude::*;
 use crate::read_bytes::ReadBytesExt;
 
+// ProgramContainer {
+//  name: wstring
+//  volume: f32
+//  pan: f32
+// }
+
 // defaultFactory:
 // if id < 0xF (15)
 //   if id == 5 ( new ? )
@@ -108,13 +114,7 @@ impl KontaktPreset {
         println!("parse_object {}", parse_object);
 
         // BLOCK 1
-
-        // ID
-        let header_chunk_id = reader.read_u16_le()?;
-        println!("header_chunk_id {}", header_chunk_id);
-        // known ids
-        assert!(vec![165_u16, 172, 175].contains(&header_chunk_id));
-
+        // metadata
         // Versions of block 1 chunks:
         //
         // 165 kontakt 5
@@ -126,68 +126,67 @@ impl KontaktPreset {
         // 175 kontakt 7
         //     113 bytes
 
-        let chunk_size = reader.read_i32_le()? as usize;
-        let data = reader.read_bytes(chunk_size)?;
+        let block_1_version = reader.read_u16_le()?;
+        println!("block_1_version {}", block_1_version);
+        // known versions: 165, 172, 175
+        assert!(vec![165_u16, 172, 175].contains(&block_1_version));
 
-        // metadata chunk?
-        let chunk_size = reader.read_i32_le()?;
-        let data = reader.read_bytes(chunk_size as usize)?;
+        let block_1_size = reader.read_i32_le()? as usize;
+        println!("block_1_size {}", block_1_size);
 
-        let data = data.clone();
-        let mut data = data.as_slice();
+        let block_1_data = reader.read_bytes(block_1_size)?;
+        assert_eq!(block_1_data.len(), block_1_size);
+        println!("block_1_data: {:?}", &block_1_data);
 
-        let name = data.read_widestring_utf16()?;
+        let mut block_1_data = block_1_data.as_slice();
+
+        // // block 1: unknown data chunk
+        //
+        // let block_1_unknown_length = block_1_data.read_i32_le()? as usize;
+        // println!("block_1_unknown_length: {}", block_1_unknown_length);
+        // let block_1_unknown_data = block_1_data.read_bytes(block_1_unknown_length)?;
+        // assert_eq!(block_1_unknown_data.len(), block_1_unknown_length);
+
+        // block 1: metadata chunk
+        println!("reading metadata_chunk");
+
+        let metadata_length = reader.read_i32_le()? as usize;
+        println!("metadata_length: {}", metadata_length);
+
+        let metadata_data = reader.read_bytes(metadata_length)?;
+        let mut metadata_data = metadata_data.as_slice();
+
+        let name = metadata_data.read_widestring_utf16()?;
         println!("name: {}", name);
 
-        let unknown = data.read_bytes(44)?;
+        let unknown = metadata_data.read_bytes(44)?;
 
-        let icon = data.read_u32_le()?;
+        let icon = metadata_data.read_u32_le()?;
         println!("icon: {}", icon);
 
-        let desc = data.read_widestring_utf16()?;
+        let desc = metadata_data.read_widestring_utf16()?;
         println!("desc: {}", desc);
 
-        let author = data.read_widestring_utf16()?;
+        let author = metadata_data.read_widestring_utf16()?;
         println!("author: {}", author);
 
-        let weblink = data.read_widestring_utf16()?;
+        let weblink = metadata_data.read_widestring_utf16()?;
         println!("weblink: {}", weblink);
 
         let mut buf = Vec::new();
-        let _ = data.read_to_end(&mut buf)?;
+        let _ = metadata_data.read_to_end(&mut buf)?;
         println!("remaining data({}): {:x?}", buf.len(), buf);
 
-        // BLOCK 2
-
-        println!("reading block 2");
+        // INSTRUMENT CHUNK
+        println!("reading instrument data");
 
         // patch chunk?
-        let chunk_size = reader.read_i32_le()? as usize;
-        let data = reader.read_bytes(chunk_size)?;
+        let block_2_length = reader.read_i32_le()? as usize;
+        println!("block_2_length {}", &block_2_length);
+        let instrument_data = reader.read_bytes(block_2_length)?;
         //std::fs::write("patch-data", &data)?;
 
-        let data = data.clone();
-        let mut data = data.as_slice();
-
-        let id = data.read_u16_le()?;
-        assert_eq!(id, 58);
-        // let some_data = data.read_sized_data()?;
-
-        // end patch chunk
-
-        // seems always 71... id?
-        let _u = reader.read_u16_le()?;
-
-        // unknown chunk
-        let chunk_size = reader.read_i32_le()?;
-        let _data = reader.read_bytes(chunk_size as usize)?;
-
-        // seems always 75... id?
-        let _u = reader.read_u16_le()?;
-
-        // footer chunk?
-        let chunk_size = reader.read_i32_le()?;
-        let _data = reader.read_bytes(chunk_size as usize)?;
+        println!("**");
 
         Ok(Self {})
     }
@@ -201,7 +200,7 @@ mod tests {
     fn test_kontakt_preset_read() -> Result<()> {
         //crate::utils::setup_logger();
 
-        for path in crate::utils::get_files("tests/data/nisound/preset/kontakt/**/*")? {
+        for path in crate::utils::get_files("tests/data/nisound/preset/kontakt/**/002-single-sample-2")? {
             println!("reading {:?}", path);
 
             let file = std::fs::File::open(&path)?;
