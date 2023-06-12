@@ -3,11 +3,18 @@ use std::io::Read;
 use crate::prelude::*;
 use crate::read_bytes::ReadBytesExt;
 
-// ProgramContainer {
-//  name: wstring
-//  volume: f32
-//  pan: f32
-// }
+/*
+
+ProgramContainer {
+    name: wstring
+    volume: f32
+    pan: f32
+}
+
+ZoneData {
+}
+
+*/
 
 // defaultFactory:
 // if id < 0xF (15)
@@ -159,7 +166,29 @@ impl KontaktPreset {
         let name = metadata_data.read_widestring_utf16()?;
         println!("name: {}", name);
 
-        let unknown = metadata_data.read_bytes(44)?;
+        let unknown = metadata_data.read_i32_le()?;
+        assert_eq!(unknown, 0);
+
+        let float_1 = metadata_data.read_f32_le()?;
+        println!("float_1: {}", float_1);
+
+        // null term
+        assert_eq!(metadata_data.read_u8()?, 0);
+
+        let master_volume = metadata_data.read_f32_le()?;
+        println!("master_volume: {}", master_volume);
+
+        let float_3 = metadata_data.read_f32_le()?;
+        println!("float_3: {}", float_3);
+
+        // null term
+        assert_eq!(metadata_data.read_u8()?, 0);
+
+        let unknown = metadata_data.read_bytes(22)?;
+        println!("unknown: {:?}", unknown);
+
+        let u2 = metadata_data.read_u32_le()?;
+        println!("u2: {}", u2);
 
         let icon = metadata_data.read_u32_le()?;
         println!("icon: {}", icon);
