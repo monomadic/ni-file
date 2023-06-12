@@ -178,17 +178,17 @@ impl KontaktPreset {
         let master_volume = metadata_data.read_f32_le()?;
         println!("master_volume: {}", master_volume);
 
-        let float_3 = metadata_data.read_f32_le()?;
-        println!("float_3: {}", float_3);
+        let master_pan = metadata_data.read_f32_le()?;
+        println!("master_pan: {}", master_pan); // 1.0 = 100R, -1.0 = 100L
 
         // null term
         assert_eq!(metadata_data.read_u8()?, 0);
 
+        let master_tuning = metadata_data.read_f32_le()?;
+        println!("master_tuning: {:?}", master_tuning);
+
         let unknown = metadata_data.read_bytes(22)?;
         println!("unknown: {:?}", unknown);
-
-        let u2 = metadata_data.read_u32_le()?;
-        println!("u2: {}", u2);
 
         let icon = metadata_data.read_u32_le()?;
         println!("icon: {}", icon);
