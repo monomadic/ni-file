@@ -32,6 +32,12 @@ pub trait ReadBytesExt: io::Read {
         Ok(f32::from_le_bytes(buf))
     }
 
+    fn read_f64_le(&mut self) -> io::Result<f64> {
+        let mut buf = [0u8; 8];
+        self.read_exact(&mut buf)?;
+        Ok(f64::from_le_bytes(buf))
+    }
+
     fn read_u64_le(&mut self) -> io::Result<u64> {
         let mut buf = [0u8; 8];
         self.read_exact(&mut buf)?;

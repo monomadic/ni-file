@@ -61,6 +61,7 @@ mod detect; // detect filetype
 mod monolith; // monolith / FileContainer
 pub mod nisound; // nisound repositories
 pub mod preset; // older NI preset types
+pub mod kontakt;
 
 pub(crate) mod cb; // control byte
 pub(crate) mod decompress; // fastlz lib

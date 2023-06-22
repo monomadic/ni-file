@@ -3,103 +3,23 @@ use std::io::Read;
 use crate::prelude::*;
 use crate::read_bytes::ReadBytesExt;
 
-/*
+fn read_chunks<R: ReadBytesExt>(mut reader: R) -> Result<Vec<(u16, Vec<u8>)>> {
+    // for now lets read the entire thing to end
+    let mut buf = Vec::new();
+    reader.read_to_end(&mut buf)?;
+    let mut buf = buf.as_slice();
 
-ProgramContainer {
-    name: wstring
-    volume: f32
-    pan: f32
+    let mut chunks = Vec::new();
+
+    while !buf.is_empty() {
+        let id = buf.read_u16_le()?;
+        let len = buf.read_u32_le()?;
+        let data = buf.read_bytes(len as usize)?;
+        chunks.push((id, data));
+    }
+
+    Ok(chunks)
 }
-
-ZoneData {
-}
-
-*/
-
-// defaultFactory:
-// if id < 0xF (15)
-//   if id == 5 ( new ? )
-//   if id == 6 ( new ? )
-// 0x2b (43)
-
-// see dbgPrint, K4PO, K4PL (::read for sizes)
-
-// InternalPatchData::ExtractHeader
-//  - finds BNISoundHeader
-// - md5 hashsum
-
-// SECTIONS:
-//
-// K4PO::K4PL_Script (7 params)
-//   string
-//   bool
-//   bool
-//   bool
-//   string
-//   string
-//   string
-//   u32
-//   ?string
-//
-// Loop (7 params)      loc         25 bytes?
-//   mode               0x04 i32
-//   loopStart          0x08 i32
-//   loopLength         0x0C i32
-//   loopCount          0x10 i32
-//   alternatingLoop    0x14 bool
-//   loopTuning         0x18 f32
-//   xfadeLength        0x1C i32
-//
-// ZoneDataV98 (26 params)
-//   sampleStart            0x04 i32
-//   sampleEnd              0x08 i32
-//   sampleStartModRange    0x0C i32
-//   lowVelocity            0x10 i16
-//   highVelocity           0x12 i16
-//   lowKey                 0x14 i16
-//   highKey                0x16 i16
-//   fadeLowVelo            0x18 i16
-//   fadeHighVelo           0x1A i16
-//   fadeLowKey             0x1C i16
-//   fadeHighKey            0x1E i16
-//   rootKey                0x20 i16
-//   zoneVolume             0x24 f32
-//   zonePan                0x28 f32
-//   zoneTune               0x2C f32
-//   fileNameId             0x30 i32
-//   sampleDataType         0x34 i32
-//   sampleRate             0x38 i32
-//   numChannels            0x3C u8
-//   numFrames              0x40 i32
-//   reserved1              0x44 i32
-//   rootNote               0x48 i32
-//   tuning                 0x4C i32
-//   reserved3              0x50 f32
-//   reserved4              0x54 bool
-//
-// Group (15 params)
-//   name                   0x04 wstring
-//   volume                 f32
-//   pan                    f32
-//   tune                   f32
-//   keyTracking            bool
-//   reverse
-//   releaseTrigger
-//   releaseTriggerNoteMonophonic
-//   rlsTrigCounter
-//   midiChannel
-//   voiceGroupIdx
-//   fxIdxAmpSplitPoint
-//   muted
-//   soloed
-//   interpQuality
-//
-// Bank (4 params)
-//   masterVolume   f32
-//   masterTune     f32
-//   masterTempo    i32
-//   name           wstring
-//
 
 #[derive(Debug, Clone)]
 pub struct KontaktPreset();
@@ -111,14 +31,14 @@ impl KontaktPreset {
         // ChunkData::doRead
         let magic = reader.read_u16_le()?; // 40, 0x28
         assert_eq!(magic, 0x28);
-        println!("magic {}", magic);
+        println!("magic 0x{:x}", magic);
 
         let first_data_block_size = reader.read_i32_le()?; // actually i32
         println!("first_data_block_size {}", first_data_block_size);
 
         // StructuredObject::doRead
-        let parse_object: bool = reader.read_u8()? == 1; // if 0, read raw
-        println!("parse_object {}", parse_object);
+        let read_skipped: bool = reader.read_u8()? == 1; // if 0, read raw
+        println!("read_skipped {}", read_skipped);
 
         // BLOCK 1
         // metadata
@@ -134,7 +54,7 @@ impl KontaktPreset {
         //     113 bytes
 
         let block_1_version = reader.read_u16_le()?;
-        println!("block_1_version {}", block_1_version);
+        println!("block_1_version 0x{:X}", block_1_version);
         // known versions: 165, 172, 175
         assert!(vec![165_u16, 172, 175].contains(&block_1_version));
 
@@ -166,14 +86,14 @@ impl KontaktPreset {
         let name = metadata_data.read_widestring_utf16()?;
         println!("name: {}", name);
 
-        let unknown = metadata_data.read_i32_le()?;
-        assert_eq!(unknown, 0);
+        let num_bytes_samples_total = metadata_data.read_f64_le()?;
+        println!("num_bytes_samples_total: {}", num_bytes_samples_total);
 
-        let float_1 = metadata_data.read_f32_le()?;
-        println!("float_1: {}", float_1);
+        let transpose = metadata_data.read_u8()?;
+        println!("transpose: {}", transpose);
 
         // null term
-        assert_eq!(metadata_data.read_u8()?, 0);
+        // assert_eq!(metadata_data.read_u8()?, 0);
 
         let master_volume = metadata_data.read_f32_le()?;
         println!("master_volume: {}", master_volume);
@@ -227,13 +147,17 @@ mod tests {
 
     #[test]
     fn test_kontakt_preset_read() -> Result<()> {
-        //crate::utils::setup_logger();
-
-        for path in crate::utils::get_files("tests/data/nisound/preset/kontakt/**/002-single-sample-2")? {
+        for path in crate::utils::get_files("tests/data/nisound/preset/kontakt/**/*")? {
             println!("reading {:?}", path);
 
             let file = std::fs::File::open(&path)?;
-            KontaktPreset::read(file)?;
+//            KontaktPreset::read(file)?;
+            let chunks = read_chunks(&file)?;
+
+            // top level chunks
+            println!("{:?}", chunks.iter()
+                     .map(|c| format!("0x{:x}-{}", c.0, c.1.len()))
+                     .collect::<Vec<String>>().join(","));
         }
 
         Ok(())
