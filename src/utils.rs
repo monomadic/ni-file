@@ -23,12 +23,18 @@ pub(crate) fn get_test_files() -> Result<Vec<PathBuf>> {
 
 #[allow(dead_code)]
 pub(crate) fn get_files(path: &str) -> Result<Vec<PathBuf>> {
-    Ok(glob::glob(path)
+    let files: Vec<PathBuf> = glob::glob(path)
         .map_err(|_| NIFileError::Generic(format!("error globbing: {}", path)))?
         .filter_map(|path| path.ok())
         .filter(|path| path.is_file())
         .filter(|path| path.file_name().unwrap() != ".DS_Store")
-        .collect())
+        .collect();
+
+    if files.is_empty() {
+        return Err(NIFileError::Generic(format!("no files found at: {}", path)));
+    }
+
+    Ok(files)
 }
 
 #[allow(dead_code)]

@@ -59,9 +59,10 @@ pub use error::*;
 
 mod detect; // detect filetype
 mod monolith; // monolith / FileContainer
-pub mod nisound; // nisound repositories
-pub mod preset; // older NI preset types
-pub mod kontakt;
+pub mod nisound; // nisound document
+pub mod kontakt1; // kontakt 1 preset
+pub mod kontakt2; // kontakt 2 preset
+pub mod kontakt42; // kontakt 4.2 preset
 
 pub(crate) mod cb; // control byte
 pub(crate) mod decompress; // fastlz lib

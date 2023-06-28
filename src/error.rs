@@ -1,7 +1,5 @@
-//! Main Crate Error
-pub use thiserror::Error;
-
 pub type Result<T> = std::result::Result<T, NIFileError>;
+pub type Error = NIFileError;
 
 #[derive(thiserror::Error, Debug)]
 #[non_exhaustive]

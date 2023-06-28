@@ -65,7 +65,7 @@ impl KontaktPreset {
         assert_eq!(block_1_data.len(), block_1_size);
         println!("block_1_data: {:?}", &block_1_data);
 
-        let mut block_1_data = block_1_data.as_slice();
+        let _block_1_data = block_1_data.as_slice();
 
         // // block 1: unknown data chunk
         //
@@ -132,7 +132,7 @@ impl KontaktPreset {
         // patch chunk?
         let block_2_length = reader.read_i32_le()? as usize;
         println!("block_2_length {}", &block_2_length);
-        let instrument_data = reader.read_bytes(block_2_length)?;
+        let _instrument_data = reader.read_bytes(block_2_length)?;
         //std::fs::write("patch-data", &data)?;
 
         println!("**");

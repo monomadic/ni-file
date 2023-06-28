@@ -1,11 +1,7 @@
-//! Kontakt42 Preset File
-//!
-
 use crate::{read_bytes::ReadBytesExt, NIFileError};
 
-pub struct Kontakt42;
-
-/// The header of a [`Kontakt42`] preset.
+/// The header of a Kontakt42 preset.
+/// 178 bytes?
 ///
 /// | Offset | Length | Type     | Meaning                     | Default    | Other                                    |
 /// |--------|--------|----------|-----------------------------|------------|------------------------------------------|
@@ -59,7 +55,7 @@ mod tests {
     fn test_kontakt42_preset_read() -> Result<(), NIFileError> {
         //crate::utils::setup_logger();
 
-        for path in crate::utils::get_files("tests/data/kontakt42/**/*.nki")? {
+        for path in crate::utils::get_files("../tests/data/kontakt42/**/*.nki")? {
             println!("reading {:?}", path);
 
             let file = std::fs::File::open(&path)?;
