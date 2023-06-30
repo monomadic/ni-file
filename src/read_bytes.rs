@@ -67,6 +67,21 @@ pub trait ReadBytesExt: io::Read {
         Ok([&size_field.to_le_bytes(), buf].concat())
     }
 
+    fn read_string_utf8(&mut self) -> io::Result<String> {
+        let mut bytes = Vec::new();
+        loop {
+            let mut byte = [0];
+            self.read_exact(&mut byte)?;
+           match byte {
+               [0] => break,
+               _ => bytes.push(byte[0]),
+           }
+        }
+
+        // TODO: remove unwrap
+        Ok(String::from_utf8(bytes).unwrap())
+    }
+
     fn read_widestring_utf16(&mut self) -> io::Result<String> {
         let size_field = self.read_u32_le()?;
         if size_field == 0 {

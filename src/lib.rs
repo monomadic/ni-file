@@ -65,7 +65,7 @@ pub mod kontakt2; // kontakt 2 preset
 pub mod kontakt42; // kontakt 4.2 preset
 
 pub(crate) mod cb; // control byte
-pub(crate) mod decompress; // fastlz lib
+pub mod decompress; // fastlz lib
 pub(crate) mod deflate; // decompress
 pub(crate) mod prelude;
 pub(crate) mod read_bytes; // for reading bytestreams

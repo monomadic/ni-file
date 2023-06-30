@@ -1,21 +1,42 @@
 use crate::{read_bytes::ReadBytesExt, NIFileError};
+use chrono::{DateTime, Local};
 
 /// The header of a Kontakt42 preset.
-/// 178 bytes?
+/// 222 bytes
 ///
-/// | Offset | Length | Type     | Meaning                     | Default    | Other                                    |
+/// | Offset | Length | Type     | Meaning                     | Default    | Notes                                    |
 /// |--------|--------|----------|-----------------------------|------------|------------------------------------------|
-/// | 0      | 4      | uint32_t | magic                       | 0x1290A87F |                                          |
-/// | 4      | 4      | uint32_t | zLibLength                  | 0          |                                          |
-/// | 8      | 2      | uint16_t | fileVersion (must be 0x110) | 0x110      |                                          |
-/// | 10     | 4      | uint32_t | version                     | 0xea37631a |                                          |
-/// | 14     | 2      | uint16_t | type                        | 1 (nki)    | 0=nkm, 1=nki, 2=nkb, 3=nkp, 4=nkg, nkz=5 |
-/// | 16     | 4      | uint32_t | appVersion                  | 0x50500ff  |                                          |
-/// | 0x42   | 4      | uint32_t | appSignature                | 0x4b34504c |                                          |
-/// | 24     | 4      | time_t   | creationTime                |            |                                          |
-/// | ..     |        |          |                             |            |                                          |
-/// | 178    | 4      | uint32_t | appSVNRev                   |            |                                          |
-pub struct BPatchHeaderV42;
+/// | 0x00   | 0x04   | uint32_t | magic                       | 0x1290A87F |                                          |
+/// | 0x04   | 0x04   | uint32_t | zLibLength                  |            | Internal preset compressed size          |
+/// | 0x08   | 0x02   | uint16_t | fileVersion (must be 0x110) | 0x1001     |                                          |
+/// | 0x0A   | 0x04   | uint32_t | version                     | 0x1A6337EA |                                          |
+/// | 0x0E   | 0x02   | uint16_t | type                        | 0x1 (nki)  | 0=nkm, 1=nki, 2=nkb, 3=nkp, 4=nkg, nkz=5 |
+/// | 0x10   | 0x04   | AppVersi | appVersion                  | 0x50500ff  |                                          |
+/// | 0x14   | 0x04   | uint32_t | appSignature                | 0x4b34504c | "Kon4"                                   |
+/// | 0x18   | 0x04   | time_t   | createdAt                   |            |                                          |
+/// | 0x1C   | 0x04   |          |                             |            |                                          |
+/// | 0x20   | 0x02   | uint16_t | numZones                    |            |                                          |
+/// | 0x22   | 0x02   | uint16_t | numGroups                   |            |                                          |
+/// | 0x24   | 0x02   | uint16_t | numInstruments              |            |                                          |
+/// | 0x26   | 0x10   |          |                             |            |                                          |
+/// | 0x36   | 0x10   | uint32_t | icon                        |            | 0x1C is "New"                            |
+/// |        |        |          |                             |            |                                          |
+/// | 0xA2   | 0x10   |          | checksum                    |            |                                          |
+/// | 0xB2   | 0x04   | uint32_t | appSVNRev                   |            |                                          |
+/// | 0xB6   | 0x04   | uint32_t |                             |            |                                          |
+/// | 0xBA   | 0x04   | uint32_t | decompressedLength          |            |                                          |
+
+pub struct BPatchHeaderV42 {
+    pub zlib_length: usize,
+    pub decompressed_length: usize,
+}
+
+pub struct AppVersionV42 {
+    major: u8,
+    minor_1: u8,
+    minor_2: u8,
+    minor_3: u8,
+}
 
 impl BPatchHeaderV42 {
     pub fn read<R: ReadBytesExt>(mut reader: R) -> Result<Self, NIFileError> {
@@ -23,7 +44,7 @@ impl BPatchHeaderV42 {
         assert_eq!(magic, u32::swap_bytes(0x1290A87F));
         println!("magic 0x{:x}", magic);
 
-        let zlib_length = reader.read_u32_le()?;
+        let zlib_length = reader.read_u32_le()? as usize;
         println!("zlib_length {}", zlib_length);
 
         let file_version = reader.read_u16_le()?;
@@ -37,31 +58,55 @@ impl BPatchHeaderV42 {
         let preset_type = reader.read_u16_le()?;
         println!("preset_type {}", preset_type);
 
-        let app_version = reader.read_u32_le()?;
-        println!("app_version {}", app_version);
+        let app_version = AppVersionV42 {
+            minor_3: reader.read_u8()?,
+            minor_2: reader.read_u8()?,
+            minor_1: reader.read_u8()?,
+            major: reader.read_u8()?,
+        };
+
+        println!("app_version {}.{}.{}.{}", app_version.major, app_version.minor_2, app_version.minor_2, app_version.minor_3);
 
         let app_signature = reader.read_u32_le()?;
         println!("app_signature {}", app_signature);
 
-        Ok(Self)
-    }
-}
+        use std::time::{UNIX_EPOCH, Duration};
+        let datetime = reader.read_u32_le()?;
+        let datetime = UNIX_EPOCH + Duration::from_secs(datetime as u64);
+        let created_at: DateTime<Local> = datetime.into();
 
-#[cfg(test)]
-mod tests {
-    use super::*;
+        println!("created_at {}", created_at.format("%Y-%m-%d %H:%M:%S"));
 
-    #[test]
-    fn test_kontakt42_preset_read() -> Result<(), NIFileError> {
-        //crate::utils::setup_logger();
+        let _unknown = reader.read_u32_le()?;
 
-        for path in crate::utils::get_files("../tests/data/kontakt42/**/*.nki")? {
-            println!("reading {:?}", path);
+        let number_of_zones = reader.read_u16_le()?;
+        let number_of_groups = reader.read_u16_le()?;
+        let number_of_instruments = reader.read_u16_le()?;
+        println!("zones: {} groups: {} instruments: {}", number_of_zones, number_of_groups, number_of_instruments);
 
-            let file = std::fs::File::open(&path)?;
-            BPatchHeaderV42::read(file)?;
-        }
+        let _unknown = reader.read_bytes(16)?;
 
-        Ok(())
+        let icon = reader.read_u32_le()?;
+        println!("icon {}", icon);
+
+        println!("author {}", reader.read_string_utf8()?);
+
+        let _unknown = reader.read_bytes(101)?;
+
+        let _checksum = reader.read_bytes(16)?;
+
+        let _unknown = reader.read_u32_le()?;
+        let _unknown = reader.read_u32_le()?;
+
+        let decompressed_length = reader.read_u32_le()? as usize;
+        println!("decompressed_length {}", decompressed_length);
+
+        // seems all zero bytes
+        let _unknown = reader.read_bytes(32)?;
+
+        Ok(Self {
+            zlib_length,
+            decompressed_length,
+        })
     }
 }

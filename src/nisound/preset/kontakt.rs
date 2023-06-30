@@ -44,6 +44,8 @@ impl KontaktPreset {
         // metadata
         // Versions of block 1 chunks:
         //
+        // 128 0x80 kontakt 4
+        //
         // 165 kontakt 5
         //     97 bytes
         //
@@ -56,7 +58,7 @@ impl KontaktPreset {
         let block_1_version = reader.read_u16_le()?;
         println!("block_1_version 0x{:X}", block_1_version);
         // known versions: 165, 172, 175
-        assert!(vec![165_u16, 172, 175].contains(&block_1_version));
+        assert!(vec![0x80, 165_u16, 172, 175].contains(&block_1_version));
 
         let block_1_size = reader.read_i32_le()? as usize;
         println!("block_1_size {}", block_1_size);
@@ -151,13 +153,13 @@ mod tests {
             println!("reading {:?}", path);
 
             let file = std::fs::File::open(&path)?;
-//            KontaktPreset::read(file)?;
-            let chunks = read_chunks(&file)?;
+            KontaktPreset::read(file)?;
+            // let chunks = read_chunks(&file)?;
 
             // top level chunks
-            println!("{:?}", chunks.iter()
-                     .map(|c| format!("0x{:x}-{}", c.0, c.1.len()))
-                     .collect::<Vec<String>>().join(","));
+            // println!("{:?}", chunks.iter()
+            //          .map(|c| format!("0x{:x}-{}", c.0, c.1.len()))
+            //          .collect::<Vec<String>>().join(","));
         }
 
         Ok(())
