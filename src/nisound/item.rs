@@ -94,7 +94,7 @@ mod tests {
     fn test_item_read() -> Result<()> {
         // crate::utils::setup_logger();
 
-        for path in get_files("tests/data/files/**/*.*")? {
+        for path in get_files("tests/data/nisound/file/**/*.*")? {
             log::info!("reading {:?}", path);
 
             let file = std::fs::File::open(&path)?;
@@ -108,7 +108,7 @@ mod tests {
     fn test_item_frame() -> Result<()> {
         //crate::utils::setup_logger();
 
-        for path in get_files("tests/data/files/**/*.*")? {
+        for path in get_files("tests/data/nisound/file/**/*.*")? {
             log::info!("reading {:?}", path);
 
             let file = std::fs::File::open(&path)?;
