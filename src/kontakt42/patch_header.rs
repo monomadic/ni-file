@@ -1,5 +1,7 @@
+use time::OffsetDateTime;
+
 use crate::{read_bytes::ReadBytesExt, NIFileError};
-use chrono::{DateTime, Local};
+//use chrono::{DateTime, Local};
 
 /// The header of a Kontakt42 preset.
 ///
@@ -77,12 +79,9 @@ impl BPatchHeaderV42 {
         let app_signature = reader.read_u32_le()?;
         println!("app_signature {}", app_signature);
 
-        use std::time::{UNIX_EPOCH, Duration};
-        let datetime = reader.read_u32_le()?;
-        let datetime = UNIX_EPOCH + Duration::from_secs(datetime as u64);
-        let created_at: DateTime<Local> = datetime.into();
-
-        println!("created_at {}", created_at.format("%Y-%m-%d %H:%M:%S"));
+        let datetime = OffsetDateTime::from_unix_timestamp(reader.read_u32_le()? as i64).unwrap();
+        let created_at: time::Date = datetime.date();
+        println!("created_at {}", created_at);
 
         let _unknown = reader.read_u32_le()?;
 
