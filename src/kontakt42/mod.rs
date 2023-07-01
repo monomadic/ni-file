@@ -1,13 +1,15 @@
 use crate::{NIFileError, read_bytes::ReadBytesExt};
 
-use self::patch_header::BPatchHeaderV42;
+use self::{patch_header::BPatchHeaderV42, patch_meta_info_header::BPatchMetaInfoHeader};
 
-mod program_data;
 mod patch_header;
+mod patch_meta_info_header;
+mod program_data;
 
 pub struct Kontakt42 {
     header: BPatchHeaderV42,
-    program_data: Vec<u8>
+    program_data: Vec<u8>,
+    meta_info: BPatchMetaInfoHeader,
 }
 
 impl Kontakt42 {
@@ -19,17 +21,12 @@ impl Kontakt42 {
                 header.decompressed_length
             ).expect("decompression failure");
 
-        // si header AEE10EB0 01010C00
-        let _unknown = reader.read_bytes(8)?;
-
-        let soundinfo_length = reader.read_u32_le()? as usize;
-        let soundinfo = reader.read_bytes(soundinfo_length)?;
-        let soundinfo = String::from_utf8(soundinfo).unwrap();
-        println!("soundinfo: {}", soundinfo);
+        let meta_info = BPatchMetaInfoHeader::read(&mut reader)?;
 
         Ok(Self {
             header,
             program_data,
+            meta_info,
         })
     }
 }

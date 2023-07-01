@@ -2,13 +2,19 @@ use crate::{read_bytes::ReadBytesExt, NIFileError};
 use chrono::{DateTime, Local};
 
 /// The header of a Kontakt42 preset.
-/// 222 bytes
+///
+/// magic = 0xa4d6e55a || 0xab85ef01 || 0xb36ee55e || 0x10874353 ||  0x74b5a69b || 0x7fa89012
+///
+/// headerVersion
+///     < 256           36 bytes
+///     > 256 && < 271  170 bytes
+///     > 271           222 bytes
 ///
 /// | Offset | Length | Type     | Meaning                     | Default    | Notes                                    |
 /// |--------|--------|----------|-----------------------------|------------|------------------------------------------|
-/// | 0x00   | 0x04   | uint32_t | magic                       | 0x1290A87F |                                          |
+/// | 0x00   | 0x04   | uint32_t | magic                       | 0x1290A87F | 0xa4d6e55a || 0xab85ef01 || 0xb36ee55e || 0x10874353 ||  0x74b5a69b || 0x7fa89012                                        |
 /// | 0x04   | 0x04   | uint32_t | zLibLength                  |            | Internal preset compressed size          |
-/// | 0x08   | 0x02   | uint16_t | fileVersion (must be 0x110) | 0x1001     |                                          |
+/// | 0x08   | 0x02   | uint16_t | headerVersion               | 0x1001     | Found 272                                |
 /// | 0x0A   | 0x04   | uint32_t | version                     | 0x1A6337EA |                                          |
 /// | 0x0E   | 0x02   | uint16_t | type                        | 0x1 (nki)  | 0=nkm, 1=nki, 2=nkb, 3=nkp, 4=nkg, nkz=5 |
 /// | 0x10   | 0x04   | AppVersi | appVersion                  | 0x50500ff  |                                          |
@@ -25,7 +31,8 @@ use chrono::{DateTime, Local};
 /// | 0xB2   | 0x04   | uint32_t | appSVNRev                   |            |                                          |
 /// | 0xB6   | 0x04   | uint32_t |                             |            |                                          |
 /// | 0xBA   | 0x04   | uint32_t | decompressedLength          |            |                                          |
-
+/// |        | 0x20   |          |                             |            |                                          |
+///
 pub struct BPatchHeaderV42 {
     pub zlib_length: usize,
     pub decompressed_length: usize,
