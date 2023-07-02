@@ -1,9 +1,10 @@
 use std::io::Read;
 
+use crate::kontakt42::program_data::ProgramDataV80;
 use crate::prelude::*;
 use crate::read_bytes::ReadBytesExt;
 
-fn read_chunks<R: ReadBytesExt>(mut reader: R) -> Result<Vec<(u16, Vec<u8>)>> {
+fn read_structured_objects<R: ReadBytesExt>(mut reader: R) -> Result<Vec<(u16, Vec<u8>)>> {
     // for now lets read the entire thing to end
     let mut buf = Vec::new();
     reader.read_to_end(&mut buf)?;
@@ -16,6 +17,32 @@ fn read_chunks<R: ReadBytesExt>(mut reader: R) -> Result<Vec<(u16, Vec<u8>)>> {
         let len = buf.read_u32_le()?;
         let data = buf.read_bytes(len as usize)?;
         chunks.push((id, data));
+    }
+
+    println!(
+        "chunks: {:?}",
+        chunks
+            .iter()
+            .map(|c| format!("0x{:x}", c.0))
+            .collect::<Vec<String>>()
+    );
+
+    for (chunk_id, chunk) in chunks.iter() {
+        if chunk_id == &0x28 {
+            let mut chunk = chunk.as_slice();
+            println!("readChunked {:?}", chunk.read_bool()?);
+            let item_id = chunk.read_u16_le()?;
+            println!("id 0x{:x}", item_id);
+
+            let length = chunk.read_u32_le()?;
+            println!("length {:?}", length);
+            chunk.read_bytes(length as usize)?;
+
+            println!("length {:?}", chunk.read_u32_le()?);
+            if item_id == 0x80 {
+                println!("{:?}", ProgramDataV80::read(&mut chunk)?);
+            }
+        }
     }
 
     Ok(chunks)
@@ -153,8 +180,8 @@ mod tests {
             println!("reading {:?}", path);
 
             let file = std::fs::File::open(&path)?;
-            KontaktPreset::read(file)?;
-            // let chunks = read_chunks(&file)?;
+            // KontaktPreset::read(file)?;
+            let chunks = read_structured_objects(&file)?;
 
             // top level chunks
             // println!("{:?}", chunks.iter()

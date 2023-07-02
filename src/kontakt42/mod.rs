@@ -1,10 +1,11 @@
-use crate::{NIFileError, read_bytes::ReadBytesExt};
+use crate::{read_bytes::ReadBytesExt, NIFileError};
 
 use self::{patch_header::BPatchHeaderV42, patch_meta_info_header::BPatchMetaInfoHeader};
 
 mod patch_header;
 mod patch_meta_info_header;
-mod program_data;
+pub mod program_data;
+mod start_criteria;
 
 pub struct Kontakt42 {
     header: BPatchHeaderV42,
@@ -17,9 +18,10 @@ impl Kontakt42 {
         let header = BPatchHeaderV42::read(&mut reader)?;
 
         let program_data = crate::decompress::decompress(
-                reader.read_bytes(header.zlib_length)?.as_slice(),
-                header.decompressed_length
-            ).expect("decompression failure");
+            reader.read_bytes(header.zlib_length)?.as_slice(),
+            header.decompressed_length,
+        )
+        .expect("decompression failure");
 
         let meta_info = BPatchMetaInfoHeader::read(&mut reader)?;
 
@@ -34,7 +36,9 @@ impl Kontakt42 {
 pub fn read_internal<R: ReadBytesExt>(mut reader: R) -> Result<Vec<u8>, NIFileError> {
     let decompressed_length = reader.read_u32_le()? as usize;
     let _unknown = reader.read_bytes(41)?;
-    reader.read_bytes(decompressed_length).map_err(NIFileError::from)
+    reader
+        .read_bytes(decompressed_length)
+        .map_err(NIFileError::from)
 }
 
 #[cfg(test)]
