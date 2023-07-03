@@ -7,17 +7,18 @@ pub enum NIFileError {
     #[error("Generic error: {0}")]
     Generic(String),
 
-    #[error("Static error: {0}")]
-    Static(&'static str),
+    #[error(transparent)]
+    IO(#[from] std::io::Error),
 
-    // #[error("Unexpected Frame: expected {expected:?}, got {got:?}")]
-    // UnexpectedFrame { expected: ItemFrame, got: ItemFrame },
+    #[error("Decompression error")]
+    DecompressionError,
+
     #[error("Incorrect Size Field: expected {expected}, got {got}")]
     IncorrectFrameSize { expected: u64, got: u64 },
 
     #[error("Encountered Item Terminator")]
     ItemTerminator,
 
-    #[error(transparent)]
-    IO(#[from] std::io::Error),
+    #[error("Static error: {0}")]
+    Static(&'static str),
 }

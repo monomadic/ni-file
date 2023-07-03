@@ -1,17 +1,23 @@
 use std::io::Read;
 
 use crate::{
-    kontakt42::program_data::{ProgramDataV80, ProgramDataVA5},
+    kontakt42::{
+        program_data::{ProgramDataV80, ProgramDataVA5},
+        zone_list::ZoneList,
+    },
     read_bytes::ReadBytesExt,
     Error,
 };
+
+use super::filename_list::FileNameListPreK51;
 
 pub struct StructuredObject;
 
 impl StructuredObject {
     // emulates StucturedObject::doRead
     pub fn read<R: ReadBytesExt>(mut reader: R) -> Result<Self, Error> {
-        match reader.read_u16_le()? {
+        let id = reader.read_u16_le()?;
+        match id {
             0x28 => {
                 println!("[0x28]");
 
@@ -49,27 +55,49 @@ impl StructuredObject {
                 }
 
                 // CHILDREN DATA
-                println!("children_length {:?}", reader.read_u32_le()?);
+                let children_data_length = reader.read_u32_le()? as usize;
+                println!("children_length {:?}", children_data_length);
+
+                // read all children into memory
+                let children_data = reader.read_bytes(children_data_length)?;
+                let mut reader = children_data.as_slice();
 
                 // StructuredObject::factory
-                let chunk_id = reader.read_u16_le()?;
-                match chunk_id {
-                    0x3a => {
-                        // crate::kontakt42::bparam_array::BParamArray8 {};
-                        let array = read_array(&mut reader, 8)?;
-                        for item in array.iter() {
-                            println!("array-id {:?}", item);
-                        }
-                    }
-                    // 0x53 => {}
-                    _ => panic!("StructuredObject::factory(0x{:x})", chunk_id),
-                };
+                while let Ok(chunk_id) = reader.read_u16_le() {
+                    println!("child id: 0x{:x}", chunk_id);
+                    let item_length = reader.read_u32_le()?;
+                    let item_data = reader.read_bytes(item_length as usize)?;
 
-                let mut buf = Vec::new();
-                reader.read_to_end(&mut buf)?;
-                println!("remaining: {} bytes", buf.len());
+                    match chunk_id {
+                        0x3a => {
+                            // BParamArray<8>
+                        }
+                        0x32 => {
+                            // VoiceGroups
+                        }
+                        0x33 => {
+                            // GroupList
+                        }
+                        0x34 => {
+                            // ZoneList
+                            ZoneList::read(&mut item_data.as_slice())?;
+                        }
+                        // 0x3e => {
+                        //     // StructuredObject::doRead(0x3e)
+                        //     // readChunked
+                        //     assert!(reader.read_bool()?);
+                        //     StructuredObject::read(&mut reader)?;
+                        // }
+                        // 0x53 => {}
+                        _ => panic!("StructuredObject::factory(0x{:x})", chunk_id),
+                    }
+                }
             }
-            _ => panic!("unknown chunk id"),
+            0x3d => {
+                // FileNameListPreK51
+                FileNameListPreK51::read(&mut reader)?;
+            }
+            _ => panic!("Unknown StructuredObject 0x{:x}", id),
         }
 
         Ok(Self {})
@@ -87,6 +115,7 @@ mod tests {
 
             let file = std::fs::File::open(&path)?;
 
+            let chunks = StructuredObject::read(&file)?;
             let chunks = StructuredObject::read(&file)?;
 
             // top level chunks

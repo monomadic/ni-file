@@ -1,7 +1,7 @@
 //! NISPreset
 //! Presets stored deep inside NISound documents
 
-mod kontakt;
+//mod kontakt;
 
 /// NISPreset
 #[derive(Debug)]

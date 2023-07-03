@@ -3,11 +3,15 @@ use crate::{read_bytes::ReadBytesExt, NIFileError};
 use self::{patch_header::BPatchHeaderV42, patch_meta_info_header::BPatchMetaInfoHeader};
 
 pub mod bparam_array;
+mod filename_list;
 mod patch_header;
 mod patch_meta_info_header;
 pub mod program_data;
 mod start_criteria;
 mod structured_object;
+mod voice_groups;
+mod voice_limit;
+mod zone_list;
 
 pub struct Kontakt2 {
     header: BPatchHeaderV42,

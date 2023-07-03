@@ -1,10 +1,14 @@
+use crate::NIFileError;
+
 pub fn decompress(
     compressed_input: &[u8],
     decompressed_len: usize,
-) -> Result<Vec<u8>, Box<dyn std::error::Error>> {
+) -> Result<Vec<u8>, NIFileError> {
     let mut buffer = vec![0; decompressed_len];
-    // TODO: remove expect, return error
-    fastlz::decompress(compressed_input, &mut buffer).expect("decompression failed");
+
+    fastlz::decompress(compressed_input, &mut buffer)
+        .map_err(|_| NIFileError::DecompressionError)?;
+
     Ok(buffer)
 }
 
