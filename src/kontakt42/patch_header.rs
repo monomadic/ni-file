@@ -17,8 +17,8 @@ use crate::{read_bytes::ReadBytesExt, NIFileError};
 /// | 0x00   | 0x04   | uint32_t | magic                       | 0x1290A87F | 0xa4d6e55a || 0xab85ef01 || 0xb36ee55e || 0x10874353 ||  0x74b5a69b || 0x7fa89012                                        |
 /// | 0x04   | 0x04   | uint32_t | zLibLength                  |            | Internal preset compressed size          |
 /// | 0x08   | 0x02   | uint16_t | headerVersion               | 0x1001     | Found 272                                |
-/// | 0x0A   | 0x04   | uint32_t | version                     | 0x1A6337EA |                                          |
-/// | 0x0E   | 0x02   | uint16_t | type                        | 0x1 (nki)  | 0=nkm, 1=nki, 2=nkb, 3=nkp, 4=nkg, nkz=5 |
+/// | 0x0A   | 0x04   | uint32_t | patchVersion                | 0x1A6337EA |                                          |
+/// | 0x0E   | 0x02   | uint16_t | patchtype                   | 0x1 (nki)  | 0=nkm, 1=nki, 2=nkb, 3=nkp, 4=nkg, nkz=5 |
 /// | 0x10   | 0x04   | AppVersi | appVersion                  | 0x50500ff  |                                          |
 /// | 0x14   | 0x04   | uint32_t | appSignature                | 0x4b34504c | "Kon4"                                   |
 /// | 0x18   | 0x04   | time_t   | createdAt                   |            |                                          |
@@ -74,7 +74,10 @@ impl BPatchHeaderV42 {
             major: reader.read_u8()?,
         };
 
-        println!("app_version {}.{}.{}.{}", app_version.major, app_version.minor_2, app_version.minor_2, app_version.minor_3);
+        println!(
+            "app_version {}.{}.{}.{}",
+            app_version.major, app_version.minor_2, app_version.minor_2, app_version.minor_3
+        );
 
         let app_signature = reader.read_u32_le()?;
         println!("app_signature {}", app_signature);
@@ -88,7 +91,10 @@ impl BPatchHeaderV42 {
         let number_of_zones = reader.read_u16_le()?;
         let number_of_groups = reader.read_u16_le()?;
         let number_of_instruments = reader.read_u16_le()?;
-        println!("zones: {} groups: {} instruments: {}", number_of_zones, number_of_groups, number_of_instruments);
+        println!(
+            "zones: {} groups: {} instruments: {}",
+            number_of_zones, number_of_groups, number_of_instruments
+        );
 
         let _unknown = reader.read_bytes(16)?;
 

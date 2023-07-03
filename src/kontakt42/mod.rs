@@ -2,18 +2,20 @@ use crate::{read_bytes::ReadBytesExt, NIFileError};
 
 use self::{patch_header::BPatchHeaderV42, patch_meta_info_header::BPatchMetaInfoHeader};
 
+pub mod bparam_array;
 mod patch_header;
 mod patch_meta_info_header;
 pub mod program_data;
 mod start_criteria;
+mod structured_object;
 
-pub struct Kontakt42 {
+pub struct Kontakt2 {
     header: BPatchHeaderV42,
     program_data: Vec<u8>,
     meta_info: BPatchMetaInfoHeader,
 }
 
-impl Kontakt42 {
+impl Kontakt2 {
     pub fn read<R: ReadBytesExt>(mut reader: R) -> Result<Self, NIFileError> {
         let header = BPatchHeaderV42::read(&mut reader)?;
 
@@ -22,6 +24,9 @@ impl Kontakt42 {
             header.decompressed_length,
         )
         .expect("decompression failure");
+
+        // TODO: loop
+        let chunk = structured_object::StructuredObject::read(program_data.as_slice())?;
 
         let meta_info = BPatchMetaInfoHeader::read(&mut reader)?;
 
@@ -53,7 +58,7 @@ mod tests {
             println!("reading {:?}", path);
 
             let file = std::fs::File::open(&path)?;
-            Kontakt42::read(file)?;
+            Kontakt2::read(file)?;
         }
 
         Ok(())

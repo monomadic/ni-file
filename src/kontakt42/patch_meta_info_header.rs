@@ -4,10 +4,10 @@ use crate::{read_bytes::ReadBytesExt, NIFileError};
 ///
 /// | Offset | Length | Type     | Meaning                     | Default    | Notes                                    |
 /// |--------|--------|----------|-----------------------------|------------|------------------------------------------|
-/// | 0x00   | 0x04   | uint32_t | magic                       | 0xAEE10EB0 |                                          |
+/// | 0x00   | 0x04   | uint32_t | metaMagic                   | 0xAEE10EB0 | 0xb00ee1ae                               |
 pub struct BPatchMetaInfoHeader {
     /// An XML SoundInfoItem document.
-    soundinfo: String
+    soundinfo: String,
 }
 
 impl BPatchMetaInfoHeader {
@@ -26,6 +26,6 @@ impl BPatchMetaInfoHeader {
         let soundinfo = reader.read_bytes(soundinfo_length)?;
         let soundinfo = String::from_utf8(soundinfo).unwrap();
 
-        Ok( Self { soundinfo })
+        Ok(Self { soundinfo })
     }
 }

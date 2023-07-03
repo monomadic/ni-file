@@ -27,23 +27,73 @@ fn read_structured_objects<R: ReadBytesExt>(mut reader: R) -> Result<Vec<(u16, V
             .collect::<Vec<String>>()
     );
 
-    for (chunk_id, chunk) in chunks.iter() {
-        if chunk_id == &0x28 {
-            let mut chunk = chunk.as_slice();
-            println!("readChunked {:?}", chunk.read_bool()?);
-            let item_id = chunk.read_u16_le()?;
-            println!("id 0x{:x}", item_id);
+    for (object_id, chunk) in chunks.iter() {
+        match object_id {
+            0x28 => {
+                let mut chunk = chunk.as_slice();
+                println!("readChunked {:?}", chunk.read_bool()?);
 
-            let length = chunk.read_u32_le()?;
-            println!("length {:?}", length);
-            chunk.read_bytes(length as usize)?;
+                let item_id = chunk.read_u16_le()?;
+                println!("id 0x{:x}", item_id);
 
-            println!("length {:?}", chunk.read_u32_le()?);
-            if item_id == 0x80 {
-                println!("{:?}", ProgramDataV80::read(&mut chunk)?);
+                let length = chunk.read_u32_le()?;
+                println!("length {:?}", length);
+                chunk.read_bytes(length as usize)?;
+
+                println!("length {:?}", chunk.read_u32_le()?);
+
+                // K4PL_PubData::create(item_id)
+                if item_id == 0x80 {
+                    println!("{:?}", ProgramDataV80::read(&mut chunk)?);
+                } else {
+                    panic!("got {:x}", item_id)
+                }
+
+                let next_length = chunk.read_u32_le()?;
+                if next_length > 0 {
+                    //
+                    // ChunkData::doRead()
+                    let chunk_id = chunk.read_u16_le()?;
+                    let chunk_length = chunk.read_i32_le()?;
+
+                    // StructuredObject::factory(id, length)
+                    println!(
+                        "StructuredObject::factory(0x{:x}, 0x{:x})",
+                        chunk_id, chunk_length
+                    );
+
+                    // StraucturedObject::factory(chunk_id, length)
+                    match chunk_id {
+                        0x3A => {
+                            // crate::kontakt42::bparam_array::BParamArray8 {};
+                            println!("bool {:?}", chunk.read_bool()?);
+
+                            println!("id 0x{:x}", chunk.read_u16_le()?);
+
+                            for _ in 0..8 {
+                                let do_read = chunk.read_bool()?;
+                                println!("i-bool {:?}", do_read);
+
+                                if do_read {
+                                    println!("i-id 0x{:x}", chunk.read_u16_le()?);
+                                    println!("i-length 0x{:x}", chunk.read_u32_le()?);
+                                }
+                            }
+                        }
+                        _ => {
+                            println!("unknown chunk_id: {:x}", chunk_id);
+                        }
+                    }
+                }
+            }
+            _ => {
+                println!("unknown chunk_id: 0x{:x}", object_id);
             }
         }
+        println!("");
     }
+
+    println!("---");
 
     Ok(chunks)
 }

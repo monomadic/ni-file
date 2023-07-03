@@ -60,7 +60,7 @@ pub trait ReadBytesExt: io::Read {
         Ok(u64::from_le_bytes(buf))
     }
 
-    /// read a number of bytes (failable)
+    /// Read a number of bytes (failable)
     fn read_bytes(&mut self, bytes: usize) -> io::Result<Vec<u8>> {
         let mut buf = vec![0u8; bytes];
         self.read_exact(&mut buf)?;
