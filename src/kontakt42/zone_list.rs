@@ -4,10 +4,9 @@ pub struct ZoneList;
 
 impl ZoneList {
     pub fn read<R: ReadBytesExt>(mut reader: R) -> Result<Self, Error> {
-        // length
-        assert!(reader.read_u32_le()? > 0);
+        let array_length = reader.read_u32_le()?;
+        println!("array_length {}", array_length);
 
-        println!("{}", reader.read_u32_le()?);
         Ok(Self {})
     }
 }

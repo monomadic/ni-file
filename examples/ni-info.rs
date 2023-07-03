@@ -1,5 +1,5 @@
 use color_eyre::eyre::Result;
-use ni_file::{self, NIFileType, NISound};
+use ni_file::{self, kontakt42::Kontakt2, NIFileType, NISound};
 
 pub fn main() -> Result<()> {
     std::env::set_var("RUST_BACKTRACE", "1");
@@ -18,12 +18,6 @@ pub fn main() -> Result<()> {
         .filter(|entry| entry.is_file())
         .filter(|path| path.file_name().unwrap() != ".DS_Store")
         .collect();
-
-    // let paths: Vec<std::path::PathBuf> = glob::glob(&path)
-    //     .expect("glob error")
-    //     .filter_map(|path| path.ok())
-    //     .filter(|path| path.file_name().unwrap() != ".DS_Store")
-    //     .collect();
 
     // repository containers (used in most instruments)
     for path in paths {
@@ -51,11 +45,16 @@ pub fn main() -> Result<()> {
             }
             NIFileType::Kontakt2 => {
                 println!("format:\t\tKontakt2");
+                Kontakt2::read(file.as_slice())?;
             }
             NIFileType::Kontakt42 => {
                 println!("format:\t\tKontakt42");
             }
-            NIFileType::Unknown => todo!(),
+            NIFileType::Unknown => {
+                println!("format:\t\tunknown");
+            }
+            NIFileType::KontaktResource => todo!(),
+            NIFileType::KontaktCache => todo!(),
         };
     }
 

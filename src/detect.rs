@@ -17,6 +17,9 @@ pub enum NIFileType {
     Kontakt2,
     Kontakt42,
 
+    KontaktResource,
+    KontaktCache,
+
     Unknown,
 }
 
@@ -46,18 +49,16 @@ pub fn filetype(buffer: &[u8]) -> NIFileType {
     let header_signature = reader.read_u32_le().unwrap();
 
     match header_signature {
-        0xB36EE55E => {
-            info!("Detected: Kontakt1");
-            NIFileType::Kontakt1
-        }
-        // these are actually kontakt42 valid
+        0xB36EE55E => NIFileType::Kontakt1,
         0x7fa89012 | 0x10874353 | 0xab85ef01 => {
             info!("Detected: Kontakt2 (Little Endian)");
             NIFileType::Kontakt2
         }
-        0xa4d6e55a | 0x74b5a69b => {
+        0xA4D6E55A | 0x74B5A69B => {
             panic!("kontakt: unknown");
         }
+        0x54AC705E => NIFileType::KontaktResource,
+        0x7A10E13F => NIFileType::KontaktCache,
         _ => {
             // .nki, .nfm8, etc
             // check for 'hsin' at byte 12

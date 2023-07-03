@@ -1,5 +1,3 @@
-use std::io::Read;
-
 use crate::{
     kontakt42::{
         program_data::{ProgramDataV80, ProgramDataVA5},
@@ -115,13 +113,8 @@ mod tests {
 
             let file = std::fs::File::open(&path)?;
 
-            let chunks = StructuredObject::read(&file)?;
-            let chunks = StructuredObject::read(&file)?;
-
-            // top level chunks
-            // println!("{:?}", chunks.iter()
-            //          .map(|c| format!("0x{:x}-{}", c.0, c.1.len()))
-            //          .collect::<Vec<String>>().join(","));
+            let _chunks = StructuredObject::read(&file)?;
+            let _chunks = StructuredObject::read(&file)?;
         }
 
         Ok(())

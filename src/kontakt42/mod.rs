@@ -1,21 +1,20 @@
-use crate::{read_bytes::ReadBytesExt, NIFileError};
-
-use self::{patch_header::BPatchHeaderV42, patch_meta_info_header::BPatchMetaInfoHeader};
-
-pub mod bparam_array;
+mod bparam_array;
 mod filename_list;
 mod patch_header;
 mod patch_meta_info_header;
-pub mod program_data;
+mod program_data;
 mod start_criteria;
 mod structured_object;
 mod voice_groups;
 mod voice_limit;
 mod zone_list;
 
+use self::{patch_header::BPatchHeaderV42, patch_meta_info_header::BPatchMetaInfoHeader};
+use crate::{read_bytes::ReadBytesExt, NIFileError};
+
 pub struct Kontakt2 {
     header: BPatchHeaderV42,
-    program_data: Vec<u8>,
+    // program_data: Vec<u8>,
     meta_info: BPatchMetaInfoHeader,
 }
 
@@ -26,19 +25,17 @@ impl Kontakt2 {
         let program_data = crate::decompress::decompress(
             reader.read_bytes(header.zlib_length)?.as_slice(),
             header.decompressed_length,
-        )
-        .expect("decompression failure");
+        )?;
+
+        let mut program_data = program_data.as_slice();
 
         // TODO: loop
-        let chunk = structured_object::StructuredObject::read(program_data.as_slice())?;
+        let chunk = structured_object::StructuredObject::read(&mut program_data)?;
+        // let chunk = structured_object::StructuredObject::read(program_data)?;
 
         let meta_info = BPatchMetaInfoHeader::read(&mut reader)?;
 
-        Ok(Self {
-            header,
-            program_data,
-            meta_info,
-        })
+        Ok(Self { header, meta_info })
     }
 }
 
