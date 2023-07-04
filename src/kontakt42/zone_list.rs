@@ -16,6 +16,7 @@ impl ZoneList {
             id: 0x2c,
             length: 0,
         };
+
         obj.do_read(&mut reader)?;
 
         // StructuredObject::doRead(0x2c);

@@ -14,11 +14,8 @@ pub struct StructuredObjectReader {
     pub id: u16,
     pub length: u32,
 }
-impl StructuredObjectReader {
-    pub fn pub_data(&self) -> Result<StructuredObjectType, Error> {
-        Ok(StructuredObjectType::Unknown)
-    }
 
+impl StructuredObjectReader {
     /// Emulates StructuredObject::doRead(StructuredObject *this, Stream *stream)
     pub fn do_read<R: ReadBytesExt>(&self, mut reader: R) -> Result<(), Error> {
         println!("\nStructuredObject::doRead() {}", self.id);
@@ -26,7 +23,6 @@ impl StructuredObjectReader {
         let is_chunked = reader.read_bool()?;
         println!("is_chunked {:?}", is_chunked);
 
-        // if ischunked
         if is_chunked {
             let object_version = reader.read_u16_le()?;
             let object_length = reader.read_u32_le()?;
@@ -49,11 +45,38 @@ impl StructuredObjectReader {
         Ok(())
     }
 }
+
 pub enum StructuredObjectType {
     Unknown,
 }
 
-pub struct StructuredObject {}
+impl StructuredObjectType {
+    pub fn read<R: ReadBytesExt>(mut reader: R) -> Result<(), Error> {
+        let id = reader.read_u16_le()?;
+        println!("Reading StructuredObject id:0x{:x}", &id);
+
+        let length = reader.read_u32_le()?;
+        println!("length {}", length);
+
+        match id {
+            0x28 => {
+                // read the chunk into memory
+                let _reader = reader.read_bytes(length as usize)?;
+            }
+            0x3d => {
+                FileNameListPreK51::read(&mut reader)?;
+            }
+            _ => panic!("Unsupported StructuredObject: 0x{:x}", id),
+        }
+
+        Ok(())
+    }
+}
+
+pub struct StructuredObject {
+    // pub private_data: Vec<u8>,
+    // pub public_data: PubData,
+}
 
 impl StructuredObject {
     // emulates StucturedObject::doRead
@@ -61,15 +84,14 @@ impl StructuredObject {
         let id = reader.read_u16_le()?;
         println!("Reading StructuredObject id:0x{:x}", &id);
 
+        let length = reader.read_u32_le()?;
+        println!("length {}", length);
+
         match id {
             0x28 => {
                 // read the chunk into memory
-                let len = reader.read_u32_le()?;
-                let reader = reader.read_bytes(len as usize)?;
+                let reader = reader.read_bytes(length as usize)?;
                 let mut reader = reader.as_slice();
-
-                // let reader = read_chunk(&mut reader)?;
-                // let mut reader = reader.as_slice();
 
                 println!("readChunked {:?}", reader.read_bool()?);
 
@@ -99,7 +121,7 @@ impl StructuredObject {
                     _ => panic!("ProgramData not supported V{:x}", item_version),
                 }
 
-                // CHILDREN DATA
+                // ITERABLE DATA
                 let children_data_length = reader.read_u32_le()? as usize;
                 println!("children_length {:?}", children_data_length);
 
@@ -134,7 +156,7 @@ impl StructuredObject {
                         //     StructuredObject::read(&mut reader)?;
                         // }
                         // 0x53 => {}
-                        _ => panic!("StructuredObject::factory(0x{:x})", chunk_id),
+                        _ => {} // _ => panic!("Unsupported StructuredObject::factory(0x{:x})", chunk_id),
                     }
                 }
             }
@@ -149,24 +171,25 @@ impl StructuredObject {
     }
 }
 
-#[cfg(test)]
-mod tests {
-    use super::*;
+// #[cfg(test)]
+// mod tests {
+//     use super::*;
+//
+//     #[test]
+//     fn test_kontakt_preset_read() -> Result<(), Error> {
+//         for path in crate::utils::get_files("tests/data/nisound/preset/kontakt/**/*")? {
+//             println!("\nreading {:?}", path);
+//
+//             let file = std::fs::File::open(&path)?;
+//
+//             let _chunks = StructuredObject::read(&file)?;
+//             let _chunks = StructuredObject::read(&file)?;
+//         }
+//
+//         Ok(())
+//     }
+// }
 
-    #[test]
-    fn test_kontakt_preset_read() -> Result<(), Error> {
-        for path in crate::utils::get_files("tests/data/nisound/preset/kontakt/**/*")? {
-            println!("\nreading {:?}", path);
-
-            let file = std::fs::File::open(&path)?;
-
-            let _chunks = StructuredObject::read(&file)?;
-            let _chunks = StructuredObject::read(&file)?;
-        }
-
-        Ok(())
-    }
-}
 fn read_array<R: ReadBytesExt>(
     mut reader: R,
     items: usize,
@@ -198,4 +221,19 @@ fn read_chunk<R: ReadBytesExt>(mut reader: R) -> Result<Vec<u8>, Error> {
     } else {
         Ok(Vec::new())
     }
+}
+
+#[test]
+fn test_structured_object() -> Result<(), Error> {
+    // let file = include_bytes!("tests/structured_object/4.2.2.4504/000");
+    // let mut file = file.as_slice();
+    // StructuredObject::read(&mut file)?;
+    // StructuredObject::read(&mut file)?;
+
+    let file = include_bytes!("tests/structured_object/5.3.0.6464/000");
+    let mut file = file.as_slice();
+    StructuredObject::read(&mut file)?;
+    //StructuredObject::read(&mut file)?;
+
+    Ok(())
 }

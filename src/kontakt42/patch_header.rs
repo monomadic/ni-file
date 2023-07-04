@@ -1,7 +1,14 @@
 use time::OffsetDateTime;
 
 use crate::{read_bytes::ReadBytesExt, NIFileError};
-//use chrono::{DateTime, Local};
+
+// pub enum KonaktPatchHeader {
+//     BPatchHeaderV42(BPatchHeaderV42),
+// }
+//
+// impl KonaktPatchHeader {
+//     pub fn read<R: ReadBytesExt>(mut reader: R) -> Result<Self, Error> {}
+// }
 
 /// The header of a Kontakt42 preset.
 ///

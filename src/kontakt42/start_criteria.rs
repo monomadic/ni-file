@@ -28,7 +28,7 @@ pub struct StartCriteria {
 
 // id: 0x28
 impl StartCriteria {
-    pub fn read<R: ReadBytesExt>(mut reader: R) -> Result<Self, NIFileError> {
+    pub fn read<R: ReadBytesExt>(_reader: R) -> Result<Self, NIFileError> {
         Ok(Self {})
     }
 }

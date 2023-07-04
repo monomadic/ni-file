@@ -1,4 +1,5 @@
 mod bparam_array;
+mod chunkdata;
 mod filename_list;
 mod patch_header;
 mod patch_meta_info_header;
@@ -11,12 +12,15 @@ mod voice_limit;
 mod zone;
 mod zone_list;
 
-use self::{patch_header::BPatchHeaderV42, patch_meta_info_header::BPatchMetaInfoHeader};
+use self::{
+    patch_header::BPatchHeaderV42, patch_meta_info_header::BPatchMetaInfoHeader,
+    structured_object::StructuredObject,
+};
 use crate::{read_bytes::ReadBytesExt, NIFileError};
 
 pub struct Kontakt2 {
     header: BPatchHeaderV42,
-    // program_data: Vec<u8>,
+    objects: Vec<StructuredObject>,
     meta_info: BPatchMetaInfoHeader,
 }
 
@@ -24,20 +28,22 @@ impl Kontakt2 {
     pub fn read<R: ReadBytesExt>(mut reader: R) -> Result<Self, NIFileError> {
         let header = BPatchHeaderV42::read(&mut reader)?;
 
-        let program_data = crate::decompress::decompress(
+        let decompressed_data = crate::decompress::decompress(
             reader.read_bytes(header.zlib_length)?.as_slice(),
             header.decompressed_length,
         )?;
 
-        let mut program_data = program_data.as_slice();
+        let mut decompressed_data = decompressed_data.as_slice();
 
-        // TODO: loop
-        let chunk = structured_object::StructuredObject::read(&mut program_data)?;
-        // let chunk = structured_object::StructuredObject::read(program_data)?;
+        let mut objects = Vec::new();
+        objects.push(StructuredObject::read(&mut decompressed_data)?);
+        objects.push(StructuredObject::read(&mut decompressed_data)?);
 
-        let meta_info = BPatchMetaInfoHeader::read(&mut reader)?;
-
-        Ok(Self { header, meta_info })
+        Ok(Self {
+            header,
+            objects,
+            meta_info: BPatchMetaInfoHeader::read(&mut reader)?,
+        })
     }
 }
 
