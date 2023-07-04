@@ -1,6 +1,7 @@
 use crate::{
     kontakt42::{
         program_data::{ProgramDataV80, ProgramDataVA5},
+        pubdata::PubData,
         zone_list::ZoneList,
     },
     read_bytes::ReadBytesExt,
@@ -9,16 +10,59 @@ use crate::{
 
 use super::filename_list::FileNameListPreK51;
 
-pub struct StructuredObject;
+pub struct StructuredObjectReader {
+    pub id: u16,
+    pub length: u32,
+}
+impl StructuredObjectReader {
+    pub fn pub_data(&self) -> Result<StructuredObjectType, Error> {
+        Ok(StructuredObjectType::Unknown)
+    }
+
+    /// Emulates StructuredObject::doRead(StructuredObject *this, Stream *stream)
+    pub fn do_read<R: ReadBytesExt>(&self, mut reader: R) -> Result<(), Error> {
+        println!("\nStructuredObject::doRead() {}", self.id);
+
+        let is_chunked = reader.read_bool()?;
+        println!("is_chunked {:?}", is_chunked);
+
+        // if ischunked
+        if is_chunked {
+            let object_version = reader.read_u16_le()?;
+            let object_length = reader.read_u32_le()?;
+            if object_length > 0 {
+                let _private_data = reader.read_bytes(object_length as usize)?;
+            }
+
+            let public_data_length = reader.read_u32_le()?;
+            if public_data_length > 0 {
+                println!(
+                    "{:?}",
+                    PubData::create(&mut reader, self.id, object_version)?
+                );
+            }
+        } else {
+            let length = self.length - 1; // to account for the boolean
+            let _data = reader.read_bytes(length as usize)?;
+        }
+
+        Ok(())
+    }
+}
+pub enum StructuredObjectType {
+    Unknown,
+}
+
+pub struct StructuredObject {}
 
 impl StructuredObject {
     // emulates StucturedObject::doRead
     pub fn read<R: ReadBytesExt>(mut reader: R) -> Result<Self, Error> {
         let id = reader.read_u16_le()?;
+        println!("Reading StructuredObject id:0x{:x}", &id);
+
         match id {
             0x28 => {
-                println!("[0x28]");
-
                 // read the chunk into memory
                 let len = reader.read_u32_le()?;
                 let reader = reader.read_bytes(len as usize)?;
@@ -41,7 +85,10 @@ impl StructuredObject {
                 // PROGRAM DATA
                 println!("public data length {:?}", reader.read_u32_le()?);
                 // K4PL_PubData::create(id, version)
-                println!("K4PL_PubData::create(0x{:x}, 0x{:x})", 0x28, item_version);
+                println!(
+                    "Reading K4PL_PubData::create(0x{:x}, 0x{:x})",
+                    0x28, item_version
+                );
                 match item_version {
                     0x80 => {
                         ProgramDataV80::read(&mut reader)?;

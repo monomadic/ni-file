@@ -3,10 +3,12 @@ mod filename_list;
 mod patch_header;
 mod patch_meta_info_header;
 mod program_data;
+mod pubdata;
 mod start_criteria;
 mod structured_object;
 mod voice_groups;
 mod voice_limit;
+mod zone;
 mod zone_list;
 
 use self::{patch_header::BPatchHeaderV42, patch_meta_info_header::BPatchMetaInfoHeader};
