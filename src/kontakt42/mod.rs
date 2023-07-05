@@ -1,5 +1,6 @@
 mod bparam_array;
 mod chunkdata;
+mod envelope;
 mod filename_list;
 mod patch_header;
 mod patch_meta_info_header;

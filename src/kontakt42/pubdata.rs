@@ -4,16 +4,44 @@ use super::zone::{ZoneV95, ZoneV98};
 
 #[derive(Debug)]
 pub enum PubData {
-    ZoneV98(ZoneV98),
+    EnvelopeAHDSR_V10,
+    EnvelopeAHDSR_V11,
     ZoneV95(ZoneV95),
+    ZoneV98(ZoneV98),
 }
 
 impl PubData {
     pub fn create<R: ReadBytesExt>(mut reader: R, id: u16, version: u16) -> Result<Self, Error> {
         println!("K4PL_PubData::create(0x{:x}, 0x{:x})", id, version);
 
+        // match id {
+        //     _ if id > 0x3e => match id {
+        //         0x3f => match version {
+        //             0x10 => return Ok(EnvelopeAHDSR_V10),
+        //             0x11 => return Ok(EnvelopeAHDSR_V11),
+        //             _ => {
+        //                 panic!("Unknown EnvelopeAHDSR version: {}", version)
+        //             }
+        //         },
+        //         0x41 => {}
+        //         _ => panic!(),
+        //     },
+        //     _ if id < 0x28 => (),
+        //     _ => (),
+        // }
+
         if id > 0x3e {
-            panic!("id > 0x3e");
+            match id {
+                0x3f => match version {
+                    0x10 => return Ok(PubData::EnvelopeAHDSR_V10),
+                    0x11 => return Ok(PubData::EnvelopeAHDSR_V11),
+                    _ => {
+                        panic!("Unknown EnvelopeAHDSR version: {}", version)
+                    }
+                },
+                0x41 => {}
+                _ => panic!(),
+            }
         }
 
         if id < 0x28 {
@@ -22,8 +50,8 @@ impl PubData {
 
         match id {
             0x2c => match version {
-                _ if version < 0x96 => Ok(Self::ZoneV98(ZoneV98::read(&mut reader)?)),
-                _ if version < 0x99 => Ok(Self::ZoneV95(ZoneV95::read(&mut reader)?)),
+                _ if version < 0x96 => Ok(PubData::ZoneV98(ZoneV98::read(&mut reader)?)),
+                _ if version < 0x99 => Ok(PubData::ZoneV95(ZoneV95::read(&mut reader)?)),
                 _ => panic!("unknown ZoneData"),
             },
             _ => {

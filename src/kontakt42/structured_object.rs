@@ -131,24 +131,33 @@ impl StructuredObject {
 
                 // StructuredObject::factory
                 while let Ok(chunk_id) = reader.read_u16_le() {
-                    println!("child id: 0x{:x}", chunk_id);
                     let item_length = reader.read_u32_le()?;
                     let item_data = reader.read_bytes(item_length as usize)?;
 
                     match chunk_id {
-                        0x3a => {
-                            // BParamArray<8>
-                        }
-                        0x32 => {
-                            // VoiceGroups
-                        }
-                        0x33 => {
-                            // GroupList
-                        }
+                        0x32 => println!("0x{:x} VoiceGroups", chunk_id),
+                        0x33 => println!("0x{:x} GroupList", chunk_id),
+
                         0x34 => {
-                            // ZoneList
                             ZoneList::read(&mut item_data.as_slice())?;
                         }
+
+                        0x35 | 0x48 | 0x49 | 0x4e => println!("0x{:x} PrivateRawObject", chunk_id),
+
+                        0x36 => println!("0x36 ProgramList"),
+                        0x37 => println!("0x37 SlotList"),
+                        0x38 => println!("0x38 StartCritList"),
+                        0x39 => println!("0x39 LoopArray"),
+
+                        0x3a => println!("0x3a BParamArray<8>"),
+                        0x3b => println!("0x3b BParamArray<16>"),
+                        0x3c => println!("0x3c BParamArray<32>"),
+                        0x3d => println!("0x3d FileNameListPreK51"),
+
+                        0x41 => println!("0x41 PublicObject"),
+
+                        0x4b => println!("0x4b FileNameList"),
+
                         // 0x3e => {
                         //     // StructuredObject::doRead(0x3e)
                         //     // readChunked

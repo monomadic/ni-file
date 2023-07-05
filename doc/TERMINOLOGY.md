@@ -7,3 +7,4 @@
 - `GP` unknown, perhaps 'General Purpose'?
 - `NISD` Native Instruments Sound Domain. (a domainID).
 - `StructuredObject` Building blocks of patch data. Generic form.
+- `K4PO` Kontakt 4 Public Object
