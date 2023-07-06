@@ -14,6 +14,7 @@ pub struct KontaktV42 {
 impl KontaktV42 {
     pub fn read<R: ReadBytesExt>(mut reader: R) -> Result<Self, NIFileError> {
         let header = BPatchHeaderV42::read(&mut reader)?;
+        println!("{:?}", header);
 
         let decompressed_data = crate::decompress::decompress(
             reader.read_bytes(header.zlib_length)?.as_slice(),

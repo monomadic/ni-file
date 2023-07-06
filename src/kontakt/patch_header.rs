@@ -42,11 +42,15 @@ use crate::{read_bytes::ReadBytesExt, NIFileError};
 /// | 0xBA   | 0x04   | uint32_t | decompressedLength          |            |                                          |
 /// |        | 0x20   |          |                             |            |                                          |
 ///
+#[derive(Debug)]
 pub struct BPatchHeaderV42 {
     pub zlib_length: usize,
     pub decompressed_length: usize,
+    pub patch_version: u16,
+    pub app_version: AppVersionV42,
 }
 
+#[derive(Debug)]
 pub struct AppVersionV42 {
     major: u8,
     minor_1: u8,
@@ -58,18 +62,14 @@ impl BPatchHeaderV42 {
     pub fn read<R: ReadBytesExt>(mut reader: R) -> Result<Self, NIFileError> {
         let magic = reader.read_u32_le()?;
         assert_eq!(magic, u32::swap_bytes(0x1290A87F));
-        println!("magic 0x{:x}", magic);
 
         let zlib_length = reader.read_u32_le()? as usize;
-        println!("zlib_length {}", zlib_length);
-
-        let file_version = reader.read_u16_le()?;
-        assert_eq!(file_version, u16::swap_bytes(0x1001));
-        println!("file_version 0x{:x}", file_version);
+        let patch_version = reader.read_u16_le()?;
+        assert_eq!(patch_version, u16::swap_bytes(0x1001));
 
         let magic2 = reader.read_u32_le()?;
         assert_eq!(magic2, u32::swap_bytes(0x1A6337EA));
-        println!("magic2 0x{:x}", magic2);
+        // println!("magic2 0x{:x}", magic2);
 
         let preset_type = reader.read_u16_le()?;
         println!("preset_type {}", preset_type);
@@ -126,6 +126,8 @@ impl BPatchHeaderV42 {
         Ok(Self {
             zlib_length,
             decompressed_length,
+            patch_version,
+            app_version,
         })
     }
 }

@@ -1,5 +1,7 @@
 use crate::{
-    kontakt::{pubdata::PubData, zone_list::ZoneList},
+    kontakt::{
+        bparam_array::BParamArray, pubdata::PubData, voice_groups::VoiceGroups, zone_list::ZoneList,
+    },
     read_bytes::ReadBytesExt,
     Error,
 };
@@ -114,7 +116,7 @@ impl StructuredObject {
 
                     match chunk_id {
                         0x32 => {
-                            println!("0x{:x} VoiceGroups", chunk_id);
+                            println!("{:?}", VoiceGroups::read(&mut item_data.as_slice())?);
                         }
                         0x33 => println!("0x{:x} GroupList", chunk_id),
 
@@ -124,12 +126,16 @@ impl StructuredObject {
 
                         0x35 | 0x48 | 0x49 | 0x4e => println!("0x{:x} PrivateRawObject", chunk_id),
 
-                        0x36 => println!("0x36 ProgramList"),
+                        0x36 => panic!("0x36 ProgramList"),
                         0x37 => println!("0x37 SlotList"),
                         0x38 => println!("0x38 StartCritList"),
                         0x39 => println!("0x39 LoopArray"),
 
-                        0x3a => println!("0x3a BParamArray<8>"),
+                        0x3a => {
+                            // 0x3a => println!("0x3a BParamArray<8>"),
+                            BParamArray::read(&mut item_data.as_slice(), 8)?;
+                        }
+
                         0x3b => println!("0x3b BParamArray<16>"),
                         0x3c => println!("0x3c BParamArray<32>"),
                         0x3d => println!("0x3d FileNameListPreK51"),
@@ -148,8 +154,6 @@ impl StructuredObject {
             }
             _ => panic!("Unknown StructuredObject 0x{:x}", id),
         }
-
-        println!("Finished StructuredObject(0x{:x})", id);
 
         Ok(Self {})
     }
