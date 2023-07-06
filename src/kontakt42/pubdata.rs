@@ -1,13 +1,19 @@
 use crate::{read_bytes::ReadBytesExt, Error};
 
-use super::zone::{ZoneV95, ZoneV98};
+use super::{
+    program_data::{ProgramDataV80, ProgramDataVA5},
+    zone::{ZoneV95, ZoneV98},
+};
 
 #[derive(Debug)]
+#[allow(non_camel_case_types)]
 pub enum PubData {
     EnvelopeAHDSR_V10,
     EnvelopeAHDSR_V11,
     ZoneV95(ZoneV95),
     ZoneV98(ZoneV98),
+    ProgramDataV80(ProgramDataV80),
+    ProgramDataVA5(ProgramDataVA5),
 }
 
 impl PubData {
@@ -49,10 +55,15 @@ impl PubData {
         }
 
         match id {
+            0x28 => match version {
+                0x80 => return Ok(PubData::ProgramDataV80(ProgramDataV80::read(&mut reader)?)),
+                0xA5 => return Ok(PubData::ProgramDataVA5(ProgramDataVA5::read(&mut reader)?)),
+                _ => panic!("Unknown ProgramData version: {}", version),
+            },
             0x2c => match version {
                 _ if version < 0x96 => Ok(PubData::ZoneV98(ZoneV98::read(&mut reader)?)),
                 _ if version < 0x99 => Ok(PubData::ZoneV95(ZoneV95::read(&mut reader)?)),
-                _ => panic!("unknown ZoneData"),
+                _ => panic!("Unknown ZoneData version: {}", version),
             },
             _ => {
                 panic!("id");

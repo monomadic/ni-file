@@ -1,9 +1,5 @@
 use crate::{
-    kontakt42::{
-        program_data::{ProgramDataV80, ProgramDataVA5},
-        pubdata::PubData,
-        zone_list::ZoneList,
-    },
+    kontakt42::{pubdata::PubData, zone_list::ZoneList},
     read_bytes::ReadBytesExt,
     Error,
 };
@@ -93,7 +89,7 @@ impl StructuredObject {
                 let reader = reader.read_bytes(length as usize)?;
                 let mut reader = reader.as_slice();
 
-                println!("readChunked {:?}", reader.read_bool()?);
+                println!("read_chunked {:?}", reader.read_bool()?);
 
                 // 0x80
                 let item_version = reader.read_u16_le()?;
@@ -106,20 +102,14 @@ impl StructuredObject {
 
                 // PROGRAM DATA
                 println!("public data length {:?}", reader.read_u32_le()?);
+
                 // K4PL_PubData::create(id, version)
                 println!(
                     "Reading K4PL_PubData::create(0x{:x}, 0x{:x})",
                     0x28, item_version
                 );
-                match item_version {
-                    0x80 => {
-                        ProgramDataV80::read(&mut reader)?;
-                    }
-                    0xA5 => {
-                        ProgramDataVA5::read(&mut reader)?;
-                    }
-                    _ => panic!("ProgramData not supported V{:x}", item_version),
-                }
+
+                PubData::create(&mut reader, 0x28, item_version)?;
 
                 // ITERABLE DATA
                 let children_data_length = reader.read_u32_le()? as usize;
@@ -165,11 +155,16 @@ impl StructuredObject {
                         //     StructuredObject::read(&mut reader)?;
                         // }
                         // 0x53 => {}
-                        _ => {} // _ => panic!("Unsupported StructuredObject::factory(0x{:x})", chunk_id),
+                        // _ => {}
+                        _ => panic!("Unsupported StructuredObject::factory(0x{:x})", chunk_id),
                     }
                 }
             }
             0x3d => {
+                // read the chunk into memory
+                let reader = reader.read_bytes(length as usize)?;
+                let mut reader = reader.as_slice();
+
                 // FileNameListPreK51
                 FileNameListPreK51::read(&mut reader)?;
             }
@@ -234,14 +229,14 @@ fn read_chunk<R: ReadBytesExt>(mut reader: R) -> Result<Vec<u8>, Error> {
 
 #[test]
 fn test_structured_object() -> Result<(), Error> {
-    // let file = include_bytes!("tests/structured_object/4.2.2.4504/000");
-    // let mut file = file.as_slice();
-    // StructuredObject::read(&mut file)?;
-    // StructuredObject::read(&mut file)?;
-
-    let file = include_bytes!("tests/structured_object/5.3.0.6464/000");
+    let file = include_bytes!("tests/structured_object/4.2.2.4504/000");
     let mut file = file.as_slice();
     StructuredObject::read(&mut file)?;
+    StructuredObject::read(&mut file)?;
+
+    // let file = include_bytes!("tests/structured_object/5.3.0.6464/000");
+    // let mut file = file.as_slice();
+    // StructuredObject::read(&mut file)?;
     //StructuredObject::read(&mut file)?;
 
     Ok(())

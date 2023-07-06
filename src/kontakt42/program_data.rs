@@ -57,6 +57,7 @@ impl ProgramDataV80 {
     }
 }
 
+#[derive(Debug)]
 pub struct ProgramDataVA5 {
     name: String,
     num_bytes_samples_total: f64,
