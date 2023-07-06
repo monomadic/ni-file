@@ -1,30 +1,17 @@
-mod bparam_array;
-mod chunkdata;
-mod filename_list;
-mod patch_header;
-mod patch_meta_info_header;
-mod program_data;
-mod pubdata;
-mod start_criteria;
-mod structured_object;
-mod voice_groups;
-mod voice_limit;
-mod zone;
-mod zone_list;
+use crate::{read_bytes::ReadBytesExt, NIFileError};
 
-use self::{
+use super::{
     patch_header::BPatchHeaderV42, patch_meta_info_header::BPatchMetaInfoHeader,
     structured_object::StructuredObject,
 };
-use crate::{read_bytes::ReadBytesExt, NIFileError};
 
-pub struct Kontakt2 {
+pub struct KontaktV42 {
     header: BPatchHeaderV42,
     objects: Vec<StructuredObject>,
     meta_info: BPatchMetaInfoHeader,
 }
 
-impl Kontakt2 {
+impl KontaktV42 {
     pub fn read<R: ReadBytesExt>(mut reader: R) -> Result<Self, NIFileError> {
         let header = BPatchHeaderV42::read(&mut reader)?;
 
@@ -61,13 +48,11 @@ mod tests {
 
     #[test]
     fn test_kontakt42_preset_read() -> Result<(), NIFileError> {
-        //crate::utils::setup_logger();
-
         for path in crate::utils::get_files("tests/data/kontakt-42/**/*.nki")? {
             println!("reading {:?}", path);
 
             let file = std::fs::File::open(&path)?;
-            Kontakt2::read(file)?;
+            KontaktV42::read(file)?;
         }
 
         Ok(())

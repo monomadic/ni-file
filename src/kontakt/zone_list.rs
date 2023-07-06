@@ -1,4 +1,6 @@
-use crate::{kontakt42::zone::ZoneData, read_bytes::ReadBytesExt, Error};
+use crate::{read_bytes::ReadBytesExt, Error};
+
+use super::zone_data::ZoneData;
 
 pub struct ZoneList {
     zones: Vec<ZoneData>,

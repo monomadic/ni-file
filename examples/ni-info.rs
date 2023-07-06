@@ -1,5 +1,5 @@
 use color_eyre::eyre::Result;
-use ni_file::{self, kontakt42::Kontakt2, NIFileType, NISound};
+use ni_file::{self, kontakt::kontakt42::KontaktV42, NIFileType, NISound};
 
 pub fn main() -> Result<()> {
     std::env::set_var("RUST_BACKTRACE", "1");
@@ -45,7 +45,7 @@ pub fn main() -> Result<()> {
             }
             NIFileType::Kontakt2 => {
                 println!("format:\t\tKontakt2");
-                Kontakt2::read(file.as_slice())?;
+                KontaktV42::read(file.as_slice())?;
             }
             NIFileType::Kontakt42 => {
                 println!("format:\t\tKontakt42");

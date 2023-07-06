@@ -41,7 +41,7 @@ Q: Can I extract .wav files from kontakt files?
 A: Not **yet** but there is functionality in the code for extracting samples from monoliths.
 
 Q: Can I extract any meaningful information besides library and file metadata from any preset types?
-A: Not **yet** but this is coming very very soon. The container format took years to reverse engineer part-time but that was most of the tricky work done. This work also opens the door for other reversers to document simpler internal preset structures.
+A: Yes! ZoneData and so on is extractable from kontakt files.
 
 Q: Will there be write support?
 A: I don't really care about keeping people inside the NI ecosystem, just helping them escape it, so probably not unless someone PRs it.

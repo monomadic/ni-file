@@ -1,5 +1,5 @@
 use crate::{
-    kontakt42::{pubdata::PubData, zone_list::ZoneList},
+    kontakt::{pubdata::PubData, zone_list::ZoneList},
     read_bytes::ReadBytesExt,
     Error,
 };
@@ -78,7 +78,7 @@ impl StructuredObject {
     // emulates StucturedObject::doRead
     pub fn read<R: ReadBytesExt>(mut reader: R) -> Result<Self, Error> {
         let id = reader.read_u16_le()?;
-        println!("Reading StructuredObject id:0x{:x}", &id);
+        println!("StructuredObject id:0x{:x}", &id);
 
         let length = reader.read_u32_le()?;
         println!("length {}", length);
@@ -109,11 +109,11 @@ impl StructuredObject {
                     0x28, item_version
                 );
 
-                PubData::create(&mut reader, 0x28, item_version)?;
+                println!("{:?}", PubData::create(&mut reader, 0x28, item_version)?);
 
                 // ITERABLE DATA
                 let children_data_length = reader.read_u32_le()? as usize;
-                println!("children_length {:?}", children_data_length);
+                // println!("children_length {:?}", children_data_length);
 
                 // read all children into memory
                 let children_data = reader.read_bytes(children_data_length)?;

@@ -2,7 +2,7 @@ use crate::{read_bytes::ReadBytesExt, Error};
 
 use super::{
     program_data::{ProgramDataV80, ProgramDataVA5},
-    zone::{ZoneDataV95, ZoneDataV98},
+    zone_data::{ZoneDataV95, ZoneDataV98},
 };
 
 #[derive(Debug)]

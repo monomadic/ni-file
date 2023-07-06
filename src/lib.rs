@@ -58,9 +58,7 @@ mod error;
 pub use error::*;
 
 mod detect; // detect filetype
-pub mod kontakt1; // kontakt 1 preset
-pub mod kontakt2; // kontakt 2 preset
-pub mod kontakt42;
+pub mod kontakt;
 mod monolith; // monolith / FileContainer
 pub mod nisound; // nisound document // kontakt 4.2 preset
 
