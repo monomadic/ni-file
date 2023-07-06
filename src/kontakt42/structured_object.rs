@@ -166,7 +166,7 @@ impl StructuredObject {
                 let mut reader = reader.as_slice();
 
                 // FileNameListPreK51
-                FileNameListPreK51::read(&mut reader)?;
+                println!("{:?}", FileNameListPreK51::read(&mut reader)?);
             }
             _ => panic!("Unknown StructuredObject 0x{:x}", id),
         }

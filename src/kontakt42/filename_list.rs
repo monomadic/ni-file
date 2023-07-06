@@ -1,6 +1,11 @@
+use std::collections::HashMap;
+
 use crate::{read_bytes::ReadBytesExt, Error};
 
-pub struct FileNameListPreK51;
+#[derive(Debug)]
+pub struct FileNameListPreK51 {
+    filenames: HashMap<u32, String>,
+}
 
 impl FileNameListPreK51 {
     pub fn read<R: ReadBytesExt>(mut reader: R) -> Result<Self, Error> {
@@ -9,22 +14,24 @@ impl FileNameListPreK51 {
         println!("_ {}", reader.read_u32_le()?);
 
         let file_count = reader.read_u32_le()?;
-        println!("file_count {}", file_count);
 
-        for _ in 0..file_count {
+        let mut filenames = HashMap::new();
+
+        for i in 0..file_count {
             let segments = reader.read_i32_le()?;
-            println!("segments {}", segments);
+
+            let mut filename = Vec::new();
 
             for _ in 0..segments {
-                let segment_type = reader.read_i8()?;
-                println!("segment_type {}", segment_type);
-
+                let _segment_type = reader.read_i8()?;
                 let segment = reader.read_widestring_utf16()?;
-                println!("{}", segment);
+                filename.push(segment);
             }
+
+            filenames.insert(i, filename.join("/"));
         }
 
-        Ok(Self {})
+        Ok(Self { filenames })
     }
 }
 
