@@ -6,41 +6,41 @@ use crate::{
 
 use super::filename_list::FileNameListPreK51;
 
-pub struct StructuredObjectReader {
-    pub id: u16,
-    pub length: u32,
-}
-
-impl StructuredObjectReader {
-    /// Emulates StructuredObject::doRead(StructuredObject *this, Stream *stream)
-    pub fn do_read<R: ReadBytesExt>(&self, mut reader: R) -> Result<(), Error> {
-        println!("\nStructuredObject::doRead() {}", self.id);
-
-        let is_chunked = reader.read_bool()?;
-        println!("is_chunked {:?}", is_chunked);
-
-        if is_chunked {
-            let object_version = reader.read_u16_le()?;
-            let object_length = reader.read_u32_le()?;
-            if object_length > 0 {
-                let _private_data = reader.read_bytes(object_length as usize)?;
-            }
-
-            let public_data_length = reader.read_u32_le()?;
-            if public_data_length > 0 {
-                println!(
-                    "{:?}",
-                    PubData::create(&mut reader, self.id, object_version)?
-                );
-            }
-        } else {
-            let length = self.length - 1; // to account for the boolean
-            let _data = reader.read_bytes(length as usize)?;
-        }
-
-        Ok(())
-    }
-}
+// pub struct StructuredObjectReader {
+//     pub id: u16,
+//     pub length: u32,
+// }
+//
+// impl StructuredObjectReader {
+//     /// Emulates StructuredObject::doRead(StructuredObject *this, Stream *stream)
+//     pub fn do_read<R: ReadBytesExt>(&self, mut reader: R) -> Result<(), Error> {
+//         println!("\nStructuredObject::doRead() {}", self.id);
+//
+//         let is_chunked = reader.read_bool()?;
+//         println!("is_chunked {:?}", is_chunked);
+//
+//         if is_chunked {
+//             let object_version = reader.read_u16_le()?;
+//             let object_length = reader.read_u32_le()?;
+//             if object_length > 0 {
+//                 let _private_data = reader.read_bytes(object_length as usize)?;
+//             }
+//
+//             let public_data_length = reader.read_u32_le()?;
+//             if public_data_length > 0 {
+//                 println!(
+//                     "{:?}",
+//                     PubData::create(&mut reader, self.id, object_version)?
+//                 );
+//             }
+//         } else {
+//             let length = self.length - 1; // to account for the boolean
+//             let _data = reader.read_bytes(length as usize)?;
+//         }
+//
+//         Ok(())
+//     }
+// }
 
 pub enum StructuredObjectType {
     Unknown,

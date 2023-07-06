@@ -1,8 +1,8 @@
-use crate::{
-    kontakt42::structured_object::StructuredObjectReader, read_bytes::ReadBytesExt, Error,
-};
+use crate::{kontakt42::zone::ZoneData, read_bytes::ReadBytesExt, Error};
 
-pub struct ZoneList;
+pub struct ZoneList {
+    zones: Vec<ZoneData>,
+}
 
 impl ZoneList {
     pub fn read<R: ReadBytesExt>(mut reader: R) -> Result<Self, Error> {
@@ -12,17 +12,18 @@ impl ZoneList {
         let num_children = reader.read_u32_le()?;
         println!("num_children {}", num_children);
 
-        let obj = StructuredObjectReader {
-            id: 0x2c,
-            length: 0,
-        };
+        let is_chunked = reader.read_bool()?;
+        println!("is_chunked {:?}", is_chunked);
 
-        obj.do_read(&mut reader)?;
+        let mut zones = Vec::new();
+        if is_chunked {
+            let version = reader.read_u16_le()?;
+            for _i in 0..array_length {
+                zones.push(ZoneData::from_version(&mut reader, version)?);
+            }
+        }
 
-        // StructuredObject::doRead(0x2c);
-        // StructuredObject::read(&mut reader)?;
-
-        Ok(Self {})
+        Ok(Self { zones })
     }
 }
 

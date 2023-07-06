@@ -11,7 +11,7 @@ impl FileNameListPreK51 {
     pub fn read<R: ReadBytesExt>(mut reader: R) -> Result<Self, Error> {
         println!("FileNameListPreK51::read");
 
-        println!("_ {}", reader.read_u32_le()?);
+        let _ = reader.read_u32_le()?;
 
         let file_count = reader.read_u32_le()?;
 
@@ -57,7 +57,7 @@ impl BFileNameSegment {
         let i = reader.read_i8()?;
         // if i < 11
         if i < 0xb {
-            let a = reader.read_u16_le()?;
+            let _a = reader.read_u16_le()?;
             // if (0x316U >> (uVar5 & 0x1F)) & 1 == 0 {}
             if false {
                 match i {
@@ -66,7 +66,7 @@ impl BFileNameSegment {
                     _ => panic!(),
                 }
             } else {
-                let s = reader.read_widestring_utf16()?;
+                let _s = reader.read_widestring_utf16()?;
             }
         }
         if i < 0 {
