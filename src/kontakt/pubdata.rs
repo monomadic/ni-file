@@ -10,8 +10,8 @@ use super::{
 pub enum PubData {
     EnvelopeAHDSR_V10,
     EnvelopeAHDSR_V11,
-    ZoneV95(ZoneDataV95),
-    ZoneV98(ZoneDataV98),
+    ZoneListV95(ZoneDataV95),
+    ZoneListV98(ZoneDataV98),
     ProgramDataV80(ProgramDataV80),
     ProgramDataVA5(ProgramDataVA5),
 }
@@ -61,8 +61,8 @@ impl PubData {
                 _ => panic!("Unknown ProgramData version: {}", version),
             },
             0x2c => match version {
-                _ if version < 0x96 => Ok(PubData::ZoneV98(ZoneDataV98::read(&mut reader)?)),
-                _ if version < 0x99 => Ok(PubData::ZoneV95(ZoneDataV95::read(&mut reader)?)),
+                _ if version < 0x96 => Ok(PubData::ZoneListV98(ZoneDataV98::read(&mut reader)?)),
+                _ if version < 0x99 => Ok(PubData::ZoneListV95(ZoneDataV95::read(&mut reader)?)),
                 _ => panic!("Unknown ZoneData version: {}", version),
             },
             _ => {

@@ -42,32 +42,32 @@ use super::filename_list::FileNameListPreK51;
 //     }
 // }
 
-pub enum StructuredObjectType {
-    Unknown,
-}
-
-impl StructuredObjectType {
-    pub fn read<R: ReadBytesExt>(mut reader: R) -> Result<(), Error> {
-        let id = reader.read_u16_le()?;
-        println!("Reading StructuredObject id:0x{:x}", &id);
-
-        let length = reader.read_u32_le()?;
-        println!("length {}", length);
-
-        match id {
-            0x28 => {
-                // read the chunk into memory
-                let _reader = reader.read_bytes(length as usize)?;
-            }
-            0x3d => {
-                FileNameListPreK51::read(&mut reader)?;
-            }
-            _ => panic!("Unsupported StructuredObject: 0x{:x}", id),
-        }
-
-        Ok(())
-    }
-}
+// pub enum StructuredObjectType {
+//     Unknown,
+// }
+//
+// impl StructuredObjectType {
+//     pub fn read<R: ReadBytesExt>(mut reader: R) -> Result<(), Error> {
+//         let id = reader.read_u16_le()?;
+//         println!("Reading StructuredObject id:0x{:x}", &id);
+//
+//         let length = reader.read_u32_le()?;
+//         println!("length {}", length);
+//
+//         match id {
+//             0x28 => {
+//                 // read the chunk into memory
+//                 let _reader = reader.read_bytes(length as usize)?;
+//             }
+//             0x3d => {
+//                 FileNameListPreK51::read(&mut reader)?;
+//             }
+//             _ => panic!("Unsupported StructuredObject: 0x{:x}", id),
+//         }
+//
+//         Ok(())
+//     }
+// }
 
 pub struct StructuredObject {
     // pub private_data: Vec<u8>,
@@ -81,41 +81,29 @@ impl StructuredObject {
         println!("StructuredObject id:0x{:x}", &id);
 
         let length = reader.read_u32_le()?;
-        println!("length {}", length);
+
+        // read the chunk into memory
+        let reader = reader.read_bytes(length as usize)?;
+        let mut reader = reader.as_slice();
 
         match id {
             0x28 => {
-                // read the chunk into memory
-                let reader = reader.read_bytes(length as usize)?;
-                let mut reader = reader.as_slice();
-
                 println!("read_chunked {:?}", reader.read_bool()?);
 
                 // 0x80
                 let item_version = reader.read_u16_le()?;
-                println!("id 0x{:x}", item_version);
 
                 // PRIVATE DATA
                 let length = reader.read_u32_le()?;
                 println!("private data length {:?}", length);
-                reader.read_bytes(length as usize)?;
+                let _private_data = reader.read_bytes(length as usize)?;
 
-                // PROGRAM DATA
+                // PUBLIC DATA
                 println!("public data length {:?}", reader.read_u32_le()?);
-
-                // K4PL_PubData::create(id, version)
-                println!(
-                    "Reading K4PL_PubData::create(0x{:x}, 0x{:x})",
-                    0x28, item_version
-                );
-
                 println!("{:?}", PubData::create(&mut reader, 0x28, item_version)?);
 
-                // ITERABLE DATA
-                let children_data_length = reader.read_u32_le()? as usize;
-                // println!("children_length {:?}", children_data_length);
-
                 // read all children into memory
+                let children_data_length = reader.read_u32_le()? as usize;
                 let children_data = reader.read_bytes(children_data_length)?;
                 let mut reader = children_data.as_slice();
 
@@ -125,11 +113,13 @@ impl StructuredObject {
                     let item_data = reader.read_bytes(item_length as usize)?;
 
                     match chunk_id {
-                        0x32 => println!("0x{:x} VoiceGroups", chunk_id),
+                        0x32 => {
+                            println!("0x{:x} VoiceGroups", chunk_id);
+                        }
                         0x33 => println!("0x{:x} GroupList", chunk_id),
 
                         0x34 => {
-                            ZoneList::read(&mut item_data.as_slice())?;
+                            println!("{:?}", ZoneList::read(&mut item_data.as_slice())?);
                         }
 
                         0x35 | 0x48 | 0x49 | 0x4e => println!("0x{:x} PrivateRawObject", chunk_id),
@@ -148,28 +138,18 @@ impl StructuredObject {
 
                         0x4b => println!("0x4b FileNameList"),
 
-                        // 0x3e => {
-                        //     // StructuredObject::doRead(0x3e)
-                        //     // readChunked
-                        //     assert!(reader.read_bool()?);
-                        //     StructuredObject::read(&mut reader)?;
-                        // }
-                        // 0x53 => {}
-                        // _ => {}
                         _ => panic!("Unsupported StructuredObject::factory(0x{:x})", chunk_id),
                     }
                 }
             }
             0x3d => {
-                // read the chunk into memory
-                let reader = reader.read_bytes(length as usize)?;
-                let mut reader = reader.as_slice();
-
                 // FileNameListPreK51
                 println!("{:?}", FileNameListPreK51::read(&mut reader)?);
             }
             _ => panic!("Unknown StructuredObject 0x{:x}", id),
         }
+
+        println!("Finished StructuredObject(0x{:x})", id);
 
         Ok(Self {})
     }
@@ -237,7 +217,7 @@ fn test_structured_object() -> Result<(), Error> {
     // let file = include_bytes!("tests/structured_object/5.3.0.6464/000");
     // let mut file = file.as_slice();
     // StructuredObject::read(&mut file)?;
-    //StructuredObject::read(&mut file)?;
+    // StructuredObject::read(&mut file)?;
 
     Ok(())
 }

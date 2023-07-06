@@ -2,6 +2,7 @@ use crate::{read_bytes::ReadBytesExt, Error};
 
 use super::zone_data::ZoneData;
 
+#[derive(Debug)]
 pub struct ZoneList {
     zones: Vec<ZoneData>,
 }
