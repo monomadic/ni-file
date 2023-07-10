@@ -1,4 +1,8 @@
-use crate::{read_bytes::ReadBytesExt, Error};
+use crate::{
+    kontakt::{structured_object::StructuredObject, voice_groups::VoiceGroups},
+    read_bytes::ReadBytesExt,
+    Error,
+};
 
 use super::{
     program_data::{ProgramDataV80, ProgramDataVA5},
@@ -45,8 +49,10 @@ impl PubData {
                         panic!("Unknown EnvelopeAHDSR version: {}", version)
                     }
                 },
-                0x41 => {}
-                _ => panic!(),
+                // 0x45 => {
+                //     VoiceGroups::read(&mut reader)?;
+                // }
+                _ => panic!("pubdata id not supported: 0x{:x}", id),
             }
         }
 

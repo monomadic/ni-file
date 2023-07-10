@@ -140,16 +140,13 @@ mod tests {
 
     #[test]
     fn ni_container_read_test() -> Result<()> {
-        crate::utils::setup_logger();
+        for path in crate::utils::get_files("tests/data/nisound/file/kontakt/**/*.nki")? {
+            println!("reading {:?}", path);
 
-        let repo = NISound::read(
-            include_bytes!("../../tests/data/nisound/file/kontakt/7.1.3.0/000-default.nki")
-                .as_slice(),
-        )?;
-        let _root = repo.root()?;
-
-        // TODO: repo props
-
+            let file = std::fs::File::open(&path)?;
+            let doc = NISound::read(file)?;
+            doc.root()?;
+        }
         Ok(())
     }
 }
