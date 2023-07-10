@@ -24,7 +24,7 @@ impl BParamArray {
                 assert_eq!(reader.read_u8()?, 1);
                 assert_eq!(reader.read_u16_le()?, 0x50); // id
                 let len = reader.read_u32_le()?;
-                let inner = reader.read_bytes(len as usize)?;
+                let _inner = reader.read_bytes(len as usize)?;
 
                 // let len = reader.read_u32_le()?;
                 // let inner = reader.read_bytes(len as usize)?;
