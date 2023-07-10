@@ -1,12 +1,4 @@
-use crate::{
-    kontakt::{
-        bparam_array::BParamArray, pubdata::PubData, voice_groups::VoiceGroups, zone_list::ZoneList,
-    },
-    read_bytes::ReadBytesExt,
-    Error,
-};
-
-use super::filename_list::FileNameListPreK51;
+use crate::{kontakt::pubdata::PubData, read_bytes::ReadBytesExt, Error};
 
 // pub struct StructuredObjectReader {
 //     pub id: u16,

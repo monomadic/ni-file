@@ -1,7 +1,11 @@
-use crate::{kontakt::voice_groups::VoiceGroups, read_bytes::ReadBytesExt, Error};
+use crate::{
+    kontakt::{structured_object::StructuredObject, voice_groups::VoiceGroups},
+    read_bytes::ReadBytesExt,
+    Error,
+};
 
 use super::{
-    objects::program_data::{ProgramDataV80, ProgramDataVA5},
+    program_data::{ProgramDataV80, ProgramDataVA5},
     zone_data::{ZoneDataV95, ZoneDataV98},
 };
 
