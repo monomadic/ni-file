@@ -1,4 +1,8 @@
-use crate::{kontakt::pubdata::PubData, read_bytes::ReadBytesExt, Error};
+use crate::{
+    kontakt::{chunkdata::ChunkData, objects::program::BProgram, pubdata::PubData},
+    read_bytes::ReadBytesExt,
+    Error,
+};
 
 // pub struct StructuredObjectReader {
 //     pub id: u16,
@@ -79,8 +83,8 @@ impl StructuredObject {
             id, length
         );
 
-        let reader = reader.read_bytes(length as usize)?;
-        let mut reader = reader.as_slice();
+        // let mut chunk = ChunkData::read(&mut reader)?;
+        // let reader = chunk.data;
 
         let item_version = reader.read_u16_le()?;
 
@@ -205,16 +209,25 @@ impl StructuredObject {
 
     // emulates StucturedObject::doRead
     pub fn read<R: ReadBytesExt>(mut reader: R) -> Result<Self, Error> {
-        let id = reader.read_u16_le()?;
-        println!("StructuredObject id:0x{:x}", &id);
+        println!("StructuredObject::read");
 
-        let length = reader.read_u32_le()?;
+        let ChunkData { id, data } = ChunkData::read(&mut reader)?;
+        let mut reader = data.as_slice();
 
-        // read the chunk into memory
-        let reader = reader.read_bytes(length as usize)?;
-        let mut reader = reader.as_slice();
-
-        Self::do_read(&mut reader, id, length)?;
+        // read structure?
+        if reader.read_bool()? {
+            match id {
+                0x28 => {
+                    BProgram::read(&mut reader)?;
+                }
+                _ => {
+                    // FIXME: should read properly
+                    panic!("only reading programs");
+                }
+            };
+        } else {
+            println!("read_raw");
+        }
 
         Ok(Self {})
     }
@@ -274,15 +287,16 @@ fn read_chunk<R: ReadBytesExt>(mut reader: R) -> Result<Vec<u8>, Error> {
 
 #[test]
 fn test_structured_object() -> Result<(), Error> {
-    // let file = include_bytes!("tests/structured_object/4.2.2.4504/000");
+    // Version 0x80
+    let file = include_bytes!("tests/structured_object/4.2.2.4504/000");
+    let mut file = file.as_slice();
+    StructuredObject::read(&mut file)?;
+    // StructuredObject::read(&mut file)?;
+
+    // let file = include_bytes!("tests/structured_object/5.3.0.6464/000");
     // let mut file = file.as_slice();
     // StructuredObject::read(&mut file)?;
     // StructuredObject::read(&mut file)?;
-
-    let file = include_bytes!("tests/structured_object/5.3.0.6464/000");
-    let mut file = file.as_slice();
-    StructuredObject::read(&mut file)?;
-    StructuredObject::read(&mut file)?;
 
     Ok(())
 }

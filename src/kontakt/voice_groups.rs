@@ -3,7 +3,7 @@ use crate::{kontakt::voice_limit::VoiceLimit, read_bytes::ReadBytesExt, Error};
 #[derive(Debug)]
 pub struct VoiceGroups;
 
-// 0x32
+// ALWAYS 0x32
 impl VoiceGroups {
     pub fn read<R: ReadBytesExt>(mut reader: R) -> Result<Self, Error> {
         println!("VoiceGroups::read");

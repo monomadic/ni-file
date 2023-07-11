@@ -1,10 +1,12 @@
 mod bparam_array;
+mod bprogram_container;
 mod chunkdata;
 mod filename_list;
+pub mod group_list;
 pub mod kontakt2;
-pub mod kontakt42;
-mod patch_header;
-mod patch_meta_info_header;
+pub mod patch_header;
+pub mod patch_meta_info_header;
+mod privpars;
 mod pubdata;
 mod start_criteria;
 mod structured_object;

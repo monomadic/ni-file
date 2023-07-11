@@ -1,15 +1,16 @@
 use crate::{read_bytes::ReadBytesExt, Error};
 
 pub struct ChunkData {
-    id: u16,
-    length: u32,
+    pub id: u16,
+    pub data: Vec<u8>,
 }
 
 impl ChunkData {
     pub fn read<R: ReadBytesExt>(mut reader: R) -> Result<Self, Error> {
-        Ok(Self {
-            id: reader.read_u16_le()?,
-            length: reader.read_u32_le()?,
-        })
+        let id = reader.read_u16_le()?;
+        let length = reader.read_u32_le()?;
+        let data = reader.read_bytes(length as usize)?;
+
+        Ok(Self { id, data })
     }
 }

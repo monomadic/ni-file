@@ -57,9 +57,11 @@ mod error;
 pub use error::*;
 
 mod detect; // detect filetype
-pub mod kontakt;
-mod monolith; // monolith / FileContainer
+pub(crate) mod kontakt;
+
+pub mod monolith; // monolith / FileContainer
 pub mod nisound; // nisound document // kontakt 4.2 preset
+pub mod nks; // native instruments kontakt sound file format
 
 pub(crate) mod cb; // control byte
 pub mod decompress; // fastlz lib

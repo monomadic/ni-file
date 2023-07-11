@@ -1,13 +1,12 @@
-use crate::{read_bytes::ReadBytesExt, NIFileError};
-
-use super::{
-    patch_header::BPatchHeaderV42, patch_meta_info_header::BPatchMetaInfoHeader,
-    structured_object::StructuredObject,
+use crate::{
+    kontakt::{patch_header::BPatchHeaderV42, patch_meta_info_header::BPatchMetaInfoHeader},
+    read_bytes::ReadBytesExt,
+    NIFileError,
 };
 
 pub struct KontaktV42 {
     header: BPatchHeaderV42,
-    objects: Vec<StructuredObject>,
+    // objects: Vec<StructuredObject>,
     meta_info: BPatchMetaInfoHeader,
 }
 
@@ -23,13 +22,11 @@ impl KontaktV42 {
 
         let mut decompressed_data = decompressed_data.as_slice();
 
-        let mut objects = Vec::new();
-        objects.push(StructuredObject::read(&mut decompressed_data)?);
-        objects.push(StructuredObject::read(&mut decompressed_data)?);
+        // StructuredObject::read(&mut decompressed_data)?;
+        // StructuredObject::read(&mut decompressed_data)?;
 
         Ok(Self {
             header,
-            objects,
             meta_info: BPatchMetaInfoHeader::read(&mut reader)?,
         })
     }

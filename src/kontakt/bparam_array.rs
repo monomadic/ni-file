@@ -7,8 +7,8 @@ pub struct BParamArray;
 impl BParamArray {
     pub fn read<R: ReadBytesExt>(mut reader: R, items: u32) -> Result<Self, Error> {
         println!("BParamArray::read(items={})", items);
-        println!("{:?}", reader.read_bool()?);
-        println!("u16: {}", reader.read_u16_le()?);
+        println!("? {:?}", reader.read_bool()?);
+        println!("? {}", reader.read_u16_le()?);
 
         for _ in 0..items {
             let do_read = reader.read_bool()?;
