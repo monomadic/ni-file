@@ -3,6 +3,7 @@ mod bprogram_container;
 mod chunkdata;
 mod filename_list;
 pub mod group_list;
+pub mod internal_patch_data;
 pub mod kontakt2;
 pub mod patch_header;
 pub mod patch_meta_info_header;

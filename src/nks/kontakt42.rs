@@ -1,12 +1,15 @@
 use crate::{
-    kontakt::{patch_header::BPatchHeaderV42, patch_meta_info_header::BPatchMetaInfoHeader},
+    kontakt::{
+        internal_patch_data::InternalPatchData, patch_header::BPatchHeaderV42,
+        patch_meta_info_header::BPatchMetaInfoHeader,
+    },
     read_bytes::ReadBytesExt,
     NIFileError,
 };
 
 pub struct KontaktV42 {
     header: BPatchHeaderV42,
-    // objects: Vec<StructuredObject>,
+    data: InternalPatchData,
     meta_info: BPatchMetaInfoHeader,
 }
 
@@ -20,13 +23,11 @@ impl KontaktV42 {
             header.decompressed_length,
         )?;
 
-        let mut decompressed_data = decompressed_data.as_slice();
-
-        // StructuredObject::read(&mut decompressed_data)?;
-        // StructuredObject::read(&mut decompressed_data)?;
+        let data = InternalPatchData::read(&mut decompressed_data.as_slice())?;
 
         Ok(Self {
             header,
+            data,
             meta_info: BPatchMetaInfoHeader::read(&mut reader)?,
         })
     }
@@ -46,7 +47,7 @@ mod tests {
 
     #[test]
     fn test_kontakt42_preset_read() -> Result<(), NIFileError> {
-        for path in crate::utils::get_files("tests/data/kontakt-42/**/*.nki")? {
+        for path in crate::utils::get_files("tests/data/nks/**/*.nki")? {
             println!("reading {:?}", path);
 
             let file = std::fs::File::open(&path)?;

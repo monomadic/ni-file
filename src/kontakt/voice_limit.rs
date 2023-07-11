@@ -1,7 +1,6 @@
 use crate::{read_bytes::ReadBytesExt, Error};
 
 // VoiceLimit id: 0x2B
-
 #[derive(Debug)]
 pub struct VoiceLimit {
     name: String,

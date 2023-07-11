@@ -20,8 +20,10 @@ impl BProgram {
     /// BProgram::doReadPubPars
     pub fn read<R: ReadBytesExt>(mut reader: R) -> Result<(), Error> {
         println!("BProgram::read");
-        let version = reader.read_u16_le()?;
 
+        let _do_read = reader.read_bool()?;
+
+        let version = reader.read_u16_le()?;
         match version {
             0x80 | 0x82 | 0x90 => {
                 let len = reader.read_u32_le()? as usize;
@@ -60,13 +62,21 @@ impl BProgram {
                 }
             }
             0x91 | 0x92 | 0xA0 | 0xA1 | 0xA2 | 0xA3 | 0xA4 | 0xA5 => {
-                ProgramDataVA5::read(&mut reader)?;
+                // private
+                let len = reader.read_u32_le()? as usize;
+                let _data = reader.read_bytes(len)?;
+
+                // pubdata
+                let len = reader.read_u32_le()? as usize;
+                let data = reader.read_bytes(len)?;
+
+                ProgramDataVA5::read(&mut data.as_slice())?;
             }
             0xA6 => {}
             0xA7 => {}
             0xA8 | 0xA9 | 0xAA | 0xAB | 0xAC | 0xAD | 0xAE => {}
             0xAF => {}
-            _ => {}
+            _ => panic!("Unsupported BProgram Version: 0x{:x}", version),
         }
 
         // if version > 0xA1 {

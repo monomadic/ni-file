@@ -82,7 +82,7 @@ impl BFileNameSegment {
 fn test_structured_object() -> Result<(), Error> {
     let file = include_bytes!("tests/filename_list_pre_k5/4.2.2.4504/000");
     let mut file = file.as_slice();
-    FileNameListPreK51::read(&mut file)?;
+    println!("{:?}", FileNameListPreK51::read(&mut file)?);
 
     Ok(())
 }
