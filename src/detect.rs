@@ -60,7 +60,6 @@ pub fn filetype(buffer: &[u8]) -> NIFileType {
         0x54AC705E => NIFileType::KontaktResource,
         0x7A10E13F => NIFileType::KontaktCache,
         _ => {
-            // .nki, .nfm8, etc
             // check for 'hsin' at byte 12
             // TODO: NISound::detect()
             if buffer[12..16] == [104, 115, 105, 110] {

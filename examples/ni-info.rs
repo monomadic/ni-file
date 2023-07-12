@@ -1,5 +1,5 @@
 use color_eyre::eyre::Result;
-use ni_file::{self, nks::kontakt42::KontaktV42, NIFileType, NISound};
+use ni_file::{self, nks::v42::KontaktV42, NIFileType, NISound};
 
 pub fn main() -> Result<()> {
     std::env::set_var("RUST_BACKTRACE", "1");
