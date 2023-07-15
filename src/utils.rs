@@ -2,16 +2,6 @@ use crate::prelude::*;
 use std::path::PathBuf;
 
 #[allow(dead_code)]
-pub(crate) fn setup_logger() {
-    // let _ = log::set_logger(&loggy::Loggy {
-    //     prefix: "",
-    //     show_time: false,
-    //     show_thread: true,
-    // });
-    // log::set_max_level(log::LevelFilter::Debug); // Or whatever level you want.
-}
-
-#[allow(dead_code)]
 pub(crate) fn get_test_files() -> Result<Vec<PathBuf>> {
     let path = "tests/data/files/**/*.*";
     Ok(glob::glob(path)
@@ -50,7 +40,8 @@ fn format_hex(buffer: &[u8]) -> String {
 
 #[allow(dead_code)]
 fn format_hex_spaced(buffer: &[u8]) -> String {
-    buffer.iter()
+    buffer
+        .iter()
         .enumerate()
         .map(|(index, &byte)| {
             let hex_byte = format!("{:02x}", byte);
@@ -63,12 +54,6 @@ fn format_hex_spaced(buffer: &[u8]) -> String {
         })
         .collect::<Vec<String>>()
         .join("")
-}
-
-#[allow(dead_code)]
-fn format_ascii(buffer: &[u8]) -> String {
-    format!("{}", String::from_utf8_lossy(buffer).to_string())
-    // format!("{}", &buffer.iter().map(|x| if x.is_ascii() {'s'} else {' '})).collect::<String>())
 }
 
 #[allow(dead_code)]
@@ -90,7 +75,8 @@ fn hex_string_to_bytes(hex: &str) -> Result<Vec<u8>> {
     let mut bytes = Vec::new();
     for i in (0..hex.len()).step_by(2) {
         let byte_str = &hex[i..i + 2];
-        let byte = u8::from_str_radix(byte_str, 16).map_err(|_| NIFileError::Static("Hex Error"))?;
+        let byte =
+            u8::from_str_radix(byte_str, 16).map_err(|_| NIFileError::Static("Hex Error"))?;
         bytes.push(byte);
     }
 
