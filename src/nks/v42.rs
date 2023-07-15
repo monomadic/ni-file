@@ -18,7 +18,7 @@ impl KontaktV42 {
         let header = BPatchHeaderV42::read(&mut reader)?;
         println!("{:?}", header);
 
-        let decompressed_data = crate::deflate::decompress(
+        let decompressed_data = crate::deflate::deflate_checked(
             reader.read_bytes(header.zlib_length)?.as_slice(),
             header.decompressed_length,
         )?;

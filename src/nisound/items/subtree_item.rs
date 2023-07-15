@@ -80,7 +80,8 @@ impl SubtreeItem {
 
         let compressed_data = reader.read_bytes(compressed_size as usize)?;
 
-        let inner_data = crate::deflate::decompress(&compressed_data, decompressed_size as usize)?;
+        let inner_data =
+            crate::deflate::deflate_checked(&compressed_data, decompressed_size as usize)?;
 
         Ok(SubtreeItem { inner_data })
     }

@@ -242,7 +242,6 @@ dependencies = [
  "color-eyre",
  "glob",
  "log",
- "nom",
  "thiserror",
  "time",
  "tui-tree-widget",

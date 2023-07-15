@@ -1,55 +1,47 @@
 ///
-/// fastlz implementation in pure rust
+/// fastlz decompression implementation in pure rust
 ///
-use crate::{cb::Offset, NIFileError};
-use nom::{bytes, IResult};
+use crate::{read_bytes::ReadBytesExt, NIFileError};
 
-// TODO: remove `nom` dependency
-
-pub fn decompress(
+/// deflate with a size check
+pub fn deflate_checked(
     compressed_input: &[u8],
     decompressed_len: usize,
 ) -> Result<Vec<u8>, NIFileError> {
-    let (_rem, buf) = deflate(compressed_input, 0).map_err(|_| NIFileError::DecompressionError)?;
+    let buf = deflate(compressed_input)?;
 
     assert_eq!(buf.len(), decompressed_len);
     Ok(buf.to_vec())
 }
 
-pub fn deflate(i: &[u8], offset: usize) -> IResult<&[u8], Vec<u8>> {
-    // anything before the offset becomes the dictionary
-    let (_dictionary, mut rem) = i.split_at(offset);
-    let mut dictionary = vec![];
+/// deflate as a stream
+pub fn deflate<R: ReadBytesExt>(mut reader: R) -> Result<Vec<u8>, NIFileError> {
+    let mut dictionary = Vec::new();
 
     loop {
-        if let Ok((r, o)) = crate::cb::get_control_bytes(rem) {
-            rem = r;
-
-            match o {
+        match get_control_bytes(&mut reader) {
+            Ok(offset) => match offset {
                 Offset::Dictionary { length, offset } => {
                     let mut dict = fetch_offset(&dictionary, length, offset);
                     dictionary.append(&mut dict);
                 }
-                Offset::Literal { length } => {
-                    if let Ok((r, bytes)) = take_bytes(rem, length) {
-                        rem = r;
+                Offset::Literal { length } => match reader.read_bytes(length) {
+                    Ok(bytes) => {
                         dictionary.append(&mut bytes.to_vec());
-                    } else {
-                        error!("error: cannot take any more literal bytes, reached end of compressed buffer.");
+                    }
+                    Err(_) => {
+                        // panic!("error: cannot take any more literal bytes, reached end of compressed buffer.");
                         break;
                     }
-                }
+                },
+            },
+            Err(_) => {
+                break;
             }
-        } else {
-            break;
         }
     }
 
-    Ok((rem, dictionary))
-}
-
-fn take_bytes(i: &[u8], l: usize) -> IResult<&[u8], &[u8]> {
-    bytes::complete::take(l)(i)
+    Ok(dictionary)
 }
 
 pub(crate) fn fetch_offset(buffer: &Vec<u8>, length: usize, offset: usize) -> Vec<u8> {
@@ -77,9 +69,129 @@ pub(crate) fn fetch_offset(buffer: &Vec<u8>, length: usize, offset: usize) -> Ve
         .collect()
 }
 
+#[derive(Debug, PartialEq)]
+pub(crate) enum Offset {
+    Literal { length: usize },
+    Dictionary { length: usize, offset: usize },
+}
+
+/// Control bytes are used by the compression algorithm to determine what kind of data is in the next chunk.
+pub(crate) fn get_control_bytes<R: ReadBytesExt>(mut reader: R) -> Result<Offset, NIFileError> {
+    let cb = reader.read_u8()?;
+    let q = q_mask(cb) as usize;
+    let cb_mask = cb_mask(cb) as usize;
+
+    Ok(match cb_mask {
+        1 => Offset::Literal { length: 1 + q },
+        3..=8 => {
+            let r = reader.read_u8()?;
+            Offset::Dictionary {
+                length: cb_mask,
+                offset: ((q << 8) + r as usize + 1),
+            }
+        }
+
+        9 => {
+            let r = reader.read_u8()?;
+            let s = reader.read_u8()?;
+
+            Offset::Dictionary {
+                length: 9 + r as usize,
+                offset: ((q << 8) + s as usize + 1),
+            }
+        }
+        _ => panic!(),
+    })
+}
+
+fn cb_mask(i: u8) -> u8 {
+    if i | 0b0001_1111 == 0b0001_1111 {
+        return 1;
+    }
+
+    if i | 0b0011_1111 == 0b0011_1111 {
+        return 3;
+    }
+
+    if i | 0b0101_1111 == 0b0101_1111 {
+        return 4;
+    }
+
+    if i | 0b0111_1111 == 0b0111_1111 {
+        return 5;
+    }
+
+    if i | 0b1001_1111 == 0b1001_1111 {
+        return 6;
+    }
+
+    if i | 0b1011_1111 == 0b1011_1111 {
+        return 7;
+    }
+
+    if i | 0b1101_1111 == 0b1101_1111 {
+        return 8;
+    }
+
+    if i | 0b1111_1111 == 0b1111_1111 {
+        return 9;
+    }
+
+    panic!("unknown control byte. [{:08b}:{:02X}]", i, i);
+}
+
+/// bitwise mask to determine 'Q'
+fn q_mask(i: u8) -> u8 {
+    i & 0b0001_1111
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn test_cb_mask() {
+        assert_eq!(cb_mask(0b00000001), 1);
+        assert_eq!(cb_mask(0b00100001), 3);
+        assert_eq!(cb_mask(0b01000001), 4);
+        assert_eq!(cb_mask(0b01100001), 5);
+        assert_eq!(cb_mask(0b10000001), 6);
+        assert_eq!(cb_mask(0b10100001), 7);
+        assert_eq!(cb_mask(0b11000101), 8);
+        assert_eq!(cb_mask(0b11100001), 9);
+    }
+
+    #[test]
+    fn test_q_mask() {
+        assert_eq!(q_mask(0b11100001), 1);
+        assert_eq!(q_mask(0b11100010), 2);
+        assert_eq!(q_mask(0b00000011), 3);
+    }
+
+    #[test]
+    fn test_get_control_bytes() -> Result<(), NIFileError> {
+        use Offset::*;
+
+        assert_eq!(get_control_bytes([0x02].as_slice())?, Literal { length: 3 });
+
+        assert_eq!(
+            get_control_bytes([0x20, 0x0E].as_slice())?,
+            Dictionary {
+                length: 3,
+                offset: 15
+            }
+        );
+
+        assert_eq!(
+            get_control_bytes([0x60, 0x00].as_slice())?,
+            Dictionary {
+                length: 5,
+                offset: 1
+            }
+        );
+
+        Ok(())
+    }
 
     #[test]
     fn test_fetch_offset() {
@@ -109,13 +221,9 @@ mod tests {
 
     #[test]
     fn test_deflate() {
+        let input = include_bytes!("../tests/data/nisound/fastlz/kontakt-4/001-garbo2.compressed");
         assert_eq!(
-            deflate(
-                include_bytes!("../tests/data/nisound/fastlz/kontakt-4/001-garbo2.compressed"),
-                0
-            )
-            .unwrap()
-            .1,
+            deflate(input.as_slice()).unwrap(),
             include_bytes!("../tests/data/nisound/fastlz/kontakt-4/001-garbo2.decompressed")
         )
     }
@@ -128,7 +236,7 @@ mod tests {
             include_bytes!("../tests/data/nisound/fastlz/kontakt-4/001-garbo2.decompressed");
 
         let decompressed_output =
-            decompress(compressed_input, expected_output.len()).expect("decompression failed");
+            deflate_checked(compressed_input, expected_output.len()).expect("decompression failed");
 
         assert_eq!(expected_output.to_vec(), decompressed_output);
     }
