@@ -18,8 +18,6 @@ mod tests {
 
     #[test]
     fn test_decompress_with_lib() {
-        crate::utils::setup_logger();
-
         let compressed_input =
             include_bytes!("../tests/data/nisound/fastlz/kontakt-4/001-garbo2.compressed");
         let expected_output =

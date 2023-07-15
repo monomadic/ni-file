@@ -90,8 +90,6 @@ mod tests {
 
     #[test]
     fn test_repository_root_read() -> Result<()> {
-        crate::utils::setup_logger();
-
         let file =
             include_bytes!("../../../tests/data/nisound/chunks/item-frame-property/kontakt-5/118-RepositoryRoot.data");
 

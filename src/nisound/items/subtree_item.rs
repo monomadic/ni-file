@@ -94,8 +94,6 @@ mod tests {
 
     #[test]
     fn test_read_subtree() -> Result<()> {
-        crate::utils::setup_logger();
-
         let data = include_bytes!(
             "../../../tests/data/nisound/chunks/item-frame-property/kontakt-4/115-SubtreeItem.data"
         );

@@ -92,8 +92,6 @@ mod tests {
 
     #[test]
     fn test_item_read() -> Result<()> {
-        // crate::utils::setup_logger();
-
         for path in get_files("tests/data/nisound/file/**/*.*")? {
             log::info!("reading {:?}", path);
 
@@ -106,8 +104,6 @@ mod tests {
 
     #[test]
     fn test_item_frame() -> Result<()> {
-        //crate::utils::setup_logger();
-
         for path in get_files("tests/data/nisound/file/**/*.*")? {
             log::info!("reading {:?}", path);
 
@@ -120,8 +116,6 @@ mod tests {
 
     #[test]
     fn test_children() -> Result<()> {
-        // crate::utils::setup_logger();
-
         let data = include_bytes!("../../tests/data/nisound/file/kontakt/7.1.3.0/000-default.nki");
         let mut data = data.as_slice();
 

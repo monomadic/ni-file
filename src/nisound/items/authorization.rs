@@ -54,8 +54,6 @@ mod tests {
 
     #[test]
     fn test_authorization_read() -> Result<()> {
-        crate::utils::setup_logger();
-
         let file = include_bytes!(
             "../../../tests/data/nisound/chunks/item-frame-property/kontakt-5/106-Authorization.data"
         );

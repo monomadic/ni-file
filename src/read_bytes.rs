@@ -124,7 +124,6 @@ impl<R: io::Read + ?Sized> ReadBytesExt for R {}
 #[cfg(test)]
 mod tests {
     use super::ReadBytesExt;
-    use crate::utils::setup_logger;
 
     #[test]
     fn test_read_u32_le() {
@@ -141,8 +140,6 @@ mod tests {
 
     #[test]
     fn test_read_sized_data() {
-        setup_logger();
-
         let mut bytes: &[u8] = &[9, 0, 0, 0, 0, 0, 0, 0, 4, 5];
         let content = bytes.read_sized_data().unwrap();
 
