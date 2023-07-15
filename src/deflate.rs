@@ -3,7 +3,7 @@
 ///
 use crate::{read_bytes::ReadBytesExt, NIFileError};
 
-/// deflate with a size check
+/// deflate with size check
 pub fn deflate_checked(
     compressed_input: &[u8],
     decompressed_len: usize,
@@ -55,8 +55,6 @@ pub(crate) fn fetch_offset(buffer: &Vec<u8>, length: usize, offset: usize) -> Ve
             let offset_pos = start_pos + index;
 
             if length > offset {
-                // let circular_pos = offset_pos - offset;
-                // panic!("attempt {:?}",  (buffer.len(), offset, index));
                 let circular_pos = start_pos + (index % offset);
                 if circular_pos > buffer.len() {
                     panic!("attempt {:?}", (circular_pos, offset, buffer.len()));

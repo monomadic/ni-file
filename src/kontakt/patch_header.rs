@@ -47,7 +47,15 @@ pub struct BPatchHeaderV42 {
     pub zlib_length: usize,
     pub decompressed_length: usize,
     pub patch_version: u16,
+    pub patch_type: PatchType,
     pub app_version: AppVersionV42,
+    pub icon: u32,
+    pub author: String,
+    pub created_at: time::Date,
+    pub app_signature: u32,
+    pub number_of_zones: u16,
+    pub number_of_groups: u16,
+    pub number_of_instruments: u16,
 }
 
 #[derive(Debug)]
@@ -56,6 +64,41 @@ pub struct AppVersionV42 {
     minor_1: u8,
     minor_2: u8,
     minor_3: u8,
+}
+
+impl ToString for AppVersionV42 {
+    fn to_string(&self) -> String {
+        format!(
+            "app_version {}.{}.{}.{}",
+            self.major, self.minor_2, self.minor_2, self.minor_3
+        )
+    }
+}
+
+#[derive(Debug, PartialEq)]
+pub enum PatchType {
+    NKM,
+    NKI,
+    NKB,
+    NKP,
+    NKG,
+    NKZ,
+    Unknown(u16),
+}
+
+impl From<u16> for PatchType {
+    fn from(value: u16) -> Self {
+        use PatchType::*;
+        match value {
+            0 => NKM,
+            1 => NKI,
+            2 => NKB,
+            3 => NKP,
+            4 => NKG,
+            5 => NKZ,
+            _ => Unknown(value),
+        }
+    }
 }
 
 impl BPatchHeaderV42 {
@@ -69,56 +112,29 @@ impl BPatchHeaderV42 {
 
         let magic2 = reader.read_u32_le()?;
         assert_eq!(magic2, u32::swap_bytes(0x1A6337EA));
-        // println!("magic2 0x{:x}", magic2);
 
-        let preset_type = reader.read_u16_le()?;
-        println!("preset_type {}", preset_type);
-
+        let patch_type: PatchType = reader.read_u16_le()?.into();
         let app_version = AppVersionV42 {
             minor_3: reader.read_u8()?,
             minor_2: reader.read_u8()?,
             minor_1: reader.read_u8()?,
             major: reader.read_u8()?,
         };
-
-        println!(
-            "app_version {}.{}.{}.{}",
-            app_version.major, app_version.minor_2, app_version.minor_2, app_version.minor_3
-        );
-
         let app_signature = reader.read_u32_le()?;
-        println!("app_signature {}", app_signature);
-
         let datetime = OffsetDateTime::from_unix_timestamp(reader.read_u32_le()? as i64).unwrap();
         let created_at: time::Date = datetime.date();
-        println!("created_at {}", created_at);
-
         let _unknown = reader.read_u32_le()?;
-
         let number_of_zones = reader.read_u16_le()?;
         let number_of_groups = reader.read_u16_le()?;
         let number_of_instruments = reader.read_u16_le()?;
-        println!(
-            "zones: {} groups: {} instruments: {}",
-            number_of_zones, number_of_groups, number_of_instruments
-        );
-
         let _unknown = reader.read_bytes(16)?;
-
         let icon = reader.read_u32_le()?;
-        println!("icon {}", icon);
-
-        println!("author {}", reader.read_string_utf8()?);
-
+        let author = reader.read_string_utf8()?;
         let _unknown = reader.read_bytes(101)?;
-
         let _checksum = reader.read_bytes(16)?;
-
         let _unknown = reader.read_u32_le()?;
         let _unknown = reader.read_u32_le()?;
-
         let decompressed_length = reader.read_u32_le()? as usize;
-        println!("decompressed_length {}", decompressed_length);
 
         // seems all zero bytes
         let _unknown = reader.read_bytes(32)?;
@@ -127,7 +143,27 @@ impl BPatchHeaderV42 {
             zlib_length,
             decompressed_length,
             patch_version,
+            patch_type,
             app_version,
+            icon,
+            author,
+            number_of_zones,
+            number_of_groups,
+            number_of_instruments,
+            created_at,
+            app_signature,
         })
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_patch_header_v42_read() -> Result<(), NIFileError> {
+        let file = include_bytes!("../../tests/chunks/nks/BPatchHeaderV42/000");
+        println!("{:?}", BPatchHeaderV42::read(file.as_slice())?);
+        Ok(())
     }
 }
