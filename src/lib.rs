@@ -1,3 +1,4 @@
+#![allow(dead_code)]
 //!
 //!  Native Instruments file formats.
 //!
@@ -40,7 +41,6 @@
 //!  Older preset types are much simpler flat structures. These are collected together in the
 //!  [`crate::preset`] module.
 //!
-#![allow(dead_code)]
 
 #[macro_use]
 extern crate log;
