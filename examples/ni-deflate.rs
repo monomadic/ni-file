@@ -11,7 +11,9 @@ pub fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     let compressed_input = std::fs::read(&path)?;
 
-    let output = ni_file::decompress::decompress(compressed_input.as_slice(),length.parse::<usize>()?).expect("decompression failed");
+    let output =
+        ni_file::deflate::decompress(compressed_input.as_slice(), length.parse::<usize>()?)
+            .expect("decompression failed");
 
     std::fs::write("dump", output)?;
     println!("file decompresed and written successfully.");

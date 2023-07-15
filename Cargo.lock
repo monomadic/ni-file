@@ -84,9 +84,6 @@ name = "cc"
 version = "1.0.79"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "50d30906286121d95be3d479533b458f87493b30a4b5f79a607db8f5d11aa91f"
-dependencies = [
- "jobserver",
-]
 
 [[package]]
 name = "cfg-if"
@@ -158,24 +155,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "fastlz"
-version = "0.1.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a44c8ced14f9137fbda9602c6c9a29bbfed9d82c2a809d37d4959ebff3a0e988"
-dependencies = [
- "fastlz-sys",
-]
-
-[[package]]
-name = "fastlz-sys"
-version = "0.1.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "20de788b4299495a08d2382146bd11ce9c7f6c2f53d3750d9ef49dc558cf5a39"
-dependencies = [
- "cc",
-]
-
-[[package]]
 name = "gimli"
 version = "0.27.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -206,15 +185,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "b0fd2260e829bddf4cb6ea802289de2f86d6a7a690192fbe91b3f46e0f2c8473"
 dependencies = [
  "either",
-]
-
-[[package]]
-name = "jobserver"
-version = "0.1.26"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "936cfd212a0155903bcbc060e316fb6cc7cbf2e1907329391ebadc1fe0ce77c2"
-dependencies = [
- "libc",
 ]
 
 [[package]]
@@ -270,7 +240,6 @@ name = "ni-file"
 version = "0.0.1"
 dependencies = [
  "color-eyre",
- "fastlz",
  "glob",
  "log",
  "nom",

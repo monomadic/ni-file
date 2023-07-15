@@ -52,12 +52,12 @@ mod detect; // detect filetype
 pub(crate) mod kontakt;
 
 pub mod monolith; // monolith / FileContainer
+pub mod nifile; // generic, simplified api for supported filetypes
 pub mod nisound; // nisound document // kontakt 4.2 preset
 pub mod nks; // native instruments kontakt sound file format
 
 pub(crate) mod cb; // control byte
-pub mod decompress; // fastlz lib
-pub(crate) mod deflate; // decompress
+pub mod deflate; // decompression
 pub(crate) mod prelude;
 pub(crate) mod read_bytes; // for reading bytestreams
 pub(crate) mod utils; // various utils for logging etc
