@@ -1,11 +1,20 @@
 ///
 /// fastlz implementation in pure rust
 ///
-use crate::cb::Offset;
+use crate::{cb::Offset, NIFileError};
 use nom::{bytes, IResult};
 
 // TODO: remove `nom` dependency
-// TODO: rewrite into reader trait form
+
+pub fn decompress(
+    compressed_input: &[u8],
+    decompressed_len: usize,
+) -> Result<Vec<u8>, NIFileError> {
+    let (_rem, buf) = deflate(compressed_input, 0).map_err(|_| NIFileError::DecompressionError)?;
+
+    assert_eq!(buf.len(), decompressed_len);
+    Ok(buf.to_vec())
+}
 
 pub fn deflate(i: &[u8], offset: usize) -> IResult<&[u8], Vec<u8>> {
     // anything before the offset becomes the dictionary
@@ -109,5 +118,18 @@ mod tests {
             .1,
             include_bytes!("../tests/data/nisound/fastlz/kontakt-4/001-garbo2.decompressed")
         )
+    }
+
+    #[test]
+    fn test_decompress() {
+        let compressed_input =
+            include_bytes!("../tests/data/nisound/fastlz/kontakt-4/001-garbo2.compressed");
+        let expected_output =
+            include_bytes!("../tests/data/nisound/fastlz/kontakt-4/001-garbo2.decompressed");
+
+        let decompressed_output =
+            decompress(compressed_input, expected_output.len()).expect("decompression failed");
+
+        assert_eq!(expected_output.to_vec(), decompressed_output);
     }
 }

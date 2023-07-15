@@ -1,7 +1,6 @@
 use crate::{
     kontakt::{
         chunkdata::ChunkData, filename_list::FileNameListPreK51, objects::program::BProgram,
-        pubdata::PubData,
     },
     read_bytes::ReadBytesExt,
     Error,

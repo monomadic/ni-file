@@ -1,8 +1,4 @@
-use crate::{
-    kontakt::{chunkdata::ChunkData, structured_object::StructuredObject},
-    read_bytes::ReadBytesExt,
-    Error,
-};
+use crate::{kontakt::chunkdata::ChunkData, read_bytes::ReadBytesExt, Error};
 
 // id 0x3a
 #[derive(Debug)]
@@ -38,7 +34,7 @@ impl BParamArray {
                         let len = reader.read_u32_le()?;
                         let _inner = reader.read_bytes(len as usize)?;
                         let len = reader.read_u32_le()?;
-                        let inner = reader.read_bytes(len as usize)?;
+                        let _inner = reader.read_bytes(len as usize)?;
                     }
                 }
             }

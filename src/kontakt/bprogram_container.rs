@@ -4,7 +4,7 @@ use crate::{read_bytes::ReadBytesExt, Error};
 pub struct BProgramContainer {}
 
 impl BProgramContainer {
-    pub fn read<R: ReadBytesExt>(mut reader: R, version: u16) -> Result<(), Error> {
+    pub fn read<R: ReadBytesExt>(_reader: R, _version: u16) -> Result<(), Error> {
         Ok(())
     }
 }
