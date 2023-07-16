@@ -31,6 +31,9 @@
 //!     NIFileType::NIMonolith => {
 //!         let monolith = NIMonolith::read(file.as_slice()).unwrap();
 //!     }
+//!     NIFileType::NKSLE | NIFileType::NKSBE => {
+//!         let kontakt = NKSFile::read(file.as_slice())?;
+//!     }
 //!     // ...
 //!     _ => unimplemented!(),
 //! }
