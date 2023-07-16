@@ -45,7 +45,7 @@ use crate::{read_bytes::ReadBytesExt, NIFileError};
 #[derive(Debug)]
 pub struct BPatchHeaderV42 {
     pub patch_type: PatchType,
-    pub app_version: AppVersionV42,
+    pub app_version: NKIAppVersion,
     pub icon: u32,
     pub author: String,
     pub created_at: time::Date,
@@ -59,7 +59,7 @@ pub struct BPatchHeaderV42 {
 #[derive(Debug)]
 pub struct BPatchHeaderV2 {
     pub patch_type: PatchType,
-    pub app_version: AppVersionV42,
+    pub app_version: NKIAppVersion,
     pub icon: u32,
     pub author: String,
     pub created_at: time::Date,
@@ -75,11 +75,11 @@ impl BPatchHeaderV2 {
         let reader = reader.read_bytes(170 - 10)?;
         let mut reader = reader.as_slice();
 
-        let patchVersion = reader.read_u32_le()?;
-        assert_eq!(patchVersion, u32::swap_bytes(0x722A013E));
+        let patch_version = reader.read_u32_le()?;
+        assert_eq!(patch_version, u32::swap_bytes(0x722A013E));
 
         let patch_type: PatchType = reader.read_u16_le()?.into();
-        let app_version = AppVersionV42 {
+        let app_version = NKIAppVersion {
             minor_3: reader.read_u8()?,
             minor_2: reader.read_u8()?,
             minor_1: reader.read_u8()?,
@@ -127,11 +127,11 @@ impl BPatchHeaderV42 {
         let reader = reader.read_bytes(222 - 10)?;
         let mut reader = reader.as_slice();
 
-        let patchVersion = reader.read_u32_le()?;
-        assert_eq!(patchVersion, u32::swap_bytes(0x1A6337EA));
+        let patch_version = reader.read_u32_le()?;
+        assert_eq!(patch_version, u32::swap_bytes(0x1A6337EA));
 
         let patch_type: PatchType = reader.read_u16_le()?.into();
-        let app_version = AppVersionV42 {
+        let app_version = NKIAppVersion {
             minor_3: reader.read_u8()?,
             minor_2: reader.read_u8()?,
             minor_1: reader.read_u8()?,
@@ -176,14 +176,14 @@ impl BPatchHeaderV42 {
 }
 
 #[derive(Debug)]
-pub struct AppVersionV42 {
+pub struct NKIAppVersion {
     major: u8,
     minor_1: u8,
     minor_2: u8,
     minor_3: u8,
 }
 
-impl ToString for AppVersionV42 {
+impl ToString for NKIAppVersion {
     fn to_string(&self) -> String {
         format!(
             "app_version {}.{}.{}.{}",
@@ -245,11 +245,9 @@ mod tests {
     #[test]
     fn test_header_v2_read() -> Result<(), NIFileError> {
         let file = include_bytes!("../../tests/chunks/nks/BPatchHeaderV2-LE/000");
-
-        let mut reader = file.as_slice();
-        NKSHeader::read_le(file.as_slice())?;
-
-        // println!("{:?}", NKSHeader::read_le(file.as_slice())?);
+        // let mut reader = file.as_slice();
+        // NKSHeader::read_le(file.as_slice())?;
+        println!("{:?}", NKSHeader::read_le(file.as_slice())?);
         Ok(())
     }
 
