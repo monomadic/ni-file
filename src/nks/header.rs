@@ -2,34 +2,6 @@ use time::OffsetDateTime;
 
 use crate::{read_bytes::ReadBytesExt, NIFileError};
 
-#[derive(Debug)]
-pub struct BPatchHeader {}
-
-impl BPatchHeader {
-    pub fn read_le<R: ReadBytesExt>(mut reader: R) -> Result<Self, NIFileError> {
-        let header_version = reader.read_u16_le()?;
-        Ok(match header_version {
-            // // Kontakt2 BE
-            // 0x0001 => {}
-            // // Kontakt2 LE
-            // 0x0100 => NKSHeader::BPatchHeaderV42(BPatchHeaderV42::read(&mut reader)?),
-            // // Kontakt42 BE
-            // 0x1001 => NKSHeader::BPatchHeaderV42(BPatchHeaderV42::read(&mut reader)?),
-            // Kontakt42 LE
-            0x0110 => BPatchHeader::read_v42_le(&mut reader)?,
-            // Unknown
-            _ => panic!("Unsupported header version: 0x{:x}", header_version),
-        })
-    }
-
-    // BPatchHeaderV42 (222 bytes)
-    pub fn read_v42_le<R: ReadBytesExt>(mut reader: R) -> Result<Self, NIFileError> {
-        let data = reader.read_bytes(222)?;
-
-        Ok(Self {})
-    }
-}
-
 // pub enum KonaktPatchHeader {
 //     BPatchHeaderV42(BPatchHeaderV42),
 // }
@@ -77,7 +49,7 @@ pub struct BPatchHeaderV42 {
     pub icon: u32,
     pub author: String,
     pub created_at: time::Date,
-    pub app_signature: u32,
+    pub app_signature: String,
     pub number_of_zones: u16,
     pub number_of_groups: u16,
     pub number_of_instruments: u16,
@@ -91,7 +63,7 @@ pub struct BPatchHeaderV2 {
     pub icon: u32,
     pub author: String,
     pub created_at: time::Date,
-    pub app_signature: u32,
+    pub app_signature: String,
     pub number_of_zones: u16,
     pub number_of_groups: u16,
     pub number_of_instruments: u16,
@@ -113,7 +85,11 @@ impl BPatchHeaderV2 {
             minor_1: reader.read_u8()?,
             major: reader.read_u8()?,
         };
-        let app_signature = reader.read_u32_le()?;
+
+        let mut app_signature = reader.read_bytes(4)?;
+        app_signature.reverse();
+        let app_signature: String = app_signature.into_iter().map(|c| c as char).collect();
+
         let datetime = OffsetDateTime::from_unix_timestamp(reader.read_u32_le()? as i64).unwrap();
         let created_at: time::Date = datetime.date();
         let _unknown = reader.read_u32_le()?;
@@ -125,7 +101,6 @@ impl BPatchHeaderV2 {
         let author = reader.read_string_utf8()?;
         // let _unknown = reader.read_bytes(101)?;
         let _checksum = reader.read_bytes(16)?;
-        println!("hello {}", author);
         let _unknown = reader.read_u32_le()?;
         let _unknown = reader.read_u32_le()?;
         let decompressed_length = reader.read_u32_le()?;
@@ -162,7 +137,11 @@ impl BPatchHeaderV42 {
             minor_1: reader.read_u8()?,
             major: reader.read_u8()?,
         };
-        let app_signature = reader.read_u32_le()?;
+
+        let mut app_signature = reader.read_bytes(4)?;
+        app_signature.reverse();
+        let app_signature: String = app_signature.into_iter().map(|c| c as char).collect();
+
         let datetime = OffsetDateTime::from_unix_timestamp(reader.read_u32_le()? as i64).unwrap();
         let created_at: time::Date = datetime.date();
         let _unknown = reader.read_u32_le()?;
@@ -264,8 +243,19 @@ mod tests {
     use super::*;
 
     #[test]
-    fn test_patch_header_v42_read() -> Result<(), NIFileError> {
-        let file = include_bytes!("../../tests/chunks/nks/BPatchHeaderV42/LE/000");
+    fn test_header_v2_read() -> Result<(), NIFileError> {
+        let file = include_bytes!("../../tests/chunks/nks/BPatchHeaderV2-LE/000");
+
+        let mut reader = file.as_slice();
+        NKSHeader::read_le(file.as_slice())?;
+
+        // println!("{:?}", NKSHeader::read_le(file.as_slice())?);
+        Ok(())
+    }
+
+    #[test]
+    fn test_header_v42_read() -> Result<(), NIFileError> {
+        let file = include_bytes!("../../tests/chunks/nks/BPatchHeaderV42-LE/000");
         println!("{:?}", NKSHeader::read_le(file.as_slice())?);
         Ok(())
     }

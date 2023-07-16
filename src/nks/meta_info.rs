@@ -5,6 +5,7 @@ use crate::{read_bytes::ReadBytesExt, NIFileError};
 /// | Offset | Length | Type     | Meaning                     | Default    | Notes                                    |
 /// |--------|--------|----------|-----------------------------|------------|------------------------------------------|
 /// | 0x00   | 0x04   | uint32_t | metaMagic                   | 0xAEE10EB0 | 0xb00ee1ae                               |
+#[derive(Debug)]
 pub struct BPatchMetaInfoHeader {
     /// An XML SoundInfoItem document.
     soundinfo: String,
