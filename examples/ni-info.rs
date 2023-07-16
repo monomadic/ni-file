@@ -1,5 +1,5 @@
 use color_eyre::eyre::Result;
-use ni_file::{self, nks::nksfile::NKSFile, NIFileType, NISound};
+use ni_file::{self, fm8::FM8Preset, nks::nksfile::NKSFile, NIFileType, NISound};
 
 pub fn main() -> Result<()> {
     std::env::set_var("RUST_BACKTRACE", "1");
@@ -34,6 +34,14 @@ pub fn main() -> Result<()> {
                     sound.authoring_application()?,
                     sound.preset_version()?
                 );
+
+                use ni_file::nisound::AuthoringApplication::*;
+                match sound.authoring_application()? {
+                    FM8 => {
+                        FM8Preset::read(sound.chunk()?.as_slice())?;
+                    }
+                    _ => (),
+                }
             }
             NIFileType::NIMonolith => {
                 println!("format:\t\tNIMonolith");

@@ -52,6 +52,7 @@ mod error;
 pub use error::*;
 
 mod detect; // detect filetype
+pub mod fm8;
 pub(crate) mod kontakt;
 
 pub mod monolith; // monolith / FileContainer
