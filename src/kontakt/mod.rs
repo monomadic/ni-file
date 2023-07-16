@@ -4,8 +4,6 @@ mod chunkdata;
 mod filename_list;
 pub mod group_list;
 pub mod internal_patch_data;
-pub mod patch_header;
-pub mod patch_meta_info_header;
 mod privpars;
 mod pubdata;
 mod start_criteria;

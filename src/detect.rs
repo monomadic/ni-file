@@ -14,8 +14,8 @@ pub enum NIFileType {
 
     /// Kontakt instruments
     Kontakt1,
-    Kontakt2,
-    Kontakt42,
+    NKSLE,
+    NKSBE,
 
     KontaktResource,
     KontaktCache,
@@ -45,15 +45,18 @@ impl NIFileType {
 }
 
 pub fn filetype(buffer: &[u8]) -> NIFileType {
+    // TODO: change to reader
     let mut reader = buffer.clone();
     let header_signature = reader.read_u32_le().unwrap();
 
     match header_signature {
         0xB36EE55E => NIFileType::Kontakt1,
+
         0x7fa89012 | 0x10874353 | 0xab85ef01 => {
-            info!("Detected: Kontakt2 (Little Endian)");
-            NIFileType::Kontakt2
+            info!("Detected: NKS (Little Endian)");
+            NIFileType::NKSLE
         }
+        0x1290A87F => NIFileType::NKSBE,
         0xA4D6E55A | 0x74B5A69B => {
             panic!("kontakt: unknown");
         }
