@@ -15,6 +15,8 @@ impl FM8Preset {
         let major_version = reader.read_u32_le()?;
         println!("major version {:?}", major_version);
 
+        // FM8Program
+
         // major version < 208
         if major_version < 0xD0 {
             // major version < 202
@@ -382,6 +384,597 @@ impl FM8Preset {
             println!("17 {:?}", reader.read_i8()?);
             println!("18 {:?}", reader.read_i8()?);
             println!("19 {:?}", reader.read_i8()?);
+
+            println!("1 {:?}", reader.read_u32_le()?);
+            println!("1 {:?}", reader.read_u32_le()?);
+            println!("1 {:?}", reader.read_u32_le()?);
+            println!("1 {:?}", reader.read_u32_le()?);
+            println!("1 {:?}", reader.read_u32_le()?);
+            println!("1 {:?}", reader.read_u32_le()?);
+            println!("2 {:?}", reader.read_u32_le()?);
+            println!("3 {:?}", reader.read_u32_le()?);
+            println!("4 {:?}", reader.read_u32_le()?);
+            println!("5 {:?}", reader.read_u32_le()?);
+            println!("6 {:?}", reader.read_u32_le()?);
+            println!("7 {:?}", reader.read_u32_le()?);
+            println!("8 {:?}", reader.read_u32_le()?);
+            println!("9 {:?}", reader.read_u32_le()?);
+            println!("9 {:?}", reader.read_u32_le()?);
+            println!("2 {:?}", reader.read_u32_le()?);
+            println!("3 {:?}", reader.read_u32_le()?);
+            println!("4 {:?}", reader.read_u32_le()?);
+            println!("5 {:?}", reader.read_u32_le()?);
+            println!("6 {:?}", reader.read_u32_le()?);
+            println!("7 {:?}", reader.read_u32_le()?);
+            println!("8 {:?}", reader.read_u32_le()?);
+            println!("9 {:?}", reader.read_u32_le()?);
+            println!("9 {:?}", reader.read_u32_le()?);
+            println!("2 {:?}", reader.read_u32_le()?);
+            println!("3 {:?}", reader.read_u32_le()?);
+            println!("4 {:?}", reader.read_u32_le()?);
+
+            println!("u8-2 {:?}", reader.read_u8()?);
+            println!("u8-3 {:?}", reader.read_u8()?);
+            println!("u8-4 {:?}", reader.read_u8()?);
+            println!("u8-5 {:?}", reader.read_u8()?);
+            println!("u8-6 {:?}", reader.read_u8()?);
+            println!("u8-7 {:?}", reader.read_u8()?);
+            println!("u8-8 {:?}", reader.read_u8()?);
+            println!("u8-9 {:?}", reader.read_u8()?);
+            println!("u8-10 {:?}", reader.read_u8()?);
+            println!("u8-11 {:?}", reader.read_u8()?);
+            println!("u8-12 {:?}", reader.read_u8()?);
+            println!("u8-13 {:?}", reader.read_u8()?);
+            println!("u8-14 {:?}", reader.read_u8()?);
+            println!("u8-15 {:?}", reader.read_u8()?);
+            println!("u8-16 {:?}", reader.read_u8()?);
+            println!("u8-17 {:?}", reader.read_u8()?);
+            println!("u8-18 {:?}", reader.read_u8()?);
+            println!("u8-19 {:?}", reader.read_u8()?);
+            println!("u8-20 {:?}", reader.read_u8()?);
+            println!("u8-21 {:?}", reader.read_u8()?);
+            println!("u8-22 {:?}", reader.read_u8()?);
+            println!("u8-23 {:?}", reader.read_u8()?);
+            println!("u8-24 {:?}", reader.read_u8()?);
+            println!("u8-25 {:?}", reader.read_u8()?);
+            println!("u8-26 {:?}", reader.read_u8()?);
+            println!("u8-27 {:?}", reader.read_u8()?);
+            println!("u8-28 {:?}", reader.read_u8()?);
+            println!("u8-29 {:?}", reader.read_u8()?);
+            println!("u8-30 {:?}", reader.read_u8()?);
+            println!("u8-31 {:?}", reader.read_u8()?);
+            println!("u8-32 {:?}", reader.read_u8()?);
+            println!("u8-33 {:?}", reader.read_u8()?);
+            println!("u8-34 {:?}", reader.read_u8()?);
+            println!("u8-35 {:?}", reader.read_u8()?);
+            println!("u8-36 {:?}", reader.read_u8()?);
+            println!("u8-37 {:?}", reader.read_u8()?);
+            println!("u8-38 {:?}", reader.read_u8()?);
+            println!("u8-39 {:?}", reader.read_u8()?);
+            println!("u8-40 {:?}", reader.read_u8()?);
+            println!("u8-41 {:?}", reader.read_u8()?);
+            println!("u8-42 {:?}", reader.read_u8()?);
+            println!("u8-43 {:?}", reader.read_u8()?);
+            println!("u8-44 {:?}", reader.read_u8()?);
+            println!("u8-45 {:?}", reader.read_u8()?);
+            println!("u8-46 {:?}", reader.read_u8()?);
+            println!("u8-47 {:?}", reader.read_u8()?);
+            println!("u8-48 {:?}", reader.read_u8()?);
+            println!("u8-49 {:?}", reader.read_u8()?);
+
+            println!("u8-46 {:?}", reader.read_u8()?);
+            println!("u8-47 {:?}", reader.read_u8()?);
+            println!("u8-48 {:?}", reader.read_u8()?);
+
+            println!("7 {:?}", reader.read_f32_le()?);
+            println!("9 {:?}", reader.read_f32_le()?);
+            println!("11 {:?}", reader.read_f32_le()?);
+            println!("13 {:?}", reader.read_f32_le()?);
+            println!("14 {:?}", reader.read_f32_le()?);
+            println!("8 {:?}", reader.read_f32_le()?);
+            println!("10 {:?}", reader.read_f32_le()?);
+            println!("12 {:?}", reader.read_f32_le()?);
+            println!("15 {:?}", reader.read_f32_le()?);
+            println!("17 {:?}", reader.read_f32_le()?);
+            println!("19 {:?}", reader.read_f32_le()?);
+            println!("21 {:?}", reader.read_f32_le()?);
+            println!("22 {:?}", reader.read_f32_le()?);
+            println!("16 {:?}", reader.read_f32_le()?);
+            println!("18 {:?}", reader.read_f32_le()?);
+            println!("20 {:?}", reader.read_f32_le()?);
+            println!("22 {:?}", reader.read_u32_le()?);
+            println!("24 {:?}", reader.read_u32_le()?);
+            println!("26 {:?}", reader.read_u32_le()?);
+            println!("28 {:?}", reader.read_u32_le()?);
+            println!("30 {:?}", reader.read_u32_le()?);
+            println!("31 {:?}", reader.read_u32_le()?);
+            println!("25 {:?}", reader.read_u32_le()?);
+            println!("27 {:?}", reader.read_u32_le()?);
+            println!("29 {:?}", reader.read_u32_le()?);
+            println!("31 {:?}", reader.read_u32_le()?);
+            println!("33 {:?}", reader.read_u32_le()?);
+            println!("35 {:?}", reader.read_u32_le()?);
+            println!("37 {:?}", reader.read_u32_le()?);
+            println!("39 {:?}", reader.read_u32_le()?);
+            println!("40 {:?}", reader.read_u32_le()?);
+            println!("38 {:?}", reader.read_f32_le()?);
+            println!("40 {:?}", reader.read_f32_le()?);
+            println!("42 {:?}", reader.read_f32_le()?);
+            println!("44 {:?}", reader.read_f32_le()?);
+            println!("45 {:?}", reader.read_f32_le()?);
+            println!("39 {:?}", reader.read_f32_le()?);
+            println!("41 {:?}", reader.read_f32_le()?);
+            println!("43 {:?}", reader.read_f32_le()?);
+            println!("46 {:?}", reader.read_f32_le()?);
+            println!("48 {:?}", reader.read_f32_le()?);
+            println!("50 {:?}", reader.read_f32_le()?);
+            println!("52 {:?}", reader.read_f32_le()?);
+            println!("53 {:?}", reader.read_f32_le()?);
+            println!("47 {:?}", reader.read_f32_le()?);
+            println!("49 {:?}", reader.read_f32_le()?);
+            println!("51 {:?}", reader.read_f32_le()?);
+            println!("53 {:?}", reader.read_u32_le()?);
+            println!("55 {:?}", reader.read_u32_le()?);
+            println!("57 {:?}", reader.read_u32_le()?);
+            println!("59 {:?}", reader.read_u32_le()?);
+            println!("61 {:?}", reader.read_u32_le()?);
+            println!("62 {:?}", reader.read_u32_le()?);
+            println!("56 {:?}", reader.read_u32_le()?);
+            println!("58 {:?}", reader.read_u32_le()?);
+            println!("60 {:?}", reader.read_u32_le()?);
+            println!("62 {:?}", reader.read_u32_le()?);
+            println!("64 {:?}", reader.read_u32_le()?);
+            println!("66 {:?}", reader.read_u32_le()?);
+            println!("68 {:?}", reader.read_u32_le()?);
+            println!("70 {:?}", reader.read_u32_le()?);
+            println!("71 {:?}", reader.read_u32_le()?);
+            println!("69 {:?}", reader.read_f32_le()?);
+            println!("71 {:?}", reader.read_f32_le()?);
+            println!("73 {:?}", reader.read_f32_le()?);
+            println!("75 {:?}", reader.read_f32_le()?);
+            println!("76 {:?}", reader.read_f32_le()?);
+            println!("70 {:?}", reader.read_f32_le()?);
+            println!("72 {:?}", reader.read_f32_le()?);
+            println!("74 {:?}", reader.read_f32_le()?);
+            println!("77 {:?}", reader.read_f32_le()?);
+            println!("79 {:?}", reader.read_f32_le()?);
+            println!("81 {:?}", reader.read_f32_le()?);
+            println!("83 {:?}", reader.read_f32_le()?);
+            println!("84 {:?}", reader.read_f32_le()?);
+            println!("78 {:?}", reader.read_f32_le()?);
+            println!("80 {:?}", reader.read_f32_le()?);
+            println!("82 {:?}", reader.read_f32_le()?);
+            println!("84 {:?}", reader.read_u32_le()?);
+            println!("86 {:?}", reader.read_u32_le()?);
+            println!("88 {:?}", reader.read_u32_le()?);
+            println!("90 {:?}", reader.read_u32_le()?);
+            println!("92 {:?}", reader.read_u32_le()?);
+            println!("93 {:?}", reader.read_u32_le()?);
+            println!("87 {:?}", reader.read_u32_le()?);
+            println!("89 {:?}", reader.read_u32_le()?);
+            println!("91 {:?}", reader.read_u32_le()?);
+            println!("93 {:?}", reader.read_u32_le()?);
+            println!("95 {:?}", reader.read_u32_le()?);
+            println!("97 {:?}", reader.read_u32_le()?);
+            println!("99 {:?}", reader.read_u32_le()?);
+            println!("101 {:?}", reader.read_u32_le()?);
+            println!("102 {:?}", reader.read_u32_le()?);
+            println!("99 {:?}", reader.read_u32_le()?);
+            println!("101 {:?}", reader.read_u32_le()?);
+            println!("103 {:?}", reader.read_u32_le()?);
+            println!("105 {:?}", reader.read_u32_le()?);
+            println!("107 {:?}", reader.read_u32_le()?);
+            println!("108 {:?}", reader.read_u32_le()?);
+            println!("102 {:?}", reader.read_u32_le()?);
+            println!("104 {:?}", reader.read_u32_le()?);
+            println!("106 {:?}", reader.read_u32_le()?);
+            println!("108 {:?}", reader.read_u32_le()?);
+            println!("110 {:?}", reader.read_u32_le()?);
+            println!("112 {:?}", reader.read_u32_le()?);
+            println!("114 {:?}", reader.read_u32_le()?);
+            println!("116 {:?}", reader.read_u32_le()?);
+            println!("117 {:?}", reader.read_u32_le()?);
+            println!("114 {:?}", reader.read_u32_le()?);
+            println!("116 {:?}", reader.read_u32_le()?);
+            println!("118 {:?}", reader.read_u32_le()?);
+            println!("120 {:?}", reader.read_u32_le()?);
+            println!("122 {:?}", reader.read_u32_le()?);
+            println!("123 {:?}", reader.read_u32_le()?);
+            println!("117 {:?}", reader.read_u32_le()?);
+            println!("119 {:?}", reader.read_u32_le()?);
+            println!("121 {:?}", reader.read_u32_le()?);
+            println!("123 {:?}", reader.read_u32_le()?);
+            println!("125 {:?}", reader.read_u32_le()?);
+            println!("127 {:?}", reader.read_u32_le()?);
+            println!("129 {:?}", reader.read_u32_le()?);
+            println!("131 {:?}", reader.read_u32_le()?);
+            println!("132 {:?}", reader.read_u32_le()?);
+            println!("129 {:?}", reader.read_u32_le()?);
+            println!("131 {:?}", reader.read_u32_le()?);
+            println!("133 {:?}", reader.read_u32_le()?);
+            println!("135 {:?}", reader.read_u32_le()?);
+            println!("137 {:?}", reader.read_u32_le()?);
+            println!("138 {:?}", reader.read_u32_le()?);
+            println!("132 {:?}", reader.read_u32_le()?);
+            println!("134 {:?}", reader.read_u32_le()?);
+            println!("136 {:?}", reader.read_u32_le()?);
+            println!("138 {:?}", reader.read_u32_le()?);
+            println!("140 {:?}", reader.read_u32_le()?);
+            println!("142 {:?}", reader.read_u32_le()?);
+            println!("144 {:?}", reader.read_u32_le()?);
+            println!("146 {:?}", reader.read_u32_le()?);
+            println!("147 {:?}", reader.read_u32_le()?);
+            println!("144 {:?}", reader.read_u32_le()?);
+            println!("146 {:?}", reader.read_u32_le()?);
+            println!("148 {:?}", reader.read_u32_le()?);
+            println!("150 {:?}", reader.read_u32_le()?);
+            println!("152 {:?}", reader.read_u32_le()?);
+            println!("153 {:?}", reader.read_u32_le()?);
+            println!("147 {:?}", reader.read_u32_le()?);
+            println!("149 {:?}", reader.read_u32_le()?);
+            println!("151 {:?}", reader.read_u32_le()?);
+            println!("153 {:?}", reader.read_u32_le()?);
+            println!("155 {:?}", reader.read_u32_le()?);
+            println!("157 {:?}", reader.read_u32_le()?);
+            println!("159 {:?}", reader.read_u32_le()?);
+            println!("161 {:?}", reader.read_u32_le()?);
+            println!("162 {:?}", reader.read_u32_le()?);
+            println!("159 {:?}", reader.read_u32_le()?);
+            println!("161 {:?}", reader.read_u32_le()?);
+            println!("163 {:?}", reader.read_u32_le()?);
+            println!("165 {:?}", reader.read_u32_le()?);
+            println!("167 {:?}", reader.read_u32_le()?);
+            println!("168 {:?}", reader.read_u32_le()?);
+            println!("162 {:?}", reader.read_u32_le()?);
+            println!("164 {:?}", reader.read_u32_le()?);
+            println!("166 {:?}", reader.read_u32_le()?);
+            println!("168 {:?}", reader.read_u32_le()?);
+            println!("170 {:?}", reader.read_u32_le()?);
+            println!("172 {:?}", reader.read_u32_le()?);
+            println!("174 {:?}", reader.read_u32_le()?);
+            println!("176 {:?}", reader.read_u32_le()?);
+            println!("177 {:?}", reader.read_u32_le()?);
+            println!("174 {:?}", reader.read_u32_le()?);
+            println!("176 {:?}", reader.read_u32_le()?);
+            println!("178 {:?}", reader.read_u32_le()?);
+            println!("180 {:?}", reader.read_u32_le()?);
+            println!("182 {:?}", reader.read_u32_le()?);
+            println!("183 {:?}", reader.read_u32_le()?);
+            println!("177 {:?}", reader.read_u32_le()?);
+            println!("179 {:?}", reader.read_u32_le()?);
+            println!("181 {:?}", reader.read_u32_le()?);
+            println!("183 {:?}", reader.read_u32_le()?);
+            println!("185 {:?}", reader.read_u32_le()?);
+            println!("187 {:?}", reader.read_u32_le()?);
+            println!("189 {:?}", reader.read_u32_le()?);
+            println!("191 {:?}", reader.read_u32_le()?);
+            println!("192 {:?}", reader.read_u32_le()?);
+            println!("189 {:?}", reader.read_u32_le()?);
+            println!("191 {:?}", reader.read_u32_le()?);
+            println!("193 {:?}", reader.read_u32_le()?);
+            println!("195 {:?}", reader.read_u32_le()?);
+            println!("197 {:?}", reader.read_u32_le()?);
+            println!("198 {:?}", reader.read_u32_le()?);
+            println!("192 {:?}", reader.read_u32_le()?);
+            println!("194 {:?}", reader.read_u32_le()?);
+            println!("196 {:?}", reader.read_u32_le()?);
+            println!("198 {:?}", reader.read_u32_le()?);
+            println!("200 {:?}", reader.read_u32_le()?);
+            println!("202 {:?}", reader.read_u32_le()?);
+            println!("204 {:?}", reader.read_u32_le()?);
+            println!("206 {:?}", reader.read_u32_le()?);
+            println!("207 {:?}", reader.read_u32_le()?);
+            println!("204 {:?}", reader.read_u32_le()?);
+            println!("206 {:?}", reader.read_u32_le()?);
+            println!("208 {:?}", reader.read_u32_le()?);
+            println!("210 {:?}", reader.read_u32_le()?);
+            println!("212 {:?}", reader.read_u32_le()?);
+            println!("213 {:?}", reader.read_u32_le()?);
+            println!("207 {:?}", reader.read_u32_le()?);
+            println!("209 {:?}", reader.read_u32_le()?);
+            println!("211 {:?}", reader.read_u32_le()?);
+            println!("213 {:?}", reader.read_u32_le()?);
+            println!("215 {:?}", reader.read_u32_le()?);
+            println!("217 {:?}", reader.read_u32_le()?);
+            println!("219 {:?}", reader.read_u32_le()?);
+            println!("221 {:?}", reader.read_u32_le()?);
+            println!("222 {:?}", reader.read_u32_le()?);
+            println!("219 {:?}", reader.read_u32_le()?);
+            println!("221 {:?}", reader.read_u32_le()?);
+            println!("223 {:?}", reader.read_u32_le()?);
+            println!("225 {:?}", reader.read_u32_le()?);
+            println!("227 {:?}", reader.read_u32_le()?);
+            println!("228 {:?}", reader.read_u32_le()?);
+            println!("222 {:?}", reader.read_u32_le()?);
+            println!("224 {:?}", reader.read_u32_le()?);
+            println!("226 {:?}", reader.read_u32_le()?);
+            println!("228 {:?}", reader.read_u32_le()?);
+            println!("230 {:?}", reader.read_u32_le()?);
+            println!("232 {:?}", reader.read_u32_le()?);
+            println!("234 {:?}", reader.read_u32_le()?);
+            println!("236 {:?}", reader.read_u32_le()?);
+            println!("237 {:?}", reader.read_u32_le()?);
+            println!("234 {:?}", reader.read_u32_le()?);
+            println!("236 {:?}", reader.read_u32_le()?);
+            println!("238 {:?}", reader.read_u32_le()?);
+            println!("240 {:?}", reader.read_u32_le()?);
+            println!("242 {:?}", reader.read_u32_le()?);
+            println!("243 {:?}", reader.read_u32_le()?);
+            println!("237 {:?}", reader.read_u32_le()?);
+            println!("239 {:?}", reader.read_u32_le()?);
+            println!("241 {:?}", reader.read_u32_le()?);
+            println!("243 {:?}", reader.read_u32_le()?);
+            println!("245 {:?}", reader.read_u32_le()?);
+            println!("247 {:?}", reader.read_u32_le()?);
+            println!("249 {:?}", reader.read_u32_le()?);
+            println!("251 {:?}", reader.read_u32_le()?);
+            println!("252 {:?}", reader.read_u32_le()?);
+            println!("249 {:?}", reader.read_u32_le()?);
+            println!("251 {:?}", reader.read_u32_le()?);
+            println!("253 {:?}", reader.read_u32_le()?);
+            println!("255 {:?}", reader.read_u32_le()?);
+            println!("257 {:?}", reader.read_u32_le()?);
+            println!("258 {:?}", reader.read_u32_le()?);
+            println!("252 {:?}", reader.read_u32_le()?);
+            println!("254 {:?}", reader.read_u32_le()?);
+            println!("256 {:?}", reader.read_u32_le()?);
+            println!("258 {:?}", reader.read_u32_le()?);
+            println!("260 {:?}", reader.read_u32_le()?);
+            println!("262 {:?}", reader.read_u32_le()?);
+            println!("264 {:?}", reader.read_u32_le()?);
+            println!("266 {:?}", reader.read_u32_le()?);
+            println!("267 {:?}", reader.read_u32_le()?);
+            println!("264 {:?}", reader.read_u32_le()?);
+            println!("266 {:?}", reader.read_u32_le()?);
+            println!("268 {:?}", reader.read_u32_le()?);
+            println!("270 {:?}", reader.read_u32_le()?);
+            println!("272 {:?}", reader.read_u32_le()?);
+            println!("273 {:?}", reader.read_u32_le()?);
+            println!("267 {:?}", reader.read_u32_le()?);
+            println!("269 {:?}", reader.read_u32_le()?);
+            println!("271 {:?}", reader.read_u32_le()?);
+            println!("273 {:?}", reader.read_u32_le()?);
+            println!("275 {:?}", reader.read_u32_le()?);
+            println!("277 {:?}", reader.read_u32_le()?);
+            println!("279 {:?}", reader.read_u32_le()?);
+            println!("281 {:?}", reader.read_u32_le()?);
+            println!("282 {:?}", reader.read_u32_le()?);
+            println!("279 {:?}", reader.read_u32_le()?);
+            println!("281 {:?}", reader.read_u32_le()?);
+            println!("283 {:?}", reader.read_u32_le()?);
+            println!("285 {:?}", reader.read_u32_le()?);
+            println!("287 {:?}", reader.read_u32_le()?);
+            println!("288 {:?}", reader.read_u32_le()?);
+            println!("282 {:?}", reader.read_u32_le()?);
+            println!("284 {:?}", reader.read_u32_le()?);
+            println!("286 {:?}", reader.read_u32_le()?);
+            println!("288 {:?}", reader.read_u32_le()?);
+            println!("290 {:?}", reader.read_u32_le()?);
+            println!("292 {:?}", reader.read_u32_le()?);
+            println!("294 {:?}", reader.read_u32_le()?);
+            println!("296 {:?}", reader.read_u32_le()?);
+            println!("297 {:?}", reader.read_u32_le()?);
+            println!("294 {:?}", reader.read_u32_le()?);
+            println!("296 {:?}", reader.read_u32_le()?);
+            println!("298 {:?}", reader.read_u32_le()?);
+            println!("300 {:?}", reader.read_u32_le()?);
+            println!("302 {:?}", reader.read_u32_le()?);
+            println!("303 {:?}", reader.read_u32_le()?);
+            println!("297 {:?}", reader.read_u32_le()?);
+            println!("299 {:?}", reader.read_u32_le()?);
+            println!("301 {:?}", reader.read_u32_le()?);
+            println!("303 {:?}", reader.read_u32_le()?);
+            println!("305 {:?}", reader.read_u32_le()?);
+            println!("307 {:?}", reader.read_u32_le()?);
+            println!("309 {:?}", reader.read_u32_le()?);
+            println!("311 {:?}", reader.read_u32_le()?);
+            println!("312 {:?}", reader.read_u32_le()?);
+            println!("309 {:?}", reader.read_u32_le()?);
+            println!("311 {:?}", reader.read_u32_le()?);
+            println!("313 {:?}", reader.read_u32_le()?);
+            println!("315 {:?}", reader.read_u32_le()?);
+            println!("317 {:?}", reader.read_u32_le()?);
+            println!("318 {:?}", reader.read_u32_le()?);
+            println!("312 {:?}", reader.read_u32_le()?);
+            println!("314 {:?}", reader.read_u32_le()?);
+            println!("316 {:?}", reader.read_u32_le()?);
+            println!("318 {:?}", reader.read_u32_le()?);
+            println!("320 {:?}", reader.read_u32_le()?);
+            println!("322 {:?}", reader.read_u32_le()?);
+            println!("324 {:?}", reader.read_u32_le()?);
+            println!("326 {:?}", reader.read_u32_le()?);
+            println!("327 {:?}", reader.read_u32_le()?);
+            println!("324 {:?}", reader.read_u32_le()?);
+            println!("326 {:?}", reader.read_u32_le()?);
+            println!("328 {:?}", reader.read_u32_le()?);
+            println!("330 {:?}", reader.read_u32_le()?);
+            println!("332 {:?}", reader.read_u32_le()?);
+            println!("333 {:?}", reader.read_u32_le()?);
+            println!("327 {:?}", reader.read_u32_le()?);
+            println!("329 {:?}", reader.read_u32_le()?);
+            println!("331 {:?}", reader.read_u32_le()?);
+            println!("333 {:?}", reader.read_u32_le()?);
+            println!("335 {:?}", reader.read_u32_le()?);
+            println!("337 {:?}", reader.read_u32_le()?);
+            println!("339 {:?}", reader.read_u32_le()?);
+            println!("341 {:?}", reader.read_u32_le()?);
+            println!("342 {:?}", reader.read_u32_le()?);
+            println!("339 {:?}", reader.read_u32_le()?);
+            println!("341 {:?}", reader.read_u32_le()?);
+            println!("343 {:?}", reader.read_u32_le()?);
+            println!("345 {:?}", reader.read_u32_le()?);
+            println!("347 {:?}", reader.read_u32_le()?);
+            println!("348 {:?}", reader.read_u32_le()?);
+            println!("342 {:?}", reader.read_u32_le()?);
+            println!("344 {:?}", reader.read_u32_le()?);
+            println!("346 {:?}", reader.read_u32_le()?);
+            println!("348 {:?}", reader.read_u32_le()?);
+            println!("350 {:?}", reader.read_u32_le()?);
+            println!("352 {:?}", reader.read_u32_le()?);
+            println!("354 {:?}", reader.read_u32_le()?);
+            println!("356 {:?}", reader.read_u32_le()?);
+            println!("357 {:?}", reader.read_u32_le()?);
+            println!("354 {:?}", reader.read_u32_le()?);
+            println!("356 {:?}", reader.read_u32_le()?);
+            println!("358 {:?}", reader.read_u32_le()?);
+            println!("360 {:?}", reader.read_u32_le()?);
+            println!("362 {:?}", reader.read_u32_le()?);
+            println!("363 {:?}", reader.read_u32_le()?);
+            println!("357 {:?}", reader.read_u32_le()?);
+            println!("359 {:?}", reader.read_u32_le()?);
+            println!("361 {:?}", reader.read_u32_le()?);
+            println!("363 {:?}", reader.read_u32_le()?);
+            println!("365 {:?}", reader.read_u32_le()?);
+            println!("367 {:?}", reader.read_u32_le()?);
+            println!("369 {:?}", reader.read_u32_le()?);
+            println!("371 {:?}", reader.read_u32_le()?);
+            println!("372 {:?}", reader.read_u32_le()?);
+            println!("369 {:?}", reader.read_u32_le()?);
+            println!("371 {:?}", reader.read_u32_le()?);
+            println!("373 {:?}", reader.read_u32_le()?);
+            println!("375 {:?}", reader.read_u32_le()?);
+            println!("377 {:?}", reader.read_u32_le()?);
+            println!("378 {:?}", reader.read_u32_le()?);
+            println!("372 {:?}", reader.read_u32_le()?);
+            println!("374 {:?}", reader.read_u32_le()?);
+            println!("376 {:?}", reader.read_u32_le()?);
+            println!("378 {:?}", reader.read_u32_le()?);
+            println!("380 {:?}", reader.read_u32_le()?);
+
+            println!("393 {:?}", reader.read_u8()?);
+
+            // -1
+            println!("382 {:?}", reader.read_i32_le()?);
+            println!("384 {:?}", reader.read_i32_le()?);
+            println!("386 {:?}", reader.read_i32_le()?);
+            println!("387 {:?}", reader.read_i32_le()?);
+            println!("381 {:?}", reader.read_i32_le()?);
+            println!("383 {:?}", reader.read_i32_le()?);
+            println!("385 {:?}", reader.read_i32_le()?);
+            println!("387 {:?}", reader.read_i32_le()?);
+
+            println!("393 {:?}", reader.read_u8()?);
+
+            println!("389 {:?}", reader.read_u32_le()?);
+            println!("391 {:?}", reader.read_u32_le()?);
+
+            println!("393 {:?}", reader.read_u8()?);
+            println!("393 {:?}", reader.read_u8()?);
+
+            println!("395 {:?}", reader.read_u32_le()?);
+
+            println!("397 {:?}", reader.read_u8()?);
+            println!("397 {:?}", reader.read_u8()?);
+            println!("397 {:?}", reader.read_u8()?);
+            println!("397 {:?}", reader.read_u8()?);
+
+            println!("397 {:?}", reader.read_u8()?);
+
+            println!("arpKeySync2 {:x}", reader.read_u8()?);
+            println!("arpKeySync3 {:x}", reader.read_u8()?);
+
+            println!("Arpeggiator BPM {:?}", reader.read_f32_le()?);
+
+            println!("392 {:?}", reader.read_i16_le()?);
+            println!("394 {:?}", reader.read_i16_le()?);
+            println!("396 {:?}", reader.read_i16_le()?);
+            println!("398 {:?}", reader.read_i16_le()?);
+            println!("400 {:?}", reader.read_i16_le()?);
+            println!("402 {:?}", reader.read_i16_le()?);
+            println!("404 {:?}", reader.read_i16_le()?);
+            println!("405 {:?}", reader.read_i16_le()?);
+            println!("400 {:?}", reader.read_i16_le()?);
+            println!("402 {:?}", reader.read_i16_le()?);
+            println!("404 {:?}", reader.read_i16_le()?);
+            println!("406 {:?}", reader.read_i16_le()?);
+            println!("408 {:?}", reader.read_i16_le()?);
+            println!("410 {:?}", reader.read_i16_le()?);
+
+            println!("412 {:?}", reader.read_u32_le()?);
+            println!("413 {:?}", reader.read_u32_le()?);
+            println!("408 {:?}", reader.read_u32_le()?);
+            println!("410 {:?}", reader.read_u32_le()?);
+            println!("412 {:?}", reader.read_u32_le()?);
+            println!("414 {:?}", reader.read_u32_le()?);
+            println!("416 {:?}", reader.read_u32_le()?);
+            println!("418 {:?}", reader.read_u32_le()?);
+            println!("420 {:?}", reader.read_u32_le()?);
+            println!("421 {:?}", reader.read_u32_le()?);
+            println!("416 {:?}", reader.read_u32_le()?);
+            println!("418 {:?}", reader.read_u32_le()?);
+            println!("420 {:?}", reader.read_u32_le()?);
+            println!("422 {:?}", reader.read_u32_le()?);
+            println!("424 {:?}", reader.read_u32_le()?);
+            println!("426 {:?}", reader.read_u32_le()?);
+            println!("428 {:?}", reader.read_u32_le()?);
+            println!("429 {:?}", reader.read_u32_le()?);
+            println!("424 {:?}", reader.read_u32_le()?);
+            println!("426 {:?}", reader.read_u32_le()?);
+            println!("428 {:?}", reader.read_u32_le()?);
+            println!("430 {:?}", reader.read_u32_le()?);
+            println!("432 {:?}", reader.read_u32_le()?);
+            println!("434 {:?}", reader.read_u32_le()?);
+            println!("436 {:?}", reader.read_u32_le()?);
+            println!("437 {:?}", reader.read_u32_le()?);
+            println!("432 {:?}", reader.read_u32_le()?);
+            println!("433 {:?}", reader.read_u32_le()?);
+            println!("435 {:?}", reader.read_u32_le()?);
+            println!("437 {:?}", reader.read_u32_le()?);
+            println!("439 {:?}", reader.read_u32_le()?);
+            println!("441 {:?}", reader.read_u32_le()?);
+            println!("443 {:?}", reader.read_u32_le()?);
+            println!("445 {:?}", reader.read_u32_le()?);
+            println!("446 {:?}", reader.read_u32_le()?);
+            println!("442 {:?}", reader.read_u32_le()?);
+            println!("444 {:?}", reader.read_u32_le()?);
+            println!("446 {:?}", reader.read_u32_le()?);
+            println!("448 {:?}", reader.read_u32_le()?);
+            println!("450 {:?}", reader.read_u32_le()?);
+            println!("452 {:?}", reader.read_u32_le()?);
+            println!("453 {:?}", reader.read_u32_le()?);
+            println!("448 {:?}", reader.read_u32_le()?);
+            println!("449 {:?}", reader.read_u32_le()?);
+            println!("451 {:?}", reader.read_u32_le()?);
+            println!("453 {:?}", reader.read_u32_le()?);
+            println!("455 {:?}", reader.read_u32_le()?);
+            println!("457 {:?}", reader.read_u32_le()?);
+            println!("459 {:?}", reader.read_u32_le()?);
+            println!("461 {:?}", reader.read_u32_le()?);
+            println!("462 {:?}", reader.read_u32_le()?);
+            println!("458 {:?}", reader.read_u32_le()?);
+            println!("460 {:?}", reader.read_u32_le()?);
+            println!("462 {:?}", reader.read_u32_le()?);
+            println!("464 {:?}", reader.read_u32_le()?);
+            println!("466 {:?}", reader.read_u32_le()?);
+            println!("468 {:?}", reader.read_u32_le()?);
+            println!("469 {:?}", reader.read_u32_le()?);
+            println!("464 {:?}", reader.read_u32_le()?);
+            println!("465 {:?}", reader.read_u32_le()?);
+            println!("466 {:?}", reader.read_u32_le()?);
+            println!("467 {:?}", reader.read_u32_le()?);
+            println!("474 {:?}", reader.read_u32_le()?);
+            println!("470 {:?}", reader.read_u32_le()?);
+            println!("472 {:?}", reader.read_u32_le()?);
+            println!("474 {:?}", reader.read_u32_le()?);
+            println!("476 {:?}", reader.read_u32_le()?);
+            println!("478 {:?}", reader.read_u32_le()?);
+            println!("480 {:?}", reader.read_u32_le()?);
+            println!("481 {:?}", reader.read_u32_le()?);
+            println!("476 {:?}", reader.read_u32_le()?);
+            println!("478 {:?}", reader.read_u32_le()?);
+            println!("480 {:?}", reader.read_u32_le()?);
+            println!("482 {:?}", reader.read_u32_le()?);
+            println!("484 {:?}", reader.read_u32_le()?);
+            println!("486 {:?}", reader.read_u32_le()?);
+            println!("488 {:?}", reader.read_u32_le()?);
+            println!("489 {:?}", reader.read_u32_le()?);
+            println!("485 {:?}", reader.read_u32_le()?);
+            println!("487 {:?}", reader.read_u32_le()?);
+            println!("489 {:?}", reader.read_u32_le()?);
+            println!("491 {:?}", reader.read_u32_le()?);
+            println!("493 {:?}", reader.read_u32_le()?);
+            println!("495 {:?}", reader.read_u32_le()?);
+            println!("496 {:?}", reader.read_u32_le()?);
         } else {
             panic!("Newer version than supported");
         }
@@ -403,50 +996,3 @@ fn test_fm8_preset_read() -> Result<(), Error> {
 
     Ok(())
 }
-
-// pub enum FM8CategoryNames {
-//     None,
-//     Bass,
-//     Bell,
-//     Brass,
-//     Drum,
-//     Ensemble,
-//     Ethnic,
-//     Flute,
-//     FX,
-//     Guitar,
-//     Lead,
-//     Loop,
-//     Organ,
-//     Pad,
-//     Percuss,
-//     Piano,
-//     Reed,
-//     String,
-//     Synth,
-//     Vocal,
-//     Separator,
-//     Acoustic,
-//     Analog,
-//     Atmo,
-//     Bright,
-//     Clean,
-//     Cold,
-//     Dark,
-//     Detuned,
-//     Digital,
-//     Distorted,
-//     Electric,
-//     Full,
-//     Hard,
-//     High,
-//     Long,
-//     Low,
-//     Metallic,
-//     Muted,
-//     Noisy,
-//     Short,
-//     Soft,
-//     Sweep,
-//     Warm,
-// }
