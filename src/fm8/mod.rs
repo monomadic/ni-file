@@ -271,56 +271,56 @@ impl FM8Preset {
             println!("56 {:?}", reader.read_f32_le()?);
             println!("57 {:?}", reader.read_f32_le()?);
 
-            println!("? {}", reader.read_u8()?);
-            println!("? {}", reader.read_u8()?);
-            println!("? {}", reader.read_u8()?);
-            println!("? {}", reader.read_u8()?);
+            println!("? {}", reader.read_i8()?);
+            println!("? {}", reader.read_i8()?);
+            println!("? {}", reader.read_i8()?);
+            println!("? {}", reader.read_i8()?);
 
-            println!("? {}", reader.read_u8()?);
-            println!("? {}", reader.read_u8()?);
-            println!("? {}", reader.read_u8()?);
-            println!("? {}", reader.read_u8()?);
+            println!("? {}", reader.read_i8()?);
+            println!("? {}", reader.read_i8()?);
+            println!("? {}", reader.read_i8()?);
+            println!("? {}", reader.read_i8()?);
 
-            println!("? {}", reader.read_u8()?);
-            println!("? {}", reader.read_u8()?);
-            println!("? {}", reader.read_u8()?);
-            println!("? {}", reader.read_u8()?);
-            println!("? {}", reader.read_u8()?);
-            println!("? {}", reader.read_u8()?);
-            println!("? {}", reader.read_u8()?);
-            println!("? {}", reader.read_u8()?);
+            println!("? {}", reader.read_i8()?);
+            println!("? {}", reader.read_i8()?);
+            println!("? {}", reader.read_i8()?);
+            println!("? {}", reader.read_i8()?);
+            println!("? {}", reader.read_i8()?);
+            println!("? {}", reader.read_i8()?);
+            println!("? {}", reader.read_i8()?);
+            println!("? {}", reader.read_i8()?);
 
-            println!("? {}", reader.read_u8()?);
-            println!("? {}", reader.read_u8()?);
-            println!("? {}", reader.read_u8()?);
-            println!("? {}", reader.read_u8()?);
-            println!("? {}", reader.read_u8()?);
-            println!("? {}", reader.read_u8()?);
-            println!("? {}", reader.read_u8()?);
-            println!("? {}", reader.read_u8()?);
-            println!("? {}", reader.read_u8()?);
+            println!("? {}", reader.read_i8()?);
+            println!("? {}", reader.read_i8()?);
+            println!("? {}", reader.read_i8()?);
+            println!("? {}", reader.read_i8()?);
+            println!("? {}", reader.read_i8()?);
+            println!("? {}", reader.read_i8()?);
+            println!("? {}", reader.read_i8()?);
+            println!("? {}", reader.read_i8()?);
+            println!("? {}", reader.read_i8()?);
 
-            println!("? {}", reader.read_u8()?);
-            println!("? {}", reader.read_u8()?);
-            println!("? {}", reader.read_u8()?);
-            println!("? {}", reader.read_u8()?);
-            println!("? {}", reader.read_u8()?);
-            println!("? {}", reader.read_u8()?);
-            println!("? {}", reader.read_u8()?);
+            println!("? {}", reader.read_i8()?);
+            println!("? {}", reader.read_i8()?);
+            println!("? {}", reader.read_i8()?);
+            println!("? {}", reader.read_i8()?);
+            println!("? {}", reader.read_i8()?);
+            println!("? {}", reader.read_i8()?);
+            println!("? {}", reader.read_i8()?);
 
-            println!("? {}", reader.read_u8()?);
-            println!("? {}", reader.read_u8()?);
-            println!("? {}", reader.read_u8()?);
-            println!("? {}", reader.read_u8()?);
+            println!("? {}", reader.read_i8()?);
+            println!("? {}", reader.read_i8()?);
+            println!("? {}", reader.read_i8()?);
+            println!("? {}", reader.read_i8()?);
 
-            println!("1 {:?}", reader.read_u32_le()?);
-            println!("2 {:?}", reader.read_u32_le()?);
-            println!("3 {:?}", reader.read_u32_le()?);
-            println!("4 {:?}", reader.read_u32_le()?);
-            println!("5 {:?}", reader.read_u32_le()?);
-            println!("6 {:?}", reader.read_u32_le()?);
-            println!("7 {:?}", reader.read_u32_le()?);
-            println!("8 {:?}", reader.read_u32_le()?);
+            println!("1 {:?}", reader.read_i32_le()?);
+            println!("2 {:?}", reader.read_i32_le()?);
+            println!("3 {:?}", reader.read_i32_le()?);
+            println!("4 {:?}", reader.read_i32_le()?);
+            println!("5 {:?}", reader.read_i32_le()?);
+            println!("6 {:?}", reader.read_i32_le()?);
+            println!("7 {:?}", reader.read_i32_le()?);
+            println!("8 {:?}", reader.read_i32_le()?);
 
             println!("A AmpMod PB Up {:?}", reader.read_i8()?);
             println!("B AmpMod PB Up {:?}", reader.read_i8()?);
@@ -1026,14 +1026,29 @@ impl FM8Preset {
             println!("402 {:?}", reader.read_i16_le()?);
             println!("404 {:?}", reader.read_i16_le()?);
             println!("406 {:?}", reader.read_i16_le()?);
-            println!("408 {:?}", reader.read_i16_le()?);
-            println!("410 {:?}", reader.read_i16_le()?);
 
-            println!("412 {:?}", reader.read_u32_le()?);
-            println!("413 {:?}", reader.read_u32_le()?);
-            println!("408 {:?}", reader.read_u32_le()?);
-            println!("410 {:?}", reader.read_u32_le()?);
-            println!("412 {:?}", reader.read_u32_le()?);
+            println!("step - 412 {:?}", reader.read_u8()?);
+
+            println!("Step {:?}", reader.read_i32_le()?);
+            println!("Step Sequencer 1 - On/Off {:?}", reader.read_i8()?);
+            println!("Step Sequencer 1 - Tie {:?}", reader.read_i8()?);
+            println!("Step Sequencer 1 - Accent {:?}", reader.read_i8()?);
+            println!("Step Sequencer 1 - Note Order {:?}", reader.read_i8()?);
+            println!("Step Sequencer 1 - Octave {:?}", reader.read_i8()?);
+            println!("Step Sequencer 1 - Transpose {:?}", reader.read_i8()?);
+
+            println!("Step {:?}", reader.read_i32_le()?);
+            println!("Step Sequencer 1 - On/Off {:?}", reader.read_i8()?);
+            println!("Step Sequencer 1 - Tie {:?}", reader.read_i8()?);
+            println!("Step Sequencer 1 - Accent {:?}", reader.read_i8()?);
+            println!("Step Sequencer 1 - Note Order {:?}", reader.read_i8()?);
+            println!("Step Sequencer 1 - Octave {:?}", reader.read_i8()?);
+            println!("Step Sequencer 1 - Transpose {:?}", reader.read_i8()?);
+            println!("Step Sequencer 1 - ? {:?}", reader.read_i8()?);
+
+            println!("step - 412 {:?}", reader.read_u8()?);
+            println!("step - 412 {:?}", reader.read_u8()?);
+
             println!("414 {:?}", reader.read_u32_le()?);
             println!("416 {:?}", reader.read_u32_le()?);
             println!("418 {:?}", reader.read_u32_le()?);

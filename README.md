@@ -4,13 +4,14 @@ Native Instruments file format support for rust.
 
 Current support:
 
-| Application | Type | Detect | Container | Preset Data       |
-| ----------- | ---- | ------ | --------- | ----------------- |
-| Kontakt 1   | Kon1 | ✅     | ❌        | ❌                |
-| Kontakt 2   | NKS  | ✅     | ✅        | ❌                |
-| Kontakt 4   | NKS  | ✅     | ✅        | 🕒 Zones, Samples |
-| Kontakt 5+  | NISD | ✅     | ✅        | 🕒 ~15%           |
-| FM8         | NISD | ✅     | ✅        | 🕒 ~50%           |
+| Application | Type     | Detect | Container | Preset Data       |
+| ----------- | -------- | ------ | --------- | ----------------- |
+| Kontakt 1   | Kon1     | ✅     | ❌        | ❌                |
+| Kontakt 2   | NKS      | ✅     | ✅        | ❌                |
+| Kontakt 4   | NKS      | ✅     | ✅        | 🕒 Zones, Samples |
+| Kontakt 5+  | NISD     | ✅     | ✅        | 🕒 ~15%           |
+| Kontakt 5+  | Monolith | ✅     | ✅        | ❌                |
+| FM8         | NISD     | ✅     | ✅        | 🕒 ~50%           |
 
 Anyone who wants to join the effort, please join the telegram group at https://t.me/ni_file
 
@@ -18,11 +19,11 @@ I'm on telegram at `@deathdisco`.
 
 ## Installation
 
-This is a library, but several helper binaries will be included.
+This is a library, but there are helper binaries in the examples folder:
 
-- `ni-info` prints information about NISD containers.
+- `ni-info` prints information about NI file formats.
 - `ni-tree` prints the tree structure of NISD containers.
-- `ni-extract` (coming soon) dumps presets and samples from ni files
+- `ni-extract` dumps internal preset data from NISD containers.
 - `ni-convert` (coming soon) converts between formats
 
 ```bash
