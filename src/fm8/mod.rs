@@ -1,4 +1,11 @@
-use crate::{read_bytes::ReadBytesExt, Error, NIFileError};
+mod fx;
+mod matrix;
+
+use crate::{
+    fm8::{fx::FM8EffectSettings, matrix::FM8Matrix},
+    read_bytes::ReadBytesExt,
+    Error, NIFileError,
+};
 
 #[derive(Debug)]
 pub struct FM8Preset;
@@ -72,106 +79,7 @@ impl FM8Preset {
             println!("21 {:?}", reader.read_f32_le()?);
             println!("22 {:?}", reader.read_f32_le()?);
 
-            println!("Overdrive: On/Off {:?}", reader.read_f32_le()?);
-            println!("Overdrive: Drive {:?}", reader.read_f32_le()?);
-            println!("Overdrive: Tone {:?}", reader.read_f32_le()?);
-            println!("Overdrive: Bass {:?}", reader.read_f32_le()?);
-            println!("Overdrive: Volume {:?}", reader.read_f32_le()?);
-
-            println!("TubeAmp: On/Off {:?}", reader.read_f32_le()?);
-            println!("TubeAmp: Drive {:?}", reader.read_f32_le()?);
-            println!("TubeAmp: Volume {:?}", reader.read_f32_le()?);
-
-            println!("Cabinet: On/Off {:?}", reader.read_f32_le()?);
-            println!("Cabinet: Type {:?}", reader.read_f32_le()?);
-            println!("Cabinet: Size {:?}", reader.read_f32_le()?);
-            println!("Cabinet: Air {:?}", reader.read_f32_le()?);
-            println!("Cabinet: Bass {:?}", reader.read_f32_le()?);
-            println!("Cabinet: Treble {:?}", reader.read_f32_le()?);
-
-            println!("ShelfEQ: On/Off {:?}", reader.read_f32_le()?);
-            println!("ShelfEQ: Low Frequency {:?}", reader.read_f32_le()?);
-            println!("ShelfEQ: Low Gain {:?}", reader.read_f32_le()?);
-            println!("ShelfEQ: High Frequency {:?}", reader.read_f32_le()?);
-            println!("ShelfEQ: High Gain {:?}", reader.read_f32_le()?);
-            println!("ShelfEQ: Volume {:?}", reader.read_f32_le()?);
-
-            println!("PeakEQ: On/Off {:?}", reader.read_f32_le()?);
-            println!("PeakEQ: Frequency 1 {:?}", reader.read_f32_le()?);
-            println!("PeakEQ: Gain 1 {:?}", reader.read_f32_le()?);
-            println!("PeakEQ: Quality 1 {:?}", reader.read_f32_le()?);
-            println!("PeakEQ: Frequency 2 {:?}", reader.read_f32_le()?);
-            println!("PeakEQ: Gain 2 {:?}", reader.read_f32_le()?);
-            println!("PeakEQ: Quality 2 {:?}", reader.read_f32_le()?);
-            println!("PeakEQ: Volume {:?}", reader.read_f32_le()?);
-
-            println!("TalkWah: On/Off {:?}", reader.read_f32_le()?);
-            println!("TalkWah: Mouth {:?}", reader.read_f32_le()?);
-            println!("TalkWah: ModWheel {:?}", reader.read_f32_le()?);
-            println!("TalkWah: Size {:?}", reader.read_f32_le()?);
-            println!("TalkWah: Bright {:?}", reader.read_f32_le()?);
-
-            println!("Phaser: On/Off  {:?}", reader.read_f32_le()?);
-            println!("Phaser: Modulation Rate {:?}", reader.read_f32_le()?);
-            println!("Phaser: Color {:?}", reader.read_f32_le()?);
-            println!("Phaser: Rotate {:?}", reader.read_f32_le()?);
-            println!("Phaser: Sweep Minimum {:?}", reader.read_f32_le()?);
-            println!("Phaser: Sweep Maximum {:?}", reader.read_f32_le()?);
-            println!("Phaser: MIDI Tempo Sync {:?}", reader.read_f32_le()?);
-            println!("Phaser: Dry/Wet {:?}", reader.read_f32_le()?);
-            println!("Phaser: Invert {:?}", reader.read_f32_le()?);
-            println!("Phaser: Notches {:?}", reader.read_f32_le()?);
-
-            println!("Flanger: On/Off {:?}", reader.read_f32_le()?);
-            println!("Flanger: Modulation Rate {:?}", reader.read_f32_le()?);
-            println!("Flanger: Static {:?}", reader.read_f32_le()?);
-            println!("Flanger: Modulation Depth {:?}", reader.read_f32_le()?);
-            println!("Flanger: Color {:?}", reader.read_f32_le()?);
-            println!("Flanger: Rotate {:?}", reader.read_f32_le()?);
-            println!("Flanger: MIDI Tempo Sync {:?}", reader.read_f32_le()?);
-            println!("Flanger: Invert {:?}", reader.read_f32_le()?);
-            println!("Flanger: Dry/Wet {:?}", reader.read_f32_le()?);
-
-            println!("Tremolo: On/Off {:?}", reader.read_f32_le()?);
-            println!("Tremolo: Rate {:?}", reader.read_f32_le()?);
-            println!("Tremolo: Intensity {:?}", reader.read_f32_le()?);
-            println!("Tremolo: MIDI Tempo Sync {:?}", reader.read_f32_le()?);
-            println!("Tremolo: Stereo Panning {:?}", reader.read_f32_le()?);
-            println!("Tremolo: Pulse Width {:?}", reader.read_f32_le()?);
-            println!("Tremolo: Attack {:?}", reader.read_f32_le()?);
-            println!("Tremolo: Decay {:?}", reader.read_f32_le()?);
-
-            println!("Reverb: On/Off {:?}", reader.read_f32_le()?);
-            println!("Reverb: Dry/Wet {:?}", reader.read_f32_le()?);
-            println!("Reverb: Bright {:?}", reader.read_f32_le()?);
-            println!("Reverb: RoomSize {:?}", reader.read_f32_le()?);
-            println!("Reverb: Treble {:?}", reader.read_f32_le()?);
-
-            println!("PsycheDelay: On/Off {:?}", reader.read_f32_le()?);
-            println!("PsycheDelay: Dry/Wet {:?}", reader.read_f32_le()?);
-            println!("PsycheDelay: Delay Time {:?}", reader.read_f32_le()?);
-            println!("PsycheDelay: Reverse Delay {:?}", reader.read_f32_le()?);
-            println!("PsycheDelay: Delay Detune {:?}", reader.read_f32_le()?);
-            println!("PsycheDelay: Feedback {:?}", reader.read_f32_le()?);
-
-            println!("PsycheDelay: ? {:?}", reader.read_f32_le()?);
-
-            println!("PsycheDelay: Delay Pitch Shift {:?}", reader.read_f32_le()?);
-            println!("PsycheDelay: MIDI Tempo Sync {:?}", reader.read_f32_le()?);
-            println!("PsycheDelay: Stereo {:?}", reader.read_f32_le()?);
-
-            println!("Delay: Delay Time {:?}", reader.read_f32_le()?);
-            println!("Delay: Diffusion {:?}", reader.read_f32_le()?);
-            println!("Delay: Modulation Depth {:?}", reader.read_f32_le()?);
-            println!("Delay: Feedback {:?}", reader.read_f32_le()?);
-            println!("Delay: High Cut {:?}", reader.read_f32_le()?);
-            println!("Delay: Low Cut {:?}", reader.read_f32_le()?);
-            println!("Delay: Invert {:?}", reader.read_f32_le()?);
-            println!("Delay: On/Off {:?}", reader.read_f32_le()?);
-            println!("Delay: Dry/Wet {:?}", reader.read_f32_le()?);
-            println!("Delay: Modulation Rate {:?}", reader.read_f32_le()?);
-            println!("Delay: MIDI Tempo Sync {:?}", reader.read_f32_le()?);
-            println!("Delay: Sync Delays {:?}", reader.read_f32_le()?);
+            FM8EffectSettings::print(&mut reader)?;
 
             println!("73 {:?}", reader.read_f32_le()?);
             println!("74 {:?}", reader.read_f32_le()?);
@@ -944,125 +852,7 @@ impl FM8Preset {
             println!("21467 {:?}", reader.read_i8()?);
             println!("21467 {:?}", reader.read_i8()?);
 
-            println!("FM Matrix A-OUT1 {:?}", reader.read_i32_le()?);
-            println!("FM Matrix A-OUT2 {:?}", reader.read_i32_le()?);
-            println!("FM Matrix A-IN {:?}", reader.read_i32_le()?);
-            println!("FM Matrix B-A {:?}", reader.read_i32_le()?);
-            println!("FM Matrix B-B {:?}", reader.read_i32_le()?);
-            println!("FM Matrix B-C {:?}", reader.read_i32_le()?);
-            println!("FM Matrix B-D {:?}", reader.read_i32_le()?);
-            println!("FM Matrix B-E {:?}", reader.read_i32_le()?);
-            println!("FM Matrix B-F {:?}", reader.read_i32_le()?);
-            println!("FM Matrix B-X {:?}", reader.read_i32_le()?);
-            println!("FM Matrix B-Z {:?}", reader.read_i32_le()?);
-
-            println!("FM Matrix B-OUT1 {:?}", reader.read_i32_le()?);
-            println!("FM Matrix B-OUT2 {:?}", reader.read_i32_le()?);
-            println!("FM Matrix B-IN {:?}", reader.read_i32_le()?);
-            println!("FM Matrix C-A {:?}", reader.read_i32_le()?);
-            println!("FM Matrix C-B {:?}", reader.read_i32_le()?);
-            println!("FM Matrix C-C {:?}", reader.read_i32_le()?);
-            println!("FM Matrix C-D {:?}", reader.read_i32_le()?);
-            println!("FM Matrix C-E {:?}", reader.read_i32_le()?);
-            println!("FM Matrix C-F {:?}", reader.read_i32_le()?);
-            println!("FM Matrix C-X {:?}", reader.read_i32_le()?);
-            println!("FM Matrix C-Z {:?}", reader.read_i32_le()?);
-
-            println!("FM Matrix C-OUT1 {:?}", reader.read_i32_le()?);
-            println!("FM Matrix C-OUT2 {:?}", reader.read_i32_le()?);
-            println!("FM Matrix C-IN {:?}", reader.read_i32_le()?);
-            println!("FM Matrix D-A {:?}", reader.read_i32_le()?);
-            println!("FM Matrix D-B {:?}", reader.read_i32_le()?);
-            println!("FM Matrix D-C {:?}", reader.read_i32_le()?);
-            println!("FM Matrix D-D {:?}", reader.read_i32_le()?);
-            println!("FM Matrix D-E {:?}", reader.read_i32_le()?);
-            println!("FM Matrix D-F {:?}", reader.read_i32_le()?);
-            println!("FM Matrix D-X {:?}", reader.read_i32_le()?);
-            println!("FM Matrix D-Z {:?}", reader.read_i32_le()?);
-
-            println!("FM Matrix D-OUT1 {:?}", reader.read_i32_le()?);
-            println!("FM Matrix D-OUT2 {:?}", reader.read_i32_le()?);
-            println!("FM Matrix D-IN {:?}", reader.read_i32_le()?);
-            println!("FM Matrix E-A {:?}", reader.read_i32_le()?);
-            println!("FM Matrix E-B {:?}", reader.read_i32_le()?);
-            println!("FM Matrix E-C {:?}", reader.read_i32_le()?);
-            println!("FM Matrix E-D {:?}", reader.read_i32_le()?);
-            println!("FM Matrix E-E {:?}", reader.read_i32_le()?);
-            println!("FM Matrix E-F {:?}", reader.read_i32_le()?);
-            println!("FM Matrix E-X {:?}", reader.read_i32_le()?);
-            println!("FM Matrix E-Z {:?}", reader.read_i32_le()?);
-
-            println!("FM Matrix E-OUT1 {:?}", reader.read_i32_le()?);
-            println!("FM Matrix E-OUT2 {:?}", reader.read_i32_le()?);
-            println!("FM Matrix E-IN {:?}", reader.read_i32_le()?);
-            println!("FM Matrix F-A {:?}", reader.read_i32_le()?);
-            println!("FM Matrix F-B {:?}", reader.read_i32_le()?);
-            println!("FM Matrix F-C {:?}", reader.read_i32_le()?);
-            println!("FM Matrix F-D {:?}", reader.read_i32_le()?);
-            println!("FM Matrix F-E {:?}", reader.read_i32_le()?);
-            println!("FM Matrix F-F {:?}", reader.read_i32_le()?);
-            println!("FM Matrix F-X {:?}", reader.read_i32_le()?);
-            println!("FM Matrix F-Z {:?}", reader.read_i32_le()?);
-
-            println!("FM Matrix F-OUT1 {:?}", reader.read_i32_le()?);
-            println!("FM Matrix F-OUT2 {:?}", reader.read_i32_le()?);
-            println!("FM Matrix F-IN {:?}", reader.read_i32_le()?);
-            println!("FM Matrix X-A {:?}", reader.read_i32_le()?);
-            println!("FM Matrix X-B {:?}", reader.read_i32_le()?);
-            println!("FM Matrix X-C {:?}", reader.read_i32_le()?);
-            println!("FM Matrix X-D {:?}", reader.read_i32_le()?);
-            println!("FM Matrix X-E {:?}", reader.read_i32_le()?);
-            println!("FM Matrix X-F {:?}", reader.read_i32_le()?);
-            println!("FM Matrix X-X {:?}", reader.read_i32_le()?);
-            println!("FM Matrix X-Z {:?}", reader.read_i32_le()?);
-
-            println!("FM Matrix X-OUT1 {:?}", reader.read_i32_le()?);
-            println!("FM Matrix X-OUT2 {:?}", reader.read_i32_le()?);
-            println!("FM Matrix X-IN {:?}", reader.read_i32_le()?);
-            println!("FM Matrix Z-A {:?}", reader.read_i32_le()?);
-            println!("FM Matrix Z-B {:?}", reader.read_i32_le()?);
-            println!("FM Matrix Z-C {:?}", reader.read_i32_le()?);
-            println!("FM Matrix Z-D {:?}", reader.read_i32_le()?);
-            println!("FM Matrix Z-E {:?}", reader.read_i32_le()?);
-            println!("FM Matrix Z-F {:?}", reader.read_i32_le()?);
-            println!("FM Matrix Z-X {:?}", reader.read_i32_le()?);
-            println!("FM Matrix Z-Z {:?}", reader.read_i32_le()?);
-
-            println!("FM Matrix Z-OUT1 {:?}", reader.read_i32_le()?);
-            println!("FM Matrix Z-OUT2 {:?}", reader.read_i32_le()?);
-            println!("FM Matrix Z-IN {:?}", reader.read_i32_le()?);
-            println!("FM Matrix IN-A {:?}", reader.read_i32_le()?);
-            println!("FM Matrix IN-B {:?}", reader.read_i32_le()?);
-            println!("FM Matrix IN-C {:?}", reader.read_i32_le()?);
-            println!("FM Matrix IN-D {:?}", reader.read_i32_le()?);
-            println!("FM Matrix IN-E {:?}", reader.read_i32_le()?);
-            println!("FM Matrix IN-F {:?}", reader.read_i32_le()?);
-            println!("FM Matrix IN-X {:?}", reader.read_i32_le()?);
-            println!("FM Matrix IN-Z {:?}", reader.read_i32_le()?);
-
-            println!("FM Matrix IN-OUT1 {:?}", reader.read_i32_le()?);
-            println!("FM Matrix IN-OUT2 {:?}", reader.read_i32_le()?);
-            println!("FM Matrix IN-IN {:?}", reader.read_i32_le()?);
-            println!("FM Matrix A-A {:?}", reader.read_i32_le()?);
-            println!("FM Matrix A-B {:?}", reader.read_i32_le()?);
-            println!("FM Matrix A-C {:?}", reader.read_i32_le()?);
-            println!("FM Matrix A-D {:?}", reader.read_i32_le()?);
-            println!("FM Matrix A-E {:?}", reader.read_i32_le()?);
-            println!("FM Matrix A-F {:?}", reader.read_i32_le()?);
-            println!("FM Matrix A-X {:?}", reader.read_i32_le()?);
-            println!("FM Matrix A-Z {:?}", reader.read_i32_le()?);
-
-            println!("FM Matrix IN-OUT1 {:?}", reader.read_i32_le()?);
-            println!("FM Matrix IN-OUT2 {:?}", reader.read_i32_le()?);
-            println!("FM Matrix IN-IN {:?}", reader.read_i32_le()?);
-            println!("FM Matrix A-A {:?}", reader.read_i32_le()?);
-            println!("FM Matrix A-B {:?}", reader.read_i32_le()?);
-            println!("FM Matrix A-C {:?}", reader.read_i32_le()?);
-            println!("FM Matrix A-D {:?}", reader.read_i32_le()?);
-            println!("FM Matrix A-E {:?}", reader.read_i32_le()?);
-            println!("FM Matrix A-F {:?}", reader.read_i32_le()?);
-            println!("FM Matrix A-X {:?}", reader.read_i32_le()?);
-            println!("FM Matrix A-Z {:?}", reader.read_i32_le()?);
+            FM8Matrix::print(&mut reader)?;
 
             println!("FM Matrix A {:?}", reader.read_i8()?);
             println!("393 {:?}", reader.read_u8()?);
