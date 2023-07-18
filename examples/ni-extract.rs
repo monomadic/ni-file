@@ -9,7 +9,7 @@ pub fn main() -> Result<(), Box<dyn std::error::Error>> {
     let file = std::fs::read(&path)?;
 
     // make sure this is a valid NISound container
-    if NIFileType::detect(file.as_slice()) == NIFileType::NISound {
+    if NIFileType::read(file.as_slice())? == NIFileType::NISound {
         // read the repository
         let repo = NISound::read(file.as_slice())?;
 

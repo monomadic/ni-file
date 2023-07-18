@@ -1,4 +1,4 @@
-use crate::read_bytes::ReadBytesExt;
+use crate::{read_bytes::ReadBytesExt, Error};
 
 /// Supported NI filetypes.
 #[derive(Debug, PartialEq)]
@@ -38,67 +38,73 @@ impl NIFileType {
     ///     println!("NISound detected!");
     /// }
     /// ```
-    pub fn detect(buffer: &[u8]) -> NIFileType {
-        filetype(buffer)
-    }
-}
+    pub fn read<R: ReadBytesExt>(mut reader: R) -> Result<Self, Error> {
+        let header_signature = reader.read_u32_le()?;
 
-pub fn filetype(buffer: &[u8]) -> NIFileType {
-    // TODO: change to reader
-    let mut reader = buffer.clone();
-    let header_signature = reader.read_u32_le().unwrap();
+        Ok(match header_signature {
+            0xB36EE55E => NIFileType::Kontakt1,
 
-    match header_signature {
-        0xB36EE55E => NIFileType::Kontakt1,
-
-        0x7fa89012 | 0x10874353 | 0xab85ef01 => {
-            info!("Detected: NKS (Little Endian)");
-            NIFileType::NKS
-        }
-        0x1290A87F => NIFileType::NKS, // BE
-        0xA4D6E55A | 0x74B5A69B => {
-            panic!("kontakt: unknown");
-        }
-        0x54AC705E => NIFileType::KontaktResource,
-        0x7A10E13F => NIFileType::KontaktCache,
-        _ => {
-            // check for 'hsin' at byte 12
-            // TODO: NISound::detect()
-            if buffer[12..16] == [104, 115, 105, 110] {
-                info!("Detected: NISound");
-                return NIFileType::NISound;
+            0x7fa89012 | 0x10874353 | 0xab85ef01 => {
+                info!("Detected: NKS (Little Endian)");
+                NIFileType::NKS
             }
-
-            // BE monolith byte 35: 0x4916e63c
-            // 0x16ccf80a : valid sample magic?
-
-            // .nkm
-            // check for '/\ NI FC MTD  /\' (NI FileContainer Metadata)
-            if buffer[0..4] == [0x2F, 0x5C, 0x20, 0x4E] {
-                info!("Detected: NIMonolith");
-                return NIFileType::NIMonolith;
+            0x1290A87F => NIFileType::NKS, // BE
+            0xA4D6E55A | 0x74B5A69B => {
+                panic!("kontakt: unknown");
             }
+            0x54AC705E => NIFileType::KontaktResource,
+            0x7A10E13F => NIFileType::KontaktCache,
+            _ => {
+                // check for 'hsin' at byte 12
+                // TODO: NISound::detect()
+                let _ = reader.read_u32_le()?;
+                let hsin = reader.read_bytes(4)?;
+                let hsin = hsin.as_slice();
 
-            // .ncw
-            if buffer[0..4] == [0x01, 0xA8, 0x9E, 0xD6] {
-                info!("Detected: NICompressedWave");
-                return NIFileType::NICompressedWave;
+                match hsin {
+                    b"HSIN" => NIFileType::NISound,
+                    [0x2F, 0x5C, 0x20, 0x4E] => NIFileType::NIMonolith,
+                    [0x01, 0xA8, 0x9E, 0xD6] => NIFileType::NICompressedWave,
+                    [45, 110, 105, 45] => NIFileType::KoreSound,
+                    _ => NIFileType::Unknown,
+                }
+                //
+                // if hsin == b"HSIN" {
+                //     info!("Detected: NISound");
+                //     return Ok(NIFileType::NISound);
+                // }
+                //
+                // // BE monolith byte 35: 0x4916e63c
+                // // 0x16ccf80a : valid sample magic?
+                //
+                // // .nkm
+                // // check for '/\ NI FC MTD  /\' (NI FileContainer Metadata)
+                // if hsin == [0x2F, 0x5C, 0x20, 0x4E] {
+                //     info!("Detected: NIMonolith");
+                //     return Ok(NIFileType::NIMonolith);
+                // }
+                //
+                // // .ncw
+                // if hsin == [0x01, 0xA8, 0x9E, 0xD6] {
+                //     info!("Detected: NICompressedWave");
+                //     return Ok(NIFileType::NICompressedWave);
+                // }
+                //
+                // // check for '-ni-' at byte 0
+                // if hsin == [45, 110, 105, 45] {
+                //     info!("Detected: KoreSound");
+                //     return NIFileType::KoreSound;
+                // }
+                //
+                // // if buffer[0..4] == b"E8MF".to_owned() {
+                // //     info!("Detected: FM8 Preset");
+                // //     return NIFileType::FM8Preset;
+                // // }
+                //
+                // error!("Unknown or unsupported filetype!");
+                // NIFileType::Unknown
             }
-
-            // check for '-ni-' at byte 0
-            if buffer[0..4] == [45, 110, 105, 45] {
-                info!("Detected: KoreSound");
-                return NIFileType::KoreSound;
-            }
-
-            // if buffer[0..4] == b"E8MF".to_owned() {
-            //     info!("Detected: FM8 Preset");
-            //     return NIFileType::FM8Preset;
-            // }
-
-            error!("Unknown or unsupported filetype!");
-            NIFileType::Unknown
-        }
+        })
     }
 }
 
@@ -109,7 +115,8 @@ mod tests {
     #[test]
     fn test_kontakt_1() {
         assert_eq!(
-            filetype(include_bytes!("../tests/data/kontakt-1/000-crunchy.nki")),
+            NIFileType::read(include_bytes!("../tests/data/kontakt-1/000-crunchy.nki").as_slice())
+                .unwrap(),
             NIFileType::Kontakt1
         );
     }
@@ -117,9 +124,11 @@ mod tests {
     #[test]
     fn test_kontakt_7() {
         assert_eq!(
-            filetype(include_bytes!(
-                "../tests/data/nisound/file/kontakt/7.1.3.0/000-default.nki"
-            )),
+            NIFileType::read(
+                include_bytes!("../tests/data/nisound/file/kontakt/7.1.3.0/000-default.nki")
+                    .as_slice()
+            )
+            .unwrap(),
             NIFileType::NISound
         );
     }
