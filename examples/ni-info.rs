@@ -51,7 +51,7 @@ pub fn main() -> Result<()> {
             NIFileType::Kontakt1 => {
                 println!("format:\t\tKontakt1");
             }
-            NIFileType::NKSLE | NIFileType::NKSBE => {
+            NIFileType::NKS => {
                 println!("format:\t\tNKS Container (Kontakt)");
                 NKSFile::read(file.as_slice())?;
             }

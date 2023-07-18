@@ -14,8 +14,7 @@ pub enum NIFileType {
 
     /// Kontakt instruments
     Kontakt1,
-    NKSLE,
-    NKSBE,
+    NKS,
 
     KontaktResource,
     KontaktCache,
@@ -54,9 +53,9 @@ pub fn filetype(buffer: &[u8]) -> NIFileType {
 
         0x7fa89012 | 0x10874353 | 0xab85ef01 => {
             info!("Detected: NKS (Little Endian)");
-            NIFileType::NKSLE
+            NIFileType::NKS
         }
-        0x1290A87F => NIFileType::NKSBE,
+        0x1290A87F => NIFileType::NKS, // BE
         0xA4D6E55A | 0x74B5A69B => {
             panic!("kontakt: unknown");
         }

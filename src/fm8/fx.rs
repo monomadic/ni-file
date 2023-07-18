@@ -1,4 +1,4 @@
-use crate::{read_bytes::ReadBytesExt, Error, NIFileError};
+use crate::{read_bytes::ReadBytesExt, Error};
 
 pub struct FM8EffectSettings;
 
