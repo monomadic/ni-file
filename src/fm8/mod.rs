@@ -1006,17 +1006,13 @@ impl FM8Preset {
             println!("397 {:?}", reader.read_u8()?);
             println!("397 {:?}", reader.read_u8()?);
             println!("397 {:?}", reader.read_u8()?);
-
             println!("397 {:?}", reader.read_u8()?);
-
-            println!("arpKeySync2 {:x}", reader.read_u8()?);
-            println!("arpKeySync3 {:x}", reader.read_u8()?);
-
-            println!("Arpeggiator BPM {:?}", reader.read_f32_le()?);
-
-            println!("392 {:?}", reader.read_i16_le()?);
-            println!("394 {:?}", reader.read_i16_le()?);
-            println!("396 {:?}", reader.read_i16_le()?);
+            println!("397 {:?}", reader.read_u8()?);
+            println!("397 {:?}", reader.read_u8()?);
+            println!("397 {:?}", reader.read_u8()?);
+            println!("397 {:?}", reader.read_u8()?);
+            println!("397 {:?}", reader.read_u8()?);
+            println!("397 {:?}", reader.read_u8()?);
             println!("398 {:?}", reader.read_i16_le()?);
             println!("400 {:?}", reader.read_i16_le()?);
             println!("402 {:?}", reader.read_i16_le()?);
@@ -1026,6 +1022,11 @@ impl FM8Preset {
             println!("402 {:?}", reader.read_i16_le()?);
             println!("404 {:?}", reader.read_i16_le()?);
             println!("406 {:?}", reader.read_i16_le()?);
+
+            println!("arpKeySync2 {:x}", reader.read_u8()?);
+            println!("arpKeySync3 {:x}", reader.read_u8()?);
+
+            println!("Arpeggiator BPM {:?}", reader.read_f32_le()?);
 
             println!("step - 412 {:?}", reader.read_u8()?);
 
