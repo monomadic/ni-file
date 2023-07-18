@@ -44,8 +44,9 @@ impl FM8Preset {
             println!("unisonDetune {:?}", reader.read_f32_le()?);
             println!("pitchMasterTune {:?}", reader.read_f32_le()?);
             println!("polyphonyMono {:?}", reader.read_f32_le()?);
-            println!("2 {:?}", reader.read_f32_le()?);
-            println!("3 {:?}", reader.read_f32_le()?);
+
+            println!("PB Mode {:?}", reader.read_f32_le()?);
+            println!("Transpose {:?}", reader.read_f32_le()?);
             println!("4 {:?}", reader.read_f32_le()?);
             println!("portamento {:?}", reader.read_f32_le()?);
             println!("3 {:?}", reader.read_f32_le()?);
@@ -211,6 +212,7 @@ impl FM8Preset {
             println!("qualityDigital {:?}", reader.read_f32_le()?);
 
             println!("FXAmount {:?}", reader.read_f32_le()?);
+
             println!("1 {:?}", reader.read_f32_le()?);
             println!("2 {:?}", reader.read_f32_le()?);
             println!("3 {:?}", reader.read_f32_le()?);
@@ -268,8 +270,16 @@ impl FM8Preset {
             println!("55 {:?}", reader.read_f32_le()?);
             println!("56 {:?}", reader.read_f32_le()?);
             println!("57 {:?}", reader.read_f32_le()?);
-            println!("58 {:?}", reader.read_f32_le()?);
-            println!("59 {:?}", reader.read_f32_le()?);
+
+            println!("? {}", reader.read_u8()?);
+            println!("? {}", reader.read_u8()?);
+            println!("? {}", reader.read_u8()?);
+            println!("? {}", reader.read_u8()?);
+
+            println!("? {}", reader.read_u8()?);
+            println!("? {}", reader.read_u8()?);
+            println!("? {}", reader.read_u8()?);
+            println!("? {}", reader.read_u8()?);
 
             println!("? {}", reader.read_u8()?);
             println!("? {}", reader.read_u8()?);
@@ -311,154 +321,258 @@ impl FM8Preset {
             println!("6 {:?}", reader.read_u32_le()?);
             println!("7 {:?}", reader.read_u32_le()?);
             println!("8 {:?}", reader.read_u32_le()?);
-            println!("9 {:?}", reader.read_u32_le()?);
-            println!("9 {:?}", reader.read_u32_le()?);
 
-            println!("? {}", reader.read_u8()?);
-            println!("? {}", reader.read_u8()?);
-            println!("? {}", reader.read_u8()?);
+            println!("A AmpMod PB Up {:?}", reader.read_i8()?);
+            println!("B AmpMod PB Up {:?}", reader.read_i8()?);
+            println!("C AmpMod PB Up {:?}", reader.read_i8()?);
+            println!("D AmpMod PB Up {:?}", reader.read_i8()?);
+            println!("E AmpMod PB Up {:?}", reader.read_i8()?);
+            println!("F AmpMod PB Up {:?}", reader.read_i8()?);
+            println!("X AmpMod PB Up {:?}", reader.read_i8()?);
+            println!("Z AmpMod PB Up {:?}", reader.read_i8()?);
 
-            println!("ampModPBUp {:?}", reader.read_i8()?);
-            println!("1 {:?}", reader.read_i8()?);
-            println!("2 {:?}", reader.read_i8()?);
-            println!("3 {:?}", reader.read_i8()?);
-            println!("4 {:?}", reader.read_i8()?);
-            println!("5 {:?}", reader.read_i8()?);
+            println!("? {:?}", reader.read_i8()?);
+
+            println!("A AmpMod PB Dn {:?}", reader.read_i8()?);
+            println!("B AmpMod PB Dn {:?}", reader.read_i8()?);
+            println!("C AmpMod PB Dn {:?}", reader.read_i8()?);
+            println!("D AmpMod PB Dn {:?}", reader.read_i8()?);
+            println!("E AmpMod PB Dn {:?}", reader.read_i8()?);
+            println!("F AmpMod PB Dn {:?}", reader.read_i8()?);
+            println!("X AmpMod PB Dn {:?}", reader.read_i8()?);
+            println!("Z AmpMod PB Dn {:?}", reader.read_i8()?);
+
             println!("6 {:?}", reader.read_i8()?);
-            println!("7 {:?}", reader.read_i8()?);
-            println!("8 {:?}", reader.read_i8()?);
-            println!("ampModPBDown {:?}", reader.read_i8()?);
-            println!("13 {:?}", reader.read_i8()?);
-            println!("14 {:?}", reader.read_i8()?);
-            println!("15 {:?}", reader.read_i8()?);
-            println!("16 {:?}", reader.read_i8()?);
-            println!("17 {:?}", reader.read_i8()?);
-            println!("18 {:?}", reader.read_i8()?);
-            println!("19 {:?}", reader.read_i8()?);
-            println!("20 {:?}", reader.read_i8()?);
-            println!("ampModAT {:?}", reader.read_i8()?);
-            println!("22 {:?}", reader.read_i8()?);
-            println!("23 {:?}", reader.read_i8()?);
-            println!("14 {:?}", reader.read_i8()?);
-            println!("15 {:?}", reader.read_i8()?);
-            println!("16 {:?}", reader.read_i8()?);
-            println!("17 {:?}", reader.read_i8()?);
-            println!("18 {:?}", reader.read_i8()?);
-            println!("19 {:?}", reader.read_i8()?);
-            println!("ampModMod {:?}", reader.read_i8()?);
-            println!("21 {:?}", reader.read_i8()?);
-            println!("22 {:?}", reader.read_i8()?);
-            println!("23 {:?}", reader.read_i8()?);
-            println!("14 {:?}", reader.read_i8()?);
-            println!("15 {:?}", reader.read_i8()?);
-            println!("16 {:?}", reader.read_i8()?);
-            println!("17 {:?}", reader.read_i8()?);
-            println!("18 {:?}", reader.read_i8()?);
-            println!("ampModBreath {:?}", reader.read_i8()?);
-            println!("20 {:?}", reader.read_i8()?);
-            println!("21 {:?}", reader.read_i8()?);
-            println!("22 {:?}", reader.read_i8()?);
-            println!("23 {:?}", reader.read_i8()?);
 
-            println!("22 {:?}", reader.read_i8()?);
-            println!("22 {:?}", reader.read_i8()?);
-            println!("22 {:?}", reader.read_i8()?);
-            println!("23 {:?}", reader.read_i8()?);
-            println!("14 {:?}", reader.read_i8()?);
-            println!("15 {:?}", reader.read_i8()?);
-            println!("16 {:?}", reader.read_i8()?);
-            println!("17 {:?}", reader.read_i8()?);
+            println!("A AmpMod PB AT {:?}", reader.read_i8()?);
+            println!("B AmpMod PB AT {:?}", reader.read_i8()?);
+            println!("C AmpMod PB AT {:?}", reader.read_i8()?);
+            println!("D AmpMod PB AT {:?}", reader.read_i8()?);
+            println!("E AmpMod PB AT {:?}", reader.read_i8()?);
+            println!("F AmpMod PB AT {:?}", reader.read_i8()?);
+            println!("X AmpMod PB AT {:?}", reader.read_i8()?);
+            println!("Z AmpMod PB AT {:?}", reader.read_i8()?);
+
             println!("18 {:?}", reader.read_i8()?);
-            println!("19 {:?}", reader.read_i8()?);
-            println!("23 {:?}", reader.read_i8()?);
-            println!("14 {:?}", reader.read_i8()?);
-            println!("15 {:?}", reader.read_i8()?);
-            println!("16 {:?}", reader.read_i8()?);
+
+            println!("A AmpMod Mod {:?}", reader.read_i8()?);
+            println!("B AmpMod Mod {:?}", reader.read_i8()?);
+            println!("C AmpMod Mod {:?}", reader.read_i8()?);
+            println!("D AmpMod Mod {:?}", reader.read_i8()?);
+            println!("E AmpMod Mod {:?}", reader.read_i8()?);
+            println!("F AmpMod Mod {:?}", reader.read_i8()?);
+            println!("X AmpMod Mod {:?}", reader.read_i8()?);
+            println!("Z AmpMod Mod {:?}", reader.read_i8()?);
+
             println!("17 {:?}", reader.read_i8()?);
-            println!("18 {:?}", reader.read_i8()?);
-            println!("19 {:?}", reader.read_i8()?);
-            println!("23 {:?}", reader.read_i8()?);
-            println!("14 {:?}", reader.read_i8()?);
-            println!("15 {:?}", reader.read_i8()?);
+
+            println!("A AmpMod PB Breath {:?}", reader.read_i8()?);
+            println!("B AmpMod PB Breath {:?}", reader.read_i8()?);
+            println!("C AmpMod PB Breath {:?}", reader.read_i8()?);
+            println!("D AmpMod PB Breath {:?}", reader.read_i8()?);
+            println!("E AmpMod PB Breath {:?}", reader.read_i8()?);
+            println!("F AmpMod PB Breath {:?}", reader.read_i8()?);
+            println!("X AmpMod PB Breath {:?}", reader.read_i8()?);
+            println!("Z AmpMod PB Breath {:?}", reader.read_i8()?);
+
             println!("16 {:?}", reader.read_i8()?);
-            println!("17 {:?}", reader.read_i8()?);
-            println!("18 {:?}", reader.read_i8()?);
+
+            println!("A AmpMod PB Ctrl 1 {:?}", reader.read_i8()?);
+            println!("B AmpMod PB Ctrl 1 {:?}", reader.read_i8()?);
+            println!("C AmpMod PB Ctrl 1 {:?}", reader.read_i8()?);
+            println!("D AmpMod PB Ctrl 1 {:?}", reader.read_i8()?);
+            println!("E AmpMod PB Ctrl 1 {:?}", reader.read_i8()?);
+            println!("F AmpMod PB Ctrl 1 {:?}", reader.read_i8()?);
+            println!("X AmpMod PB Ctrl 1 {:?}", reader.read_i8()?);
+            println!("Z AmpMod PB Ctrl 1 {:?}", reader.read_i8()?);
+
             println!("19 {:?}", reader.read_i8()?);
 
-            println!("1 {:?}", reader.read_u32_le()?);
-            println!("1 {:?}", reader.read_u32_le()?);
-            println!("1 {:?}", reader.read_u32_le()?);
-            println!("1 {:?}", reader.read_u32_le()?);
-            println!("1 {:?}", reader.read_u32_le()?);
-            println!("1 {:?}", reader.read_u32_le()?);
-            println!("2 {:?}", reader.read_u32_le()?);
-            println!("3 {:?}", reader.read_u32_le()?);
-            println!("4 {:?}", reader.read_u32_le()?);
-            println!("5 {:?}", reader.read_u32_le()?);
-            println!("6 {:?}", reader.read_u32_le()?);
-            println!("7 {:?}", reader.read_u32_le()?);
-            println!("8 {:?}", reader.read_u32_le()?);
-            println!("9 {:?}", reader.read_u32_le()?);
-            println!("9 {:?}", reader.read_u32_le()?);
-            println!("2 {:?}", reader.read_u32_le()?);
-            println!("3 {:?}", reader.read_u32_le()?);
-            println!("4 {:?}", reader.read_u32_le()?);
-            println!("5 {:?}", reader.read_u32_le()?);
-            println!("6 {:?}", reader.read_u32_le()?);
-            println!("7 {:?}", reader.read_u32_le()?);
-            println!("8 {:?}", reader.read_u32_le()?);
-            println!("9 {:?}", reader.read_u32_le()?);
-            println!("9 {:?}", reader.read_u32_le()?);
-            println!("2 {:?}", reader.read_u32_le()?);
-            println!("3 {:?}", reader.read_u32_le()?);
-            println!("4 {:?}", reader.read_u32_le()?);
+            println!("A AmpMod PB Ctrl 2 {:?}", reader.read_i8()?);
+            println!("B AmpMod PB Ctrl 2 {:?}", reader.read_i8()?);
+            println!("C AmpMod PB Ctrl 2 {:?}", reader.read_i8()?);
+            println!("D AmpMod PB Ctrl 2 {:?}", reader.read_i8()?);
+            println!("E AmpMod PB Ctrl 2 {:?}", reader.read_i8()?);
+            println!("F AmpMod PB Ctrl 2 {:?}", reader.read_i8()?);
+            println!("X AmpMod PB Ctrl 2 {:?}", reader.read_i8()?);
+            println!("Z AmpMod PB Ctrl 2 {:?}", reader.read_i8()?);
+
+            println!("23 {:?}", reader.read_i8()?);
+
+            println!("A AmpMod PB In Env {:?}", reader.read_i8()?);
+            println!("B AmpMod PB In Env {:?}", reader.read_i8()?);
+            println!("C AmpMod PB In Env {:?}", reader.read_i8()?);
+            println!("D AmpMod PB In Env {:?}", reader.read_i8()?);
+            println!("E AmpMod PB In Env {:?}", reader.read_i8()?);
+            println!("F AmpMod PB In Env {:?}", reader.read_i8()?);
+            println!("X AmpMod PB In Env {:?}", reader.read_i8()?);
+            println!("Z AmpMod PB In Env {:?}", reader.read_i8()?);
+
+            println!("15 {:?}", reader.read_i8()?);
+
+            println!("A AmpMod PB LFO 1 {:?}", reader.read_i8()?);
+            println!("B AmpMod PB LFO 1 {:?}", reader.read_i8()?);
+            println!("C AmpMod PB LFO 1 {:?}", reader.read_i8()?);
+            println!("D AmpMod PB LFO 1 {:?}", reader.read_i8()?);
+            println!("E AmpMod PB LFO 1 {:?}", reader.read_i8()?);
+            println!("F AmpMod PB LFO 1 {:?}", reader.read_i8()?);
+            println!("X AmpMod PB LFO 1 {:?}", reader.read_i8()?);
+            println!("Z AmpMod PB LFO 1 {:?}", reader.read_i8()?);
 
             println!("u8-2 {:?}", reader.read_u8()?);
+
+            println!("A AmpMod PB LFO 1 AT {:?}", reader.read_i8()?);
+            println!("B AmpMod PB LFO 1 AT {:?}", reader.read_i8()?);
+            println!("C AmpMod PB LFO 1 AT {:?}", reader.read_i8()?);
+            println!("D AmpMod PB LFO 1 AT {:?}", reader.read_i8()?);
+            println!("E AmpMod PB LFO 1 AT {:?}", reader.read_i8()?);
+            println!("F AmpMod PB LFO 1 AT {:?}", reader.read_i8()?);
+            println!("X AmpMod PB LFO 1 AT {:?}", reader.read_i8()?);
+            println!("Z AmpMod PB LFO 1 AT {:?}", reader.read_i8()?);
+
             println!("u8-3 {:?}", reader.read_u8()?);
+
+            println!("A AmpMod PB LFO 1 Mod {:?}", reader.read_i8()?);
+            println!("B AmpMod PB LFO 1 Mod {:?}", reader.read_i8()?);
+            println!("C AmpMod PB LFO 1 Mod {:?}", reader.read_i8()?);
+            println!("D AmpMod PB LFO 1 Mod {:?}", reader.read_i8()?);
+            println!("E AmpMod PB LFO 1 Mod {:?}", reader.read_i8()?);
+            println!("F AmpMod PB LFO 1 Mod {:?}", reader.read_i8()?);
+            println!("X AmpMod PB LFO 1 Mod {:?}", reader.read_i8()?);
+            println!("Z AmpMod PB LFO 1 Mod {:?}", reader.read_i8()?);
+
             println!("u8-4 {:?}", reader.read_u8()?);
-            println!("u8-5 {:?}", reader.read_u8()?);
+
+            println!("A AmpMod PB LFO 1 Breath {:?}", reader.read_i8()?);
+            println!("B AmpMod PB LFO 1 Breath {:?}", reader.read_i8()?);
+            println!("C AmpMod PB LFO 1 Breath {:?}", reader.read_i8()?);
+            println!("D AmpMod PB LFO 1 Breath {:?}", reader.read_i8()?);
+            println!("E AmpMod PB LFO 1 Breath {:?}", reader.read_i8()?);
+            println!("F AmpMod PB LFO 1 Breath {:?}", reader.read_i8()?);
+            println!("X AmpMod PB LFO 1 Breath {:?}", reader.read_i8()?);
+            println!("Z AmpMod PB LFO 1 Breath {:?}", reader.read_i8()?);
+
             println!("u8-6 {:?}", reader.read_u8()?);
+
+            println!("A AmpMod PB LFO 1 Ctrl 1 {:?}", reader.read_i8()?);
+            println!("B AmpMod PB LFO 1 Ctrl 1 {:?}", reader.read_i8()?);
+            println!("C AmpMod PB LFO 1 Ctrl 1 {:?}", reader.read_i8()?);
+            println!("D AmpMod PB LFO 1 Ctrl 1 {:?}", reader.read_i8()?);
+            println!("E AmpMod PB LFO 1 Ctrl 1 {:?}", reader.read_i8()?);
+            println!("F AmpMod PB LFO 1 Ctrl 1 {:?}", reader.read_i8()?);
+            println!("X AmpMod PB LFO 1 Ctrl 1 {:?}", reader.read_i8()?);
+            println!("Z AmpMod PB LFO 1 Ctrl 1 {:?}", reader.read_i8()?);
+
+            println!("u8-5 {:?}", reader.read_u8()?);
+
+            println!("A AmpMod PB LFO 1 Ctrl 2 {:?}", reader.read_i8()?);
+            println!("B AmpMod PB LFO 1 Ctrl 2 {:?}", reader.read_i8()?);
+            println!("C AmpMod PB LFO 1 Ctrl 2 {:?}", reader.read_i8()?);
+            println!("D AmpMod PB LFO 1 Ctrl 2 {:?}", reader.read_i8()?);
+            println!("E AmpMod PB LFO 1 Ctrl 2 {:?}", reader.read_i8()?);
+            println!("F AmpMod PB LFO 1 Ctrl 2 {:?}", reader.read_i8()?);
+            println!("X AmpMod PB LFO 1 Ctrl 2 {:?}", reader.read_i8()?);
+            println!("Z AmpMod PB LFO 1 Ctrl 2 {:?}", reader.read_i8()?);
+
             println!("u8-7 {:?}", reader.read_u8()?);
+
+            println!("A AmpMod PB LFO 2 {:?}", reader.read_i8()?);
+            println!("B AmpMod PB LFO 2 {:?}", reader.read_i8()?);
+            println!("C AmpMod PB LFO 2 {:?}", reader.read_i8()?);
+            println!("D AmpMod PB LFO 2 {:?}", reader.read_i8()?);
+            println!("E AmpMod PB LFO 2 {:?}", reader.read_i8()?);
+            println!("F AmpMod PB LFO 2 {:?}", reader.read_i8()?);
+            println!("X AmpMod PB LFO 2 {:?}", reader.read_i8()?);
+            println!("Z AmpMod PB LFO 2 {:?}", reader.read_i8()?);
+
             println!("u8-8 {:?}", reader.read_u8()?);
+
+            println!("A AmpMod PB LFO 2 AT {:?}", reader.read_i8()?);
+            println!("B AmpMod PB LFO 2 AT {:?}", reader.read_i8()?);
+            println!("C AmpMod PB LFO 2 AT {:?}", reader.read_i8()?);
+            println!("D AmpMod PB LFO 2 AT {:?}", reader.read_i8()?);
+            println!("E AmpMod PB LFO 2 AT {:?}", reader.read_i8()?);
+            println!("F AmpMod PB LFO 2 AT {:?}", reader.read_i8()?);
+            println!("X AmpMod PB LFO 2 AT {:?}", reader.read_i8()?);
+            println!("Z AmpMod PB LFO 2 AT {:?}", reader.read_i8()?);
+
             println!("u8-9 {:?}", reader.read_u8()?);
+
+            println!("A AmpMod PB LFO 2 Mod {:?}", reader.read_i8()?);
+            println!("B AmpMod PB LFO 2 Mod {:?}", reader.read_i8()?);
+            println!("C AmpMod PB LFO 2 Mod {:?}", reader.read_i8()?);
+            println!("D AmpMod PB LFO 2 Mod {:?}", reader.read_i8()?);
+            println!("E AmpMod PB LFO 2 Mod {:?}", reader.read_i8()?);
+            println!("F AmpMod PB LFO 2 Mod {:?}", reader.read_i8()?);
+            println!("X AmpMod PB LFO 2 Mod {:?}", reader.read_i8()?);
+            println!("Z AmpMod PB LFO 2 Mod {:?}", reader.read_i8()?);
+
             println!("u8-10 {:?}", reader.read_u8()?);
+
+            println!("A AmpMod PB LFO 2 Breath {:?}", reader.read_i8()?);
+            println!("B AmpMod PB LFO 2 Breath {:?}", reader.read_i8()?);
+            println!("C AmpMod PB LFO 2 Breath {:?}", reader.read_i8()?);
+            println!("D AmpMod PB LFO 2 Breath {:?}", reader.read_i8()?);
+            println!("E AmpMod PB LFO 2 Breath {:?}", reader.read_i8()?);
+            println!("F AmpMod PB LFO 2 Breath {:?}", reader.read_i8()?);
+            println!("X AmpMod PB LFO 2 Breath {:?}", reader.read_i8()?);
+            println!("Z AmpMod PB LFO 2 Breath {:?}", reader.read_i8()?);
+
             println!("u8-11 {:?}", reader.read_u8()?);
+
+            println!("A AmpMod PB LFO 2 Ctrl 1 {:?}", reader.read_i8()?);
+            println!("B AmpMod PB LFO 2 Ctrl 1 {:?}", reader.read_i8()?);
+            println!("C AmpMod PB LFO 2 Ctrl 1 {:?}", reader.read_i8()?);
+            println!("D AmpMod PB LFO 2 Ctrl 1 {:?}", reader.read_i8()?);
+            println!("E AmpMod PB LFO 2 Ctrl 1 {:?}", reader.read_i8()?);
+            println!("F AmpMod PB LFO 2 Ctrl 1 {:?}", reader.read_i8()?);
+            println!("X AmpMod PB LFO 2 Ctrl 1 {:?}", reader.read_i8()?);
+            println!("Z AmpMod PB LFO 2 Ctrl 1 {:?}", reader.read_i8()?);
+
             println!("u8-12 {:?}", reader.read_u8()?);
-            println!("u8-13 {:?}", reader.read_u8()?);
-            println!("u8-14 {:?}", reader.read_u8()?);
-            println!("u8-15 {:?}", reader.read_u8()?);
-            println!("u8-16 {:?}", reader.read_u8()?);
-            println!("u8-17 {:?}", reader.read_u8()?);
-            println!("u8-18 {:?}", reader.read_u8()?);
-            println!("u8-19 {:?}", reader.read_u8()?);
-            println!("u8-20 {:?}", reader.read_u8()?);
+
+            println!("A AmpMod PB LFO 2 Ctrl 2 {:?}", reader.read_i8()?);
+            println!("B AmpMod PB LFO 2 Ctrl 2 {:?}", reader.read_i8()?);
+            println!("C AmpMod PB LFO 2 Ctrl 2 {:?}", reader.read_i8()?);
+            println!("D AmpMod PB LFO 2 Ctrl 2 {:?}", reader.read_i8()?);
+            println!("E AmpMod PB LFO 2 Ctrl 2 {:?}", reader.read_i8()?);
+            println!("F AmpMod PB LFO 2 Ctrl 2 {:?}", reader.read_i8()?);
+            println!("X AmpMod PB LFO 2 Ctrl 2 {:?}", reader.read_i8()?);
+            println!("Z AmpMod PB LFO 2 Ctrl 2 {:?}", reader.read_i8()?);
+
             println!("u8-21 {:?}", reader.read_u8()?);
-            println!("u8-22 {:?}", reader.read_u8()?);
-            println!("u8-23 {:?}", reader.read_u8()?);
-            println!("u8-24 {:?}", reader.read_u8()?);
-            println!("u8-25 {:?}", reader.read_u8()?);
-            println!("u8-26 {:?}", reader.read_u8()?);
-            println!("u8-27 {:?}", reader.read_u8()?);
-            println!("u8-28 {:?}", reader.read_u8()?);
-            println!("u8-29 {:?}", reader.read_u8()?);
+
+            println!("A AmpMod PB LFO 2 Ctrl ? {:?}", reader.read_i8()?);
+            println!("B AmpMod PB LFO 2 Ctrl ? {:?}", reader.read_i8()?);
+            println!("C AmpMod PB LFO 2 Ctrl ? {:?}", reader.read_i8()?);
+            println!("D AmpMod PB LFO 2 Ctrl ? {:?}", reader.read_i8()?);
+            println!("E AmpMod PB LFO 2 Ctrl ? {:?}", reader.read_i8()?);
+            println!("F AmpMod PB LFO 2 Ctrl ? {:?}", reader.read_i8()?);
+            println!("X AmpMod PB LFO 2 Ctrl ? {:?}", reader.read_i8()?);
+            println!("Z AmpMod PB LFO 2 Ctrl ? {:?}", reader.read_i8()?);
+
             println!("u8-30 {:?}", reader.read_u8()?);
-            println!("u8-31 {:?}", reader.read_u8()?);
-            println!("u8-32 {:?}", reader.read_u8()?);
-            println!("u8-33 {:?}", reader.read_u8()?);
-            println!("u8-34 {:?}", reader.read_u8()?);
-            println!("u8-35 {:?}", reader.read_u8()?);
-            println!("u8-36 {:?}", reader.read_u8()?);
-            println!("u8-37 {:?}", reader.read_u8()?);
-            println!("u8-38 {:?}", reader.read_u8()?);
+
+            println!("A Waveform Invert {:?}", reader.read_u8()?);
+            println!("B Waveform Invert {:?}", reader.read_u8()?);
+            println!("C Waveform Invert {:?}", reader.read_u8()?);
+            println!("D Waveform Invert {:?}", reader.read_u8()?);
+            println!("E Waveform Invert {:?}", reader.read_u8()?);
+            println!("F Waveform Invert {:?}", reader.read_u8()?);
+            println!("X Waveform Invert {:?}", reader.read_u8()?);
+            println!("Z Waveform Invert {:?}", reader.read_u8()?);
+
             println!("u8-39 {:?}", reader.read_u8()?);
-            println!("u8-40 {:?}", reader.read_u8()?);
-            println!("u8-41 {:?}", reader.read_u8()?);
-            println!("u8-42 {:?}", reader.read_u8()?);
-            println!("u8-43 {:?}", reader.read_u8()?);
-            println!("u8-44 {:?}", reader.read_u8()?);
-            println!("u8-45 {:?}", reader.read_u8()?);
-            println!("u8-46 {:?}", reader.read_u8()?);
-            println!("u8-47 {:?}", reader.read_u8()?);
+
+            println!("A Waveform Pitch Env {:?}", reader.read_u8()?);
+            println!("B Waveform Pitch Env {:?}", reader.read_u8()?);
+            println!("C Waveform Pitch Env {:?}", reader.read_u8()?);
+            println!("D Waveform Pitch Env {:?}", reader.read_u8()?);
+            println!("E Waveform Pitch Env {:?}", reader.read_u8()?);
+            println!("F Waveform Pitch Env {:?}", reader.read_u8()?);
+            println!("X Waveform Pitch Env {:?}", reader.read_u8()?);
+            println!("Z Waveform Pitch Env {:?}", reader.read_u8()?);
+
             println!("u8-48 {:?}", reader.read_u8()?);
             println!("u8-49 {:?}", reader.read_u8()?);
 
@@ -513,12 +627,37 @@ impl FM8Preset {
             println!("47 {:?}", reader.read_f32_le()?);
             println!("49 {:?}", reader.read_f32_le()?);
             println!("51 {:?}", reader.read_f32_le()?);
-            println!("53 {:?}", reader.read_u32_le()?);
-            println!("55 {:?}", reader.read_u32_le()?);
-            println!("57 {:?}", reader.read_u32_le()?);
-            println!("59 {:?}", reader.read_u32_le()?);
-            println!("61 {:?}", reader.read_u32_le()?);
-            println!("62 {:?}", reader.read_u32_le()?);
+
+            println!("u8-46 {:?}", reader.read_u8()?);
+            println!("u8-47 {:?}", reader.read_u8()?);
+            println!("u8-46 {:?}", reader.read_u8()?);
+            println!("u8-47 {:?}", reader.read_u8()?);
+
+            println!("u8-46 {:?}", reader.read_u8()?);
+            println!("u8-47 {:?}", reader.read_u8()?);
+            println!("u8-46 {:?}", reader.read_u8()?);
+            println!("u8-47 {:?}", reader.read_u8()?);
+
+            println!("u8-46 {:?}", reader.read_u8()?);
+            println!("u8-47 {:?}", reader.read_u8()?);
+            println!("u8-46 {:?}", reader.read_u8()?);
+            println!("u8-47 {:?}", reader.read_u8()?);
+
+            println!("waveform {:?}", reader.read_u8()?);
+            println!("waveform {:?}", reader.read_u8()?);
+            println!("waveform {:?}", reader.read_u8()?);
+            println!("A Waveform Type {:?}", reader.read_u8()?);
+
+            println!("B Waveform Type {:?}", reader.read_u8()?);
+            println!("C Waveform Type {:?}", reader.read_u8()?);
+            println!("D Waveform Type {:?}", reader.read_u8()?);
+            println!("E Waveform Type {:?}", reader.read_u8()?);
+            println!("F Waveform Type {:?}", reader.read_u8()?);
+            println!("X Waveform Type {:?}", reader.read_u8()?);
+            println!("Z Waveform Type {:?}", reader.read_u8()?);
+
+            println!("4waveform {:?}", reader.read_u8()?);
+
             println!("56 {:?}", reader.read_u32_le()?);
             println!("58 {:?}", reader.read_u32_le()?);
             println!("60 {:?}", reader.read_u32_le()?);
