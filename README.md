@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="banner.jpg" />
+</p>
+
 # Native Instruments File Format
 
 Native Instruments file format support for rust.
