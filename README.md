@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="banner.jpg" />
+  <img src="assets/banner.jpg" />
 </p>
 
 # Native Instruments File Format
