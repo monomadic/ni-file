@@ -21,6 +21,10 @@ Anyone who wants to join the effort, please join the telegram group at https://t
 
 I'm on telegram at `@deathdisco`.
 
+## Usage
+
+Please check the [docs](/doc/README.md) for the latest api changes and schematics.
+
 ## Installation
 
 This is a library, but there are helper binaries in the examples folder:

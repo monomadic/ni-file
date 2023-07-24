@@ -1,7 +1,6 @@
 # Native Instruments file formats.
 
-It might be worth reading [TERMINOLOGY.md](https://github.com/monomadic/ni-file/tree/master/doc/TERMINOLOGY.md)
-which describes terms used throughout the code and this documentation.
+It might be worth reading [TERMINOLOGY.md](TERMINOLOGY.md) which describes terms used throughout the code and this documentation.
 
 ## Reading files
 
