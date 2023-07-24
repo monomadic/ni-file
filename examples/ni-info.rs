@@ -24,7 +24,7 @@ pub fn main() -> Result<()> {
         let file = std::fs::read(&path)?;
         println!("\n{}:", path.as_os_str().to_str().unwrap());
 
-        match NIFileType::read(file.as_slice())? {
+        match NIFileType::detect(file.as_slice())? {
             NIFileType::NISound => {
                 let sound = NISound::read(file.as_slice())?;
                 println!("format:\t\t\tNISound {}", sound.nisound_version()?);

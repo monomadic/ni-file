@@ -11,7 +11,6 @@ pub enum NIFileType {
     NICompressedWave,
     /// Kore has its own simple format.
     KoreSound,
-
     /// Kontakt instruments
     Kontakt1,
     NKS,
@@ -21,10 +20,6 @@ pub enum NIFileType {
 
     Unknown,
 }
-
-//*
-// other magic numbers:
-// 0x464d3845   'FM8E'
 
 impl NIFileType {
     /// Scan a buffer for magic numbers to detect NI filetypes.
@@ -38,7 +33,7 @@ impl NIFileType {
     ///     println!("NISound detected!");
     /// }
     /// ```
-    pub fn read<R: ReadBytesExt>(mut reader: R) -> Result<Self, Error> {
+    pub fn detect<R: ReadBytesExt>(mut reader: R) -> Result<Self, Error> {
         let header_signature = reader.read_u32_le()?;
 
         Ok(match header_signature {
@@ -55,54 +50,27 @@ impl NIFileType {
             0x54AC705E => NIFileType::KontaktResource,
             0x7A10E13F => NIFileType::KontaktCache,
             _ => {
-                // check for 'hsin' at byte 12
-                // TODO: NISound::detect()
                 let _ = reader.read_u32_le()?;
                 let hsin = reader.read_bytes(4)?;
                 let hsin = hsin.as_slice();
 
                 match hsin {
-                    b"HSIN" => NIFileType::NISound,
+                    // check for 'hsin' at byte 12
+                    b"hsin" => NIFileType::NISound,
+
+                    // BE monolith byte 35: 0x4916e63c
+                    // .nkm
+                    // check for '/\ NI FC MTD  /\' (NI FileContainer Metadata)
                     [0x2F, 0x5C, 0x20, 0x4E] => NIFileType::NIMonolith,
+
+                    // .ncw
                     [0x01, 0xA8, 0x9E, 0xD6] => NIFileType::NICompressedWave,
+
+                    // check for '-ni-' at byte 0
                     [45, 110, 105, 45] => NIFileType::KoreSound,
+
                     _ => NIFileType::Unknown,
                 }
-                //
-                // if hsin == b"HSIN" {
-                //     info!("Detected: NISound");
-                //     return Ok(NIFileType::NISound);
-                // }
-                //
-                // // BE monolith byte 35: 0x4916e63c
-                // // 0x16ccf80a : valid sample magic?
-                //
-                // // .nkm
-                // // check for '/\ NI FC MTD  /\' (NI FileContainer Metadata)
-                // if hsin == [0x2F, 0x5C, 0x20, 0x4E] {
-                //     info!("Detected: NIMonolith");
-                //     return Ok(NIFileType::NIMonolith);
-                // }
-                //
-                // // .ncw
-                // if hsin == [0x01, 0xA8, 0x9E, 0xD6] {
-                //     info!("Detected: NICompressedWave");
-                //     return Ok(NIFileType::NICompressedWave);
-                // }
-                //
-                // // check for '-ni-' at byte 0
-                // if hsin == [45, 110, 105, 45] {
-                //     info!("Detected: KoreSound");
-                //     return NIFileType::KoreSound;
-                // }
-                //
-                // // if buffer[0..4] == b"E8MF".to_owned() {
-                // //     info!("Detected: FM8 Preset");
-                // //     return NIFileType::FM8Preset;
-                // // }
-                //
-                // error!("Unknown or unsupported filetype!");
-                // NIFileType::Unknown
             }
         })
     }
@@ -115,8 +83,10 @@ mod tests {
     #[test]
     fn test_kontakt_1() {
         assert_eq!(
-            NIFileType::read(include_bytes!("../tests/data/kontakt-1/000-crunchy.nki").as_slice())
-                .unwrap(),
+            NIFileType::detect(
+                include_bytes!("../tests/data/kontakt-1/000-crunchy.nki").as_slice()
+            )
+            .unwrap(),
             NIFileType::Kontakt1
         );
     }
@@ -124,7 +94,7 @@ mod tests {
     #[test]
     fn test_kontakt_7() {
         assert_eq!(
-            NIFileType::read(
+            NIFileType::detect(
                 include_bytes!("../tests/data/nisound/file/kontakt/7.1.3.0/000-default.nki")
                     .as_slice()
             )
