@@ -1,4 +1,8 @@
-use crate::{kontakt::voice_groups::VoiceGroups, read_bytes::ReadBytesExt, Error};
+use crate::{
+    kontakt::{bparam_array::BParamArray, voice_groups::VoiceGroups},
+    read_bytes::ReadBytesExt,
+    Error,
+};
 
 use super::{
     objects::program_data::{ProgramDataV80, ProgramDataVA5},
@@ -15,11 +19,12 @@ pub enum PubData {
     ProgramDataV80(ProgramDataV80),
     ProgramDataVA5(ProgramDataVA5),
     VoiceGroups(VoiceGroups),
+    BParamArray(BParamArray),
 }
 
 impl PubData {
-    pub fn create<R: ReadBytesExt>(mut reader: R, id: u16, version: u16) -> Result<Self, Error> {
-        println!("K4PL_PubData::create(0x{:x}, 0x{:x})", id, version);
+    pub fn from<R: ReadBytesExt>(mut reader: R, id: u16, version: u16) -> Result<Self, Error> {
+        println!("K4PL_PubData::from(0x{:x}, 0x{:x})", id, version);
 
         // match id {
         //     _ if id > 0x3e => match id {
@@ -68,9 +73,19 @@ impl PubData {
                 _ if version < 0x99 => Ok(PubData::ZoneListV95(ZoneDataV95::read(&mut reader)?)),
                 _ => panic!("Unknown ZoneData version: {}", version),
             },
+            0x32 => Ok(PubData::VoiceGroups(VoiceGroups::read(&mut reader)?)),
+            0x3a => Ok(PubData::BParamArray(BParamArray::read(&mut reader, 8)?)),
             _ => {
                 panic!("id");
             }
         }
     }
+}
+
+#[test]
+fn test_pubdata_0x28_0x80() -> Result<(), Error> {
+    let mut file = include_bytes!("tests/ProgramData/0x28-0x80").as_slice();
+    let pd = PubData::from(&mut file, 0x28, 0x80)?;
+
+    Ok(())
 }

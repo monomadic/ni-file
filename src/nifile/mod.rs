@@ -1,3 +1,5 @@
+mod kontakt;
+
 use crate::{nks::nksfile::NKSFile, read_bytes::*, Error, NIFileType};
 
 pub enum NIFile {

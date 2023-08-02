@@ -11,9 +11,7 @@ use crate::{
 };
 use std::convert::{TryFrom, TryInto};
 
-/// High level wrapper for NISound containers. As this file format is very complex, this wrapper
-/// was created for most users. Unless you are exploring unknown parts of the standards NI created,
-/// this is probably the way you want to use this library.
+/// High level wrapper for NISound containers
 pub struct NISound(Item);
 
 impl NISound {

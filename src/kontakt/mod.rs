@@ -1,9 +1,10 @@
-mod bparam_array;
+pub mod internal_patch_data;
+
+pub mod bparam_array;
 mod bprogram_container;
 mod chunkdata;
 mod filename_list;
 pub mod group_list;
-pub mod internal_patch_data;
 mod privpars;
 mod pubdata;
 mod start_criteria;

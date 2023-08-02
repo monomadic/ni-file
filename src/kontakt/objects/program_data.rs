@@ -1,4 +1,4 @@
-use crate::{read_bytes::ReadBytesExt, NIFileError};
+use crate::{read_bytes::ReadBytesExt, Error, NIFileError};
 
 #[derive(Debug)]
 pub struct ProgramDataV80 {
@@ -116,4 +116,11 @@ impl ProgramDataVA5 {
             wallpaper_filename: reader.read_i32_le()?,
         })
     }
+}
+
+#[test]
+fn test_pubdata_0x28_0x80() -> Result<(), Error> {
+    let mut file = include_bytes!("../tests/ProgramData/0x28-0x80").as_slice();
+    ProgramDataV80::read(&mut file)?;
+    Ok(())
 }

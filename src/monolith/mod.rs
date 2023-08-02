@@ -11,7 +11,10 @@ impl NIMonolith {
         // NI FC MTD
         // Native Instruments FileContainer MetaData
         let mtd_magic = reader.read_bytes(16)?;
-        debug_assert_eq!(mtd_magic, b"/\\ NI FC MTD  /\\");
+        debug_assert_eq!(
+            mtd_magic, b"/\\ NI FC MTD  /\\",
+            "Monolith header tag not found."
+        );
 
         let _header_chunk = reader.read_bytes(256)?;
         let _file_count = reader.read_u64_le()?;
