@@ -2,6 +2,14 @@
 
 A generic container type that contains public data, private data, and children.
 
+- LibKIO `StructuredObject`
+- Kontakt 7
+  - `SER::Read<>`
+  - `SER::CHUNKED::Read<>`
+  - BSerializable
+  - BSerializablePreset
+  - BSerializableStructured
+
 | Offset | Length | Type     | Name              | Example | Notes                      |
 | ------ | ------ | -------- | ----------------- | ------- | -------------------------- |
 | 0x00   | 0x02   | uint16_t | id                | 0x25    |                            |

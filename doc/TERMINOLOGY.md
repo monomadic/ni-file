@@ -5,6 +5,7 @@
 - `Container` the structure of a NISound file.
 - `NKI` Native Instruments Kontakt Instrument
 - `GP` unknown, perhaps 'General Purpose'?
+- `AB` Audio Block?
 - `NISD` Native Instruments Sound Domain. (a domainID).
 - `StructuredObject` Building blocks of patch data. Generic form.
 - `K4PO` Kontakt 4 Public Object

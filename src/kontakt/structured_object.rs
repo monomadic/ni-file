@@ -1,12 +1,14 @@
 use crate::{kontakt::chunkdata::ChunkData, read_bytes::ReadBytesExt, Error, NIFileError};
 
+use super::pubdata::PubData;
+
+#[doc = include_str!("../../doc/schematics/nks-objects/StructuredObject.md")]
 #[derive(Debug)]
 pub struct StructuredObject {
     pub id: u16,
-    pub data: Vec<u8>,
     pub version: u16,
-
-    pub private_data: Vec<u8>,
+    pub public_params: Vec<u8>,
+    pub private_params: Vec<u8>,
     pub children: Vec<StructuredObject>,
 }
 
@@ -18,21 +20,31 @@ impl StructuredObject {
             NIFileError::Generic(format!("Failed to read StructuredObject data: {e}"))
         })?;
 
-        let mut reader = data.as_slice();
+        println!("  id: 0x{id:x}");
 
+        let mut reader = data.as_slice();
         let is_data_structured = reader.read_bool()?;
+
         if !is_data_structured {
-            // read data raw
+            println!("  [raw]");
+            // return Ok(Self {
+            //     id,
+            //     data: Vec::new(),
+            //     version: 0,
+            //     private_data: reader.read_bytes(reader.len())?,
+            //     children: Vec::new(),
+            // });
             return Ok(Self {
                 id,
-                data,
+                public_params: reader.read_bytes(reader.len())?,
                 version: 0,
-                private_data: Vec::new(),
+                private_params: Vec::new(),
                 children: Vec::new(),
             });
         }
 
         let public_data_version = reader.read_u16_le()?;
+        println!("  version: 0x{public_data_version:x}");
 
         let private_data_length = reader.read_u32_le()?;
         let private_data = reader
@@ -71,48 +83,127 @@ impl StructuredObject {
 
         Ok(Self {
             id,
-
-            private_data,
-
+            private_params: private_data,
             version: public_data_version,
-            data: public_data,
-
+            public_params: public_data,
             children,
         })
     }
-}
 
-#[test]
-fn test_structured_object_0x28() -> Result<(), Error> {
-    let mut file = include_bytes!("tests/StructuredObject/0x28").as_slice();
-    let obj = StructuredObject::read(&mut file)?;
-
-    assert_eq!(obj.id, 0x28);
-    assert_eq!(obj.version, 0x80);
-    assert_eq!(obj.children.len(), 3);
-
-    // panic!("{:?}", obj);
-    for child in obj.children {
-        crate::kontakt::pubdata::PubData::from(child.data.as_slice(), child.id, child.version)?;
+    pub fn pubdata(&self) -> Result<Option<PubData>, Error> {
+        Ok(Some(PubData::from(
+            self.public_params.as_slice(),
+            self.id,
+            self.version,
+        )?))
     }
 
-    // TODO: test file is read to end
-
-    Ok(())
+    // pub fn factory(id: u32, length: u32) -> Option<Self> {
+    //     match id {
+    //         0..=0xe => match id {
+    //             5 => {
+    //                 // Add logic for id=5
+    //                 todo!();
+    //             }
+    //             6 => {
+    //                 todo!();
+    //                 // return Some(StructuredObjectType::PublicObject(PublicObject {
+    //                 //     id,
+    //                 //     length,
+    //                 //     // other initializations...
+    //                 // }));
+    //             }
+    //             _ => {
+    //                 // Add logic for other cases...
+    //                 todo!();
+    //             }
+    //         },
+    //         0xf..=0x2a => {
+    //             if id == 0xf {
+    //                 // Add logic for id=0xf
+    //                 todo!();
+    //             }
+    //         }
+    //         // Add other cases...
+    //         0x2b | 0x3f | 0x41 => {
+    //             todo!();
+    //             // return Some(StructuredObjectType::PublicObject(PublicObject {
+    //             //     id,
+    //             //     length,
+    //             //     // other initializations...
+    //             // }));
+    //         }
+    //         // Add more cases...
+    //         _ => {}
+    //     }
+    //
+    //     None
+    // }
 }
 
-#[test]
-fn test_structured_object_0x3d() -> Result<(), Error> {
-    let mut file = include_bytes!("tests/StructuredObject/0x3D").as_slice();
-    let obj = StructuredObject::read(&mut file)?;
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::utils::format_hex;
 
-    assert_eq!(obj.id, 0x3d);
-    assert_eq!(obj.version, 0x00);
-    assert_eq!(obj.children.len(), 0);
+    #[test]
+    fn test_structured_object_0x28() -> Result<(), Error> {
+        let mut file = include_bytes!("tests/StructuredObject/0x28").as_slice();
+        let obj = StructuredObject::read(&mut file)?;
 
-    // TODO: test file is read to end
+        assert_eq!(obj.id, 0x28);
+        assert_eq!(obj.version, 0x80);
+        assert_eq!(obj.children.len(), 3);
 
-    Ok(())
+        println!("public_data: {}", format_hex(&obj.public_params));
+        println!("private_data: {}", format_hex(&obj.private_params));
+
+        for child in obj.children {
+            println!("{child:?}");
+            child.pubdata()?;
+
+            // for child in child.children {
+            //     crate::kontakt::pubdata::PubData::from(child.data.as_slice(), child.id, child.version)?;
+            // }
+        }
+
+        // TODO: test file is read to end
+
+        Ok(())
+    }
+
+    #[test]
+    fn test_structured_object_0x3d() -> Result<(), Error> {
+        let mut file = include_bytes!("tests/StructuredObject/0x3D").as_slice();
+        let obj = StructuredObject::read(&mut file)?;
+
+        assert_eq!(obj.id, 0x3d);
+        assert_eq!(obj.version, 0x00);
+        assert_eq!(obj.children.len(), 0);
+
+        assert!(obj.pubdata().is_ok());
+
+        // TODO: test file is read to end
+
+        Ok(())
+    }
+
+    #[test]
+    fn test_structured_object_0x25() -> Result<(), Error> {
+        let mut file = include_bytes!("tests/StructuredObject/0x25").as_slice();
+        let obj = StructuredObject::read(&mut file)?;
+
+        assert_eq!(obj.id, 0x25);
+        assert_eq!(obj.version, 0x50);
+        assert_eq!(obj.children.len(), 1);
+
+        println!("public_data: {}", format_hex(&obj.public_params));
+        println!("private_data: {}", format_hex(&obj.private_params));
+
+        // TODO: test file is read to end
+
+        Ok(())
+    }
 }
 
 // // pub struct StructuredObjectReader {

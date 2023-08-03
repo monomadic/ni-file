@@ -28,12 +28,12 @@ pub(crate) fn get_files(path: &str) -> Result<Vec<PathBuf>> {
 }
 
 #[allow(dead_code)]
-fn format_hex(buffer: &[u8]) -> String {
+pub fn format_hex(buffer: &[u8]) -> String {
     format!(
         "{}",
         &buffer
             .iter()
-            .map(|x| format!("{:02x} ", x))
+            .map(|x| format!("{:02x}", x))
             .collect::<String>()
     )
 }

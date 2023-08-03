@@ -1,3 +1,4 @@
+pub mod bprogram;
 mod loopdata;
 pub mod program;
 pub mod program_data;

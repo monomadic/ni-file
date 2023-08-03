@@ -20,6 +20,7 @@ pub enum PubData {
     ProgramDataVA5(ProgramDataVA5),
     VoiceGroups(VoiceGroups),
     BParamArray(BParamArray),
+    Empty,
 }
 
 impl PubData {
@@ -59,7 +60,11 @@ impl PubData {
         }
 
         if id < 0x28 {
-            panic!("id < 0x28");
+            if id == 0x25 {
+                return Ok(PubData::Empty);
+            } else {
+                panic!("id < 0x28 - 0x{id:x}");
+            }
         }
 
         match id {
@@ -76,7 +81,7 @@ impl PubData {
             0x32 => Ok(PubData::VoiceGroups(VoiceGroups::read(&mut reader)?)),
             0x3a => Ok(PubData::BParamArray(BParamArray::read(&mut reader, 8)?)),
             _ => {
-                panic!("id");
+                panic!("Unsupported PubData id: {id}");
             }
         }
     }
@@ -85,7 +90,8 @@ impl PubData {
 #[test]
 fn test_pubdata_0x28_0x80() -> Result<(), Error> {
     let mut file = include_bytes!("tests/ProgramData/0x28-0x80").as_slice();
-    let pd = PubData::from(&mut file, 0x28, 0x80)?;
+    let _pd = PubData::from(&mut file, 0x28, 0x80)?;
+    // println!("{pd:?}");
 
     Ok(())
 }

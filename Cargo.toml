@@ -2,13 +2,13 @@
 name = "ni-file"
 version = "0.0.1"
 authors = ["monomadic"]
-edition = "2018"
+edition = "2021"
 
 [dependencies]
-log = "0.4.17"
-thiserror = "1.0.43"
+log = "0.4.19"
+thiserror = "1.0.44"
 glob = "0.3.1"
-time = "0.3.23"
+time = "0.3.24"
 
 [dev-dependencies]
 wax = "0.5.0"
