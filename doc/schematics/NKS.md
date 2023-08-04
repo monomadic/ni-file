@@ -1,6 +1,8 @@
 # NKS Container
 
-## SerType
+## Kontakt Objects
+
+Ids are known as `SerType` or Serialization Type.
 
 - 0x00 BParModBase
 - 0x01 BAutomationObject
@@ -48,15 +50,26 @@
 - 0x28 BProgram
 - 0x29 BProgramContainer
 - 0x2a BSample
+- 0x2b ? VoiceGroups
 - 0x2c BZone
 - 0x2d BZoneLevelEnv
 - 0x2e BZoneArraySer
 - 0x2f BGroupCompleteSer
 - 0x30 PresetImpl
+- 0x32 ? VoiceGroups
+- 0x33 ? GroupList
+- 0x34 ? ZoneList
+- 0x35 ? PrivateRawObject
+- 0x36 ? ProgramList
+- 0x37 ? SlotList
+- 0x38 ? StarCritList
+- 0x39 ? LoopArray
 - 0x3a BParameterArraySer<BParFX,8>
 - 0x3b BParameterArraySer<BParInternalMod,16>
 - 0x3c BParameterArraySer<BParExternalMod,32>
+- 0x3d FileNameListPreK51
 - 0x3e BOutputConfiguration
+- 0x3d FileNameListPreK1 / FNTablePreK51
 - 0x3f BParEnv_AHDSR
 - 0x40 BParEnv_FM7
 - 0x41 BParEnv_DBD
@@ -66,7 +79,10 @@
 - 0x45 BInsertBus
 - 0x46 BParFXSSLGBusComp
 - 0x47 SaveSettings
+- 0x48 ? PrivateRawObject
+- 0x49 ? PrivateRawObject
 - 0x4a BParGroupDynamics
+- 0x4b FNTableImpl | FileNameList
 - 0x4c BParFXFBComp
 - 0x4d BParFXJump
 - 0x4e QuickBrowseData

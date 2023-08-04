@@ -1,17 +1,63 @@
 use crate::{kontakt::structured_object::StructuredObject, read_bytes::ReadBytesExt, Error};
 
-pub struct BProgram {}
+#[derive(Debug)]
+pub struct BProgram {
+    public: ProgramPublicParams,
+    private: ProgramPrivateParams,
+}
 
-impl From<StructuredObject> for BProgram {
-    fn from(so: StructuredObject) -> Self {
-        todo!()
+impl TryFrom<StructuredObject> for BProgram {
+    type Error = Error;
+
+    fn try_from(so: StructuredObject) -> Result<Self, Self::Error> {
+        Ok(Self {
+            public: ProgramPublicParams::read(so.public_data.as_slice(), so.version)?,
+            private: ProgramPrivateParams::read(so.private_data.as_slice(), so.version)?,
+        })
     }
 }
 
+#[derive(Debug, Default)]
+pub struct ProgramPublicParams {
+    name: String,
+    num_bytes_samples_total: f64,
+    transpose: i8,
+    volume: f32,
+    pan: f32,
+    tune: f32,
+    low_velocity: u8,
+    high_velocity: u8,
+    low_key: u8,
+    high_key: u8,
+    default_key_switch: i16,
+    dfd_channel_preload_size: i32,
+    library_id: i32,
+    fingerprint: u32,
+    loading_flags: u32,
+    group_solo: bool,
+    cat_icon_idx: i32,
+    instrument_credits: String,
+    instrument_author: String,
+    instrument_url: String,
+    instrument_cat1: i16,
+    instrument_cat2: i16,
+    instrument_cat3: i16,
+}
+
+impl ProgramPublicParams {
+    pub fn read<R: ReadBytesExt>(mut reader: R, version: u16) -> Result<Self, Error> {
+        todo!();
+    }
+}
+
+#[derive(Debug, Default)]
 pub struct ProgramPrivateParams {}
 
 impl ProgramPrivateParams {
-    pub fn read<R: ReadBytesExt>(mut reader: R) -> Result<Self, Error> {
+    pub fn read<R: ReadBytesExt>(mut reader: R, version: u16) -> Result<Self, Error> {
+        if version != 0x80 {
+            panic!("unsupported version: {version}");
+        }
         // assume v80 for now
 
         let version = reader.read_u32_le()?;
@@ -55,13 +101,25 @@ impl ProgramPrivateParams {
         println!("{:?}", reader.read_bool()?);
 
         // BFileName - SER::ReadBFNTrns
+        // should be -1
         let filename = reader.read_i32_le()?;
         if filename > 0 {
-            todo!();
+            panic!("Unsupported: SER::ReadBFNTrns");
         }
 
-        // BHeapArray<>
-        println!("array items: {:?}", reader.read_u32_le()?);
+        // 5 x SER::Read(stream,(BSerializable *)&this[0xcb].field_0x12d, ctx);
+
+        // SER::ReadBHeapArr<>
+
+        // SER::ARRAY::ReadInsert<>
+        // SER::ARRAY::ReadInsert<>
+
+        let filename = reader.read_i32_le()?;
+        if filename > 0 {
+            panic!("Unsupported: SER::ReadBFNTrns");
+        }
+
+        // another BFileName
 
         Ok(Self {})
     }
@@ -69,14 +127,12 @@ impl ProgramPrivateParams {
 
 #[cfg(test)]
 mod tests {
-    use crate::Error;
-
     use super::*;
 
     #[test]
     fn test_private_params_v80() -> Result<(), Error> {
         let mut file = include_bytes!("../tests/Program/v80/private_params/000").as_slice();
-        let params = ProgramPrivateParams::read(&mut file)?;
+        let params = ProgramPrivateParams::read(&mut file, 0x80)?;
         Ok(())
     }
 }

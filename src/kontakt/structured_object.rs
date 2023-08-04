@@ -1,14 +1,14 @@
 use crate::{kontakt::chunkdata::ChunkData, read_bytes::ReadBytesExt, Error, NIFileError};
 
-use super::pubdata::PubData;
+use super::{pubdata::PubData, structured_object_data::StructuredObjectData};
 
 #[doc = include_str!("../../doc/schematics/nks-objects/StructuredObject.md")]
 #[derive(Debug)]
 pub struct StructuredObject {
     pub id: u16,
     pub version: u16,
-    pub public_params: Vec<u8>,
-    pub private_params: Vec<u8>,
+    pub public_data: Vec<u8>,
+    pub private_data: Vec<u8>,
     pub children: Vec<StructuredObject>,
 }
 
@@ -36,9 +36,9 @@ impl StructuredObject {
             // });
             return Ok(Self {
                 id,
-                public_params: reader.read_bytes(reader.len())?,
+                public_data: reader.read_bytes(reader.len())?,
                 version: 0,
-                private_params: Vec::new(),
+                private_data: Vec::new(),
                 children: Vec::new(),
             });
         }
@@ -83,19 +83,23 @@ impl StructuredObject {
 
         Ok(Self {
             id,
-            private_params: private_data,
+            private_data,
             version: public_data_version,
-            public_params: public_data,
+            public_data,
             children,
         })
     }
 
     pub fn pubdata(&self) -> Result<Option<PubData>, Error> {
         Ok(Some(PubData::from(
-            self.public_params.as_slice(),
+            self.public_data.as_slice(),
             self.id,
             self.version,
         )?))
+    }
+
+    pub fn data(self) -> Result<StructuredObjectData, Error> {
+        Ok(StructuredObjectData::try_from(self)?)
     }
 
     // pub fn factory(id: u32, length: u32) -> Option<Self> {
@@ -155,8 +159,8 @@ mod tests {
         assert_eq!(obj.version, 0x80);
         assert_eq!(obj.children.len(), 3);
 
-        println!("public_data: {}", format_hex(&obj.public_params));
-        println!("private_data: {}", format_hex(&obj.private_params));
+        println!("public_data: {}", format_hex(&obj.public_data));
+        println!("private_data: {}", format_hex(&obj.private_data));
 
         for child in obj.children {
             println!("{child:?}");
@@ -197,8 +201,8 @@ mod tests {
         assert_eq!(obj.version, 0x50);
         assert_eq!(obj.children.len(), 1);
 
-        println!("public_data: {}", format_hex(&obj.public_params));
-        println!("private_data: {}", format_hex(&obj.private_params));
+        println!("public_data: {}", format_hex(&obj.public_data));
+        println!("private_data: {}", format_hex(&obj.private_data));
 
         // TODO: test file is read to end
 

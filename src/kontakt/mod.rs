@@ -9,6 +9,7 @@ mod privpars;
 mod pubdata;
 mod start_criteria;
 mod structured_object;
+mod structured_object_data;
 mod voice_groups;
 mod voice_limit;
 mod zone_data;
