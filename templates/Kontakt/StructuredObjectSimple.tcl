@@ -1,50 +1,72 @@
+include "BProgram.tcl"
+include "VoiceGroups.tcl"
+
 proc chunk {} {
 	section "Chunk" {
-		set id [uint16 -hex "id"]
+		set id [hex 1 "id"]
+		bytes 1
 		set length [uint32 "length"]
 
-		switch -- $id {
-			6 {
+		switch $id {
+			0x06 {
 				sectionname "BParScript"
 				object $length
 			}
-			40 {
+			0x17 {
+				sectionname "BParFXSendLevels"
+				object $length
+			}
+			0x25 {
+				sectionname "BParFX"
+				bytes $length "data"
+			}
+			0x28 {
 				sectionname "BProgram"
 				object $length
 			}
-			50 {
+			0x32 {
 				sectionname "VoiceGroups"
-				bytes $length "data"
+				#bytes $length "data"
+				VoiceGroups
 			}
-			51 {
+			0x33 {
 				sectionname "GroupList"
 				bytes $length "data"
 			}
-			52 {
+			0x34 {
 				sectionname "ZoneList"
 				bytes $length "data"
 			}
-			58 {
+			0x3A {
 				sectionname "BParameterArraySer<BParFX,8>"
 				object $length
 			}
-			69 {
-				sectionname "BInsertBus"
+			0x3D {
+				sectionname "FileNameListPreK51"
 				object $length
 			}
-			71 {
-				sectionname "SaveSettings"
-				object $length
-			}
-			75 {
+			0x4B {
 				sectionname "FNTableImpl"
 				bytes $length "data"
 			}
-			78 {
+			0x45 {
+				sectionname "BInsertBus"
+				object $length
+			}
+			0x47 {
+				sectionname "SaveSettings"
+				object $length
+			}
+			0x3B {
+				sectionname "FNTableImpl"
+				bytes $length "data"
+			}
+			0x4E {
 				sectionname "QuickBrowseData"
 				object $length
 			}
 			default {
+				sectionname "Unsupported $id"
 				bytes $length "data"
 			}
 		}
