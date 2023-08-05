@@ -53,8 +53,8 @@ impl BPatchHeaderV2 {
         let reader = reader.read_bytes(170 - 10)?;
         let mut reader = reader.as_slice();
 
-        let patch_version = reader.read_u32_le()?;
-        assert_eq!(patch_version, u32::swap_bytes(0x722A013E));
+        let header_magic = reader.read_u32_le()?;
+        assert_eq!(header_magic, u32::swap_bytes(0x722A013E));
 
         let patch_type: PatchType = reader.read_u16_le()?.into();
         let app_version = NKIAppVersion {
@@ -100,6 +100,7 @@ impl BPatchHeaderV2 {
         })
     }
 }
+
 impl BPatchHeaderV42 {
     pub fn read_le<R: ReadBytesExt>(mut reader: R) -> Result<Self, NIFileError> {
         let reader = reader.read_bytes(222 - 10)?;
@@ -128,8 +129,11 @@ impl BPatchHeaderV42 {
         let number_of_instruments = reader.read_u16_le()?;
         let _unknown = reader.read_bytes(16)?;
         let icon = reader.read_u32_le()?;
-        let author = reader.read_string_utf8()?;
-        let _unknown = reader.read_bytes(101)?;
+
+        let embedded_strings = reader.read_bytes(104)?;
+        let mut strings = embedded_strings.as_slice();
+        let author = strings.read_string_utf8()?;
+
         let _checksum = reader.read_bytes(16)?;
         let _unknown = reader.read_u32_le()?;
         let _unknown = reader.read_u32_le()?;

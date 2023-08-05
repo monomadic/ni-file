@@ -1,15 +1,17 @@
 use crate::{
-    kontakt::internal_patch_data::InternalPatchData, nks::meta_info::BPatchMetaInfoHeader,
-    read_bytes::ReadBytesExt, NIFileError,
+    kontakt::{chunkdata::ChunkData, structured_object::StructuredObject},
+    nks::meta_info::BPatchMetaInfoHeader,
+    read_bytes::ReadBytesExt,
+    Error, NIFileError,
 };
 
 use super::header::NKSHeader;
 
 #[derive(Debug)]
 pub struct NKSFile {
-    header: NKSHeader,
-    data: InternalPatchData,
-    meta_info: BPatchMetaInfoHeader,
+    pub header: NKSHeader,
+    pub data: Vec<u8>,
+    pub meta_info: BPatchMetaInfoHeader,
 }
 
 impl NKSFile {
@@ -25,20 +27,31 @@ impl NKSFile {
 
         match &header {
             NKSHeader::BPatchHeaderV2(_) => unimplemented!(),
-            NKSHeader::BPatchHeaderV42(h42) => {
+            NKSHeader::BPatchHeaderV42(h) => {
                 // deflate InternalPatchData
-                let decompressed_data = crate::deflate::deflate_checked(
+                let data = crate::deflate::deflate_checked(
                     reader.read_bytes(zlib_length)?.as_slice(),
-                    h42.decompressed_length as usize,
+                    h.decompressed_length as usize,
                 )?;
 
                 Ok(NKSFile {
                     header,
-                    data: InternalPatchData::read(&mut decompressed_data.as_slice())?,
+                    data,
                     meta_info: BPatchMetaInfoHeader::read(&mut reader)?,
                 })
             }
         }
+    }
+
+    pub fn data(&self) -> Result<Vec<StructuredObject>, Error> {
+        let mut objects = Vec::new();
+
+        while let Ok(chunk) = ChunkData::read(self.data.as_slice()) {
+            let mut reader = chunk.data.as_slice();
+            objects.push(StructuredObject::read(&mut reader)?);
+        }
+
+        Ok(objects)
     }
 }
 
