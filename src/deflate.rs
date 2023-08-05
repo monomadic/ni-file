@@ -1,7 +1,7 @@
 ///
 /// fastlz decompression implementation in pure rust
 ///
-use crate::{read_bytes::ReadBytesExt, NIFileError};
+use crate::{read_bytes::ReadBytesExt, Error, NIFileError};
 
 /// deflate with size check
 pub fn deflate_checked(
@@ -12,6 +12,16 @@ pub fn deflate_checked(
 
     assert_eq!(buf.len(), decompressed_len);
     Ok(buf.to_vec())
+}
+
+pub fn deflate_with_lib(
+    compressed_input: &[u8],
+    decompressed_len: usize,
+) -> Result<Vec<u8>, Error> {
+    let mut output = vec![0; decompressed_len];
+    fastlz::decompress(compressed_input, &mut output)
+        .map_err(|e| NIFileError::Generic(format!("Decompression failed: {e:?}")))?;
+    Ok(output)
 }
 
 /// deflate as a stream
@@ -45,27 +55,41 @@ pub fn deflate<R: ReadBytesExt>(mut reader: R) -> Result<Vec<u8>, NIFileError> {
 }
 
 pub(crate) fn fetch_offset(buffer: &Vec<u8>, length: usize, offset: usize) -> Vec<u8> {
-    if offset > buffer.len() {
+    if buffer.len() < offset {
         panic!("Cannot deflate: offset seek is larger than dictionary.");
     }
 
-    (0..length)
-        .map(|index| {
-            let start_pos = buffer.len() - offset;
-            let offset_pos = start_pos + index;
+    let start_pos = buffer.len() - offset;
 
-            if length > offset {
-                let circular_pos = start_pos + (index % offset);
-                if circular_pos > buffer.len() {
-                    panic!("attempt {:?}", (circular_pos, offset, buffer.len()));
-                }
-                buffer[circular_pos]
-            } else {
-                buffer[offset_pos]
-            }
-        })
-        .collect()
+    if start_pos + length > buffer.len() {
+        panic!("Cannot deflate: length + start_pos is larger than dictionary.");
+    }
+
+    buffer[start_pos..start_pos + length].to_vec()
 }
+
+// pub(crate) fn fetch_offset(buffer: &Vec<u8>, length: usize, offset: usize) -> Vec<u8> {
+//     if offset > buffer.len() {
+//         panic!("Cannot deflate: offset seek is larger than dictionary.");
+//     }
+//
+//     (0..length)
+//         .map(|index| {
+//             let start_pos = buffer.len() - offset;
+//             let offset_pos = start_pos + index;
+//
+//             if length > offset {
+//                 let circular_pos = start_pos + (index % offset);
+//                 if circular_pos > buffer.len() {
+//                     panic!("attempt {:?}", (circular_pos, offset, buffer.len()));
+//                 }
+//                 buffer[circular_pos]
+//             } else {
+//                 buffer[offset_pos]
+//             }
+//         })
+//         .collect()
+// }
 
 #[derive(Debug, PartialEq)]
 pub(crate) enum Offset {

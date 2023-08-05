@@ -1,5 +1,10 @@
 use color_eyre::eyre::Result;
-use ni_file::{self, fm8::FM8Preset, nks::nksfile::NKSFile, NIFileType, NISound};
+use ni_file::{
+    self,
+    fm8::FM8Preset,
+    nks::{header::NKSHeader, nksfile::NKSFile},
+    NIFileType, NISound,
+};
 
 pub fn main() -> Result<()> {
     std::env::set_var("RUST_BACKTRACE", "1");
@@ -52,8 +57,42 @@ pub fn main() -> Result<()> {
                 println!("format:\t\tKontakt1");
             }
             NIFileType::NKS => {
-                println!("format:\t\tNKS Container (Kontakt)");
-                NKSFile::read(file.as_slice())?;
+                println!("format:\t\t\tNKS Container (Kontakt)");
+                let nks = NKSFile::read(file.as_slice())?;
+
+                use NKSHeader::*;
+                match nks.header {
+                    BPatchHeaderV2(h) => {
+                        println!("type:\t\t\t{:?}", h.patch_type);
+                        println!(
+                            "kontakt_version:\t{}.{}.{}.{}",
+                            h.app_version.major,
+                            h.app_version.minor_1,
+                            h.app_version.minor_2,
+                            h.app_version.minor_3
+                        );
+                        println!("author:\t\t\t{}", h.author);
+                        println!("zones:\t\t\t{}", h.number_of_zones);
+                        println!("groups:\t\t\t{}", h.number_of_groups);
+                        println!("instruments:\t\t{}", h.number_of_instruments);
+                        println!("created_at:\t\t{}", h.created_at);
+                    }
+                    BPatchHeaderV42(h) => {
+                        println!("type:\t\t\t{:?}", h.patch_type);
+                        println!(
+                            "kontakt_version:\t{}.{}.{}.{}",
+                            h.app_version.major,
+                            h.app_version.minor_1,
+                            h.app_version.minor_2,
+                            h.app_version.minor_3
+                        );
+                        println!("author:\t\t\t{}", h.author);
+                        println!("zones:\t\t\t{}", h.number_of_zones);
+                        println!("groups:\t\t\t{}", h.number_of_groups);
+                        println!("instruments:\t\t{}", h.number_of_instruments);
+                        println!("created_at:\t\t{}", h.created_at);
+                    }
+                }
             }
             NIFileType::Unknown => {
                 println!("format:\t\tunknown");

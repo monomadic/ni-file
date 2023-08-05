@@ -29,7 +29,7 @@ impl NKSFile {
             NKSHeader::BPatchHeaderV2(_) => unimplemented!(),
             NKSHeader::BPatchHeaderV42(h) => {
                 // deflate InternalPatchData
-                let data = crate::deflate::deflate_checked(
+                let data = crate::deflate::deflate_with_lib(
                     reader.read_bytes(zlib_length)?.as_slice(),
                     h.decompressed_length as usize,
                 )?;

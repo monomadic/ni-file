@@ -159,10 +159,10 @@ impl BPatchHeaderV42 {
 
 #[derive(Debug)]
 pub struct NKIAppVersion {
-    major: u8,
-    minor_1: u8,
-    minor_2: u8,
-    minor_3: u8,
+    pub major: u8,
+    pub minor_1: u8,
+    pub minor_2: u8,
+    pub minor_3: u8,
 }
 
 impl ToString for NKIAppVersion {

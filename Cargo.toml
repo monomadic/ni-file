@@ -8,7 +8,8 @@ edition = "2021"
 log = "0.4.19"
 thiserror = "1.0.44"
 glob = "0.3.1"
-time = "0.3.24"
+time = "0.3.25"
+fastlz = "0.1.0"
 
 [dev-dependencies]
 wax = "0.5.0"

@@ -12,8 +12,11 @@ pub fn main() -> Result<(), Box<dyn std::error::Error>> {
     let compressed_input = std::fs::read(&path)?;
 
     let output =
-        ni_file::deflate::deflate_checked(compressed_input.as_slice(), length.parse::<usize>()?)
-            .expect("decompression failed");
+        ni_file::deflate::deflate_with_lib(compressed_input.as_slice(), length.parse::<usize>()?)?;
+
+    // let output =
+    //     ni_file::deflate::deflate_checked(compressed_input.as_slice(), length.parse::<usize>()?)
+    //         .expect("decompression failed");
 
     std::fs::write("dump", output)?;
     println!("file decompresed and written successfully.");
