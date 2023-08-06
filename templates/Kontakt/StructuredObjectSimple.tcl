@@ -1,6 +1,3 @@
-include "BProgram.tcl"
-include "VoiceGroups.tcl"
-
 proc chunk {} {
 	section "Chunk" {
 		set id [hex 1 "id"]
@@ -23,11 +20,12 @@ proc chunk {} {
 			0x28 {
 				sectionname "BProgram"
 				object $length
+				#include "Kontakt/BProgram.tcl"
 			}
 			0x32 {
 				sectionname "VoiceGroups"
 				#bytes $length "data"
-				VoiceGroups
+				include "Kontakt/VoiceGroups.tcl"
 			}
 			0x33 {
 				sectionname "GroupList"
