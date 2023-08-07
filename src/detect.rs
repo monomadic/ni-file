@@ -51,6 +51,8 @@ impl NIFileType {
             0x7A10E13F => NIFileType::KontaktCache,
             _ => {
                 let _ = reader.read_u32_le()?;
+                let _ = reader.read_u32_le()?;
+
                 let hsin = reader.read_bytes(4)?;
                 let hsin = hsin.as_slice();
 
