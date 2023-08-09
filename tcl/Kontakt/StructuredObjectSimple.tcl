@@ -40,7 +40,7 @@ proc chunk {} {
 				object $length
 			}
 			0x3D {
-				sectionname "FileNameListPreK51"
+				sectionname "FNTablePreK51"
 				object $length
 			}
 			0x4B {

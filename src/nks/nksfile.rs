@@ -26,7 +26,18 @@ impl NKSFile {
         let header = NKSHeader::read_le(&mut reader)?;
 
         match &header {
-            NKSHeader::BPatchHeaderV2(_) => unimplemented!(),
+            NKSHeader::BPatchHeaderV2(h) => {
+                let data = crate::deflate::deflate_with_lib(
+                    reader.read_bytes(zlib_length)?.as_slice(),
+                    h.decompressed_length as usize,
+                )?;
+
+                Ok(NKSFile {
+                    header,
+                    data,
+                    meta_info: BPatchMetaInfoHeader::read(&mut reader)?,
+                })
+            }
             NKSHeader::BPatchHeaderV42(h) => {
                 // deflate InternalPatchData
                 let data = crate::deflate::deflate_with_lib(

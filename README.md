@@ -8,14 +8,14 @@ Native Instruments file format support for rust.
 
 Current support:
 
-| Application | Type     | Detect | Container | Preset Data       |
-| ----------- | -------- | ------ | --------- | ----------------- |
-| Kontakt 1   | Kon1     | ✅     | ❌        | ❌                |
-| Kontakt 2   | NKS      | ✅     | ✅        | ❌                |
-| Kontakt 4   | NKS      | ✅     | ✅        | 🕒 Zones, Samples |
-| Kontakt 5+  | NISD     | ✅     | ✅        | 🕒 ~15%           |
-| Kontakt 5+  | Monolith | ✅     | ✅        | ❌                |
-| FM8         | NISD     | ✅     | ✅        | 🕒 ~50%           |
+| Application   | Type     | Detect | Container | Preset Data |
+| ------------- | -------- | ------ | --------- | ----------- |
+| Kontakt 1     | Kon1     | ✅     | ❌        | ❌          |
+| Kontakt 2     | NKS      | ✅     | ✅        | 🕒 ~20%     |
+| Kontakt 4.22+ | NKS      | ✅     | ✅        | 🕒 ~50%     |
+| Kontakt 5+    | NISD     | ✅     | ✅        | 🕒 ~30%     |
+| Kontakt 5+    | Monolith | ✅     | ✅        | ❌          |
+| FM8           | NISD     | ✅     | ✅        | 🕒 ~60%     |
 
 Anyone who wants to join the effort, please join the telegram group at https://t.me/ni_file
 

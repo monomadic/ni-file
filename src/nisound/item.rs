@@ -11,7 +11,7 @@ use std::convert::TryFrom;
 #[derive(Clone, Debug)]
 pub struct Item {
     pub header: ItemHeader,
-    pub data: ItemFrameStack,
+    pub data: ItemFrameStack, // TODO: simplify this, don't read on init.
     pub children: Vec<Item>,
 }
 
