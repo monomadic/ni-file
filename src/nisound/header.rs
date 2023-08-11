@@ -2,6 +2,7 @@ use crate::prelude::*;
 use crate::read_bytes::ReadBytesExt;
 
 /// The header chunk of an [`Item`](crate::nisound::Item).
+/// 40 bytes
 ///
 /// | Offset | Length | Type      | Meaning                     | Default    | Other                                    |
 /// |--------|--------|-----------|-----------------------------|------------|------------------------------------------|
@@ -16,30 +17,28 @@ pub struct ItemHeader {
     /// Size in bytes of the entire [`Item`](super::Item).
     pub size: u64,
     /// Integer that resolves to a [`DomainID`](super::DomainID).
-    pub magic: String, // (+0xC, uint, 'hsin')
+    pub magic: Vec<u8>, // (+0xC, uint, 'hsin')
     pub header_flags: u32, // (0x10, uint)
     pub uuid: Vec<u8>,     // (0x14, 16 bytes, randomly generated)
 }
 
 impl ItemHeader {
     pub fn read<R: ReadBytesExt>(mut reader: R) -> Result<Self> {
-        log::debug!("ItemHeader::read");
         let size = reader.read_u64_le()?;
-        // always 1
-        let _version = reader.read_u32_le()?;
-        let domain_id = reader.read_u32_le()?;
-        // if domaind_id = 'hsin'
-        if domain_id != 1852404584 {
-            return Err(NIFileError::Generic(
-                "hsin not found while reading header".into(),
-            ));
+        let version = reader.read_u32_le()?;
+        let magic = reader.read_bytes(4)?;
+        let header_flags = reader.read_u32_le()?;
+        let uuid = reader.read_bytes(16)?;
+
+        if magic != b"hsin" {
+            return Err(NIFileError::Generic(format!(
+                "Error reading ItemHeader magic: expected 'hsin', got '{magic:?}'"
+            )));
         };
 
-        let magic = reader.read_u32_le()?.to_string();
-        let header_flags = reader.read_u32_le()?;
-        // research
-        let _unknown = reader.read_u32_le()?;
-        let uuid = reader.read_bytes(16)?;
+        if version != 1 {
+            return Err(NIFileError::Generic("version must be 1".into()));
+        };
 
         Ok(Self {
             size,

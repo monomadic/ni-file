@@ -25,7 +25,6 @@ impl Repository {
     /// let sound = NISound::read(file.as_slice()).unwrap();
     /// ```
     pub fn read<R: ReadBytesExt>(reader: R) -> Result<Self> {
-        log::debug!("NISound::read()");
         Ok(Self(ItemContainer::read(reader)?))
     }
 

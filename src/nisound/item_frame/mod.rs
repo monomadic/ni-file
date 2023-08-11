@@ -27,26 +27,39 @@ impl std::convert::TryFrom<&ItemFrameStack> for ItemFrame {
 
 impl ItemFrame {
     pub fn read<R: ReadBytesExt>(mut reader: R) -> Result<Self> {
-        log::debug!("ItemFrame::read");
-
-        let buf = reader.read_sized_data()?;
-        let mut buf = buf.as_slice();
-        let header = ItemFrameHeader::read(&mut buf)?;
+        let header = ItemFrameHeader::read(&mut reader)?;
+        let inner = ItemFrameStack::read(&mut reader)?;
+        let data = reader.read_bytes((header.length as usize - 20 - inner.0.len()) as usize)?;
 
         if header.item_id == ItemID::Item {
             return Err(NIFileError::ItemTerminator);
         }
 
-        let inner = ItemFrameStack::read(&mut buf)?;
-
         Ok(Self {
             header,
             inner,
-            data: buf.to_vec(),
+            data,
         })
     }
 
     pub fn inner(&self) -> Option<ItemFrame> {
         ItemFrame::try_from(&self.inner).ok()
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_item_frame_read() -> Result<()> {
+        let file = include_bytes!("../../../tests/patchdata/NISD/ItemFrame/RepositoryRoot-000");
+        let item = ItemFrame::read(file.as_slice())?;
+        assert_eq!(item.data.len(), 58);
+
+        assert_eq!(item.header.item_id, ItemID::RepositoryRoot);
+        assert_eq!(item.inner().unwrap().header.item_id, ItemID::Authorization);
+
+        Ok(())
     }
 }

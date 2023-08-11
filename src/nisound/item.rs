@@ -14,13 +14,10 @@ pub struct ItemContainer {
 
 impl ItemContainer {
     pub fn read<R: ReadBytesExt>(mut reader: R) -> Result<Self> {
-        let buffer = reader.read_sized_data()?;
-        let mut buffer = buffer.as_slice();
-
         Ok(ItemContainer {
-            header: ItemHeader::read(&mut buffer)?,
-            items: ItemFrame::read(&mut buffer)?,
-            children: ItemContainer::read_children(&mut buffer)?,
+            header: ItemHeader::read(&mut reader)?,
+            items: ItemFrame::read(&mut reader)?,
+            children: ItemContainer::read_children(&mut reader)?,
         })
     }
 
