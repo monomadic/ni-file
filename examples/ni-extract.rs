@@ -34,7 +34,7 @@ pub fn main() -> Result<(), Box<dyn std::error::Error>> {
         NIFileType::Kontakt1 => todo!(),
         NIFileType::NKS => {
             let nks = NKSFile::read(file.as_slice())?;
-            std::fs::write("chunk", &nks.data)?;
+            std::fs::write("chunk", &nks.compressed_patch_data)?;
         }
         NIFileType::KontaktResource => todo!(),
         NIFileType::KontaktCache => todo!(),

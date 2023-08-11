@@ -1,0 +1,1412 @@
+<?xml version="1.0"?>
+<NiSS_Program index="0" name="crunchy Kit" version="0.50">
+  <Parameters>
+    <V name="midiChannel" value="0"/>
+    <V name="output" value="0"/>
+    <V name="masterVolume" value="1"/>
+    <V name="masterPan" value="0.5"/>
+    <V name="masterTune" value="1"/>
+    <V name="lowVelocity" value="1"/>
+    <V name="highVelocity" value="127"/>
+    <V name="lowKey" value="0"/>
+    <V name="highKey" value="127"/>
+  <V name="muteMode" value="none"/>
+  </Parameters>
+  <Polyphony>
+    <VoiceGroup index="0" version="0.60">
+      <V name="name" value="&lt;instrument>"/>
+      <V name="mode" value="kill_oldest"/>
+      <V name="preferReleased" value="yes"/>
+      <V name="maxNumVoices" value="32"/>
+    </VoiceGroup>
+  </Polyphony>
+  <FXDelay version="0.50"/>
+  <FXChorus version="0.50"/>
+  <FXFlanger version="0.50"/>
+  <FXPhaser version="0.50"/>
+  <FXReverb version="0.50"/>
+  <FXCompressor version="0.60"/>
+  <FXLoFi version="0.60"/>
+  <FXShaper version="0.60"/>
+  <FXStereo version="0.60"/>
+  <FXFilter version="0.60"/>
+  <FXDistortion version="0.60"/>
+  <Groups>
+    <NiSS_Group index="0" name="default group" version="0.50">
+      <Parameters>
+        <V name="volume" value="0.5"/>
+        <V name="pan" value="0.5"/>
+        <V name="tune" value="1"/>
+        <V name="keyTracking" value="yes"/>
+        <V name="reverse" value="no"/>
+        <V name="output" value="0"/>
+        <V name="midiChannel" value="0"/>
+        <V name="voiceGroup" value="-1"/>
+      </Parameters>
+      <PlayPosOffset version="0.50"/>
+      <LoopOffset version="0.50"/>
+      <SendLevels version="0.50"/>
+      <Grain version="0.60"/>
+      <Filter version="0.70"/>
+      <FXCompressor version="0.60"/>
+      <FXLoFi version="0.60"/>
+      <FXShaper version="0.60"/>
+      <FXStereo version="0.60"/>
+      <FXDistortion version="0.60"/>
+      <IntModulators>
+        <NiSS_IntMod index="0" version="0.50">
+          <V name="target" value="volume"/>
+          <V name="intensity" value="1"/>
+          <V name="bypass" value="no"/>
+          <V name="retrigger" value="yes"/>
+          <Envelope type="ahdsr" version="0.60">
+            <V name="atkCurving" value="-0.33199998736381531"/>
+            <V name="attack" value="3.8093084242518671e-009"/>
+            <V name="decay" value="750"/>
+            <V name="hold" value="3.8350458145141602"/>
+            <V name="release" value="634.08026123046875"/>
+            <V name="sustain" value="1"/>
+          </Envelope>
+        </NiSS_IntMod>
+      </IntModulators>
+      <ExtModulators>
+        <NiSS_ExtMod index="1" version="0.60">
+          <V name="target" value="filterCutoff"/>
+          <V name="intensity" value="0.25"/>
+          <V name="bypass" value="no"/>
+          <V name="delay" value="0"/>
+          <V name="source" value="keyPos"/>
+        </NiSS_ExtMod>
+        <NiSS_ExtMod index="2" version="0.60">
+          <V name="target" value="pitch"/>
+          <V name="intensity" value="0.1666666716337204"/>
+          <V name="bypass" value="no"/>
+          <V name="delay" value="250"/>
+          <V name="source" value="pitchBend"/>
+        </NiSS_ExtMod>
+      </ExtModulators>
+    </NiSS_Group>
+  </Groups>
+  <Zones>
+    <NiSS_Zone index="0" groupIdx="0" version="0.60">
+      <Parameters>
+        <V name="sampleStart" value="0"/>
+        <V name="sampleEnd" value="0"/>
+        <V name="lowVelocity" value="1"/>
+        <V name="highVelocity" value="100"/>
+        <V name="lowKey" value="36"/>
+        <V name="highKey" value="36"/>
+        <V name="fadeLowVelo" value="0"/>
+        <V name="fadeHighVelo" value="0"/>
+        <V name="fadeLowKey" value="0"/>
+        <V name="fadeHighKey" value="0"/>
+        <V name="rootKey" value="36"/>
+        <V name="zoneVolume" value="1"/>
+        <V name="zonePan" value="0.5"/>
+        <V name="zoneTune" value="1"/>
+      </Parameters>
+      <Loops/>
+      <Sample>
+        <V name="file" value="crunchy Kit Samples\big_kit_bd1.wav"/>
+      </Sample>
+    </NiSS_Zone>
+    <NiSS_Zone index="1" groupIdx="0" version="0.60">
+      <Parameters>
+        <V name="sampleStart" value="0"/>
+        <V name="sampleEnd" value="0"/>
+        <V name="lowVelocity" value="1"/>
+        <V name="highVelocity" value="100"/>
+        <V name="lowKey" value="37"/>
+        <V name="highKey" value="37"/>
+        <V name="fadeLowVelo" value="0"/>
+        <V name="fadeHighVelo" value="0"/>
+        <V name="fadeLowKey" value="0"/>
+        <V name="fadeHighKey" value="0"/>
+        <V name="rootKey" value="37"/>
+        <V name="zoneVolume" value="1"/>
+        <V name="zonePan" value="0.5"/>
+        <V name="zoneTune" value="1"/>
+      </Parameters>
+      <Loops/>
+      <Sample>
+        <V name="file" value="crunchy Kit Samples\big_kit_bd2.wav"/>
+      </Sample>
+    </NiSS_Zone>
+    <NiSS_Zone index="2" groupIdx="0" version="0.60">
+      <Parameters>
+        <V name="sampleStart" value="0"/>
+        <V name="sampleEnd" value="0"/>
+        <V name="lowVelocity" value="1"/>
+        <V name="highVelocity" value="100"/>
+        <V name="lowKey" value="38"/>
+        <V name="highKey" value="38"/>
+        <V name="fadeLowVelo" value="0"/>
+        <V name="fadeHighVelo" value="0"/>
+        <V name="fadeLowKey" value="0"/>
+        <V name="fadeHighKey" value="0"/>
+        <V name="rootKey" value="38"/>
+        <V name="zoneVolume" value="1"/>
+        <V name="zonePan" value="0.5"/>
+        <V name="zoneTune" value="1"/>
+      </Parameters>
+      <Loops/>
+      <Sample>
+        <V name="file" value="crunchy Kit Samples\big_kit_bd3.wav"/>
+      </Sample>
+    </NiSS_Zone>
+    <NiSS_Zone index="3" groupIdx="0" version="0.60">
+      <Parameters>
+        <V name="sampleStart" value="0"/>
+        <V name="sampleEnd" value="0"/>
+        <V name="lowVelocity" value="1"/>
+        <V name="highVelocity" value="100"/>
+        <V name="lowKey" value="39"/>
+        <V name="highKey" value="39"/>
+        <V name="fadeLowVelo" value="0"/>
+        <V name="fadeHighVelo" value="0"/>
+        <V name="fadeLowKey" value="0"/>
+        <V name="fadeHighKey" value="0"/>
+        <V name="rootKey" value="39"/>
+        <V name="zoneVolume" value="1"/>
+        <V name="zonePan" value="0.5"/>
+        <V name="zoneTune" value="1"/>
+      </Parameters>
+      <Loops/>
+      <Sample>
+        <V name="file" value="crunchy Kit Samples\big_kit_bd4.wav"/>
+      </Sample>
+    </NiSS_Zone>
+    <NiSS_Zone index="4" groupIdx="0" version="0.60">
+      <Parameters>
+        <V name="sampleStart" value="0"/>
+        <V name="sampleEnd" value="0"/>
+        <V name="lowVelocity" value="1"/>
+        <V name="highVelocity" value="100"/>
+        <V name="lowKey" value="40"/>
+        <V name="highKey" value="40"/>
+        <V name="fadeLowVelo" value="0"/>
+        <V name="fadeHighVelo" value="0"/>
+        <V name="fadeLowKey" value="0"/>
+        <V name="fadeHighKey" value="0"/>
+        <V name="rootKey" value="40"/>
+        <V name="zoneVolume" value="1"/>
+        <V name="zonePan" value="0.5"/>
+        <V name="zoneTune" value="1"/>
+      </Parameters>
+      <Loops/>
+      <Sample>
+        <V name="file" value="crunchy Kit Samples\big_kit_bd5.wav"/>
+      </Sample>
+    </NiSS_Zone>
+    <NiSS_Zone index="5" groupIdx="0" version="0.60">
+      <Parameters>
+        <V name="sampleStart" value="0"/>
+        <V name="sampleEnd" value="0"/>
+        <V name="lowVelocity" value="1"/>
+        <V name="highVelocity" value="100"/>
+        <V name="lowKey" value="41"/>
+        <V name="highKey" value="41"/>
+        <V name="fadeLowVelo" value="0"/>
+        <V name="fadeHighVelo" value="0"/>
+        <V name="fadeLowKey" value="0"/>
+        <V name="fadeHighKey" value="0"/>
+        <V name="rootKey" value="41"/>
+        <V name="zoneVolume" value="1"/>
+        <V name="zonePan" value="0.5"/>
+        <V name="zoneTune" value="1"/>
+      </Parameters>
+      <Loops/>
+      <Sample>
+        <V name="file" value="crunchy Kit Samples\big_kit_bd6.wav"/>
+      </Sample>
+    </NiSS_Zone>
+    <NiSS_Zone index="6" groupIdx="0" version="0.60">
+      <Parameters>
+        <V name="sampleStart" value="0"/>
+        <V name="sampleEnd" value="0"/>
+        <V name="lowVelocity" value="1"/>
+        <V name="highVelocity" value="100"/>
+        <V name="lowKey" value="42"/>
+        <V name="highKey" value="42"/>
+        <V name="fadeLowVelo" value="0"/>
+        <V name="fadeHighVelo" value="0"/>
+        <V name="fadeLowKey" value="0"/>
+        <V name="fadeHighKey" value="0"/>
+        <V name="rootKey" value="42"/>
+        <V name="zoneVolume" value="1"/>
+        <V name="zonePan" value="0.5"/>
+        <V name="zoneTune" value="1"/>
+      </Parameters>
+      <Loops/>
+      <Sample>
+        <V name="file" value="crunchy Kit Samples\big_kit_bd7.wav"/>
+      </Sample>
+    </NiSS_Zone>
+    <NiSS_Zone index="7" groupIdx="0" version="0.60">
+      <Parameters>
+        <V name="sampleStart" value="0"/>
+        <V name="sampleEnd" value="0"/>
+        <V name="lowVelocity" value="1"/>
+        <V name="highVelocity" value="100"/>
+        <V name="lowKey" value="43"/>
+        <V name="highKey" value="43"/>
+        <V name="fadeLowVelo" value="0"/>
+        <V name="fadeHighVelo" value="0"/>
+        <V name="fadeLowKey" value="0"/>
+        <V name="fadeHighKey" value="0"/>
+        <V name="rootKey" value="43"/>
+        <V name="zoneVolume" value="1"/>
+        <V name="zonePan" value="0.5"/>
+        <V name="zoneTune" value="1"/>
+      </Parameters>
+      <Loops/>
+      <Sample>
+        <V name="file" value="crunchy Kit Samples\big_kit_bd8.wav"/>
+      </Sample>
+    </NiSS_Zone>
+    <NiSS_Zone index="8" groupIdx="0" version="0.60">
+      <Parameters>
+        <V name="sampleStart" value="0"/>
+        <V name="sampleEnd" value="0"/>
+        <V name="lowVelocity" value="101"/>
+        <V name="highVelocity" value="127"/>
+        <V name="lowKey" value="36"/>
+        <V name="highKey" value="36"/>
+        <V name="fadeLowVelo" value="0"/>
+        <V name="fadeHighVelo" value="0"/>
+        <V name="fadeLowKey" value="0"/>
+        <V name="fadeHighKey" value="0"/>
+        <V name="rootKey" value="36"/>
+        <V name="zoneVolume" value="1"/>
+        <V name="zonePan" value="0.5"/>
+        <V name="zoneTune" value="1"/>
+      </Parameters>
+      <Loops/>
+      <Sample>
+        <V name="file" value="crunchy Kit Samples\big_kit_bd1_crunch.wav"/>
+      </Sample>
+    </NiSS_Zone>
+    <NiSS_Zone index="9" groupIdx="0" version="0.60">
+      <Parameters>
+        <V name="sampleStart" value="0"/>
+        <V name="sampleEnd" value="0"/>
+        <V name="lowVelocity" value="101"/>
+        <V name="highVelocity" value="127"/>
+        <V name="lowKey" value="37"/>
+        <V name="highKey" value="37"/>
+        <V name="fadeLowVelo" value="0"/>
+        <V name="fadeHighVelo" value="0"/>
+        <V name="fadeLowKey" value="0"/>
+        <V name="fadeHighKey" value="0"/>
+        <V name="rootKey" value="37"/>
+        <V name="zoneVolume" value="1"/>
+        <V name="zonePan" value="0.5"/>
+        <V name="zoneTune" value="1"/>
+      </Parameters>
+      <Loops/>
+      <Sample>
+        <V name="file" value="crunchy Kit Samples\big_kit_bd2_crunch.wav"/>
+      </Sample>
+    </NiSS_Zone>
+    <NiSS_Zone index="10" groupIdx="0" version="0.60">
+      <Parameters>
+        <V name="sampleStart" value="0"/>
+        <V name="sampleEnd" value="0"/>
+        <V name="lowVelocity" value="101"/>
+        <V name="highVelocity" value="127"/>
+        <V name="lowKey" value="38"/>
+        <V name="highKey" value="38"/>
+        <V name="fadeLowVelo" value="0"/>
+        <V name="fadeHighVelo" value="0"/>
+        <V name="fadeLowKey" value="0"/>
+        <V name="fadeHighKey" value="0"/>
+        <V name="rootKey" value="38"/>
+        <V name="zoneVolume" value="1"/>
+        <V name="zonePan" value="0.5"/>
+        <V name="zoneTune" value="1"/>
+      </Parameters>
+      <Loops/>
+      <Sample>
+        <V name="file" value="crunchy Kit Samples\big_kit_bd3_crunch.wav"/>
+      </Sample>
+    </NiSS_Zone>
+    <NiSS_Zone index="11" groupIdx="0" version="0.60">
+      <Parameters>
+        <V name="sampleStart" value="0"/>
+        <V name="sampleEnd" value="0"/>
+        <V name="lowVelocity" value="101"/>
+        <V name="highVelocity" value="127"/>
+        <V name="lowKey" value="39"/>
+        <V name="highKey" value="39"/>
+        <V name="fadeLowVelo" value="0"/>
+        <V name="fadeHighVelo" value="0"/>
+        <V name="fadeLowKey" value="0"/>
+        <V name="fadeHighKey" value="0"/>
+        <V name="rootKey" value="39"/>
+        <V name="zoneVolume" value="1"/>
+        <V name="zonePan" value="0.5"/>
+        <V name="zoneTune" value="1"/>
+      </Parameters>
+      <Loops/>
+      <Sample>
+        <V name="file" value="crunchy Kit Samples\big_kit_bd4_crunch.wav"/>
+      </Sample>
+    </NiSS_Zone>
+    <NiSS_Zone index="12" groupIdx="0" version="0.60">
+      <Parameters>
+        <V name="sampleStart" value="0"/>
+        <V name="sampleEnd" value="0"/>
+        <V name="lowVelocity" value="101"/>
+        <V name="highVelocity" value="127"/>
+        <V name="lowKey" value="40"/>
+        <V name="highKey" value="40"/>
+        <V name="fadeLowVelo" value="0"/>
+        <V name="fadeHighVelo" value="0"/>
+        <V name="fadeLowKey" value="0"/>
+        <V name="fadeHighKey" value="0"/>
+        <V name="rootKey" value="40"/>
+        <V name="zoneVolume" value="1"/>
+        <V name="zonePan" value="0.5"/>
+        <V name="zoneTune" value="1"/>
+      </Parameters>
+      <Loops/>
+      <Sample>
+        <V name="file" value="crunchy Kit Samples\big_kit_bd5_crunch.wav"/>
+      </Sample>
+    </NiSS_Zone>
+    <NiSS_Zone index="13" groupIdx="0" version="0.60">
+      <Parameters>
+        <V name="sampleStart" value="0"/>
+        <V name="sampleEnd" value="0"/>
+        <V name="lowVelocity" value="101"/>
+        <V name="highVelocity" value="127"/>
+        <V name="lowKey" value="41"/>
+        <V name="highKey" value="41"/>
+        <V name="fadeLowVelo" value="0"/>
+        <V name="fadeHighVelo" value="0"/>
+        <V name="fadeLowKey" value="0"/>
+        <V name="fadeHighKey" value="0"/>
+        <V name="rootKey" value="41"/>
+        <V name="zoneVolume" value="1"/>
+        <V name="zonePan" value="0.5"/>
+        <V name="zoneTune" value="1"/>
+      </Parameters>
+      <Loops/>
+      <Sample>
+        <V name="file" value="crunchy Kit Samples\big_kit_bd6_crunch.wav"/>
+      </Sample>
+    </NiSS_Zone>
+    <NiSS_Zone index="14" groupIdx="0" version="0.60">
+      <Parameters>
+        <V name="sampleStart" value="0"/>
+        <V name="sampleEnd" value="0"/>
+        <V name="lowVelocity" value="101"/>
+        <V name="highVelocity" value="127"/>
+        <V name="lowKey" value="42"/>
+        <V name="highKey" value="42"/>
+        <V name="fadeLowVelo" value="0"/>
+        <V name="fadeHighVelo" value="0"/>
+        <V name="fadeLowKey" value="0"/>
+        <V name="fadeHighKey" value="0"/>
+        <V name="rootKey" value="42"/>
+        <V name="zoneVolume" value="1"/>
+        <V name="zonePan" value="0.5"/>
+        <V name="zoneTune" value="1"/>
+      </Parameters>
+      <Loops/>
+      <Sample>
+        <V name="file" value="crunchy Kit Samples\big_kit_bd7_crunch.wav"/>
+      </Sample>
+    </NiSS_Zone>
+    <NiSS_Zone index="15" groupIdx="0" version="0.60">
+      <Parameters>
+        <V name="sampleStart" value="0"/>
+        <V name="sampleEnd" value="0"/>
+        <V name="lowVelocity" value="101"/>
+        <V name="highVelocity" value="127"/>
+        <V name="lowKey" value="43"/>
+        <V name="highKey" value="43"/>
+        <V name="fadeLowVelo" value="0"/>
+        <V name="fadeHighVelo" value="0"/>
+        <V name="fadeLowKey" value="0"/>
+        <V name="fadeHighKey" value="0"/>
+        <V name="rootKey" value="43"/>
+        <V name="zoneVolume" value="1"/>
+        <V name="zonePan" value="0.5"/>
+        <V name="zoneTune" value="1"/>
+      </Parameters>
+      <Loops/>
+      <Sample>
+        <V name="file" value="crunchy Kit Samples\big_kit_bd8_crunch.wav"/>
+      </Sample>
+    </NiSS_Zone>
+    <NiSS_Zone index="16" groupIdx="0" version="0.60">
+      <Parameters>
+        <V name="sampleStart" value="0"/>
+        <V name="sampleEnd" value="0"/>
+        <V name="lowVelocity" value="1"/>
+        <V name="highVelocity" value="100"/>
+        <V name="lowKey" value="65"/>
+        <V name="highKey" value="65"/>
+        <V name="fadeLowVelo" value="0"/>
+        <V name="fadeHighVelo" value="0"/>
+        <V name="fadeLowKey" value="0"/>
+        <V name="fadeHighKey" value="0"/>
+        <V name="rootKey" value="65"/>
+        <V name="zoneVolume" value="1"/>
+        <V name="zonePan" value="0.5"/>
+        <V name="zoneTune" value="1"/>
+      </Parameters>
+      <Loops/>
+      <Sample>
+        <V name="file" value="crunchy Kit Samples\big_kit_bell.wav"/>
+      </Sample>
+    </NiSS_Zone>
+    <NiSS_Zone index="17" groupIdx="0" version="0.60">
+      <Parameters>
+        <V name="sampleStart" value="0"/>
+        <V name="sampleEnd" value="0"/>
+        <V name="lowVelocity" value="101"/>
+        <V name="highVelocity" value="127"/>
+        <V name="lowKey" value="65"/>
+        <V name="highKey" value="65"/>
+        <V name="fadeLowVelo" value="0"/>
+        <V name="fadeHighVelo" value="0"/>
+        <V name="fadeLowKey" value="0"/>
+        <V name="fadeHighKey" value="0"/>
+        <V name="rootKey" value="65"/>
+        <V name="zoneVolume" value="1"/>
+        <V name="zonePan" value="0.5"/>
+        <V name="zoneTune" value="1"/>
+      </Parameters>
+      <Loops/>
+      <Sample>
+        <V name="file" value="crunchy Kit Samples\big_kit_bell_crunch.wav"/>
+      </Sample>
+    </NiSS_Zone>
+    <NiSS_Zone index="18" groupIdx="0" version="0.60">
+      <Parameters>
+        <V name="sampleStart" value="0"/>
+        <V name="sampleEnd" value="0"/>
+        <V name="lowVelocity" value="1"/>
+        <V name="highVelocity" value="100"/>
+        <V name="lowKey" value="64"/>
+        <V name="highKey" value="64"/>
+        <V name="fadeLowVelo" value="0"/>
+        <V name="fadeHighVelo" value="0"/>
+        <V name="fadeLowKey" value="0"/>
+        <V name="fadeHighKey" value="0"/>
+        <V name="rootKey" value="64"/>
+        <V name="zoneVolume" value="1"/>
+        <V name="zonePan" value="0.5"/>
+        <V name="zoneTune" value="1"/>
+      </Parameters>
+      <Loops/>
+      <Sample>
+        <V name="file" value="crunchy Kit Samples\big_kit_china.wav"/>
+      </Sample>
+    </NiSS_Zone>
+    <NiSS_Zone index="19" groupIdx="0" version="0.60">
+      <Parameters>
+        <V name="sampleStart" value="0"/>
+        <V name="sampleEnd" value="0"/>
+        <V name="lowVelocity" value="101"/>
+        <V name="highVelocity" value="127"/>
+        <V name="lowKey" value="64"/>
+        <V name="highKey" value="64"/>
+        <V name="fadeLowVelo" value="0"/>
+        <V name="fadeHighVelo" value="0"/>
+        <V name="fadeLowKey" value="0"/>
+        <V name="fadeHighKey" value="0"/>
+        <V name="rootKey" value="64"/>
+        <V name="zoneVolume" value="1"/>
+        <V name="zonePan" value="0.5"/>
+        <V name="zoneTune" value="1"/>
+      </Parameters>
+      <Loops/>
+      <Sample>
+        <V name="file" value="crunchy Kit Samples\big_kit_china_crunch.wav"/>
+      </Sample>
+    </NiSS_Zone>
+    <NiSS_Zone index="20" groupIdx="0" version="0.60">
+      <Parameters>
+        <V name="sampleStart" value="0"/>
+        <V name="sampleEnd" value="0"/>
+        <V name="lowVelocity" value="101"/>
+        <V name="highVelocity" value="127"/>
+        <V name="lowKey" value="63"/>
+        <V name="highKey" value="63"/>
+        <V name="fadeLowVelo" value="0"/>
+        <V name="fadeHighVelo" value="0"/>
+        <V name="fadeLowKey" value="0"/>
+        <V name="fadeHighKey" value="0"/>
+        <V name="rootKey" value="63"/>
+        <V name="zoneVolume" value="1"/>
+        <V name="zonePan" value="0.5"/>
+        <V name="zoneTune" value="1"/>
+      </Parameters>
+      <Loops/>
+      <Sample>
+        <V name="file" value="crunchy Kit Samples\big_kit_crash_crunch.wav"/>
+      </Sample>
+    </NiSS_Zone>
+    <NiSS_Zone index="21" groupIdx="0" version="0.60">
+      <Parameters>
+        <V name="sampleStart" value="0"/>
+        <V name="sampleEnd" value="0"/>
+        <V name="lowVelocity" value="1"/>
+        <V name="highVelocity" value="100"/>
+        <V name="lowKey" value="63"/>
+        <V name="highKey" value="63"/>
+        <V name="fadeLowVelo" value="0"/>
+        <V name="fadeHighVelo" value="0"/>
+        <V name="fadeLowKey" value="0"/>
+        <V name="fadeHighKey" value="0"/>
+        <V name="rootKey" value="63"/>
+        <V name="zoneVolume" value="1"/>
+        <V name="zonePan" value="0.5"/>
+        <V name="zoneTune" value="1"/>
+      </Parameters>
+      <Loops/>
+      <Sample>
+        <V name="file" value="crunchy Kit Samples\big_kit_crash.wav"/>
+      </Sample>
+    </NiSS_Zone>
+    <NiSS_Zone index="22" groupIdx="0" version="0.60">
+      <Parameters>
+        <V name="sampleStart" value="0"/>
+        <V name="sampleEnd" value="0"/>
+        <V name="lowVelocity" value="1"/>
+        <V name="highVelocity" value="100"/>
+        <V name="lowKey" value="45"/>
+        <V name="highKey" value="45"/>
+        <V name="fadeLowVelo" value="0"/>
+        <V name="fadeHighVelo" value="0"/>
+        <V name="fadeLowKey" value="0"/>
+        <V name="fadeHighKey" value="0"/>
+        <V name="rootKey" value="45"/>
+        <V name="zoneVolume" value="1"/>
+        <V name="zonePan" value="0.5"/>
+        <V name="zoneTune" value="1"/>
+      </Parameters>
+      <Loops/>
+      <Sample>
+        <V name="file" value="crunchy Kit Samples\big_kit_snare1.wav"/>
+      </Sample>
+    </NiSS_Zone>
+    <NiSS_Zone index="23" groupIdx="0" version="0.60">
+      <Parameters>
+        <V name="sampleStart" value="0"/>
+        <V name="sampleEnd" value="0"/>
+        <V name="lowVelocity" value="1"/>
+        <V name="highVelocity" value="100"/>
+        <V name="lowKey" value="46"/>
+        <V name="highKey" value="46"/>
+        <V name="fadeLowVelo" value="0"/>
+        <V name="fadeHighVelo" value="0"/>
+        <V name="fadeLowKey" value="0"/>
+        <V name="fadeHighKey" value="0"/>
+        <V name="rootKey" value="46"/>
+        <V name="zoneVolume" value="1"/>
+        <V name="zonePan" value="0.5"/>
+        <V name="zoneTune" value="1"/>
+      </Parameters>
+      <Loops/>
+      <Sample>
+        <V name="file" value="crunchy Kit Samples\big_kit_snare3.wav"/>
+      </Sample>
+    </NiSS_Zone>
+    <NiSS_Zone index="24" groupIdx="0" version="0.60">
+      <Parameters>
+        <V name="sampleStart" value="0"/>
+        <V name="sampleEnd" value="0"/>
+        <V name="lowVelocity" value="1"/>
+        <V name="highVelocity" value="100"/>
+        <V name="lowKey" value="47"/>
+        <V name="highKey" value="47"/>
+        <V name="fadeLowVelo" value="0"/>
+        <V name="fadeHighVelo" value="0"/>
+        <V name="fadeLowKey" value="0"/>
+        <V name="fadeHighKey" value="0"/>
+        <V name="rootKey" value="47"/>
+        <V name="zoneVolume" value="1"/>
+        <V name="zonePan" value="0.5"/>
+        <V name="zoneTune" value="1"/>
+      </Parameters>
+      <Loops/>
+      <Sample>
+        <V name="file" value="crunchy Kit Samples\big_kit_snare4.wav"/>
+      </Sample>
+    </NiSS_Zone>
+    <NiSS_Zone index="25" groupIdx="0" version="0.60">
+      <Parameters>
+        <V name="sampleStart" value="0"/>
+        <V name="sampleEnd" value="0"/>
+        <V name="lowVelocity" value="1"/>
+        <V name="highVelocity" value="100"/>
+        <V name="lowKey" value="48"/>
+        <V name="highKey" value="48"/>
+        <V name="fadeLowVelo" value="0"/>
+        <V name="fadeHighVelo" value="0"/>
+        <V name="fadeLowKey" value="0"/>
+        <V name="fadeHighKey" value="0"/>
+        <V name="rootKey" value="48"/>
+        <V name="zoneVolume" value="1"/>
+        <V name="zonePan" value="0.5"/>
+        <V name="zoneTune" value="1"/>
+      </Parameters>
+      <Loops/>
+      <Sample>
+        <V name="file" value="crunchy Kit Samples\big_kit_snare5.wav"/>
+      </Sample>
+    </NiSS_Zone>
+    <NiSS_Zone index="26" groupIdx="0" version="0.60">
+      <Parameters>
+        <V name="sampleStart" value="0"/>
+        <V name="sampleEnd" value="0"/>
+        <V name="lowVelocity" value="1"/>
+        <V name="highVelocity" value="100"/>
+        <V name="lowKey" value="49"/>
+        <V name="highKey" value="49"/>
+        <V name="fadeLowVelo" value="0"/>
+        <V name="fadeHighVelo" value="0"/>
+        <V name="fadeLowKey" value="0"/>
+        <V name="fadeHighKey" value="0"/>
+        <V name="rootKey" value="49"/>
+        <V name="zoneVolume" value="1"/>
+        <V name="zonePan" value="0.5"/>
+        <V name="zoneTune" value="1"/>
+      </Parameters>
+      <Loops/>
+      <Sample>
+        <V name="file" value="crunchy Kit Samples\big_kit_snare6.wav"/>
+      </Sample>
+    </NiSS_Zone>
+    <NiSS_Zone index="27" groupIdx="0" version="0.60">
+      <Parameters>
+        <V name="sampleStart" value="0"/>
+        <V name="sampleEnd" value="0"/>
+        <V name="lowVelocity" value="1"/>
+        <V name="highVelocity" value="100"/>
+        <V name="lowKey" value="50"/>
+        <V name="highKey" value="50"/>
+        <V name="fadeLowVelo" value="0"/>
+        <V name="fadeHighVelo" value="0"/>
+        <V name="fadeLowKey" value="0"/>
+        <V name="fadeHighKey" value="0"/>
+        <V name="rootKey" value="50"/>
+        <V name="zoneVolume" value="1"/>
+        <V name="zonePan" value="0.5"/>
+        <V name="zoneTune" value="1"/>
+      </Parameters>
+      <Loops/>
+      <Sample>
+        <V name="file" value="crunchy Kit Samples\big_kit_snare7.wav"/>
+      </Sample>
+    </NiSS_Zone>
+    <NiSS_Zone index="28" groupIdx="0" version="0.60">
+      <Parameters>
+        <V name="sampleStart" value="0"/>
+        <V name="sampleEnd" value="0"/>
+        <V name="lowVelocity" value="1"/>
+        <V name="highVelocity" value="100"/>
+        <V name="lowKey" value="51"/>
+        <V name="highKey" value="51"/>
+        <V name="fadeLowVelo" value="0"/>
+        <V name="fadeHighVelo" value="0"/>
+        <V name="fadeLowKey" value="0"/>
+        <V name="fadeHighKey" value="0"/>
+        <V name="rootKey" value="51"/>
+        <V name="zoneVolume" value="1"/>
+        <V name="zonePan" value="0.5"/>
+        <V name="zoneTune" value="1"/>
+      </Parameters>
+      <Loops/>
+      <Sample>
+        <V name="file" value="crunchy Kit Samples\big_kit_snare8.wav"/>
+      </Sample>
+    </NiSS_Zone>
+    <NiSS_Zone index="29" groupIdx="0" version="0.60">
+      <Parameters>
+        <V name="sampleStart" value="0"/>
+        <V name="sampleEnd" value="0"/>
+        <V name="lowVelocity" value="1"/>
+        <V name="highVelocity" value="100"/>
+        <V name="lowKey" value="52"/>
+        <V name="highKey" value="52"/>
+        <V name="fadeLowVelo" value="0"/>
+        <V name="fadeHighVelo" value="0"/>
+        <V name="fadeLowKey" value="0"/>
+        <V name="fadeHighKey" value="0"/>
+        <V name="rootKey" value="52"/>
+        <V name="zoneVolume" value="1"/>
+        <V name="zonePan" value="0.5"/>
+        <V name="zoneTune" value="1"/>
+      </Parameters>
+      <Loops/>
+      <Sample>
+        <V name="file" value="crunchy Kit Samples\big_kit_snare9.wav"/>
+      </Sample>
+    </NiSS_Zone>
+    <NiSS_Zone index="30" groupIdx="0" version="0.60">
+      <Parameters>
+        <V name="sampleStart" value="0"/>
+        <V name="sampleEnd" value="0"/>
+        <V name="lowVelocity" value="1"/>
+        <V name="highVelocity" value="100"/>
+        <V name="lowKey" value="53"/>
+        <V name="highKey" value="53"/>
+        <V name="fadeLowVelo" value="0"/>
+        <V name="fadeHighVelo" value="0"/>
+        <V name="fadeLowKey" value="0"/>
+        <V name="fadeHighKey" value="0"/>
+        <V name="rootKey" value="53"/>
+        <V name="zoneVolume" value="1"/>
+        <V name="zonePan" value="0.5"/>
+        <V name="zoneTune" value="1"/>
+      </Parameters>
+      <Loops/>
+      <Sample>
+        <V name="file" value="crunchy Kit Samples\big_kit_snare_flam.wav"/>
+      </Sample>
+    </NiSS_Zone>
+    <NiSS_Zone index="31" groupIdx="0" version="0.60">
+      <Parameters>
+        <V name="sampleStart" value="0"/>
+        <V name="sampleEnd" value="0"/>
+        <V name="lowVelocity" value="1"/>
+        <V name="highVelocity" value="100"/>
+        <V name="lowKey" value="54"/>
+        <V name="highKey" value="54"/>
+        <V name="fadeLowVelo" value="0"/>
+        <V name="fadeHighVelo" value="0"/>
+        <V name="fadeLowKey" value="0"/>
+        <V name="fadeHighKey" value="0"/>
+        <V name="rootKey" value="54"/>
+        <V name="zoneVolume" value="1"/>
+        <V name="zonePan" value="0.5"/>
+        <V name="zoneTune" value="1"/>
+      </Parameters>
+      <Loops/>
+      <Sample>
+        <V name="file" value="crunchy Kit Samples\big_kit_snare_roll.wav"/>
+      </Sample>
+    </NiSS_Zone>
+    <NiSS_Zone index="32" groupIdx="0" version="0.60">
+      <Parameters>
+        <V name="sampleStart" value="0"/>
+        <V name="sampleEnd" value="0"/>
+        <V name="lowVelocity" value="101"/>
+        <V name="highVelocity" value="127"/>
+        <V name="lowKey" value="44"/>
+        <V name="highKey" value="44"/>
+        <V name="fadeLowVelo" value="0"/>
+        <V name="fadeHighVelo" value="0"/>
+        <V name="fadeLowKey" value="0"/>
+        <V name="fadeHighKey" value="0"/>
+        <V name="rootKey" value="44"/>
+        <V name="zoneVolume" value="1"/>
+        <V name="zonePan" value="0.5"/>
+        <V name="zoneTune" value="1"/>
+      </Parameters>
+      <Loops/>
+      <Sample>
+        <V name="file" value="crunchy Kit Samples\big_kit_hi_snare_crunch.wav"/>
+      </Sample>
+    </NiSS_Zone>
+    <NiSS_Zone index="33" groupIdx="0" version="0.60">
+      <Parameters>
+        <V name="sampleStart" value="0"/>
+        <V name="sampleEnd" value="0"/>
+        <V name="lowVelocity" value="101"/>
+        <V name="highVelocity" value="127"/>
+        <V name="lowKey" value="45"/>
+        <V name="highKey" value="45"/>
+        <V name="fadeLowVelo" value="0"/>
+        <V name="fadeHighVelo" value="0"/>
+        <V name="fadeLowKey" value="0"/>
+        <V name="fadeHighKey" value="0"/>
+        <V name="rootKey" value="45"/>
+        <V name="zoneVolume" value="1"/>
+        <V name="zonePan" value="0.5"/>
+        <V name="zoneTune" value="1"/>
+      </Parameters>
+      <Loops/>
+      <Sample>
+        <V name="file" value="crunchy Kit Samples\big_kit_snare1_crunch.wav"/>
+      </Sample>
+    </NiSS_Zone>
+    <NiSS_Zone index="34" groupIdx="0" version="0.60">
+      <Parameters>
+        <V name="sampleStart" value="0"/>
+        <V name="sampleEnd" value="0"/>
+        <V name="lowVelocity" value="101"/>
+        <V name="highVelocity" value="127"/>
+        <V name="lowKey" value="46"/>
+        <V name="highKey" value="46"/>
+        <V name="fadeLowVelo" value="0"/>
+        <V name="fadeHighVelo" value="0"/>
+        <V name="fadeLowKey" value="0"/>
+        <V name="fadeHighKey" value="0"/>
+        <V name="rootKey" value="46"/>
+        <V name="zoneVolume" value="1"/>
+        <V name="zonePan" value="0.5"/>
+        <V name="zoneTune" value="1"/>
+      </Parameters>
+      <Loops/>
+      <Sample>
+        <V name="file" value="crunchy Kit Samples\big_kit_snare3_crunch.wav"/>
+      </Sample>
+    </NiSS_Zone>
+    <NiSS_Zone index="35" groupIdx="0" version="0.60">
+      <Parameters>
+        <V name="sampleStart" value="0"/>
+        <V name="sampleEnd" value="0"/>
+        <V name="lowVelocity" value="101"/>
+        <V name="highVelocity" value="127"/>
+        <V name="lowKey" value="47"/>
+        <V name="highKey" value="47"/>
+        <V name="fadeLowVelo" value="0"/>
+        <V name="fadeHighVelo" value="0"/>
+        <V name="fadeLowKey" value="0"/>
+        <V name="fadeHighKey" value="0"/>
+        <V name="rootKey" value="47"/>
+        <V name="zoneVolume" value="1"/>
+        <V name="zonePan" value="0.5"/>
+        <V name="zoneTune" value="1"/>
+      </Parameters>
+      <Loops/>
+      <Sample>
+        <V name="file" value="crunchy Kit Samples\big_kit_snare4_crunch.wav"/>
+      </Sample>
+    </NiSS_Zone>
+    <NiSS_Zone index="36" groupIdx="0" version="0.60">
+      <Parameters>
+        <V name="sampleStart" value="0"/>
+        <V name="sampleEnd" value="0"/>
+        <V name="lowVelocity" value="101"/>
+        <V name="highVelocity" value="127"/>
+        <V name="lowKey" value="48"/>
+        <V name="highKey" value="48"/>
+        <V name="fadeLowVelo" value="0"/>
+        <V name="fadeHighVelo" value="0"/>
+        <V name="fadeLowKey" value="0"/>
+        <V name="fadeHighKey" value="0"/>
+        <V name="rootKey" value="48"/>
+        <V name="zoneVolume" value="1"/>
+        <V name="zonePan" value="0.5"/>
+        <V name="zoneTune" value="1"/>
+      </Parameters>
+      <Loops/>
+      <Sample>
+        <V name="file" value="crunchy Kit Samples\big_kit_snare5_crunch.wav"/>
+      </Sample>
+    </NiSS_Zone>
+    <NiSS_Zone index="37" groupIdx="0" version="0.60">
+      <Parameters>
+        <V name="sampleStart" value="0"/>
+        <V name="sampleEnd" value="0"/>
+        <V name="lowVelocity" value="101"/>
+        <V name="highVelocity" value="127"/>
+        <V name="lowKey" value="49"/>
+        <V name="highKey" value="49"/>
+        <V name="fadeLowVelo" value="0"/>
+        <V name="fadeHighVelo" value="0"/>
+        <V name="fadeLowKey" value="0"/>
+        <V name="fadeHighKey" value="0"/>
+        <V name="rootKey" value="49"/>
+        <V name="zoneVolume" value="1"/>
+        <V name="zonePan" value="0.5"/>
+        <V name="zoneTune" value="1"/>
+      </Parameters>
+      <Loops/>
+      <Sample>
+        <V name="file" value="crunchy Kit Samples\big_kit_snare6_crunch.wav"/>
+      </Sample>
+    </NiSS_Zone>
+    <NiSS_Zone index="38" groupIdx="0" version="0.60">
+      <Parameters>
+        <V name="sampleStart" value="0"/>
+        <V name="sampleEnd" value="0"/>
+        <V name="lowVelocity" value="101"/>
+        <V name="highVelocity" value="127"/>
+        <V name="lowKey" value="50"/>
+        <V name="highKey" value="50"/>
+        <V name="fadeLowVelo" value="0"/>
+        <V name="fadeHighVelo" value="0"/>
+        <V name="fadeLowKey" value="0"/>
+        <V name="fadeHighKey" value="0"/>
+        <V name="rootKey" value="50"/>
+        <V name="zoneVolume" value="1"/>
+        <V name="zonePan" value="0.5"/>
+        <V name="zoneTune" value="1"/>
+      </Parameters>
+      <Loops/>
+      <Sample>
+        <V name="file" value="crunchy Kit Samples\big_kit_snare7_crunch.wav"/>
+      </Sample>
+    </NiSS_Zone>
+    <NiSS_Zone index="39" groupIdx="0" version="0.60">
+      <Parameters>
+        <V name="sampleStart" value="0"/>
+        <V name="sampleEnd" value="0"/>
+        <V name="lowVelocity" value="101"/>
+        <V name="highVelocity" value="127"/>
+        <V name="lowKey" value="51"/>
+        <V name="highKey" value="51"/>
+        <V name="fadeLowVelo" value="0"/>
+        <V name="fadeHighVelo" value="0"/>
+        <V name="fadeLowKey" value="0"/>
+        <V name="fadeHighKey" value="0"/>
+        <V name="rootKey" value="51"/>
+        <V name="zoneVolume" value="1"/>
+        <V name="zonePan" value="0.5"/>
+        <V name="zoneTune" value="1"/>
+      </Parameters>
+      <Loops/>
+      <Sample>
+        <V name="file" value="crunchy Kit Samples\big_kit_snare8_crunch.wav"/>
+      </Sample>
+    </NiSS_Zone>
+    <NiSS_Zone index="40" groupIdx="0" version="0.60">
+      <Parameters>
+        <V name="sampleStart" value="0"/>
+        <V name="sampleEnd" value="0"/>
+        <V name="lowVelocity" value="101"/>
+        <V name="highVelocity" value="127"/>
+        <V name="lowKey" value="52"/>
+        <V name="highKey" value="52"/>
+        <V name="fadeLowVelo" value="0"/>
+        <V name="fadeHighVelo" value="0"/>
+        <V name="fadeLowKey" value="0"/>
+        <V name="fadeHighKey" value="0"/>
+        <V name="rootKey" value="52"/>
+        <V name="zoneVolume" value="1"/>
+        <V name="zonePan" value="0.5"/>
+        <V name="zoneTune" value="1"/>
+      </Parameters>
+      <Loops/>
+      <Sample>
+        <V name="file" value="crunchy Kit Samples\big_kit_snare9_crunch.wav"/>
+      </Sample>
+    </NiSS_Zone>
+    <NiSS_Zone index="41" groupIdx="0" version="0.60">
+      <Parameters>
+        <V name="sampleStart" value="0"/>
+        <V name="sampleEnd" value="0"/>
+        <V name="lowVelocity" value="101"/>
+        <V name="highVelocity" value="127"/>
+        <V name="lowKey" value="53"/>
+        <V name="highKey" value="53"/>
+        <V name="fadeLowVelo" value="0"/>
+        <V name="fadeHighVelo" value="0"/>
+        <V name="fadeLowKey" value="0"/>
+        <V name="fadeHighKey" value="0"/>
+        <V name="rootKey" value="53"/>
+        <V name="zoneVolume" value="1"/>
+        <V name="zonePan" value="0.5"/>
+        <V name="zoneTune" value="1"/>
+      </Parameters>
+      <Loops/>
+      <Sample>
+        <V name="file" value="crunchy Kit Samples\big_kit_snare_flam_crunch.wav"/>
+      </Sample>
+    </NiSS_Zone>
+    <NiSS_Zone index="42" groupIdx="0" version="0.60">
+      <Parameters>
+        <V name="sampleStart" value="0"/>
+        <V name="sampleEnd" value="0"/>
+        <V name="lowVelocity" value="101"/>
+        <V name="highVelocity" value="127"/>
+        <V name="lowKey" value="54"/>
+        <V name="highKey" value="54"/>
+        <V name="fadeLowVelo" value="0"/>
+        <V name="fadeHighVelo" value="0"/>
+        <V name="fadeLowKey" value="0"/>
+        <V name="fadeHighKey" value="0"/>
+        <V name="rootKey" value="54"/>
+        <V name="zoneVolume" value="1"/>
+        <V name="zonePan" value="0.5"/>
+        <V name="zoneTune" value="1"/>
+      </Parameters>
+      <Loops/>
+      <Sample>
+        <V name="file" value="crunchy Kit Samples\big_kit_snare_roll_crunch.wav"/>
+      </Sample>
+    </NiSS_Zone>
+    <NiSS_Zone index="43" groupIdx="0" version="0.60">
+      <Parameters>
+        <V name="sampleStart" value="0"/>
+        <V name="sampleEnd" value="0"/>
+        <V name="lowVelocity" value="1"/>
+        <V name="highVelocity" value="100"/>
+        <V name="lowKey" value="44"/>
+        <V name="highKey" value="44"/>
+        <V name="fadeLowVelo" value="0"/>
+        <V name="fadeHighVelo" value="0"/>
+        <V name="fadeLowKey" value="0"/>
+        <V name="fadeHighKey" value="0"/>
+        <V name="rootKey" value="44"/>
+        <V name="zoneVolume" value="1"/>
+        <V name="zonePan" value="0.5"/>
+        <V name="zoneTune" value="1"/>
+      </Parameters>
+      <Loops/>
+      <Sample>
+        <V name="file" value="crunchy Kit Samples\big_kit_hi_snare.wav"/>
+      </Sample>
+    </NiSS_Zone>
+    <NiSS_Zone index="44" groupIdx="0" version="0.60">
+      <Parameters>
+        <V name="sampleStart" value="0"/>
+        <V name="sampleEnd" value="0"/>
+        <V name="lowVelocity" value="1"/>
+        <V name="highVelocity" value="100"/>
+        <V name="lowKey" value="62"/>
+        <V name="highKey" value="62"/>
+        <V name="fadeLowVelo" value="0"/>
+        <V name="fadeHighVelo" value="0"/>
+        <V name="fadeLowKey" value="0"/>
+        <V name="fadeHighKey" value="0"/>
+        <V name="rootKey" value="62"/>
+        <V name="zoneVolume" value="1"/>
+        <V name="zonePan" value="0.5"/>
+        <V name="zoneTune" value="1"/>
+      </Parameters>
+      <Loops/>
+      <Sample>
+        <V name="file" value="crunchy Kit Samples\big_kit_tomhi.wav"/>
+      </Sample>
+    </NiSS_Zone>
+    <NiSS_Zone index="45" groupIdx="0" version="0.60">
+      <Parameters>
+        <V name="sampleStart" value="0"/>
+        <V name="sampleEnd" value="0"/>
+        <V name="lowVelocity" value="1"/>
+        <V name="highVelocity" value="100"/>
+        <V name="lowKey" value="60"/>
+        <V name="highKey" value="60"/>
+        <V name="fadeLowVelo" value="0"/>
+        <V name="fadeHighVelo" value="0"/>
+        <V name="fadeLowKey" value="0"/>
+        <V name="fadeHighKey" value="0"/>
+        <V name="rootKey" value="60"/>
+        <V name="zoneVolume" value="1"/>
+        <V name="zonePan" value="0.5"/>
+        <V name="zoneTune" value="1"/>
+      </Parameters>
+      <Loops/>
+      <Sample>
+        <V name="file" value="crunchy Kit Samples\big_kit_tomlow.wav"/>
+      </Sample>
+    </NiSS_Zone>
+    <NiSS_Zone index="46" groupIdx="0" version="0.60">
+      <Parameters>
+        <V name="sampleStart" value="0"/>
+        <V name="sampleEnd" value="0"/>
+        <V name="lowVelocity" value="1"/>
+        <V name="highVelocity" value="100"/>
+        <V name="lowKey" value="61"/>
+        <V name="highKey" value="61"/>
+        <V name="fadeLowVelo" value="0"/>
+        <V name="fadeHighVelo" value="0"/>
+        <V name="fadeLowKey" value="0"/>
+        <V name="fadeHighKey" value="0"/>
+        <V name="rootKey" value="61"/>
+        <V name="zoneVolume" value="1"/>
+        <V name="zonePan" value="0.5"/>
+        <V name="zoneTune" value="1"/>
+      </Parameters>
+      <Loops/>
+      <Sample>
+        <V name="file" value="crunchy Kit Samples\big_kit_tommid.wav"/>
+      </Sample>
+    </NiSS_Zone>
+    <NiSS_Zone index="47" groupIdx="0" version="0.60">
+      <Parameters>
+        <V name="sampleStart" value="0"/>
+        <V name="sampleEnd" value="0"/>
+        <V name="lowVelocity" value="1"/>
+        <V name="highVelocity" value="100"/>
+        <V name="lowKey" value="59"/>
+        <V name="highKey" value="59"/>
+        <V name="fadeLowVelo" value="0"/>
+        <V name="fadeHighVelo" value="0"/>
+        <V name="fadeLowKey" value="0"/>
+        <V name="fadeHighKey" value="0"/>
+        <V name="rootKey" value="59"/>
+        <V name="zoneVolume" value="1"/>
+        <V name="zonePan" value="0.5"/>
+        <V name="zoneTune" value="1"/>
+      </Parameters>
+      <Loops/>
+      <Sample>
+        <V name="file" value="crunchy Kit Samples\big_kit_tomWaylow.wav"/>
+      </Sample>
+    </NiSS_Zone>
+    <NiSS_Zone index="48" groupIdx="0" version="0.60">
+      <Parameters>
+        <V name="sampleStart" value="0"/>
+        <V name="sampleEnd" value="0"/>
+        <V name="lowVelocity" value="101"/>
+        <V name="highVelocity" value="127"/>
+        <V name="lowKey" value="59"/>
+        <V name="highKey" value="59"/>
+        <V name="fadeLowVelo" value="0"/>
+        <V name="fadeHighVelo" value="0"/>
+        <V name="fadeLowKey" value="0"/>
+        <V name="fadeHighKey" value="0"/>
+        <V name="rootKey" value="59"/>
+        <V name="zoneVolume" value="1"/>
+        <V name="zonePan" value="0.5"/>
+        <V name="zoneTune" value="1"/>
+      </Parameters>
+      <Loops/>
+      <Sample>
+        <V name="file" value="crunchy Kit Samples\big_kit_tomWaylow_crunch.wav"/>
+      </Sample>
+    </NiSS_Zone>
+    <NiSS_Zone index="49" groupIdx="0" version="0.60">
+      <Parameters>
+        <V name="sampleStart" value="0"/>
+        <V name="sampleEnd" value="0"/>
+        <V name="lowVelocity" value="101"/>
+        <V name="highVelocity" value="127"/>
+        <V name="lowKey" value="60"/>
+        <V name="highKey" value="60"/>
+        <V name="fadeLowVelo" value="0"/>
+        <V name="fadeHighVelo" value="0"/>
+        <V name="fadeLowKey" value="0"/>
+        <V name="fadeHighKey" value="0"/>
+        <V name="rootKey" value="60"/>
+        <V name="zoneVolume" value="1"/>
+        <V name="zonePan" value="0.5"/>
+        <V name="zoneTune" value="1"/>
+      </Parameters>
+      <Loops/>
+      <Sample>
+        <V name="file" value="crunchy Kit Samples\big_kit_tomlow_crunch.wav"/>
+      </Sample>
+    </NiSS_Zone>
+    <NiSS_Zone index="50" groupIdx="0" version="0.60">
+      <Parameters>
+        <V name="sampleStart" value="0"/>
+        <V name="sampleEnd" value="0"/>
+        <V name="lowVelocity" value="101"/>
+        <V name="highVelocity" value="127"/>
+        <V name="lowKey" value="61"/>
+        <V name="highKey" value="61"/>
+        <V name="fadeLowVelo" value="0"/>
+        <V name="fadeHighVelo" value="0"/>
+        <V name="fadeLowKey" value="0"/>
+        <V name="fadeHighKey" value="0"/>
+        <V name="rootKey" value="61"/>
+        <V name="zoneVolume" value="1"/>
+        <V name="zonePan" value="0.5"/>
+        <V name="zoneTune" value="1"/>
+      </Parameters>
+      <Loops/>
+      <Sample>
+        <V name="file" value="crunchy Kit Samples\big_kit_tommid_crunch.wav"/>
+      </Sample>
+    </NiSS_Zone>
+    <NiSS_Zone index="51" groupIdx="0" version="0.60">
+      <Parameters>
+        <V name="sampleStart" value="0"/>
+        <V name="sampleEnd" value="0"/>
+        <V name="lowVelocity" value="101"/>
+        <V name="highVelocity" value="127"/>
+        <V name="lowKey" value="62"/>
+        <V name="highKey" value="62"/>
+        <V name="fadeLowVelo" value="0"/>
+        <V name="fadeHighVelo" value="0"/>
+        <V name="fadeLowKey" value="0"/>
+        <V name="fadeHighKey" value="0"/>
+        <V name="rootKey" value="62"/>
+        <V name="zoneVolume" value="1"/>
+        <V name="zonePan" value="0.5"/>
+        <V name="zoneTune" value="1"/>
+      </Parameters>
+      <Loops/>
+      <Sample>
+        <V name="file" value="crunchy Kit Samples\big_kit_tomhi_crunch.wav"/>
+      </Sample>
+    </NiSS_Zone>
+    <NiSS_Zone index="52" groupIdx="0" version="0.60">
+      <Parameters>
+        <V name="sampleStart" value="0"/>
+        <V name="sampleEnd" value="0"/>
+        <V name="lowVelocity" value="101"/>
+        <V name="highVelocity" value="127"/>
+        <V name="lowKey" value="55"/>
+        <V name="highKey" value="55"/>
+        <V name="fadeLowVelo" value="0"/>
+        <V name="fadeHighVelo" value="0"/>
+        <V name="fadeLowKey" value="0"/>
+        <V name="fadeHighKey" value="0"/>
+        <V name="rootKey" value="55"/>
+        <V name="zoneVolume" value="1"/>
+        <V name="zonePan" value="0.5"/>
+        <V name="zoneTune" value="1"/>
+      </Parameters>
+      <Loops/>
+      <Sample>
+        <V name="file" value="crunchy Kit Samples\big_kit_hat1_crunch.wav"/>
+      </Sample>
+    </NiSS_Zone>
+    <NiSS_Zone index="53" groupIdx="0" version="0.60">
+      <Parameters>
+        <V name="sampleStart" value="0"/>
+        <V name="sampleEnd" value="0"/>
+        <V name="lowVelocity" value="101"/>
+        <V name="highVelocity" value="127"/>
+        <V name="lowKey" value="56"/>
+        <V name="highKey" value="56"/>
+        <V name="fadeLowVelo" value="0"/>
+        <V name="fadeHighVelo" value="0"/>
+        <V name="fadeLowKey" value="0"/>
+        <V name="fadeHighKey" value="0"/>
+        <V name="rootKey" value="56"/>
+        <V name="zoneVolume" value="1"/>
+        <V name="zonePan" value="0.5"/>
+        <V name="zoneTune" value="1"/>
+      </Parameters>
+      <Loops/>
+      <Sample>
+        <V name="file" value="crunchy Kit Samples\big_kit_hat2_crunch.wav"/>
+      </Sample>
+    </NiSS_Zone>
+    <NiSS_Zone index="54" groupIdx="0" version="0.60">
+      <Parameters>
+        <V name="sampleStart" value="0"/>
+        <V name="sampleEnd" value="0"/>
+        <V name="lowVelocity" value="101"/>
+        <V name="highVelocity" value="127"/>
+        <V name="lowKey" value="57"/>
+        <V name="highKey" value="57"/>
+        <V name="fadeLowVelo" value="0"/>
+        <V name="fadeHighVelo" value="0"/>
+        <V name="fadeLowKey" value="0"/>
+        <V name="fadeHighKey" value="0"/>
+        <V name="rootKey" value="57"/>
+        <V name="zoneVolume" value="1"/>
+        <V name="zonePan" value="0.5"/>
+        <V name="zoneTune" value="1"/>
+      </Parameters>
+      <Loops/>
+      <Sample>
+        <V name="file" value="crunchy Kit Samples\big_kit_footchic_crunch.wav"/>
+      </Sample>
+    </NiSS_Zone>
+    <NiSS_Zone index="55" groupIdx="0" version="0.60">
+      <Parameters>
+        <V name="sampleStart" value="0"/>
+        <V name="sampleEnd" value="0"/>
+        <V name="lowVelocity" value="101"/>
+        <V name="highVelocity" value="127"/>
+        <V name="lowKey" value="58"/>
+        <V name="highKey" value="58"/>
+        <V name="fadeLowVelo" value="0"/>
+        <V name="fadeHighVelo" value="0"/>
+        <V name="fadeLowKey" value="0"/>
+        <V name="fadeHighKey" value="0"/>
+        <V name="rootKey" value="58"/>
+        <V name="zoneVolume" value="1"/>
+        <V name="zonePan" value="0.5"/>
+        <V name="zoneTune" value="1"/>
+      </Parameters>
+      <Loops/>
+      <Sample>
+        <V name="file" value="crunchy Kit Samples\big_kit_openHat_crunch.wav"/>
+      </Sample>
+    </NiSS_Zone>
+    <NiSS_Zone index="56" groupIdx="0" version="0.60">
+      <Parameters>
+        <V name="sampleStart" value="0"/>
+        <V name="sampleEnd" value="0"/>
+        <V name="lowVelocity" value="1"/>
+        <V name="highVelocity" value="100"/>
+        <V name="lowKey" value="55"/>
+        <V name="highKey" value="55"/>
+        <V name="fadeLowVelo" value="0"/>
+        <V name="fadeHighVelo" value="0"/>
+        <V name="fadeLowKey" value="0"/>
+        <V name="fadeHighKey" value="0"/>
+        <V name="rootKey" value="55"/>
+        <V name="zoneVolume" value="1"/>
+        <V name="zonePan" value="0.5"/>
+        <V name="zoneTune" value="1"/>
+      </Parameters>
+      <Loops/>
+      <Sample>
+        <V name="file" value="crunchy Kit Samples\big_kit_hat1.wav"/>
+      </Sample>
+    </NiSS_Zone>
+    <NiSS_Zone index="57" groupIdx="0" version="0.60">
+      <Parameters>
+        <V name="sampleStart" value="0"/>
+        <V name="sampleEnd" value="0"/>
+        <V name="lowVelocity" value="1"/>
+        <V name="highVelocity" value="100"/>
+        <V name="lowKey" value="56"/>
+        <V name="highKey" value="56"/>
+        <V name="fadeLowVelo" value="0"/>
+        <V name="fadeHighVelo" value="0"/>
+        <V name="fadeLowKey" value="0"/>
+        <V name="fadeHighKey" value="0"/>
+        <V name="rootKey" value="56"/>
+        <V name="zoneVolume" value="1"/>
+        <V name="zonePan" value="0.5"/>
+        <V name="zoneTune" value="1"/>
+      </Parameters>
+      <Loops/>
+      <Sample>
+        <V name="file" value="crunchy Kit Samples\big_kit_hat2.wav"/>
+      </Sample>
+    </NiSS_Zone>
+    <NiSS_Zone index="58" groupIdx="0" version="0.60">
+      <Parameters>
+        <V name="sampleStart" value="0"/>
+        <V name="sampleEnd" value="0"/>
+        <V name="lowVelocity" value="1"/>
+        <V name="highVelocity" value="100"/>
+        <V name="lowKey" value="57"/>
+        <V name="highKey" value="57"/>
+        <V name="fadeLowVelo" value="0"/>
+        <V name="fadeHighVelo" value="0"/>
+        <V name="fadeLowKey" value="0"/>
+        <V name="fadeHighKey" value="0"/>
+        <V name="rootKey" value="57"/>
+        <V name="zoneVolume" value="1"/>
+        <V name="zonePan" value="0.5"/>
+        <V name="zoneTune" value="1"/>
+      </Parameters>
+      <Loops/>
+      <Sample>
+        <V name="file" value="crunchy Kit Samples\big_kit_footchic.wav"/>
+      </Sample>
+    </NiSS_Zone>
+    <NiSS_Zone index="59" groupIdx="0" version="0.60">
+      <Parameters>
+        <V name="sampleStart" value="0"/>
+        <V name="sampleEnd" value="0"/>
+        <V name="lowVelocity" value="1"/>
+        <V name="highVelocity" value="100"/>
+        <V name="lowKey" value="58"/>
+        <V name="highKey" value="58"/>
+        <V name="fadeLowVelo" value="0"/>
+        <V name="fadeHighVelo" value="0"/>
+        <V name="fadeLowKey" value="0"/>
+        <V name="fadeHighKey" value="0"/>
+        <V name="rootKey" value="58"/>
+        <V name="zoneVolume" value="1"/>
+        <V name="zonePan" value="0.5"/>
+        <V name="zoneTune" value="1"/>
+      </Parameters>
+      <Loops/>
+      <Sample>
+        <V name="file" value="crunchy Kit Samples\big_kit_openHat.wav"/>
+      </Sample>
+    </NiSS_Zone>
+  </Zones>
+</NiSS_Program>

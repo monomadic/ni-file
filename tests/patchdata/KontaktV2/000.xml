@@ -1,0 +1,1680 @@
+<?xml version="1.0"?>
+<K2_Container index="0" name="(null)" type="single_program" version="0.50">
+<Parameters>
+<V name="loadPurged" value="no"/>
+<V name="tableOpen" value="no"/>
+<V name="smallRackUnit" value="no"/>
+<V name="auxSendsVisible" value="no"/>
+<V name="curProgramChangeNum" value="0"/>
+<V name="outputMask" value="131072"/>
+<V name="volume" value="0.500000"/>
+<V name="pan" value="0"/>
+<V name="origSaveMode" value="0"/>
+<V name="origAbsolutePaths" value="no"/>
+<V name="hasBeenSaved" value="yes"/>
+</Parameters>
+<Automation/>
+<Polyphony>
+<VoiceGroup index="0" version="0.60">
+<V name="name" value="&lt;instrument>"/>
+<V name="mode" value="kill_oldest"/>
+<V name="preferReleased" value="yes"/>
+<V name="maxNumVoices" value="64"/>
+<V name="msFadeTime" value="10"/>
+<V name="exclusionGroup" value="-1"/>
+</VoiceGroup>
+</Polyphony>
+<Programs>
+<K2_Program index="0" name="Kicks" version="0.80">
+<Parameters>
+<V name="numBytesSamplesTotal" value="0"/>
+<V name="transpose" value="0"/>
+<V name="volume" value="0.500000"/>
+<V name="pan" value="0"/>
+<V name="tune" value="0"/>
+<V name="lowVelocity" value="1"/>
+<V name="highVelocity" value="127"/>
+<V name="lowKey" value="0"/>
+<V name="highKey" value="127"/>
+<V name="defaultKeyKeySwitch" value="-1"/>
+<V name="dfdChannelPreloadSize" value="61440"/>
+<V name="libraryID" value="0"/>
+<V name="loadingFlags" value="0"/>
+<V name="groupSolo" value="no"/>
+<V name="cc64Mode" value="cc64_mode_sustain_plus_controller"/>
+<V name="useStdCC_7_10" value="yes"/>
+<V name="useStdCC_120_123" value="yes"/>
+<V name="cc7MaxVolume" value="-6"/>
+<V name="activeGroupIdx" value="0"/>
+<V name="scriptIdxEdited" value="0"/>
+<V name="ifxBeingEdited" value="no"/>
+<V name="idxIFXBeingEdited" value="0"/>
+<V name="sfxBeingEdited" value="no"/>
+<V name="mapEditListMode" value="no"/>
+<V name="mapEditLocked" value="no"/>
+<V name="idxSFXBeingEdited" value="0"/>
+<V name="routersOpenSource" value="no"/>
+<V name="routersOpenAmp" value="no"/>
+<V name="upDownMixOpenGroup" value="no"/>
+<V name="editorOpenMap" value="no"/>
+<V name="editorOpenSample" value="no"/>
+<V name="editorOpenGroup" value="no"/>
+<V name="editorOpenScript" value="no"/>
+<V name="editorOpenProp" value="no"/>
+<V name="mapEditSelGroupsOnly" value="no"/>
+<V name="ifxVisible" value="no"/>
+<V name="sfxVisible" value="no"/>
+<V name="modVisible" value="no"/>
+<V name="masterZoneIdx" value="-1"/>
+<V name="batteryNumRowsVisible" value="-1"/>
+<V name="batteryNumColumnsVisible" value="-1"/>
+<V name="batteryIRCVisible" value="no"/>
+<V name="perfViewScriptIdx" value="-1"/>
+<V name="catIconIdx" value="28"/>
+<V name="instrumentCredits" value="from Translator"/>
+<V name="instrumentAuthor" value="Chicken"/>
+<V name="instrumentURL" value="www.chickensys.com"/>
+<V name="instrumentCat1" value="0"/>
+<V name="instrumentCat2" value="0"/>
+<V name="instrumentCat3" value="0"/>
+</Parameters>
+<Scripts/>
+<Automation/>
+<MorphGroups/>
+<MorphMaps/>
+<Polyphony>
+<VoiceGroup index="0" version="0.60">
+<V name="name" value="&lt;instrument>"/>
+<V name="mode" value="kill_oldest"/>
+<V name="preferReleased" value="yes"/>
+<V name="maxNumVoices" value="64"/>
+<V name="msFadeTime" value="10"/>
+<V name="exclusionGroup" value="-1"/>
+</VoiceGroup>
+<VoiceGroup index="1" version="0.60">
+<V name="name" value="VoiceGroup #1"/>
+<V name="mode" value="kill_oldest"/>
+<V name="preferReleased" value="yes"/>
+<V name="maxNumVoices" value="64"/>
+<V name="msFadeTime" value="10"/>
+<V name="exclusionGroup" value="-2"/>
+</VoiceGroup>
+<VoiceGroup index="1" version="0.60">
+<V name="name" value="VoiceGroup #1"/>
+<V name="mode" value="kill_oldest"/>
+<V name="preferReleased" value="yes"/>
+<V name="maxNumVoices" value="64"/>
+<V name="msFadeTime" value="10"/>
+<V name="exclusionGroup" value="-2"/>
+</VoiceGroup>
+</Polyphony>
+<ProgramInsertFX>
+<K2_Effect index="7" version="0.50">
+<V name="routersOpen" value="no"/>
+<V name="classID" value="0"/>
+<V name="bypass" value="no"/>
+<V name="outLevel" value="1"/>
+<V name="outLevelDry" value="1"/>
+<V name="sendFXOutPartition" value="-1"/>
+<SendLevels version="0.50">
+<V name="level_0" value="1"/>
+<V name="level_1" value="1"/>
+<V name="level_2" value="1"/>
+<V name="level_3" value="1"/>
+<V name="level_4" value="1"/>
+<V name="level_5" value="1"/>
+<V name="level_6" value="1"/>
+<V name="level_7" value="1"/>
+</SendLevels>
+</K2_Effect>
+</ProgramInsertFX>
+<ProgramSendFX/>
+<Groups>
+<K2_Group index="0" name="Group 1" version="0.90">
+<Parameters>
+<V name="volume" value="1.000000"/>
+<V name="pan" value="0"/>
+<V name="tune" value="0"/>
+<V name="lowVelocity" value="0"/>
+<V name="highVelocity" value="127"/>
+<V name="fadeLowVelo" value="0"/>
+<V name="fadeHighVelo" value="0"/>
+<V name="fadeLowKey" value="0"/>
+<V name="fadeHighKey" value="0"/>
+<V name="keyTracking" value="yes"/>
+<V name="reverse" value="no"/>
+<V name="releaseTrigger" value="no"/>
+<V name="releaseTriggerNoteMonophonic" value="yes"/>
+<V name="rlsTrigCounter" value="0"/>
+<V name="outputMask" value="-1"/>
+<V name="midiChannel" value="-1"/>
+<V name="voiceGroup" value="-1"/>
+<V name="outRouting_1" value="0000000000000004"/>
+<V name="outRouting_2" value="00000000000000040000000000000040"/>
+<V name="outRouting_3" value="000000000000000400000000000000400000000000000004"/>
+<V name="outRouting_4" value="0000000000000004000000000000004000000000000000040000000000000040"/>
+<V name="outRouting_5" value="00000000000000040000000000000040000000000000000400000000000000400000000000000004"/>
+<V name="outRouting_6" value="000000000000000400000000000000400000000000000004000000000000004000000000000000040000000000000040"/>
+<V name="outRouting_7" value="0000000000000004000000000000004000000000000000040000000000000040000000000000000400000000000000400000000000000004"/>
+<V name="outRouting_8" value="00000000000000040000000000000040000000000000000400000000000000400000000000000004000000000000004000000000000000040000000000000040"/>
+<V name="outRouting_9" value="000000000000000400000000000000400000000000000004000000000000004000000000000000040000000000000040000000000000000400000000000000400000000000000004"/>
+<V name="outRouting_10" value="0000000000000004000000000000004000000000000000040000000000000040000000000000000400000000000000400000000000000004000000000000004000000000000000040000000000000040"/>
+<V name="outRouting_11" value="00000000000000040000000000000040000000000000000400000000000000400000000000000004000000000000004000000000000000040000000000000040000000000000000400000000000000400000000000000004"/>
+<V name="outRouting_12" value="000000000000000400000000000000400000000000000004000000000000004000000000000000040000000000000040000000000000000400000000000000400000000000000004000000000000004000000000000000040000000000000040"/>
+<V name="outRouting_13" value="0000000000000004000000000000004000000000000000040000000000000040000000000000000400000000000000400000000000000004000000000000004000000000000000040000000000000040000000000000000400000000000000400000000000000004"/>
+<V name="outRouting_14" value="00000000000000040000000000000040000000000000000400000000000000400000000000000004000000000000004000000000000000040000000000000040000000000000000400000000000000400000000000000004000000000000004000000000000000040000000000000040"/>
+<V name="outRouting_15" value="000000000000000400000000000000400000000000000004000000000000004000000000000000040000000000000040000000000000000400000000000000400000000000000004000000000000004000000000000000040000000000000040000000000000000400000000000000400000000000000004"/>
+<V name="outRouting_16" value="0000000000000004000000000000004000000000000000040000000000000040000000000000000400000000000000400000000000000004000000000000004000000000000000040000000000000040000000000000000400000000000000400000000000000004000000000000004000000000000000040000000000000040"/>
+<V name="fxIdxAmpSplitPoint" value="6"/>
+<V name="selectedForEdit" value="yes"/>
+<V name="selectedInGroupEditor" value="no"/>
+<V name="zonesVisibleInMapListView" value="yes"/>
+<V name="batteryCellColor" value="0"/>
+<V name="batteryLowKey" value="0"/>
+<V name="batteryHighKey" value="0"/>
+<V name="fxBeingEdited" value="no"/>
+<V name="idxFXBeingEdited" value="0"/>
+<V name="grooveBoxID" value="-1"/>
+<V name="interpQuality" value="normal"/>
+<V name="muted" value="no"/>
+<V name="soloed" value="no"/>
+</Parameters>
+<Automation/>
+<PlayPosOffset version="0.50"/>
+<LoopOffset version="0.50"/>
+<GroupStart/>
+<PlaybackMode version="1.0">
+<V name="type" value="streaming"/>
+<V name="speed" value="1"/>
+<V name="legato" value="no"/>
+<V name="zoneLockedSpeed" value="no"/>
+</PlaybackMode>
+<GroupInsertFX>
+</GroupInsertFX>
+<IntModulators>
+<K2_IntMod index="0" version="0.80">
+<Targets>
+<Target index="0">
+<V name="target" value="volume"/>
+<V name="intensity" value="1.000000"/>
+<V name="slotIdx" value="-1"/>
+<V name="flags" value="20"/>
+<V name="smoothingCoef" value="0"/>
+<V name="name" value="ENV_AHDSR_VOLUME"/>
+<V name="tableOpen" value="no"/>
+</Target>
+</Targets>
+<V name="routersOpen" value="no"/>
+<V name="bypass" value="no"/>
+<V name="retrigger" value="yes"/>
+<V name="classID" value="-1"/>
+<Envelope type="ahdsr" version="0.90">
+<V name="atkCurving" value="-0.33199998736381531"/>
+<V name="attack" value="0"/>
+<V name="decay" value="0"/>
+<V name="hold" value="0"/>
+<V name="sustain" value="1.000000"/>
+<V name="release" value="217"/>
+<V name="noteOffLessMode" value="no"/>
+</Envelope>
+</K2_IntMod>
+</IntModulators>
+<ExtModulators>
+<K2_ExtMod index="0" version="1.0">
+<Targets>
+<Target index="0">
+<V name="target" value="volume"/>
+<V name="intensity" value="0.622047"/>
+<V name="slotIdx" value="-1"/>
+<V name="flags" value="20"/>
+<V name="smoothingCoef" value="0"/>
+<V name="name" value=""/>
+<V name="tableOpen" value="no"/>
+</Target>
+</Targets>
+<V name="source" value="velocity"/>
+<V name="bypass" value="no"/>
+<V name="legacyStatModBehaviour" value="yes"/>
+<V name="type" value="extMod"/>
+<V name="classID" value="-1"/>
+<V name="name" value="External Mod."/>
+<V name="initialValue" value="-1"/>
+</K2_ExtMod>
+<K2_ExtMod index="1" version="1.0">
+<Targets>
+<Target index="0">
+<V name="target" value="pitch"/>
+<V name="intensity" value="0.166667"/>
+<V name="slotIdx" value="-1"/>
+<V name="flags" value="20"/>
+<V name="smoothingCoef" value="250"/>
+<V name="name" value=""/>
+<V name="tableOpen" value="no"/>
+</Target>
+</Targets>
+<V name="source" value="pitchBend"/>
+<V name="bypass" value="no"/>
+<V name="legacyStatModBehaviour" value="yes"/>
+<V name="type" value="extMod"/>
+<V name="classID" value="-1"/>
+<V name="name" value="External Mod."/>
+<V name="initialValue" value="-1"/>
+</K2_ExtMod>
+</ExtModulators>
+</K2_Group>
+</Groups>
+<Zones>
+<K2_Zone index="0" groupIdx="0" version="0.90">
+<Parameters>
+<V name="sampleStart" value="0"/>
+<V name="sampleEnd" value="0"/>
+<V name="sampleStartModRange" value="-1"/>
+<V name="lowVelocity" value="1"/>
+<V name="highVelocity" value="127"/>
+<V name="lowKey" value="60"/>
+<V name="highKey" value="60"/>
+<V name="fadeLowVelo" value="0"/>
+<V name="fadeHighVelo" value="0"/>
+<V name="fadeLowKey" value="0"/>
+<V name="fadeHighKey" value="0"/>
+<V name="rootKey" value="60"/>
+<V name="zoneVolume" value="1.000000"/>
+<V name="zonePan" value="0"/>
+<V name="zoneTune" value="1.000000"/>
+<V name="gridMode" value="grid_mode_none"/>
+<V name="morphGroupIdx" value="-1"/>
+<V name="fixedUnitNum" value="1"/>
+<V name="fixedUnitDenom" value="16"/>
+<V name="measureNum" value="4"/>
+<V name="measureDenom" value="4"/>
+<V name="tempoScaling" value="4"/>
+<V name="slicerSens" value="0"/>
+<V name="isReferenceZone" value="no"/>
+<V name="selected" value="no"/>
+<V name="zoomScaleX" value="1"/>
+<V name="zoomScaleY" value="1"/>
+<V name="selectedLoopIdx" value="-1"/>
+<V name="zleIdxDisplayed" value="-1"/>
+<V name="grooveBoxID" value="-1"/>
+<V name="batteryMapPos" value="-1"/>
+<V name="batteryMapPosGrabStart" value="-1"/>
+<V name="curEditorTab" value="0"/>
+</Parameters>
+<Loops/>
+<Sample>
+<V name="file_ex2" value="@bbbd009One Shotsd005KicksF-000101700085_Kick_SP_01.wav"/>
+<V name="file_pbn" value="@"/>
+<V name="isVolatile" value="no"/>
+<V name="purged" value="no"/>
+</Sample>
+
+<Slices/>
+<ZLEs/>
+</K2_Zone>
+<K2_Zone index="1" groupIdx="0" version="0.90">
+<Parameters>
+<V name="sampleStart" value="0"/>
+<V name="sampleEnd" value="0"/>
+<V name="sampleStartModRange" value="-1"/>
+<V name="lowVelocity" value="1"/>
+<V name="highVelocity" value="127"/>
+<V name="lowKey" value="61"/>
+<V name="highKey" value="61"/>
+<V name="fadeLowVelo" value="0"/>
+<V name="fadeHighVelo" value="0"/>
+<V name="fadeLowKey" value="0"/>
+<V name="fadeHighKey" value="0"/>
+<V name="rootKey" value="61"/>
+<V name="zoneVolume" value="1.000000"/>
+<V name="zonePan" value="0"/>
+<V name="zoneTune" value="1.000000"/>
+<V name="gridMode" value="grid_mode_none"/>
+<V name="morphGroupIdx" value="-1"/>
+<V name="fixedUnitNum" value="1"/>
+<V name="fixedUnitDenom" value="16"/>
+<V name="measureNum" value="4"/>
+<V name="measureDenom" value="4"/>
+<V name="tempoScaling" value="4"/>
+<V name="slicerSens" value="0"/>
+<V name="isReferenceZone" value="no"/>
+<V name="selected" value="no"/>
+<V name="zoomScaleX" value="1"/>
+<V name="zoomScaleY" value="1"/>
+<V name="selectedLoopIdx" value="-1"/>
+<V name="zleIdxDisplayed" value="-1"/>
+<V name="grooveBoxID" value="-1"/>
+<V name="batteryMapPos" value="-1"/>
+<V name="batteryMapPosGrabStart" value="-1"/>
+<V name="curEditorTab" value="0"/>
+</Parameters>
+<Loops/>
+<Sample>
+<V name="file_ex2" value="@bbbd009One Shotsd005KicksF-000101700085_Kick_SP_02.wav"/>
+<V name="file_pbn" value="@"/>
+<V name="isVolatile" value="no"/>
+<V name="purged" value="no"/>
+</Sample>
+
+<Slices/>
+<ZLEs/>
+</K2_Zone>
+<K2_Zone index="2" groupIdx="0" version="0.90">
+<Parameters>
+<V name="sampleStart" value="0"/>
+<V name="sampleEnd" value="0"/>
+<V name="sampleStartModRange" value="-1"/>
+<V name="lowVelocity" value="1"/>
+<V name="highVelocity" value="127"/>
+<V name="lowKey" value="62"/>
+<V name="highKey" value="62"/>
+<V name="fadeLowVelo" value="0"/>
+<V name="fadeHighVelo" value="0"/>
+<V name="fadeLowKey" value="0"/>
+<V name="fadeHighKey" value="0"/>
+<V name="rootKey" value="62"/>
+<V name="zoneVolume" value="1.000000"/>
+<V name="zonePan" value="0"/>
+<V name="zoneTune" value="1.000000"/>
+<V name="gridMode" value="grid_mode_none"/>
+<V name="morphGroupIdx" value="-1"/>
+<V name="fixedUnitNum" value="1"/>
+<V name="fixedUnitDenom" value="16"/>
+<V name="measureNum" value="4"/>
+<V name="measureDenom" value="4"/>
+<V name="tempoScaling" value="4"/>
+<V name="slicerSens" value="0"/>
+<V name="isReferenceZone" value="no"/>
+<V name="selected" value="no"/>
+<V name="zoomScaleX" value="1"/>
+<V name="zoomScaleY" value="1"/>
+<V name="selectedLoopIdx" value="-1"/>
+<V name="zleIdxDisplayed" value="-1"/>
+<V name="grooveBoxID" value="-1"/>
+<V name="batteryMapPos" value="-1"/>
+<V name="batteryMapPosGrabStart" value="-1"/>
+<V name="curEditorTab" value="0"/>
+</Parameters>
+<Loops/>
+<Sample>
+<V name="file_ex2" value="@bbbd009One Shotsd005KicksF-000101700085_Kick_SP_03.wav"/>
+<V name="file_pbn" value="@"/>
+<V name="isVolatile" value="no"/>
+<V name="purged" value="no"/>
+</Sample>
+
+<Slices/>
+<ZLEs/>
+</K2_Zone>
+<K2_Zone index="3" groupIdx="0" version="0.90">
+<Parameters>
+<V name="sampleStart" value="0"/>
+<V name="sampleEnd" value="0"/>
+<V name="sampleStartModRange" value="-1"/>
+<V name="lowVelocity" value="1"/>
+<V name="highVelocity" value="127"/>
+<V name="lowKey" value="63"/>
+<V name="highKey" value="63"/>
+<V name="fadeLowVelo" value="0"/>
+<V name="fadeHighVelo" value="0"/>
+<V name="fadeLowKey" value="0"/>
+<V name="fadeHighKey" value="0"/>
+<V name="rootKey" value="63"/>
+<V name="zoneVolume" value="1.000000"/>
+<V name="zonePan" value="0"/>
+<V name="zoneTune" value="1.000000"/>
+<V name="gridMode" value="grid_mode_none"/>
+<V name="morphGroupIdx" value="-1"/>
+<V name="fixedUnitNum" value="1"/>
+<V name="fixedUnitDenom" value="16"/>
+<V name="measureNum" value="4"/>
+<V name="measureDenom" value="4"/>
+<V name="tempoScaling" value="4"/>
+<V name="slicerSens" value="0"/>
+<V name="isReferenceZone" value="no"/>
+<V name="selected" value="no"/>
+<V name="zoomScaleX" value="1"/>
+<V name="zoomScaleY" value="1"/>
+<V name="selectedLoopIdx" value="-1"/>
+<V name="zleIdxDisplayed" value="-1"/>
+<V name="grooveBoxID" value="-1"/>
+<V name="batteryMapPos" value="-1"/>
+<V name="batteryMapPosGrabStart" value="-1"/>
+<V name="curEditorTab" value="0"/>
+</Parameters>
+<Loops/>
+<Sample>
+<V name="file_ex2" value="@bbbd009One Shotsd005KicksF-000101700085_Kick_SP_04.wav"/>
+<V name="file_pbn" value="@"/>
+<V name="isVolatile" value="no"/>
+<V name="purged" value="no"/>
+</Sample>
+
+<Slices/>
+<ZLEs/>
+</K2_Zone>
+<K2_Zone index="4" groupIdx="0" version="0.90">
+<Parameters>
+<V name="sampleStart" value="0"/>
+<V name="sampleEnd" value="0"/>
+<V name="sampleStartModRange" value="-1"/>
+<V name="lowVelocity" value="1"/>
+<V name="highVelocity" value="127"/>
+<V name="lowKey" value="64"/>
+<V name="highKey" value="64"/>
+<V name="fadeLowVelo" value="0"/>
+<V name="fadeHighVelo" value="0"/>
+<V name="fadeLowKey" value="0"/>
+<V name="fadeHighKey" value="0"/>
+<V name="rootKey" value="64"/>
+<V name="zoneVolume" value="1.000000"/>
+<V name="zonePan" value="0"/>
+<V name="zoneTune" value="1.000000"/>
+<V name="gridMode" value="grid_mode_none"/>
+<V name="morphGroupIdx" value="-1"/>
+<V name="fixedUnitNum" value="1"/>
+<V name="fixedUnitDenom" value="16"/>
+<V name="measureNum" value="4"/>
+<V name="measureDenom" value="4"/>
+<V name="tempoScaling" value="4"/>
+<V name="slicerSens" value="0"/>
+<V name="isReferenceZone" value="no"/>
+<V name="selected" value="no"/>
+<V name="zoomScaleX" value="1"/>
+<V name="zoomScaleY" value="1"/>
+<V name="selectedLoopIdx" value="-1"/>
+<V name="zleIdxDisplayed" value="-1"/>
+<V name="grooveBoxID" value="-1"/>
+<V name="batteryMapPos" value="-1"/>
+<V name="batteryMapPosGrabStart" value="-1"/>
+<V name="curEditorTab" value="0"/>
+</Parameters>
+<Loops/>
+<Sample>
+<V name="file_ex2" value="@bbbd009One Shotsd005KicksF-000101700085_Kick_SP_05.wav"/>
+<V name="file_pbn" value="@"/>
+<V name="isVolatile" value="no"/>
+<V name="purged" value="no"/>
+</Sample>
+
+<Slices/>
+<ZLEs/>
+</K2_Zone>
+<K2_Zone index="5" groupIdx="0" version="0.90">
+<Parameters>
+<V name="sampleStart" value="0"/>
+<V name="sampleEnd" value="0"/>
+<V name="sampleStartModRange" value="-1"/>
+<V name="lowVelocity" value="1"/>
+<V name="highVelocity" value="127"/>
+<V name="lowKey" value="65"/>
+<V name="highKey" value="65"/>
+<V name="fadeLowVelo" value="0"/>
+<V name="fadeHighVelo" value="0"/>
+<V name="fadeLowKey" value="0"/>
+<V name="fadeHighKey" value="0"/>
+<V name="rootKey" value="65"/>
+<V name="zoneVolume" value="1.000000"/>
+<V name="zonePan" value="0"/>
+<V name="zoneTune" value="1.000000"/>
+<V name="gridMode" value="grid_mode_none"/>
+<V name="morphGroupIdx" value="-1"/>
+<V name="fixedUnitNum" value="1"/>
+<V name="fixedUnitDenom" value="16"/>
+<V name="measureNum" value="4"/>
+<V name="measureDenom" value="4"/>
+<V name="tempoScaling" value="4"/>
+<V name="slicerSens" value="0"/>
+<V name="isReferenceZone" value="no"/>
+<V name="selected" value="no"/>
+<V name="zoomScaleX" value="1"/>
+<V name="zoomScaleY" value="1"/>
+<V name="selectedLoopIdx" value="-1"/>
+<V name="zleIdxDisplayed" value="-1"/>
+<V name="grooveBoxID" value="-1"/>
+<V name="batteryMapPos" value="-1"/>
+<V name="batteryMapPosGrabStart" value="-1"/>
+<V name="curEditorTab" value="0"/>
+</Parameters>
+<Loops/>
+<Sample>
+<V name="file_ex2" value="@bbbd009One Shotsd005KicksF-000101700085_Kick_SP_06.wav"/>
+<V name="file_pbn" value="@"/>
+<V name="isVolatile" value="no"/>
+<V name="purged" value="no"/>
+</Sample>
+
+<Slices/>
+<ZLEs/>
+</K2_Zone>
+<K2_Zone index="6" groupIdx="0" version="0.90">
+<Parameters>
+<V name="sampleStart" value="0"/>
+<V name="sampleEnd" value="0"/>
+<V name="sampleStartModRange" value="-1"/>
+<V name="lowVelocity" value="1"/>
+<V name="highVelocity" value="127"/>
+<V name="lowKey" value="66"/>
+<V name="highKey" value="66"/>
+<V name="fadeLowVelo" value="0"/>
+<V name="fadeHighVelo" value="0"/>
+<V name="fadeLowKey" value="0"/>
+<V name="fadeHighKey" value="0"/>
+<V name="rootKey" value="66"/>
+<V name="zoneVolume" value="1.000000"/>
+<V name="zonePan" value="0"/>
+<V name="zoneTune" value="1.000000"/>
+<V name="gridMode" value="grid_mode_none"/>
+<V name="morphGroupIdx" value="-1"/>
+<V name="fixedUnitNum" value="1"/>
+<V name="fixedUnitDenom" value="16"/>
+<V name="measureNum" value="4"/>
+<V name="measureDenom" value="4"/>
+<V name="tempoScaling" value="4"/>
+<V name="slicerSens" value="0"/>
+<V name="isReferenceZone" value="no"/>
+<V name="selected" value="no"/>
+<V name="zoomScaleX" value="1"/>
+<V name="zoomScaleY" value="1"/>
+<V name="selectedLoopIdx" value="-1"/>
+<V name="zleIdxDisplayed" value="-1"/>
+<V name="grooveBoxID" value="-1"/>
+<V name="batteryMapPos" value="-1"/>
+<V name="batteryMapPosGrabStart" value="-1"/>
+<V name="curEditorTab" value="0"/>
+</Parameters>
+<Loops/>
+<Sample>
+<V name="file_ex2" value="@bbbd009One Shotsd005KicksF-000101700085_Kick_SP_07.wav"/>
+<V name="file_pbn" value="@"/>
+<V name="isVolatile" value="no"/>
+<V name="purged" value="no"/>
+</Sample>
+
+<Slices/>
+<ZLEs/>
+</K2_Zone>
+<K2_Zone index="7" groupIdx="0" version="0.90">
+<Parameters>
+<V name="sampleStart" value="0"/>
+<V name="sampleEnd" value="0"/>
+<V name="sampleStartModRange" value="-1"/>
+<V name="lowVelocity" value="1"/>
+<V name="highVelocity" value="127"/>
+<V name="lowKey" value="67"/>
+<V name="highKey" value="67"/>
+<V name="fadeLowVelo" value="0"/>
+<V name="fadeHighVelo" value="0"/>
+<V name="fadeLowKey" value="0"/>
+<V name="fadeHighKey" value="0"/>
+<V name="rootKey" value="67"/>
+<V name="zoneVolume" value="1.000000"/>
+<V name="zonePan" value="0"/>
+<V name="zoneTune" value="1.000000"/>
+<V name="gridMode" value="grid_mode_none"/>
+<V name="morphGroupIdx" value="-1"/>
+<V name="fixedUnitNum" value="1"/>
+<V name="fixedUnitDenom" value="16"/>
+<V name="measureNum" value="4"/>
+<V name="measureDenom" value="4"/>
+<V name="tempoScaling" value="4"/>
+<V name="slicerSens" value="0"/>
+<V name="isReferenceZone" value="no"/>
+<V name="selected" value="no"/>
+<V name="zoomScaleX" value="1"/>
+<V name="zoomScaleY" value="1"/>
+<V name="selectedLoopIdx" value="-1"/>
+<V name="zleIdxDisplayed" value="-1"/>
+<V name="grooveBoxID" value="-1"/>
+<V name="batteryMapPos" value="-1"/>
+<V name="batteryMapPosGrabStart" value="-1"/>
+<V name="curEditorTab" value="0"/>
+</Parameters>
+<Loops/>
+<Sample>
+<V name="file_ex2" value="@bbbd009One Shotsd005KicksF-000101700085_Kick_SP_08.wav"/>
+<V name="file_pbn" value="@"/>
+<V name="isVolatile" value="no"/>
+<V name="purged" value="no"/>
+</Sample>
+
+<Slices/>
+<ZLEs/>
+</K2_Zone>
+<K2_Zone index="8" groupIdx="0" version="0.90">
+<Parameters>
+<V name="sampleStart" value="0"/>
+<V name="sampleEnd" value="0"/>
+<V name="sampleStartModRange" value="-1"/>
+<V name="lowVelocity" value="1"/>
+<V name="highVelocity" value="127"/>
+<V name="lowKey" value="68"/>
+<V name="highKey" value="68"/>
+<V name="fadeLowVelo" value="0"/>
+<V name="fadeHighVelo" value="0"/>
+<V name="fadeLowKey" value="0"/>
+<V name="fadeHighKey" value="0"/>
+<V name="rootKey" value="68"/>
+<V name="zoneVolume" value="1.000000"/>
+<V name="zonePan" value="0"/>
+<V name="zoneTune" value="1.000000"/>
+<V name="gridMode" value="grid_mode_none"/>
+<V name="morphGroupIdx" value="-1"/>
+<V name="fixedUnitNum" value="1"/>
+<V name="fixedUnitDenom" value="16"/>
+<V name="measureNum" value="4"/>
+<V name="measureDenom" value="4"/>
+<V name="tempoScaling" value="4"/>
+<V name="slicerSens" value="0"/>
+<V name="isReferenceZone" value="no"/>
+<V name="selected" value="no"/>
+<V name="zoomScaleX" value="1"/>
+<V name="zoomScaleY" value="1"/>
+<V name="selectedLoopIdx" value="-1"/>
+<V name="zleIdxDisplayed" value="-1"/>
+<V name="grooveBoxID" value="-1"/>
+<V name="batteryMapPos" value="-1"/>
+<V name="batteryMapPosGrabStart" value="-1"/>
+<V name="curEditorTab" value="0"/>
+</Parameters>
+<Loops/>
+<Sample>
+<V name="file_ex2" value="@bbbd009One Shotsd005KicksF-000101700085_Kick_SP_09.wav"/>
+<V name="file_pbn" value="@"/>
+<V name="isVolatile" value="no"/>
+<V name="purged" value="no"/>
+</Sample>
+
+<Slices/>
+<ZLEs/>
+</K2_Zone>
+<K2_Zone index="9" groupIdx="0" version="0.90">
+<Parameters>
+<V name="sampleStart" value="0"/>
+<V name="sampleEnd" value="0"/>
+<V name="sampleStartModRange" value="-1"/>
+<V name="lowVelocity" value="1"/>
+<V name="highVelocity" value="127"/>
+<V name="lowKey" value="69"/>
+<V name="highKey" value="69"/>
+<V name="fadeLowVelo" value="0"/>
+<V name="fadeHighVelo" value="0"/>
+<V name="fadeLowKey" value="0"/>
+<V name="fadeHighKey" value="0"/>
+<V name="rootKey" value="69"/>
+<V name="zoneVolume" value="1.000000"/>
+<V name="zonePan" value="0"/>
+<V name="zoneTune" value="1.000000"/>
+<V name="gridMode" value="grid_mode_none"/>
+<V name="morphGroupIdx" value="-1"/>
+<V name="fixedUnitNum" value="1"/>
+<V name="fixedUnitDenom" value="16"/>
+<V name="measureNum" value="4"/>
+<V name="measureDenom" value="4"/>
+<V name="tempoScaling" value="4"/>
+<V name="slicerSens" value="0"/>
+<V name="isReferenceZone" value="no"/>
+<V name="selected" value="no"/>
+<V name="zoomScaleX" value="1"/>
+<V name="zoomScaleY" value="1"/>
+<V name="selectedLoopIdx" value="-1"/>
+<V name="zleIdxDisplayed" value="-1"/>
+<V name="grooveBoxID" value="-1"/>
+<V name="batteryMapPos" value="-1"/>
+<V name="batteryMapPosGrabStart" value="-1"/>
+<V name="curEditorTab" value="0"/>
+</Parameters>
+<Loops/>
+<Sample>
+<V name="file_ex2" value="@bbbd009One Shotsd005KicksF-000101700085_Kick_SP_10.wav"/>
+<V name="file_pbn" value="@"/>
+<V name="isVolatile" value="no"/>
+<V name="purged" value="no"/>
+</Sample>
+
+<Slices/>
+<ZLEs/>
+</K2_Zone>
+<K2_Zone index="10" groupIdx="0" version="0.90">
+<Parameters>
+<V name="sampleStart" value="0"/>
+<V name="sampleEnd" value="0"/>
+<V name="sampleStartModRange" value="-1"/>
+<V name="lowVelocity" value="1"/>
+<V name="highVelocity" value="127"/>
+<V name="lowKey" value="70"/>
+<V name="highKey" value="70"/>
+<V name="fadeLowVelo" value="0"/>
+<V name="fadeHighVelo" value="0"/>
+<V name="fadeLowKey" value="0"/>
+<V name="fadeHighKey" value="0"/>
+<V name="rootKey" value="70"/>
+<V name="zoneVolume" value="1.000000"/>
+<V name="zonePan" value="0"/>
+<V name="zoneTune" value="1.000000"/>
+<V name="gridMode" value="grid_mode_none"/>
+<V name="morphGroupIdx" value="-1"/>
+<V name="fixedUnitNum" value="1"/>
+<V name="fixedUnitDenom" value="16"/>
+<V name="measureNum" value="4"/>
+<V name="measureDenom" value="4"/>
+<V name="tempoScaling" value="4"/>
+<V name="slicerSens" value="0"/>
+<V name="isReferenceZone" value="no"/>
+<V name="selected" value="no"/>
+<V name="zoomScaleX" value="1"/>
+<V name="zoomScaleY" value="1"/>
+<V name="selectedLoopIdx" value="-1"/>
+<V name="zleIdxDisplayed" value="-1"/>
+<V name="grooveBoxID" value="-1"/>
+<V name="batteryMapPos" value="-1"/>
+<V name="batteryMapPosGrabStart" value="-1"/>
+<V name="curEditorTab" value="0"/>
+</Parameters>
+<Loops/>
+<Sample>
+<V name="file_ex2" value="@bbbd009One Shotsd005KicksF-000101700085_Kick_SP_11.wav"/>
+<V name="file_pbn" value="@"/>
+<V name="isVolatile" value="no"/>
+<V name="purged" value="no"/>
+</Sample>
+
+<Slices/>
+<ZLEs/>
+</K2_Zone>
+<K2_Zone index="11" groupIdx="0" version="0.90">
+<Parameters>
+<V name="sampleStart" value="0"/>
+<V name="sampleEnd" value="0"/>
+<V name="sampleStartModRange" value="-1"/>
+<V name="lowVelocity" value="1"/>
+<V name="highVelocity" value="127"/>
+<V name="lowKey" value="71"/>
+<V name="highKey" value="71"/>
+<V name="fadeLowVelo" value="0"/>
+<V name="fadeHighVelo" value="0"/>
+<V name="fadeLowKey" value="0"/>
+<V name="fadeHighKey" value="0"/>
+<V name="rootKey" value="71"/>
+<V name="zoneVolume" value="1.000000"/>
+<V name="zonePan" value="0"/>
+<V name="zoneTune" value="1.000000"/>
+<V name="gridMode" value="grid_mode_none"/>
+<V name="morphGroupIdx" value="-1"/>
+<V name="fixedUnitNum" value="1"/>
+<V name="fixedUnitDenom" value="16"/>
+<V name="measureNum" value="4"/>
+<V name="measureDenom" value="4"/>
+<V name="tempoScaling" value="4"/>
+<V name="slicerSens" value="0"/>
+<V name="isReferenceZone" value="no"/>
+<V name="selected" value="no"/>
+<V name="zoomScaleX" value="1"/>
+<V name="zoomScaleY" value="1"/>
+<V name="selectedLoopIdx" value="-1"/>
+<V name="zleIdxDisplayed" value="-1"/>
+<V name="grooveBoxID" value="-1"/>
+<V name="batteryMapPos" value="-1"/>
+<V name="batteryMapPosGrabStart" value="-1"/>
+<V name="curEditorTab" value="0"/>
+</Parameters>
+<Loops/>
+<Sample>
+<V name="file_ex2" value="@bbbd009One Shotsd005KicksF-000101700085_Kick_SP_12.wav"/>
+<V name="file_pbn" value="@"/>
+<V name="isVolatile" value="no"/>
+<V name="purged" value="no"/>
+</Sample>
+
+<Slices/>
+<ZLEs/>
+</K2_Zone>
+<K2_Zone index="12" groupIdx="0" version="0.90">
+<Parameters>
+<V name="sampleStart" value="0"/>
+<V name="sampleEnd" value="0"/>
+<V name="sampleStartModRange" value="-1"/>
+<V name="lowVelocity" value="1"/>
+<V name="highVelocity" value="127"/>
+<V name="lowKey" value="72"/>
+<V name="highKey" value="72"/>
+<V name="fadeLowVelo" value="0"/>
+<V name="fadeHighVelo" value="0"/>
+<V name="fadeLowKey" value="0"/>
+<V name="fadeHighKey" value="0"/>
+<V name="rootKey" value="72"/>
+<V name="zoneVolume" value="1.000000"/>
+<V name="zonePan" value="0"/>
+<V name="zoneTune" value="1.000000"/>
+<V name="gridMode" value="grid_mode_none"/>
+<V name="morphGroupIdx" value="-1"/>
+<V name="fixedUnitNum" value="1"/>
+<V name="fixedUnitDenom" value="16"/>
+<V name="measureNum" value="4"/>
+<V name="measureDenom" value="4"/>
+<V name="tempoScaling" value="4"/>
+<V name="slicerSens" value="0"/>
+<V name="isReferenceZone" value="no"/>
+<V name="selected" value="no"/>
+<V name="zoomScaleX" value="1"/>
+<V name="zoomScaleY" value="1"/>
+<V name="selectedLoopIdx" value="-1"/>
+<V name="zleIdxDisplayed" value="-1"/>
+<V name="grooveBoxID" value="-1"/>
+<V name="batteryMapPos" value="-1"/>
+<V name="batteryMapPosGrabStart" value="-1"/>
+<V name="curEditorTab" value="0"/>
+</Parameters>
+<Loops/>
+<Sample>
+<V name="file_ex2" value="@bbbd009One Shotsd005KicksF-000101700085_Kick_SP_13.wav"/>
+<V name="file_pbn" value="@"/>
+<V name="isVolatile" value="no"/>
+<V name="purged" value="no"/>
+</Sample>
+
+<Slices/>
+<ZLEs/>
+</K2_Zone>
+<K2_Zone index="13" groupIdx="0" version="0.90">
+<Parameters>
+<V name="sampleStart" value="0"/>
+<V name="sampleEnd" value="0"/>
+<V name="sampleStartModRange" value="-1"/>
+<V name="lowVelocity" value="1"/>
+<V name="highVelocity" value="127"/>
+<V name="lowKey" value="73"/>
+<V name="highKey" value="73"/>
+<V name="fadeLowVelo" value="0"/>
+<V name="fadeHighVelo" value="0"/>
+<V name="fadeLowKey" value="0"/>
+<V name="fadeHighKey" value="0"/>
+<V name="rootKey" value="73"/>
+<V name="zoneVolume" value="1.000000"/>
+<V name="zonePan" value="0"/>
+<V name="zoneTune" value="1.000000"/>
+<V name="gridMode" value="grid_mode_none"/>
+<V name="morphGroupIdx" value="-1"/>
+<V name="fixedUnitNum" value="1"/>
+<V name="fixedUnitDenom" value="16"/>
+<V name="measureNum" value="4"/>
+<V name="measureDenom" value="4"/>
+<V name="tempoScaling" value="4"/>
+<V name="slicerSens" value="0"/>
+<V name="isReferenceZone" value="no"/>
+<V name="selected" value="no"/>
+<V name="zoomScaleX" value="1"/>
+<V name="zoomScaleY" value="1"/>
+<V name="selectedLoopIdx" value="-1"/>
+<V name="zleIdxDisplayed" value="-1"/>
+<V name="grooveBoxID" value="-1"/>
+<V name="batteryMapPos" value="-1"/>
+<V name="batteryMapPosGrabStart" value="-1"/>
+<V name="curEditorTab" value="0"/>
+</Parameters>
+<Loops/>
+<Sample>
+<V name="file_ex2" value="@bbbd009One Shotsd005KicksF-000101700085_Kick_SP_14.wav"/>
+<V name="file_pbn" value="@"/>
+<V name="isVolatile" value="no"/>
+<V name="purged" value="no"/>
+</Sample>
+
+<Slices/>
+<ZLEs/>
+</K2_Zone>
+<K2_Zone index="14" groupIdx="0" version="0.90">
+<Parameters>
+<V name="sampleStart" value="0"/>
+<V name="sampleEnd" value="0"/>
+<V name="sampleStartModRange" value="-1"/>
+<V name="lowVelocity" value="1"/>
+<V name="highVelocity" value="127"/>
+<V name="lowKey" value="74"/>
+<V name="highKey" value="74"/>
+<V name="fadeLowVelo" value="0"/>
+<V name="fadeHighVelo" value="0"/>
+<V name="fadeLowKey" value="0"/>
+<V name="fadeHighKey" value="0"/>
+<V name="rootKey" value="74"/>
+<V name="zoneVolume" value="1.000000"/>
+<V name="zonePan" value="0"/>
+<V name="zoneTune" value="1.000000"/>
+<V name="gridMode" value="grid_mode_none"/>
+<V name="morphGroupIdx" value="-1"/>
+<V name="fixedUnitNum" value="1"/>
+<V name="fixedUnitDenom" value="16"/>
+<V name="measureNum" value="4"/>
+<V name="measureDenom" value="4"/>
+<V name="tempoScaling" value="4"/>
+<V name="slicerSens" value="0"/>
+<V name="isReferenceZone" value="no"/>
+<V name="selected" value="no"/>
+<V name="zoomScaleX" value="1"/>
+<V name="zoomScaleY" value="1"/>
+<V name="selectedLoopIdx" value="-1"/>
+<V name="zleIdxDisplayed" value="-1"/>
+<V name="grooveBoxID" value="-1"/>
+<V name="batteryMapPos" value="-1"/>
+<V name="batteryMapPosGrabStart" value="-1"/>
+<V name="curEditorTab" value="0"/>
+</Parameters>
+<Loops/>
+<Sample>
+<V name="file_ex2" value="@bbbd009One Shotsd005KicksF-000101700085_Kick_SP_15.wav"/>
+<V name="file_pbn" value="@"/>
+<V name="isVolatile" value="no"/>
+<V name="purged" value="no"/>
+</Sample>
+
+<Slices/>
+<ZLEs/>
+</K2_Zone>
+<K2_Zone index="15" groupIdx="0" version="0.90">
+<Parameters>
+<V name="sampleStart" value="0"/>
+<V name="sampleEnd" value="0"/>
+<V name="sampleStartModRange" value="-1"/>
+<V name="lowVelocity" value="1"/>
+<V name="highVelocity" value="127"/>
+<V name="lowKey" value="75"/>
+<V name="highKey" value="75"/>
+<V name="fadeLowVelo" value="0"/>
+<V name="fadeHighVelo" value="0"/>
+<V name="fadeLowKey" value="0"/>
+<V name="fadeHighKey" value="0"/>
+<V name="rootKey" value="75"/>
+<V name="zoneVolume" value="1.000000"/>
+<V name="zonePan" value="0"/>
+<V name="zoneTune" value="1.000000"/>
+<V name="gridMode" value="grid_mode_none"/>
+<V name="morphGroupIdx" value="-1"/>
+<V name="fixedUnitNum" value="1"/>
+<V name="fixedUnitDenom" value="16"/>
+<V name="measureNum" value="4"/>
+<V name="measureDenom" value="4"/>
+<V name="tempoScaling" value="4"/>
+<V name="slicerSens" value="0"/>
+<V name="isReferenceZone" value="no"/>
+<V name="selected" value="no"/>
+<V name="zoomScaleX" value="1"/>
+<V name="zoomScaleY" value="1"/>
+<V name="selectedLoopIdx" value="-1"/>
+<V name="zleIdxDisplayed" value="-1"/>
+<V name="grooveBoxID" value="-1"/>
+<V name="batteryMapPos" value="-1"/>
+<V name="batteryMapPosGrabStart" value="-1"/>
+<V name="curEditorTab" value="0"/>
+</Parameters>
+<Loops/>
+<Sample>
+<V name="file_ex2" value="@bbbd009One Shotsd005KicksF-000101700085_Kick_SP_16.wav"/>
+<V name="file_pbn" value="@"/>
+<V name="isVolatile" value="no"/>
+<V name="purged" value="no"/>
+</Sample>
+
+<Slices/>
+<ZLEs/>
+</K2_Zone>
+<K2_Zone index="16" groupIdx="0" version="0.90">
+<Parameters>
+<V name="sampleStart" value="0"/>
+<V name="sampleEnd" value="0"/>
+<V name="sampleStartModRange" value="-1"/>
+<V name="lowVelocity" value="1"/>
+<V name="highVelocity" value="127"/>
+<V name="lowKey" value="76"/>
+<V name="highKey" value="76"/>
+<V name="fadeLowVelo" value="0"/>
+<V name="fadeHighVelo" value="0"/>
+<V name="fadeLowKey" value="0"/>
+<V name="fadeHighKey" value="0"/>
+<V name="rootKey" value="76"/>
+<V name="zoneVolume" value="1.000000"/>
+<V name="zonePan" value="0"/>
+<V name="zoneTune" value="1.000000"/>
+<V name="gridMode" value="grid_mode_none"/>
+<V name="morphGroupIdx" value="-1"/>
+<V name="fixedUnitNum" value="1"/>
+<V name="fixedUnitDenom" value="16"/>
+<V name="measureNum" value="4"/>
+<V name="measureDenom" value="4"/>
+<V name="tempoScaling" value="4"/>
+<V name="slicerSens" value="0"/>
+<V name="isReferenceZone" value="no"/>
+<V name="selected" value="no"/>
+<V name="zoomScaleX" value="1"/>
+<V name="zoomScaleY" value="1"/>
+<V name="selectedLoopIdx" value="-1"/>
+<V name="zleIdxDisplayed" value="-1"/>
+<V name="grooveBoxID" value="-1"/>
+<V name="batteryMapPos" value="-1"/>
+<V name="batteryMapPosGrabStart" value="-1"/>
+<V name="curEditorTab" value="0"/>
+</Parameters>
+<Loops/>
+<Sample>
+<V name="file_ex2" value="@bbbd009One Shotsd005KicksF-000101700085_Kick_SP_17.wav"/>
+<V name="file_pbn" value="@"/>
+<V name="isVolatile" value="no"/>
+<V name="purged" value="no"/>
+</Sample>
+
+<Slices/>
+<ZLEs/>
+</K2_Zone>
+<K2_Zone index="17" groupIdx="0" version="0.90">
+<Parameters>
+<V name="sampleStart" value="0"/>
+<V name="sampleEnd" value="0"/>
+<V name="sampleStartModRange" value="-1"/>
+<V name="lowVelocity" value="1"/>
+<V name="highVelocity" value="127"/>
+<V name="lowKey" value="77"/>
+<V name="highKey" value="77"/>
+<V name="fadeLowVelo" value="0"/>
+<V name="fadeHighVelo" value="0"/>
+<V name="fadeLowKey" value="0"/>
+<V name="fadeHighKey" value="0"/>
+<V name="rootKey" value="77"/>
+<V name="zoneVolume" value="1.000000"/>
+<V name="zonePan" value="0"/>
+<V name="zoneTune" value="1.000000"/>
+<V name="gridMode" value="grid_mode_none"/>
+<V name="morphGroupIdx" value="-1"/>
+<V name="fixedUnitNum" value="1"/>
+<V name="fixedUnitDenom" value="16"/>
+<V name="measureNum" value="4"/>
+<V name="measureDenom" value="4"/>
+<V name="tempoScaling" value="4"/>
+<V name="slicerSens" value="0"/>
+<V name="isReferenceZone" value="no"/>
+<V name="selected" value="no"/>
+<V name="zoomScaleX" value="1"/>
+<V name="zoomScaleY" value="1"/>
+<V name="selectedLoopIdx" value="-1"/>
+<V name="zleIdxDisplayed" value="-1"/>
+<V name="grooveBoxID" value="-1"/>
+<V name="batteryMapPos" value="-1"/>
+<V name="batteryMapPosGrabStart" value="-1"/>
+<V name="curEditorTab" value="0"/>
+</Parameters>
+<Loops/>
+<Sample>
+<V name="file_ex2" value="@bbbd009One Shotsd005KicksF-000101700085_Kick_SP_18.wav"/>
+<V name="file_pbn" value="@"/>
+<V name="isVolatile" value="no"/>
+<V name="purged" value="no"/>
+</Sample>
+
+<Slices/>
+<ZLEs/>
+</K2_Zone>
+<K2_Zone index="18" groupIdx="0" version="0.90">
+<Parameters>
+<V name="sampleStart" value="0"/>
+<V name="sampleEnd" value="0"/>
+<V name="sampleStartModRange" value="-1"/>
+<V name="lowVelocity" value="1"/>
+<V name="highVelocity" value="127"/>
+<V name="lowKey" value="78"/>
+<V name="highKey" value="78"/>
+<V name="fadeLowVelo" value="0"/>
+<V name="fadeHighVelo" value="0"/>
+<V name="fadeLowKey" value="0"/>
+<V name="fadeHighKey" value="0"/>
+<V name="rootKey" value="78"/>
+<V name="zoneVolume" value="1.000000"/>
+<V name="zonePan" value="0"/>
+<V name="zoneTune" value="1.000000"/>
+<V name="gridMode" value="grid_mode_none"/>
+<V name="morphGroupIdx" value="-1"/>
+<V name="fixedUnitNum" value="1"/>
+<V name="fixedUnitDenom" value="16"/>
+<V name="measureNum" value="4"/>
+<V name="measureDenom" value="4"/>
+<V name="tempoScaling" value="4"/>
+<V name="slicerSens" value="0"/>
+<V name="isReferenceZone" value="no"/>
+<V name="selected" value="no"/>
+<V name="zoomScaleX" value="1"/>
+<V name="zoomScaleY" value="1"/>
+<V name="selectedLoopIdx" value="-1"/>
+<V name="zleIdxDisplayed" value="-1"/>
+<V name="grooveBoxID" value="-1"/>
+<V name="batteryMapPos" value="-1"/>
+<V name="batteryMapPosGrabStart" value="-1"/>
+<V name="curEditorTab" value="0"/>
+</Parameters>
+<Loops/>
+<Sample>
+<V name="file_ex2" value="@bbbd009One Shotsd005KicksF-000101700085_Kick_SP_19.wav"/>
+<V name="file_pbn" value="@"/>
+<V name="isVolatile" value="no"/>
+<V name="purged" value="no"/>
+</Sample>
+
+<Slices/>
+<ZLEs/>
+</K2_Zone>
+<K2_Zone index="19" groupIdx="0" version="0.90">
+<Parameters>
+<V name="sampleStart" value="0"/>
+<V name="sampleEnd" value="0"/>
+<V name="sampleStartModRange" value="-1"/>
+<V name="lowVelocity" value="1"/>
+<V name="highVelocity" value="127"/>
+<V name="lowKey" value="79"/>
+<V name="highKey" value="79"/>
+<V name="fadeLowVelo" value="0"/>
+<V name="fadeHighVelo" value="0"/>
+<V name="fadeLowKey" value="0"/>
+<V name="fadeHighKey" value="0"/>
+<V name="rootKey" value="79"/>
+<V name="zoneVolume" value="1.000000"/>
+<V name="zonePan" value="0"/>
+<V name="zoneTune" value="1.000000"/>
+<V name="gridMode" value="grid_mode_none"/>
+<V name="morphGroupIdx" value="-1"/>
+<V name="fixedUnitNum" value="1"/>
+<V name="fixedUnitDenom" value="16"/>
+<V name="measureNum" value="4"/>
+<V name="measureDenom" value="4"/>
+<V name="tempoScaling" value="4"/>
+<V name="slicerSens" value="0"/>
+<V name="isReferenceZone" value="no"/>
+<V name="selected" value="no"/>
+<V name="zoomScaleX" value="1"/>
+<V name="zoomScaleY" value="1"/>
+<V name="selectedLoopIdx" value="-1"/>
+<V name="zleIdxDisplayed" value="-1"/>
+<V name="grooveBoxID" value="-1"/>
+<V name="batteryMapPos" value="-1"/>
+<V name="batteryMapPosGrabStart" value="-1"/>
+<V name="curEditorTab" value="0"/>
+</Parameters>
+<Loops/>
+<Sample>
+<V name="file_ex2" value="@bbbd009One Shotsd005KicksF-000101700085_Kick_SP_20.wav"/>
+<V name="file_pbn" value="@"/>
+<V name="isVolatile" value="no"/>
+<V name="purged" value="no"/>
+</Sample>
+
+<Slices/>
+<ZLEs/>
+</K2_Zone>
+<K2_Zone index="20" groupIdx="0" version="0.90">
+<Parameters>
+<V name="sampleStart" value="0"/>
+<V name="sampleEnd" value="0"/>
+<V name="sampleStartModRange" value="-1"/>
+<V name="lowVelocity" value="1"/>
+<V name="highVelocity" value="127"/>
+<V name="lowKey" value="80"/>
+<V name="highKey" value="80"/>
+<V name="fadeLowVelo" value="0"/>
+<V name="fadeHighVelo" value="0"/>
+<V name="fadeLowKey" value="0"/>
+<V name="fadeHighKey" value="0"/>
+<V name="rootKey" value="80"/>
+<V name="zoneVolume" value="1.000000"/>
+<V name="zonePan" value="0"/>
+<V name="zoneTune" value="1.000000"/>
+<V name="gridMode" value="grid_mode_none"/>
+<V name="morphGroupIdx" value="-1"/>
+<V name="fixedUnitNum" value="1"/>
+<V name="fixedUnitDenom" value="16"/>
+<V name="measureNum" value="4"/>
+<V name="measureDenom" value="4"/>
+<V name="tempoScaling" value="4"/>
+<V name="slicerSens" value="0"/>
+<V name="isReferenceZone" value="no"/>
+<V name="selected" value="no"/>
+<V name="zoomScaleX" value="1"/>
+<V name="zoomScaleY" value="1"/>
+<V name="selectedLoopIdx" value="-1"/>
+<V name="zleIdxDisplayed" value="-1"/>
+<V name="grooveBoxID" value="-1"/>
+<V name="batteryMapPos" value="-1"/>
+<V name="batteryMapPosGrabStart" value="-1"/>
+<V name="curEditorTab" value="0"/>
+</Parameters>
+<Loops/>
+<Sample>
+<V name="file_ex2" value="@bbbd009One Shotsd005KicksF-000101700085_Kick_SP_21.wav"/>
+<V name="file_pbn" value="@"/>
+<V name="isVolatile" value="no"/>
+<V name="purged" value="no"/>
+</Sample>
+
+<Slices/>
+<ZLEs/>
+</K2_Zone>
+<K2_Zone index="21" groupIdx="0" version="0.90">
+<Parameters>
+<V name="sampleStart" value="0"/>
+<V name="sampleEnd" value="0"/>
+<V name="sampleStartModRange" value="-1"/>
+<V name="lowVelocity" value="1"/>
+<V name="highVelocity" value="127"/>
+<V name="lowKey" value="81"/>
+<V name="highKey" value="81"/>
+<V name="fadeLowVelo" value="0"/>
+<V name="fadeHighVelo" value="0"/>
+<V name="fadeLowKey" value="0"/>
+<V name="fadeHighKey" value="0"/>
+<V name="rootKey" value="81"/>
+<V name="zoneVolume" value="1.000000"/>
+<V name="zonePan" value="0"/>
+<V name="zoneTune" value="1.000000"/>
+<V name="gridMode" value="grid_mode_none"/>
+<V name="morphGroupIdx" value="-1"/>
+<V name="fixedUnitNum" value="1"/>
+<V name="fixedUnitDenom" value="16"/>
+<V name="measureNum" value="4"/>
+<V name="measureDenom" value="4"/>
+<V name="tempoScaling" value="4"/>
+<V name="slicerSens" value="0"/>
+<V name="isReferenceZone" value="no"/>
+<V name="selected" value="no"/>
+<V name="zoomScaleX" value="1"/>
+<V name="zoomScaleY" value="1"/>
+<V name="selectedLoopIdx" value="-1"/>
+<V name="zleIdxDisplayed" value="-1"/>
+<V name="grooveBoxID" value="-1"/>
+<V name="batteryMapPos" value="-1"/>
+<V name="batteryMapPosGrabStart" value="-1"/>
+<V name="curEditorTab" value="0"/>
+</Parameters>
+<Loops/>
+<Sample>
+<V name="file_ex2" value="@bbbd009One Shotsd005KicksF-000101700085_Kick_SP_22.wav"/>
+<V name="file_pbn" value="@"/>
+<V name="isVolatile" value="no"/>
+<V name="purged" value="no"/>
+</Sample>
+
+<Slices/>
+<ZLEs/>
+</K2_Zone>
+<K2_Zone index="22" groupIdx="0" version="0.90">
+<Parameters>
+<V name="sampleStart" value="0"/>
+<V name="sampleEnd" value="0"/>
+<V name="sampleStartModRange" value="-1"/>
+<V name="lowVelocity" value="1"/>
+<V name="highVelocity" value="127"/>
+<V name="lowKey" value="82"/>
+<V name="highKey" value="82"/>
+<V name="fadeLowVelo" value="0"/>
+<V name="fadeHighVelo" value="0"/>
+<V name="fadeLowKey" value="0"/>
+<V name="fadeHighKey" value="0"/>
+<V name="rootKey" value="82"/>
+<V name="zoneVolume" value="1.000000"/>
+<V name="zonePan" value="0"/>
+<V name="zoneTune" value="1.000000"/>
+<V name="gridMode" value="grid_mode_none"/>
+<V name="morphGroupIdx" value="-1"/>
+<V name="fixedUnitNum" value="1"/>
+<V name="fixedUnitDenom" value="16"/>
+<V name="measureNum" value="4"/>
+<V name="measureDenom" value="4"/>
+<V name="tempoScaling" value="4"/>
+<V name="slicerSens" value="0"/>
+<V name="isReferenceZone" value="no"/>
+<V name="selected" value="no"/>
+<V name="zoomScaleX" value="1"/>
+<V name="zoomScaleY" value="1"/>
+<V name="selectedLoopIdx" value="-1"/>
+<V name="zleIdxDisplayed" value="-1"/>
+<V name="grooveBoxID" value="-1"/>
+<V name="batteryMapPos" value="-1"/>
+<V name="batteryMapPosGrabStart" value="-1"/>
+<V name="curEditorTab" value="0"/>
+</Parameters>
+<Loops/>
+<Sample>
+<V name="file_ex2" value="@bbbd009One Shotsd005KicksF-000101700085_Kick_SP_23.wav"/>
+<V name="file_pbn" value="@"/>
+<V name="isVolatile" value="no"/>
+<V name="purged" value="no"/>
+</Sample>
+
+<Slices/>
+<ZLEs/>
+</K2_Zone>
+<K2_Zone index="23" groupIdx="0" version="0.90">
+<Parameters>
+<V name="sampleStart" value="0"/>
+<V name="sampleEnd" value="0"/>
+<V name="sampleStartModRange" value="-1"/>
+<V name="lowVelocity" value="1"/>
+<V name="highVelocity" value="127"/>
+<V name="lowKey" value="83"/>
+<V name="highKey" value="83"/>
+<V name="fadeLowVelo" value="0"/>
+<V name="fadeHighVelo" value="0"/>
+<V name="fadeLowKey" value="0"/>
+<V name="fadeHighKey" value="0"/>
+<V name="rootKey" value="83"/>
+<V name="zoneVolume" value="1.000000"/>
+<V name="zonePan" value="0"/>
+<V name="zoneTune" value="1.000000"/>
+<V name="gridMode" value="grid_mode_none"/>
+<V name="morphGroupIdx" value="-1"/>
+<V name="fixedUnitNum" value="1"/>
+<V name="fixedUnitDenom" value="16"/>
+<V name="measureNum" value="4"/>
+<V name="measureDenom" value="4"/>
+<V name="tempoScaling" value="4"/>
+<V name="slicerSens" value="0"/>
+<V name="isReferenceZone" value="no"/>
+<V name="selected" value="no"/>
+<V name="zoomScaleX" value="1"/>
+<V name="zoomScaleY" value="1"/>
+<V name="selectedLoopIdx" value="-1"/>
+<V name="zleIdxDisplayed" value="-1"/>
+<V name="grooveBoxID" value="-1"/>
+<V name="batteryMapPos" value="-1"/>
+<V name="batteryMapPosGrabStart" value="-1"/>
+<V name="curEditorTab" value="0"/>
+</Parameters>
+<Loops/>
+<Sample>
+<V name="file_ex2" value="@bbbd009One Shotsd005KicksF-000101700085_Kick_SP_24.wav"/>
+<V name="file_pbn" value="@"/>
+<V name="isVolatile" value="no"/>
+<V name="purged" value="no"/>
+</Sample>
+
+<Slices/>
+<ZLEs/>
+</K2_Zone>
+<K2_Zone index="24" groupIdx="0" version="0.90">
+<Parameters>
+<V name="sampleStart" value="0"/>
+<V name="sampleEnd" value="0"/>
+<V name="sampleStartModRange" value="-1"/>
+<V name="lowVelocity" value="1"/>
+<V name="highVelocity" value="127"/>
+<V name="lowKey" value="84"/>
+<V name="highKey" value="84"/>
+<V name="fadeLowVelo" value="0"/>
+<V name="fadeHighVelo" value="0"/>
+<V name="fadeLowKey" value="0"/>
+<V name="fadeHighKey" value="0"/>
+<V name="rootKey" value="84"/>
+<V name="zoneVolume" value="1.000000"/>
+<V name="zonePan" value="0"/>
+<V name="zoneTune" value="1.000000"/>
+<V name="gridMode" value="grid_mode_none"/>
+<V name="morphGroupIdx" value="-1"/>
+<V name="fixedUnitNum" value="1"/>
+<V name="fixedUnitDenom" value="16"/>
+<V name="measureNum" value="4"/>
+<V name="measureDenom" value="4"/>
+<V name="tempoScaling" value="4"/>
+<V name="slicerSens" value="0"/>
+<V name="isReferenceZone" value="no"/>
+<V name="selected" value="no"/>
+<V name="zoomScaleX" value="1"/>
+<V name="zoomScaleY" value="1"/>
+<V name="selectedLoopIdx" value="-1"/>
+<V name="zleIdxDisplayed" value="-1"/>
+<V name="grooveBoxID" value="-1"/>
+<V name="batteryMapPos" value="-1"/>
+<V name="batteryMapPosGrabStart" value="-1"/>
+<V name="curEditorTab" value="0"/>
+</Parameters>
+<Loops/>
+<Sample>
+<V name="file_ex2" value="@bbbd009One Shotsd005KicksF-000101700085_Kick_SP_25.wav"/>
+<V name="file_pbn" value="@"/>
+<V name="isVolatile" value="no"/>
+<V name="purged" value="no"/>
+</Sample>
+
+<Slices/>
+<ZLEs/>
+</K2_Zone>
+<K2_Zone index="25" groupIdx="0" version="0.90">
+<Parameters>
+<V name="sampleStart" value="0"/>
+<V name="sampleEnd" value="0"/>
+<V name="sampleStartModRange" value="-1"/>
+<V name="lowVelocity" value="1"/>
+<V name="highVelocity" value="127"/>
+<V name="lowKey" value="85"/>
+<V name="highKey" value="85"/>
+<V name="fadeLowVelo" value="0"/>
+<V name="fadeHighVelo" value="0"/>
+<V name="fadeLowKey" value="0"/>
+<V name="fadeHighKey" value="0"/>
+<V name="rootKey" value="85"/>
+<V name="zoneVolume" value="1.000000"/>
+<V name="zonePan" value="0"/>
+<V name="zoneTune" value="1.000000"/>
+<V name="gridMode" value="grid_mode_none"/>
+<V name="morphGroupIdx" value="-1"/>
+<V name="fixedUnitNum" value="1"/>
+<V name="fixedUnitDenom" value="16"/>
+<V name="measureNum" value="4"/>
+<V name="measureDenom" value="4"/>
+<V name="tempoScaling" value="4"/>
+<V name="slicerSens" value="0"/>
+<V name="isReferenceZone" value="no"/>
+<V name="selected" value="no"/>
+<V name="zoomScaleX" value="1"/>
+<V name="zoomScaleY" value="1"/>
+<V name="selectedLoopIdx" value="-1"/>
+<V name="zleIdxDisplayed" value="-1"/>
+<V name="grooveBoxID" value="-1"/>
+<V name="batteryMapPos" value="-1"/>
+<V name="batteryMapPosGrabStart" value="-1"/>
+<V name="curEditorTab" value="0"/>
+</Parameters>
+<Loops/>
+<Sample>
+<V name="file_ex2" value="@bbbd009One Shotsd005KicksF-000101700085_Kick_SP_26.wav"/>
+<V name="file_pbn" value="@"/>
+<V name="isVolatile" value="no"/>
+<V name="purged" value="no"/>
+</Sample>
+
+<Slices/>
+<ZLEs/>
+</K2_Zone>
+<K2_Zone index="26" groupIdx="0" version="0.90">
+<Parameters>
+<V name="sampleStart" value="0"/>
+<V name="sampleEnd" value="0"/>
+<V name="sampleStartModRange" value="-1"/>
+<V name="lowVelocity" value="1"/>
+<V name="highVelocity" value="127"/>
+<V name="lowKey" value="86"/>
+<V name="highKey" value="86"/>
+<V name="fadeLowVelo" value="0"/>
+<V name="fadeHighVelo" value="0"/>
+<V name="fadeLowKey" value="0"/>
+<V name="fadeHighKey" value="0"/>
+<V name="rootKey" value="86"/>
+<V name="zoneVolume" value="1.000000"/>
+<V name="zonePan" value="0"/>
+<V name="zoneTune" value="1.000000"/>
+<V name="gridMode" value="grid_mode_none"/>
+<V name="morphGroupIdx" value="-1"/>
+<V name="fixedUnitNum" value="1"/>
+<V name="fixedUnitDenom" value="16"/>
+<V name="measureNum" value="4"/>
+<V name="measureDenom" value="4"/>
+<V name="tempoScaling" value="4"/>
+<V name="slicerSens" value="0"/>
+<V name="isReferenceZone" value="no"/>
+<V name="selected" value="no"/>
+<V name="zoomScaleX" value="1"/>
+<V name="zoomScaleY" value="1"/>
+<V name="selectedLoopIdx" value="-1"/>
+<V name="zleIdxDisplayed" value="-1"/>
+<V name="grooveBoxID" value="-1"/>
+<V name="batteryMapPos" value="-1"/>
+<V name="batteryMapPosGrabStart" value="-1"/>
+<V name="curEditorTab" value="0"/>
+</Parameters>
+<Loops/>
+<Sample>
+<V name="file_ex2" value="@bbbd009One Shotsd005KicksF-000101700085_Kick_SP_27.wav"/>
+<V name="file_pbn" value="@"/>
+<V name="isVolatile" value="no"/>
+<V name="purged" value="no"/>
+</Sample>
+
+<Slices/>
+<ZLEs/>
+</K2_Zone>
+<K2_Zone index="27" groupIdx="0" version="0.90">
+<Parameters>
+<V name="sampleStart" value="0"/>
+<V name="sampleEnd" value="0"/>
+<V name="sampleStartModRange" value="-1"/>
+<V name="lowVelocity" value="1"/>
+<V name="highVelocity" value="127"/>
+<V name="lowKey" value="87"/>
+<V name="highKey" value="87"/>
+<V name="fadeLowVelo" value="0"/>
+<V name="fadeHighVelo" value="0"/>
+<V name="fadeLowKey" value="0"/>
+<V name="fadeHighKey" value="0"/>
+<V name="rootKey" value="87"/>
+<V name="zoneVolume" value="1.000000"/>
+<V name="zonePan" value="0"/>
+<V name="zoneTune" value="1.000000"/>
+<V name="gridMode" value="grid_mode_none"/>
+<V name="morphGroupIdx" value="-1"/>
+<V name="fixedUnitNum" value="1"/>
+<V name="fixedUnitDenom" value="16"/>
+<V name="measureNum" value="4"/>
+<V name="measureDenom" value="4"/>
+<V name="tempoScaling" value="4"/>
+<V name="slicerSens" value="0"/>
+<V name="isReferenceZone" value="no"/>
+<V name="selected" value="no"/>
+<V name="zoomScaleX" value="1"/>
+<V name="zoomScaleY" value="1"/>
+<V name="selectedLoopIdx" value="-1"/>
+<V name="zleIdxDisplayed" value="-1"/>
+<V name="grooveBoxID" value="-1"/>
+<V name="batteryMapPos" value="-1"/>
+<V name="batteryMapPosGrabStart" value="-1"/>
+<V name="curEditorTab" value="0"/>
+</Parameters>
+<Loops/>
+<Sample>
+<V name="file_ex2" value="@bbbd009One Shotsd005KicksF-000101700085_Kick_SP_28.wav"/>
+<V name="file_pbn" value="@"/>
+<V name="isVolatile" value="no"/>
+<V name="purged" value="no"/>
+</Sample>
+
+<Slices/>
+<ZLEs/>
+</K2_Zone>
+<K2_Zone index="28" groupIdx="0" version="0.90">
+<Parameters>
+<V name="sampleStart" value="0"/>
+<V name="sampleEnd" value="0"/>
+<V name="sampleStartModRange" value="-1"/>
+<V name="lowVelocity" value="1"/>
+<V name="highVelocity" value="127"/>
+<V name="lowKey" value="88"/>
+<V name="highKey" value="88"/>
+<V name="fadeLowVelo" value="0"/>
+<V name="fadeHighVelo" value="0"/>
+<V name="fadeLowKey" value="0"/>
+<V name="fadeHighKey" value="0"/>
+<V name="rootKey" value="88"/>
+<V name="zoneVolume" value="1.000000"/>
+<V name="zonePan" value="0"/>
+<V name="zoneTune" value="1.000000"/>
+<V name="gridMode" value="grid_mode_none"/>
+<V name="morphGroupIdx" value="-1"/>
+<V name="fixedUnitNum" value="1"/>
+<V name="fixedUnitDenom" value="16"/>
+<V name="measureNum" value="4"/>
+<V name="measureDenom" value="4"/>
+<V name="tempoScaling" value="4"/>
+<V name="slicerSens" value="0"/>
+<V name="isReferenceZone" value="no"/>
+<V name="selected" value="no"/>
+<V name="zoomScaleX" value="1"/>
+<V name="zoomScaleY" value="1"/>
+<V name="selectedLoopIdx" value="-1"/>
+<V name="zleIdxDisplayed" value="-1"/>
+<V name="grooveBoxID" value="-1"/>
+<V name="batteryMapPos" value="-1"/>
+<V name="batteryMapPosGrabStart" value="-1"/>
+<V name="curEditorTab" value="0"/>
+</Parameters>
+<Loops/>
+<Sample>
+<V name="file_ex2" value="@bbbd009One Shotsd005KicksF-000101700085_Kick_SP_29.wav"/>
+<V name="file_pbn" value="@"/>
+<V name="isVolatile" value="no"/>
+<V name="purged" value="no"/>
+</Sample>
+
+<Slices/>
+<ZLEs/>
+</K2_Zone>
+<K2_Zone index="29" groupIdx="0" version="0.90">
+<Parameters>
+<V name="sampleStart" value="0"/>
+<V name="sampleEnd" value="0"/>
+<V name="sampleStartModRange" value="-1"/>
+<V name="lowVelocity" value="1"/>
+<V name="highVelocity" value="127"/>
+<V name="lowKey" value="89"/>
+<V name="highKey" value="89"/>
+<V name="fadeLowVelo" value="0"/>
+<V name="fadeHighVelo" value="0"/>
+<V name="fadeLowKey" value="0"/>
+<V name="fadeHighKey" value="0"/>
+<V name="rootKey" value="89"/>
+<V name="zoneVolume" value="1.000000"/>
+<V name="zonePan" value="0"/>
+<V name="zoneTune" value="1.000000"/>
+<V name="gridMode" value="grid_mode_none"/>
+<V name="morphGroupIdx" value="-1"/>
+<V name="fixedUnitNum" value="1"/>
+<V name="fixedUnitDenom" value="16"/>
+<V name="measureNum" value="4"/>
+<V name="measureDenom" value="4"/>
+<V name="tempoScaling" value="4"/>
+<V name="slicerSens" value="0"/>
+<V name="isReferenceZone" value="no"/>
+<V name="selected" value="no"/>
+<V name="zoomScaleX" value="1"/>
+<V name="zoomScaleY" value="1"/>
+<V name="selectedLoopIdx" value="-1"/>
+<V name="zleIdxDisplayed" value="-1"/>
+<V name="grooveBoxID" value="-1"/>
+<V name="batteryMapPos" value="-1"/>
+<V name="batteryMapPosGrabStart" value="-1"/>
+<V name="curEditorTab" value="0"/>
+</Parameters>
+<Loops/>
+<Sample>
+<V name="file_ex2" value="@bbbd009One Shotsd005KicksF-000101700085_Kick_SP_30.wav"/>
+<V name="file_pbn" value="@"/>
+<V name="isVolatile" value="no"/>
+<V name="purged" value="no"/>
+</Sample>
+
+<Slices/>
+<ZLEs/>
+</K2_Zone>
+</Zones>
+</K2_Program>
+</Programs>
+</K2_Container> 

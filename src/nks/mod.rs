@@ -1,3 +1,4 @@
+pub mod error;
 pub mod header;
 pub mod kon1;
 pub mod kon2;

@@ -1,3 +1,5 @@
+use crate::nks::error::NKSError;
+
 pub type Result<T> = std::result::Result<T, NIFileError>;
 pub type Error = NIFileError;
 
@@ -9,6 +11,9 @@ pub enum NIFileError {
 
     #[error(transparent)]
     IO(#[from] std::io::Error),
+
+    #[error(transparent)]
+    NKSError(#[from] NKSError),
 
     #[error("Decompression error")]
     DecompressionError,
