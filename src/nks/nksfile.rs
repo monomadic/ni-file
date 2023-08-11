@@ -87,8 +87,7 @@ mod tests {
 
     #[test]
     fn test_nksfile_read_v42() -> Result<(), NIFileError> {
-        // let file = include_bytes!("../../tests/filetypes/nks/4.2.2.4504/000.nki");
-        let file = include_bytes!("../../tests/filetypes/nks/4.2.4.5316/000.nki");
+        let file = include_bytes!("../../tests/filetype/NKS/KontaktV42/4.2.4.5316-000.nki");
         println!("{:?}", NKSFile::read(file.as_slice())?);
         Ok(())
     }

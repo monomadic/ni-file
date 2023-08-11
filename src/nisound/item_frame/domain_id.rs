@@ -4,9 +4,7 @@
 //! Kontakt for example adds the 'NIK4' domain.
 //!
 
-#[derive(Debug, Clone)]
-pub struct DomainID(pub u32);
-
+#[derive(Debug, Clone, PartialEq)]
 pub enum Domain {
     NIK4, // 4KIN
     NISD, // DSIN

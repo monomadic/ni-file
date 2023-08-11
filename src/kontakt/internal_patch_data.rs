@@ -18,7 +18,8 @@ impl InternalPatchData {
 
 #[test]
 fn test_internal_patch_data() -> Result<(), Error> {
-    let file = include_bytes!("tests/internal_patch_data/4.2.2.4504/000");
+    let file =
+        include_bytes!("../../tests/patchdata/KontaktV42/internal_patch_data/4.2.2.4504/000");
     InternalPatchData::read(file.as_slice())?;
 
     // let file = include_bytes!("tests/internal_patch_data/5.3.0.6464/000");

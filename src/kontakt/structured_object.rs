@@ -64,8 +64,6 @@ impl StructuredObject {
                 ))
             })?;
 
-        // TODO: read children as objects
-        // let children = Vec::new();
         let children_data_length = reader.read_u32_le()?;
         let children_data = reader
             .read_bytes(children_data_length as usize)
@@ -152,7 +150,8 @@ mod tests {
 
     #[test]
     fn test_structured_object_0x28() -> Result<(), Error> {
-        let mut file = include_bytes!("tests/StructuredObject/0x28").as_slice();
+        let mut file =
+            include_bytes!("../../tests/patchdata/KontaktV42/StructuredObject/0x28").as_slice();
         let obj = StructuredObject::read(&mut file)?;
 
         assert_eq!(obj.id, 0x28);
@@ -178,7 +177,8 @@ mod tests {
 
     #[test]
     fn test_structured_object_0x3d() -> Result<(), Error> {
-        let mut file = include_bytes!("tests/StructuredObject/0x3D").as_slice();
+        let mut file =
+            include_bytes!("../../tests/patchdata/KontaktV42/StructuredObject/0x3D").as_slice();
         let obj = StructuredObject::read(&mut file)?;
 
         assert_eq!(obj.id, 0x3d);
@@ -194,7 +194,8 @@ mod tests {
 
     #[test]
     fn test_structured_object_0x25() -> Result<(), Error> {
-        let mut file = include_bytes!("tests/StructuredObject/0x25").as_slice();
+        let mut file =
+            include_bytes!("../../tests/patchdata/KontaktV42/StructuredObject/0x25").as_slice();
         let obj = StructuredObject::read(&mut file)?;
 
         assert_eq!(obj.id, 0x25);

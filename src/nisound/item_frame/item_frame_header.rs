@@ -1,11 +1,12 @@
-use crate::nisound::item_frame::{domain_id::DomainID, item_id::ItemID};
+use crate::nisound::item_frame::item_id::ItemID;
+use crate::nisound::Domain;
 use crate::prelude::*;
 use crate::read_bytes::ReadBytesExt;
 
 #[derive(Debug, Clone)]
 pub struct ItemFrameHeader {
     size: u64,
-    pub domain_id: DomainID,
+    pub domain: Domain,
     pub item_id: ItemID,
     version: u32,
 }
@@ -15,7 +16,7 @@ impl ItemFrameHeader {
         log::debug!("ItemFrameHeader::read");
         Ok(Self {
             size: reader.read_u64_le()?,
-            domain_id: DomainID(reader.read_u32_le()?),
+            domain: reader.read_u32_le()?.into(),
             item_id: ItemID::from(reader.read_u32_le()?),
             version: reader.read_u32_le()?,
         })

@@ -1,40 +1,34 @@
 use super::{
     header::ItemHeader,
     item_frame::{item_id::ItemID, ItemFrame},
-    item_frame_stack::ItemFrameStack,
-    Domain,
 };
 use crate::{prelude::*, read_bytes::ReadBytesExt};
-use std::convert::TryFrom;
 
 /// NISound documents are made up of nested [`Item`]s.
 #[derive(Clone, Debug)]
-pub struct Item {
+pub struct ItemContainer {
     pub header: ItemHeader,
-    pub data: ItemFrameStack, // TODO: simplify this, don't read on init.
-    pub children: Vec<Item>,
+    pub data: Vec<u8>,
+    pub children: Vec<ItemContainer>,
 }
 
-impl Item {
+impl ItemContainer {
     pub fn read<R: ReadBytesExt>(mut reader: R) -> Result<Self> {
         log::debug!("RepositoryRoot::read");
 
         let buffer = reader.read_sized_data()?;
         let mut buffer = buffer.as_slice();
 
-        Ok(Item {
+        Ok(ItemContainer {
             header: ItemHeader::read(&mut buffer)?,
-            data: ItemFrameStack::read(&mut buffer)?,
-            children: Item::read_children(&mut buffer)?,
+            // data: ItemFrameStack::read(&mut buffer)?,
+            data: buffer.read_sized_data()?,
+            children: ItemContainer::read_children(&mut buffer)?,
         })
     }
 
-    pub fn domain(&self) -> Domain {
-        self.header.domain_id.into()
-    }
-
     pub fn data(&self) -> Result<ItemFrame> {
-        ItemFrame::try_from(&self.data)
+        ItemFrame::read(self.data.as_slice())
     }
 
     /// Returns the first instance of Item by ItemID within child Items.
@@ -53,7 +47,7 @@ impl Item {
         None
     }
 
-    fn read_children<R: ReadBytesExt>(mut buf: R) -> Result<Vec<Item>> {
+    fn read_children<R: ReadBytesExt>(mut buf: R) -> Result<Vec<ItemContainer>> {
         log::debug!("RepositoryRoot::read_children");
 
         let version = buf.read_u32_le()?;
@@ -64,7 +58,6 @@ impl Item {
         // note: need to switch this out as it doesn't work like this
 
         let mut children = Vec::new();
-
         if num_children > 0 {
             for _ in 0..num_children {
                 let unknown = buf.read_u32_le()?;
@@ -76,13 +69,11 @@ impl Item {
 
                 log::debug!("child domain_id: {}, item_id: {}", domain_id, item_id);
 
-                children.push(Item::read(buf.read_sized_data()?.as_slice())?);
+                children.push(ItemContainer::read(buf.read_sized_data()?.as_slice())?);
             }
         }
         Ok(children)
     }
-
-    // fn find_item(item_id: ItemID) -> ItemData {}
 }
 
 #[cfg(test)]
@@ -96,7 +87,7 @@ mod tests {
             log::info!("reading {:?}", path);
 
             let file = std::fs::File::open(&path)?;
-            Item::read(file)?;
+            ItemContainer::read(file)?;
         }
 
         Ok(())
@@ -108,7 +99,7 @@ mod tests {
             log::info!("reading {:?}", path);
 
             let file = std::fs::File::open(&path)?;
-            let _item: Item = Item::read(file)?;
+            let _item: ItemContainer = ItemContainer::read(file)?;
         }
 
         Ok(())
@@ -116,10 +107,10 @@ mod tests {
 
     #[test]
     fn test_children() -> Result<()> {
-        let data = include_bytes!("../../tests/data/nisound/file/kontakt/7.1.3.0/000-default.nki");
+        let data = include_bytes!("../../tests/filetype/NISD/kontakt/7.1.3.0/000-default.nki");
         let mut data = data.as_slice();
 
-        let item = Item::read(&mut data)?;
+        let item = ItemContainer::read(&mut data)?;
         let children = item.children;
 
         assert_eq!(children.len(), 1);

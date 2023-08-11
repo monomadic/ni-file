@@ -28,7 +28,7 @@ impl VoiceGroups {
 
 #[test]
 fn test_zone_list() -> Result<(), Error> {
-    let file = include_bytes!("tests/VoiceGroups/v60/000");
+    let file = include_bytes!("../../tests/patchdata/KontaktV42/VoiceGroups/v60/000");
     assert!(VoiceGroups::read(file.as_slice()).is_ok());
 
     // let file = include_bytes!("tests/voice_groups/default/000").as_slice();

@@ -2,9 +2,9 @@
 
 use std::error::Error;
 
-use ni_file::nisound::Item;
+use ni_file::nisound::ItemContainer;
 
-fn print_item_ids(item: &Item, indent: usize) -> Result<(), Box<dyn Error>> {
+fn print_item_ids(item: &ItemContainer, indent: usize) -> Result<(), Box<dyn Error>> {
     for item in &item.children {
         print!(
             "{:>width$}{:?}",
@@ -57,7 +57,7 @@ pub fn main() -> Result<(), Box<dyn std::error::Error>> {
         println!("\n{}:", path.as_os_str().to_str().unwrap());
 
         let file = std::fs::File::open(path)?;
-        let sound = ni_file::NISound::read(&file)?;
+        let sound = ni_file::Repository::read(&file)?;
 
         // let item = Item::read(&file)?;
         let item = sound.item();

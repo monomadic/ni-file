@@ -35,7 +35,7 @@ mod tests {
 
     #[test]
     fn test_read() -> Result<()> {
-        let file = include_bytes!("../../tests/data/monolith/kontakt/000-default.nki");
+        let file = include_bytes!("../../tests/filetype/monolith/kontakt/000-default.nki");
         NIMonolith::read(file.as_slice())?;
         Ok(())
     }

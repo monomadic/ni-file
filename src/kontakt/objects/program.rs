@@ -89,7 +89,7 @@ impl BProgram {
 
 #[test]
 fn test_bprogram() -> Result<(), Error> {
-    let file = include_bytes!("tests/bprogram/4.2.2.4504/000");
+    let file = include_bytes!("../../../tests/patchdata/KontaktV42/Program/4.2.2.4504/000");
     assert!(BProgram::read(file.as_slice()).is_ok());
     Ok(())
 }

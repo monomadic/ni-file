@@ -1,6 +1,6 @@
 mod utils;
 
-use ni_file::{nisound::AuthoringApplication, NISound};
+use ni_file::{nisound::AuthoringApplication, Repository};
 use std::fs;
 
 #[test]
@@ -10,7 +10,7 @@ fn test_reading_nisound_kontakt() -> Result<(), Box<dyn std::error::Error>> {
         println!("reading {:?}", path);
 
         let file = fs::File::open(path.as_path())?;
-        let sound = NISound::read(&file)?;
+        let sound = Repository::read(&file)?;
 
         assert_eq!(
             sound.authoring_application()?,

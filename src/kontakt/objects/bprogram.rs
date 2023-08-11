@@ -131,7 +131,9 @@ mod tests {
 
     #[test]
     fn test_private_params_v80() -> Result<(), Error> {
-        let mut file = include_bytes!("../tests/Program/v80/private_params/000").as_slice();
+        let mut file =
+            include_bytes!("../../../tests/patchdata/KontaktV42/Program/v80/private_params/000")
+                .as_slice();
         let params = ProgramPrivateParams::read(&mut file, 0x80)?;
         Ok(())
     }

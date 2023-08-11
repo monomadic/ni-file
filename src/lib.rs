@@ -25,4 +25,4 @@ pub(crate) mod utils; // various utils for logging etc
 
 pub use detect::NIFileType;
 pub use monolith::NIMonolith;
-pub use nisound::NISound;
+pub use nisound::Repository;

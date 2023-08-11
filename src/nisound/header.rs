@@ -16,7 +16,7 @@ pub struct ItemHeader {
     /// Size in bytes of the entire [`Item`](super::Item).
     pub size: u64,
     /// Integer that resolves to a [`DomainID`](super::DomainID).
-    pub domain_id: u32, // (+0xC, uint, 'hsin')
+    pub magic: String, // (+0xC, uint, 'hsin')
     pub header_flags: u32, // (0x10, uint)
     pub uuid: Vec<u8>,     // (0x14, 16 bytes, randomly generated)
 }
@@ -26,7 +26,7 @@ impl ItemHeader {
         log::debug!("ItemHeader::read");
         let size = reader.read_u64_le()?;
         // always 1
-        let _unknown = reader.read_u32_le()?;
+        let _version = reader.read_u32_le()?;
         let domain_id = reader.read_u32_le()?;
         // if domaind_id = 'hsin'
         if domain_id != 1852404584 {
@@ -35,6 +35,7 @@ impl ItemHeader {
             ));
         };
 
+        let magic = reader.read_u32_le()?.to_string();
         let header_flags = reader.read_u32_le()?;
         // research
         let _unknown = reader.read_u32_le()?;
@@ -42,7 +43,7 @@ impl ItemHeader {
 
         Ok(Self {
             size,
-            domain_id,
+            magic,
             header_flags,
             uuid,
         })

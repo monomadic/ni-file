@@ -86,7 +86,7 @@ mod tests {
     fn test_kontakt_1() {
         assert_eq!(
             NIFileType::detect(
-                include_bytes!("../tests/data/kontakt-1/000-crunchy.nki").as_slice()
+                include_bytes!("../tests/filetype/NKS/KontaktV1/000-crunchy.nki").as_slice()
             )
             .unwrap(),
             NIFileType::Kontakt1
@@ -97,8 +97,7 @@ mod tests {
     fn test_kontakt_7() {
         assert_eq!(
             NIFileType::detect(
-                include_bytes!("../tests/data/nisound/file/kontakt/7.1.3.0/000-default.nki")
-                    .as_slice()
+                include_bytes!("../tests/filetype/NISD/kontakt/7.1.3.0/000-default.nki").as_slice()
             )
             .unwrap(),
             NIFileType::NISound

@@ -1,20 +1,21 @@
 use super::{
-    item::Item,
-    item_frame::item_id::ItemID,
+    item::ItemContainer,
+    item_frame::{item_id::ItemID, ItemFrame},
     items::{AppSpecific, EncryptionItem, RepositoryRoot, RepositoryVersion},
+    preset_container::PresetContainer,
     AuthoringApplication,
 };
 use crate::{
-    nisound::items::{BNISoundPreset, Preset, PresetChunkItem},
+    nisound::items::{BNISoundPreset, Preset},
     prelude::*,
     read_bytes::ReadBytesExt,
 };
-use std::convert::{TryFrom, TryInto};
+use std::convert::TryFrom;
 
 /// High level wrapper for NISound containers
-pub struct NISound(Item);
+pub struct Repository(ItemContainer);
 
-impl NISound {
+impl Repository {
     /// Read a NISound repository from a [`std::io::Read`] source.
     ///
     /// ```
@@ -25,7 +26,7 @@ impl NISound {
     /// ```
     pub fn read<R: ReadBytesExt>(reader: R) -> Result<Self> {
         log::debug!("NISound::read()");
-        Ok(Self(Item::read(reader)?))
+        Ok(Self(ItemContainer::read(reader)?))
     }
 
     /// Returns the [`RepositoryVersion`], also referred to sometimes as the NISD Version.
@@ -86,19 +87,20 @@ impl NISound {
 
     /// Get a reference to the underlying [`Item`]. This is switching to the lower level components
     /// that make up the embedded structure of [`NISound`] documents.
-    pub fn item(&self) -> &Item {
+    pub fn item(&self) -> &ItemContainer {
         &self.0
     }
 
-    /// Inner preset chunk.
-    pub fn chunk(&self) -> Result<Vec<u8>> {
-        let inner = Item::read(self.inner_container()?.as_slice())?;
-        let data = inner.children[0].data()?;
-        let chunk_item = PresetChunkItem::try_from(data)?;
-
-        // TODO: lifetime?
-        Ok(chunk_item.chunk().clone())
-    }
+    // /// Inner preset chunk.
+    // pub fn chunk(&self) -> Result<Vec<u8>> {
+    //     let inner_container = self.inner_container()?;
+    //     let inner = ItemContainer::read(inner_container.as_slice())?;
+    //     let data = inner.children[0].data()?;
+    //     let chunk_item = PresetChunkItem::try_from(data)?;
+    //
+    //     // TODO: lifetime?
+    //     Ok(chunk_item.chunk().clone())
+    // }
 
     fn preset_item(&self) -> Result<Preset> {
         match self.authoring_application()? {
@@ -117,17 +119,20 @@ impl NISound {
         }
     }
 
-    // TODO: called InternalPatchData
-    pub fn inner_container(&self) -> Result<Vec<u8>> {
-        let item = self
-            .0
+    pub fn raw_preset(&self) -> Result<Vec<u8>> {
+        self.0
             .find(&ItemID::EncryptionItem)
-            .expect("no EncryptionItem");
-        let ei: EncryptionItem = item.try_into()?;
-        Ok(ei.subtree.inner_data)
+            .ok_or(NIFileError::Generic(format!("EncryptionItem not found")))
+            .and_then(|item_frame| EncryptionItem::try_from(item_frame))
+            .map(|item| item.subtree.inner_data)
     }
 
-    pub fn children(&self) -> &Vec<Item> {
+    pub fn preset(&self) -> Result<PresetContainer> {
+        self.raw_preset()
+            .and_then(|item| PresetContainer::try_from(ItemFrame::read(item.as_slice())?))
+    }
+
+    pub fn children(&self) -> &Vec<ItemContainer> {
         &self.0.children
     }
 }
@@ -142,7 +147,7 @@ mod tests {
             println!("reading {:?}", path);
 
             let file = std::fs::File::open(&path)?;
-            let doc = NISound::read(file)?;
+            let doc = Repository::read(file)?;
             doc.root()?;
         }
         Ok(())

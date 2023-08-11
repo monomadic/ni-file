@@ -2,7 +2,7 @@
 //  Extract raw InternalPresetData from an NISD container.
 //
 
-use ni_file::{nks::nksfile::NKSFile, NIFileType, NISound};
+use ni_file::{nks::nksfile::NKSFile, NIFileType, Repository};
 
 pub fn main() -> Result<(), Box<dyn std::error::Error>> {
     let Some(path) = std::env::args().nth(1) else {
@@ -15,7 +15,7 @@ pub fn main() -> Result<(), Box<dyn std::error::Error>> {
     match NIFileType::detect(file.as_slice())? {
         NIFileType::NISound => {
             // read the repository
-            let repo = NISound::read(file.as_slice())?;
+            let repo = Repository::read(file.as_slice())?;
 
             println!("Detected NISound version: {}", repo.nisound_version()?);
 
@@ -25,8 +25,12 @@ pub fn main() -> Result<(), Box<dyn std::error::Error>> {
                 repo.preset_version()
             );
 
-            let chunk = repo.chunk()?;
-            std::fs::write("chunk", &chunk)?;
+            let preset = repo.raw_preset()?;
+            std::fs::write("preset", &preset)?;
+            println!("Wrote: inner preset");
+
+            // let chunk = repo.chunk()?;
+            // std::fs::write("chunk", &chunk)?;
         }
         NIFileType::NIMonolith => todo!(),
         NIFileType::NICompressedWave => todo!(),

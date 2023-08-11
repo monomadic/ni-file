@@ -226,7 +226,7 @@ mod tests {
 
     #[test]
     fn test_header_v2_read() -> Result<(), NIFileError> {
-        let file = include_bytes!("../../tests/chunks/nks/BPatchHeaderV2-LE/000");
+        let file = include_bytes!("../../tests/patchdata/NKS/BPatchHeaderV2/000");
         // let mut reader = file.as_slice();
         // NKSHeader::read_le(file.as_slice())?;
         println!("{:?}", NKSHeader::read_le(file.as_slice())?);
@@ -235,7 +235,7 @@ mod tests {
 
     #[test]
     fn test_header_v42_read() -> Result<(), NIFileError> {
-        let file = include_bytes!("../../tests/chunks/nks/BPatchHeaderV42-LE/000");
+        let file = include_bytes!("../../tests/patchdata/NKS/BPatchHeaderV42/000");
         println!("{:?}", NKSHeader::read_le(file.as_slice())?);
         Ok(())
     }

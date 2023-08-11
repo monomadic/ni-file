@@ -3,7 +3,7 @@ use ni_file::{
     self,
     fm8::FM8Preset,
     nks::{header::NKSHeader, nksfile::NKSFile},
-    NIFileType, NISound,
+    NIFileType, Repository,
 };
 
 pub fn main() -> Result<()> {
@@ -31,7 +31,7 @@ pub fn main() -> Result<()> {
 
         match NIFileType::detect(file.as_slice())? {
             NIFileType::NISound => {
-                let sound = NISound::read(file.as_slice())?;
+                let sound = Repository::read(file.as_slice())?;
                 println!("format:\t\t\tNISound {}", sound.nisound_version()?);
 
                 println!(
@@ -43,7 +43,7 @@ pub fn main() -> Result<()> {
                 use ni_file::nisound::AuthoringApplication::*;
                 match sound.authoring_application()? {
                     FM8 => {
-                        FM8Preset::read(sound.chunk()?.as_slice())?;
+                        FM8Preset::read(sound.raw_preset()?.as_slice())?;
                     }
                     _ => (),
                 }
