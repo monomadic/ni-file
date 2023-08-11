@@ -41,10 +41,10 @@ pub struct Preset {
     pub version: String,
 }
 
-impl std::convert::TryFrom<ItemFrame> for Preset {
+impl std::convert::TryFrom<&ItemFrame> for Preset {
     type Error = NIFileError;
 
-    fn try_from(frame: ItemFrame) -> Result<Self> {
+    fn try_from(frame: &ItemFrame) -> Result<Self> {
         log::debug!("Preset::try_from");
         debug_assert_eq!(frame.header.item_id, ItemID::Preset);
         Preset::read(frame.data.as_slice())

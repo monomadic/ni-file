@@ -48,9 +48,5 @@ impl ItemFrame {
 
     pub fn inner(&self) -> Option<ItemFrame> {
         ItemFrame::try_from(&self.inner).ok()
-        // match ItemFrame::try_from(&self.inner) {
-        //     Ok(item_frame) => Some(item_frame),
-        //     Err(e) => None,
-        // }
     }
 }

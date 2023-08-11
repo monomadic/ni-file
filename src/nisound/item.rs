@@ -8,40 +8,31 @@ use crate::{prelude::*, read_bytes::ReadBytesExt};
 #[derive(Clone, Debug)]
 pub struct ItemContainer {
     pub header: ItemHeader,
-    pub data: Vec<u8>,
+    pub items: ItemFrame,
     pub children: Vec<ItemContainer>,
 }
 
 impl ItemContainer {
     pub fn read<R: ReadBytesExt>(mut reader: R) -> Result<Self> {
-        log::debug!("RepositoryRoot::read");
-
         let buffer = reader.read_sized_data()?;
         let mut buffer = buffer.as_slice();
 
         Ok(ItemContainer {
             header: ItemHeader::read(&mut buffer)?,
-            // data: ItemFrameStack::read(&mut buffer)?,
-            data: buffer.read_sized_data()?,
+            items: ItemFrame::read(&mut buffer)?,
             children: ItemContainer::read_children(&mut buffer)?,
         })
     }
 
-    pub fn data(&self) -> Result<ItemFrame> {
-        ItemFrame::read(self.data.as_slice())
-    }
-
     /// Returns the first instance of Item by ItemID within child Items.
-    pub fn find(&self, kind: &ItemID) -> Option<ItemFrame> {
+    pub fn find(&self, kind: &ItemID) -> Option<&ItemFrame> {
         // check this Item first
-        if let Some(frame) = self.data().ok() {
-            if &frame.header.item_id == kind {
+        if &self.items.header.item_id == kind {
+            return Some(&self.items);
+        }
+        for item in &self.children {
+            if let Some(frame) = item.find(kind) {
                 return Some(frame);
-            }
-            for item in &self.children {
-                if let Some(frame) = item.find(kind) {
-                    return Some(frame);
-                }
             }
         }
         None

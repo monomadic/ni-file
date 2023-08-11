@@ -27,12 +27,11 @@ impl Display for RepositoryVersion {
     }
 }
 
-impl std::convert::TryFrom<ItemFrame> for RepositoryRoot {
+impl std::convert::TryFrom<&ItemFrame> for RepositoryRoot {
     type Error = NIFileError;
 
-    fn try_from(frame: ItemFrame) -> std::result::Result<Self, Self::Error> {
-        log::debug!("RepositoryRoot::try_from");
-        debug_assert_eq!(frame.header.item_id, ItemID::RepositoryRoot);
+    fn try_from(frame: &ItemFrame) -> std::result::Result<Self, Self::Error> {
+        assert_eq!(frame.header.item_id, ItemID::RepositoryRoot);
         RepositoryRoot::read(frame.data.as_slice())
     }
 }

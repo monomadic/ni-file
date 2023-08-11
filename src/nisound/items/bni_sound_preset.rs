@@ -12,8 +12,6 @@
     }
 */
 
-use std::convert::TryInto;
-
 use crate::{
     nisound::{item_frame::ItemFrame, ItemID},
     prelude::*,
@@ -25,14 +23,14 @@ pub struct BNISoundPreset {
     pub preset: Preset,
 }
 
-impl std::convert::TryFrom<ItemFrame> for BNISoundPreset {
+impl std::convert::TryFrom<&ItemFrame> for BNISoundPreset {
     type Error = NIFileError;
 
-    fn try_from(frame: ItemFrame) -> Result<Self> {
+    fn try_from(frame: &ItemFrame) -> Result<Self> {
         log::debug!("BNISoundPreset::try_from");
         debug_assert_eq!(frame.header.item_id, ItemID::BNISoundPreset);
 
-        let preset: Preset = frame.inner().expect("inner frame missing").try_into()?;
+        let preset: Preset = Preset::read(frame.inner.0.as_slice())?;
 
         // .. data
 

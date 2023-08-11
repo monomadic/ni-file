@@ -2,9 +2,13 @@
 //  Extract raw InternalPresetData from an NISD container.
 //
 
+use color_eyre::eyre::Result;
 use ni_file::{nks::nksfile::NKSFile, NIFileType, Repository};
 
 pub fn main() -> Result<(), Box<dyn std::error::Error>> {
+    std::env::set_var("RUST_BACKTRACE", "1");
+    color_eyre::install()?;
+
     let Some(path) = std::env::args().nth(1) else {
         println!("usage: ni-extract <FILE>");
         return Ok(());
@@ -28,9 +32,6 @@ pub fn main() -> Result<(), Box<dyn std::error::Error>> {
             let preset = repo.raw_preset()?;
             std::fs::write("preset", &preset)?;
             println!("Wrote: inner preset");
-
-            // let chunk = repo.chunk()?;
-            // std::fs::write("chunk", &chunk)?;
         }
         NIFileType::NIMonolith => todo!(),
         NIFileType::NICompressedWave => todo!(),

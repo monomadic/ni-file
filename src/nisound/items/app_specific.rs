@@ -9,10 +9,10 @@ pub struct AppSpecific {
     // subtree_item: SubtreeItem,
 }
 
-impl std::convert::TryFrom<ItemFrame> for AppSpecific {
+impl std::convert::TryFrom<&ItemFrame> for AppSpecific {
     type Error = NIFileError;
 
-    fn try_from(frame: ItemFrame) -> Result<Self> {
+    fn try_from(frame: &ItemFrame) -> Result<Self> {
         log::debug!("AppSpecific::try_from");
         debug_assert_eq!(frame.header.item_id, ItemID::AppSpecific);
         AppSpecific::read(frame.data.as_slice())

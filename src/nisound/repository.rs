@@ -31,7 +31,7 @@ impl Repository {
 
     /// Returns the [`RepositoryVersion`], also referred to sometimes as the NISD Version.
     pub fn nisound_version(&self) -> Result<RepositoryVersion> {
-        RepositoryRoot::try_from(self.0.data()?).map(|root| root.version())
+        RepositoryRoot::try_from(&self.0.items).map(|root| root.version())
     }
 
     /// Returns the [`AuthoringApplication`] which created this document.
@@ -82,7 +82,7 @@ impl Repository {
     }
 
     pub fn root(&self) -> Result<RepositoryRoot> {
-        RepositoryRoot::try_from(self.0.data()?)
+        RepositoryRoot::try_from(&self.0.items)
     }
 
     /// Get a reference to the underlying [`Item`]. This is switching to the lower level components
@@ -122,6 +122,10 @@ impl Repository {
     pub fn raw_preset(&self) -> Result<Vec<u8>> {
         self.0
             .find(&ItemID::EncryptionItem)
+            .map(|o| {
+                dbg!(&o);
+                o
+            })
             .ok_or(NIFileError::Generic(format!("EncryptionItem not found")))
             .and_then(|item_frame| EncryptionItem::try_from(item_frame))
             .map(|item| item.subtree.inner_data)

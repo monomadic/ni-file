@@ -15,10 +15,10 @@ pub struct EncryptionItem {
     pub subtree: SubtreeItem,
 }
 
-impl std::convert::TryFrom<ItemFrame> for EncryptionItem {
+impl std::convert::TryFrom<&ItemFrame> for EncryptionItem {
     type Error = NIFileError;
 
-    fn try_from(frame: ItemFrame) -> Result<Self> {
+    fn try_from(frame: &ItemFrame) -> Result<Self> {
         log::debug!("BNISoundPreset::try_from");
         debug_assert_eq!(frame.header.item_id, ItemID::EncryptionItem);
 
