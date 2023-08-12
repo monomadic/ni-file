@@ -28,10 +28,10 @@ impl ItemHeader {
         let version = reader.read_u32_le()?;
         let magic = reader.read_bytes(4)?;
         let header_flags = reader.read_u32_le()?;
+        let _unknown = reader.read_u32_le()?;
         let uuid = reader.read_bytes(16)?;
 
         if magic != b"hsin" {
-            // let magic = std::str::from_utf8(&magic);
             let magic = crate::utils::format_hex(&magic);
             return Err(NIFileError::Generic(format!(
                 "Error reading ItemHeader magic: expected 0x6873696E, got 0x{magic}"

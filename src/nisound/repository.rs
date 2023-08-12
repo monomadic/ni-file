@@ -48,7 +48,7 @@ impl Repository {
             None => self
                 .0
                 .find(&ItemID::Preset)
-                .and_then(|item_frame| Preset::try_from(item_frame).ok())
+                .and_then(|item_frame| Preset::try_from(item_frame.clone()).ok())
                 .map(|preset| preset.authoring_app)
                 .ok_or(NIFileError::Generic("not found".to_owned())),
         }
@@ -90,17 +90,6 @@ impl Repository {
         &self.0
     }
 
-    // /// Inner preset chunk.
-    // pub fn chunk(&self) -> Result<Vec<u8>> {
-    //     let inner_container = self.inner_container()?;
-    //     let inner = ItemContainer::read(inner_container.as_slice())?;
-    //     let data = inner.children[0].data()?;
-    //     let chunk_item = PresetChunkItem::try_from(data)?;
-    //
-    //     // TODO: lifetime?
-    //     Ok(chunk_item.chunk().clone())
-    // }
-
     fn preset_item(&self) -> Result<Preset> {
         match self.authoring_application()? {
             AuthoringApplication::Kontakt => self
@@ -113,12 +102,12 @@ impl Repository {
                 .0
                 .find(&ItemID::Preset)
                 .ok_or(NIFileError::Static("Missing chunk: Preset"))
-                .and_then(|item| Preset::try_from(item))
+                .and_then(|item| Preset::try_from(item.clone()))
                 .map(|preset| preset),
         }
     }
 
-    pub fn raw_preset(&self) -> Result<Vec<u8>> {
+    pub fn preset_raw(&self) -> Result<Vec<u8>> {
         self.0
             .find(&ItemID::EncryptionItem)
             .map(|o| {
@@ -131,7 +120,7 @@ impl Repository {
     }
 
     pub fn preset(&self) -> Result<PresetContainer> {
-        self.raw_preset()
+        self.preset_raw()
             .and_then(|item| PresetContainer::try_from(ItemFrame::read(Cursor::new(item))?))
     }
 
@@ -146,13 +135,9 @@ mod tests {
 
     #[test]
     fn ni_container_read_test() -> Result<()> {
-        for path in crate::utils::get_files("tests/data/nisound/file/kontakt/**/*.nki")? {
-            println!("reading {:?}", path);
-
-            let file = std::fs::File::open(&path)?;
-            let doc = Repository::read(file)?;
-            doc.root()?;
-        }
+        let file = std::fs::File::open("tests/filetype/NISD/kontakt/7.1.3.0/000-default.nki")?;
+        let repository = Repository::read(file)?;
+        repository.root()?;
         Ok(())
     }
 }

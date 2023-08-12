@@ -36,7 +36,7 @@ pub fn main() -> Result<()> {
             use ni_file::nisound::AuthoringApplication::*;
             match sound.authoring_application()? {
                 FM8 => {
-                    let raw_preset = Cursor::new(sound.raw_preset()?);
+                    let raw_preset = Cursor::new(sound.preset_raw()?);
                     FM8Preset::read(raw_preset)?;
                 }
                 _ => (),

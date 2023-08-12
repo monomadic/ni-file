@@ -1,6 +1,13 @@
 use std::io::{self, Read, Seek};
 
-pub struct ReadBytesError {}
+#[derive(thiserror::Error, Debug)]
+pub enum ReadBytesError {
+    #[error("Generic error: {0}")]
+    Generic(String),
+
+    #[error(transparent)]
+    IO(#[from] std::io::Error),
+}
 
 /// Extensions to io::Read for simplifying reading bytes.
 pub trait ReadBytesExt: Read + Seek {
@@ -75,15 +82,16 @@ pub trait ReadBytesExt: Read + Seek {
     }
 
     /// Read a number of bytes (failable)
-    fn read_bytes(&mut self, bytes: usize) -> io::Result<Vec<u8>> {
+    fn read_bytes(&mut self, bytes: usize) -> Result<Vec<u8>, ReadBytesError> {
         let mut buf = vec![0u8; bytes];
-        self.read_exact(&mut buf)?;
+        self.read_exact(&mut buf)
+            .map_err(|_| ReadBytesError::Generic(format!("Failed to read {bytes} bytes")))?;
         Ok(buf)
     }
 
     // TODO: deprecate this
     /// Checks data is a valid size and returns its content as a byte array
-    fn read_sized_data(&mut self) -> io::Result<Vec<u8>> {
+    fn read_sized_data(&mut self) -> Result<Vec<u8>, ReadBytesError> {
         let size_field = self.read_u64_le()?;
         let size_field_len = std::mem::size_of::<u64>();
 
@@ -117,7 +125,7 @@ pub trait ReadBytesExt: Read + Seek {
             .map_err(|e| io::Error::new(io::ErrorKind::InvalidData, e.utf8_error()))
     }
 
-    fn read_widestring_utf16(&mut self) -> io::Result<String> {
+    fn read_widestring_utf16(&mut self) -> Result<String, ReadBytesError> {
         let size_field = self.read_u32_le()?;
         if size_field == 0 {
             return Ok(String::new());
@@ -130,8 +138,12 @@ pub trait ReadBytesExt: Read + Seek {
             .map(|chunk| u16::from_le_bytes([chunk[0], chunk[1]]))
             .collect();
 
-        String::from_utf16(bytes.as_slice())
-            .map_err(|e| io::Error::new(io::ErrorKind::InvalidData, e))
+        // String::from_utf16(bytes.as_slice())
+        //     .map_err(|e| io::Error::new(io::ErrorKind::InvalidData, e))
+
+        String::from_utf16(bytes.as_slice()).map_err(|e| {
+            ReadBytesError::Generic(format!("Error converting bytes to UTF16: {e}, {bytes:?}"))
+        })
     }
 }
 impl<R: Read + Seek + ?Sized> ReadBytesExt for R {}

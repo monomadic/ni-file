@@ -39,8 +39,6 @@
     }
 */
 
-// TODO: should work on frames, not raw property data
-
 use std::io::Cursor;
 
 use crate::nisound::item_frame::ItemFrame;
@@ -56,9 +54,7 @@ impl std::convert::TryFrom<ItemFrame> for SubtreeItem {
     type Error = NIFileError;
 
     fn try_from(frame: ItemFrame) -> Result<Self> {
-        log::debug!("BNISoundPreset::try_from");
         debug_assert_eq!(frame.header.item_id, ItemID::SubtreeItem);
-
         Self::read(Cursor::new(frame.data))
     }
 }

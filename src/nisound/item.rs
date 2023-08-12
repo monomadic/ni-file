@@ -16,9 +16,13 @@ pub struct ItemContainer {
 
 impl ItemContainer {
     pub fn read<R: ReadBytesExt>(mut reader: R) -> Result<Self> {
+        let header = ItemHeader::read(&mut reader)?;
+        let length = header.length - 40;
+        let mut chunk_data = Cursor::new(reader.read_bytes(length as usize)?);
+
         Ok(ItemContainer {
-            header: ItemHeader::read(&mut reader)?,
-            items: ItemFrame::read(&mut reader)?,
+            header,
+            items: ItemFrame::read(&mut chunk_data)?,
             children: Vec::new(), //ItemContainer::read_children(&mut reader)?,
         })
     }

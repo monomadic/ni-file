@@ -1,24 +1,3 @@
-/*
-    Preset (0x67, 101)
-
-    Preset.readItem(&stream) {
-        let header = ItemFrameReader(&stream);
-        let auth = Authorization::readItem(&stream)?;
-
-        if stream.read_u32 != 1 {
-            return Err(VERSION_MISMATCH);
-        }
-
-        let unk[0x20] = stream.read_bool();
-        let unk[0x24] = stream.read_u32();
-        let unk[0x28] = AuthoringApplicationInfo::readVersion(&stream)
-            .map_err(INTERNAL_ERROR)?;
-    }
-
-    note that the embedded container is a PresetContainer
-
-*/
-
 // bool u8 +0x20 ?
 // u32 +0x24
 // Version +0x28
@@ -43,11 +22,10 @@ pub struct Preset {
     pub version: String,
 }
 
-impl std::convert::TryFrom<&ItemFrame> for Preset {
+impl std::convert::TryFrom<ItemFrame> for Preset {
     type Error = NIFileError;
 
-    fn try_from(frame: &ItemFrame) -> Result<Self> {
-        log::debug!("Preset::try_from");
+    fn try_from(frame: ItemFrame) -> Result<Self> {
         debug_assert_eq!(frame.header.item_id, ItemID::Preset);
         Preset::read(Cursor::new(frame.data.clone()))
     }

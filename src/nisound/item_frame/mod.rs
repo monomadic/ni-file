@@ -5,54 +5,45 @@ pub mod item_id;
 
 pub use item_frame_header::ItemFrameHeader;
 
-use super::item_frame_stack::ItemFrameStack;
 use crate::{prelude::*, read_bytes::ReadBytesExt};
 use item_id::ItemID;
-use std::{
-    convert::TryFrom,
-    io::{Cursor, Read},
-};
+use std::io::{Cursor, Read};
 
 #[derive(Clone, Debug)]
 pub struct ItemFrame {
     pub header: ItemFrameHeader,
-    pub inner: ItemFrameStack,
+    pub inner: Option<Box<ItemFrame>>,
     pub data: Vec<u8>,
-}
-
-impl std::convert::TryFrom<ItemFrameStack> for ItemFrame {
-    type Error = NIFileError;
-
-    fn try_from(stack: ItemFrameStack) -> Result<Self> {
-        ItemFrame::read(stack.0)
-    }
 }
 
 impl ItemFrame {
     pub fn read<R: ReadBytesExt>(mut reader: R) -> Result<Self> {
         let header = ItemFrameHeader::read(&mut reader)?;
+        let length = header.length as usize - 20;
 
-        let mut data_reader = Cursor::new(reader.read_bytes(header.length as usize)?);
+        match header.item_id {
+            ItemID::Item => {
+                let data = reader.read_bytes(length)?;
 
-        // read recursive frames
-        let inner = ItemFrameStack::read(&mut data_reader)?;
+                Ok(Self {
+                    header,
+                    inner: None,
+                    data,
+                })
+            }
+            _ => {
+                let mut buf = Cursor::new(reader.read_bytes(length)?);
+                let inner = ItemFrame::read(&mut buf)?;
+                let mut data = Vec::new();
+                buf.read_to_end(&mut data)?;
 
-        let mut data = Vec::new();
-        data_reader.read_to_end(&mut data)?;
-
-        if header.item_id == ItemID::Item {
-            return Err(NIFileError::ItemTerminator);
+                Ok(Self {
+                    header,
+                    inner: Some(Box::new(inner)),
+                    data,
+                })
+            }
         }
-
-        Ok(Self {
-            header,
-            inner,
-            data,
-        })
-    }
-
-    pub fn inner(self) -> Option<ItemFrame> {
-        ItemFrame::try_from(self.inner).ok()
     }
 }
 
@@ -61,7 +52,7 @@ mod tests {
     use super::*;
 
     #[test]
-    fn test_item_frame_read() -> Result<()> {
+    fn test_item_frame_read_000() -> Result<()> {
         let file = std::io::Cursor::new(include_bytes!(
             "../../../tests/patchdata/NISD/ItemFrame/RepositoryRoot-000"
         ));
@@ -69,7 +60,21 @@ mod tests {
         assert_eq!(item.data.len(), 58);
 
         assert_eq!(item.header.item_id, ItemID::RepositoryRoot);
-        assert_eq!(item.inner().unwrap().header.item_id, ItemID::Authorization);
+        assert_eq!(item.inner.unwrap().header.item_id, ItemID::Authorization);
+
+        Ok(())
+    }
+
+    #[test]
+    fn test_item_frame_read_001() -> Result<()> {
+        let file = std::io::Cursor::new(include_bytes!(
+            "../../../tests/patchdata/NISD/ItemFrame/RepositoryRoot-001"
+        ));
+        let item = ItemFrame::read(file)?;
+        assert_eq!(item.data.len(), 58);
+
+        assert_eq!(item.header.item_id, ItemID::RepositoryRoot);
+        assert_eq!(item.inner.unwrap().header.item_id, ItemID::Authorization);
 
         Ok(())
     }

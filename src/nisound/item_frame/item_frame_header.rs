@@ -14,11 +14,28 @@ pub struct ItemFrameHeader {
 
 impl ItemFrameHeader {
     pub fn read<R: ReadBytesExt>(mut reader: R) -> Result<Self> {
+        let length: u64 = reader.read_u64_le()?;
+        let domain: Domain = reader.read_u32_le()?.into();
+        let item_id: ItemID = reader.read_u32_le()?.into();
+        let version: u32 = reader.read_u32_le()?;
+
+        if let ItemID::Unknown(id) = item_id {
+            return Err(NIFileError::Generic(format!(
+                "ItemFrameHeader unexpected ItemID error: got 0x{id:x}"
+            )));
+        }
+
+        if version != 1 {
+            return Err(NIFileError::Generic(format!(
+                "ItemFrameHeader version error: expected 0x1, got 0x{version:x}"
+            )));
+        }
+
         Ok(Self {
-            length: reader.read_u64_le()?,
-            domain: reader.read_u32_le()?.into(),
-            item_id: ItemID::from(reader.read_u32_le()?),
-            version: reader.read_u32_le()?,
+            length,
+            domain,
+            item_id,
+            version,
         })
     }
 }

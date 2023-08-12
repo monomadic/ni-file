@@ -1,4 +1,4 @@
-use std::{collections::HashMap, io::Cursor};
+use std::collections::HashMap;
 
 use crate::{read_bytes::ReadBytesExt, Error};
 
@@ -78,12 +78,17 @@ impl BFileNameSegment {
     }
 }
 
-#[test]
-fn test_structured_object() -> Result<(), Error> {
-    let file = Cursor::new(include_bytes!(
-        "../../tests/patchdata/KontaktV42/filename_list_pre_k5/4.2.2.4504/000"
-    ));
-    FileNameListPreK51::read(file)?;
+#[cfg(test)]
+mod tests {
+    use std::fs::File;
 
-    Ok(())
+    use super::*;
+
+    #[test]
+    fn test_structured_object() -> Result<(), Error> {
+        let file = File::open("tests/patchdata/KontaktV42/filename_list_pre_k5/4.2.2.4504/000")?;
+        FileNameListPreK51::read(file)?;
+
+        Ok(())
+    }
 }

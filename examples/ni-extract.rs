@@ -31,7 +31,7 @@ pub fn main() -> Result<(), Box<dyn std::error::Error>> {
                 repo.preset_version()
             );
 
-            let preset = repo.raw_preset()?;
+            let preset = repo.preset_raw()?;
             std::fs::write("preset", &preset)?;
             println!("Wrote: inner preset");
         }

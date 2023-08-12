@@ -1,16 +1,4 @@
-/*
-    BNISoundPreset (0x3, 3, 4KIN)
-    kontakt preset
-
-    BNISoundPreset::readItem(&stream, context) {
-        let header = ItemFrameReader(&context);
-        let preset = Preset::readItem(&stream, &context)?;
-        let version = context.read_u16();
-        if version != 0 {
-            return Err(VERSION_MISMATCH)
-        }
-    }
-*/
+use std::convert::TryInto;
 
 use crate::{
     nisound::{item_frame::ItemFrame, ItemID},
@@ -19,6 +7,7 @@ use crate::{
 
 use super::preset::Preset;
 
+/// Kontakt preset
 pub struct BNISoundPreset {
     pub preset: Preset,
 }
@@ -27,13 +16,14 @@ impl std::convert::TryFrom<&ItemFrame> for BNISoundPreset {
     type Error = NIFileError;
 
     fn try_from(frame: &ItemFrame) -> Result<Self> {
-        log::debug!("BNISoundPreset::try_from");
         debug_assert_eq!(frame.header.item_id, ItemID::BNISoundPreset);
 
-        let preset: Preset = Preset::read(frame.inner.0.clone())?;
+        let frame = *frame.inner.clone().unwrap();
 
         // .. data
 
-        Ok(Self { preset })
+        Ok(Self {
+            preset: frame.try_into()?,
+        })
     }
 }
