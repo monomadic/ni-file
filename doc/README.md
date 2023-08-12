@@ -25,9 +25,6 @@ match NIFileType::detect(&file) {
     NIFileType::NISound => {
         let container = NISound::read(file.as_slice()).unwrap();
     }
-    NIFileType::NIMonolith => {
-        let monolith = NIMonolith::read(file.as_slice()).unwrap();
-    }
     NIFileType::NKSLE | NIFileType::NKSBE => {
         let kontakt = NKSFile::read(file.as_slice())?;
     }

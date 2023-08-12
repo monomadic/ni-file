@@ -11,7 +11,7 @@ impl NIFile {
         let cursor = reader.by_ref();
         match NIFileType::detect(cursor)? {
             NIFileType::NISound => todo!(),
-            NIFileType::NIMonolith => todo!(),
+            NIFileType::FileContainer => todo!(),
             NIFileType::NICompressedWave => todo!(),
             NIFileType::KoreSound => todo!(),
             NIFileType::Kontakt1 => todo!(),

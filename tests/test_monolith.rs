@@ -1,6 +1,6 @@
 mod utils;
 
-use ni_file::NIMonolith;
+use ni_file::file_container::*;
 use std::fs;
 
 #[test]
@@ -9,7 +9,7 @@ fn test_reading_ni_monolith() -> Result<(), Box<dyn std::error::Error>> {
         log::info!("reading {:?}", path);
 
         let file = fs::File::open(path.as_path())?;
-        let _frame = NIMonolith::read(file)?;
+        let _frame = NIFileContainer::read(file)?;
     }
 
     Ok(())

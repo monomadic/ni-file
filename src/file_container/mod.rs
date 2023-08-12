@@ -2,11 +2,11 @@ use crate::prelude::*;
 use crate::read_bytes::ReadBytesExt;
 
 /// Kontakt archive that bundles a preset, samples and other files.
-pub struct NIMonolith(Vec<u8>);
+pub struct NIFileContainer(Vec<u8>);
 
-impl NIMonolith {
+impl NIFileContainer {
     pub fn read<R: ReadBytesExt>(mut reader: R) -> Result<Self> {
-        log::debug!("NIMonolith::read");
+        log::debug!("NIFileContainer::read");
 
         // NI FC MTD
         // Native Instruments FileContainer MetaData
@@ -40,7 +40,7 @@ mod tests {
         let file = Cursor::new(include_bytes!(
             "../../tests/filetype/monolith/kontakt/000-default.nki"
         ));
-        NIMonolith::read(file)?;
+        NIFileContainer::read(file)?;
         Ok(())
     }
 }

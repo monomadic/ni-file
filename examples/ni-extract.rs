@@ -34,7 +34,7 @@ pub fn main() -> Result<(), Box<dyn std::error::Error>> {
             std::fs::write("inner-container", &preset)?;
             println!("Wrote: inner-container");
         }
-        NIFileType::NIMonolith => todo!(),
+        NIFileType::FileContainer => todo!(),
         NIFileType::NICompressedWave => todo!(),
         NIFileType::KoreSound => todo!(),
         NIFileType::Kontakt1 => todo!(),

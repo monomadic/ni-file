@@ -13,8 +13,7 @@ pub mod kontakt;
 
 pub mod nifile; // generic, simplified api for supported filetypes
 
-/// Monolith filetype support
-pub mod monolith;
+pub mod file_container; // monoliths
 pub mod nisound; // nisound document // kontakt 4.2 preset
 pub mod nks; // native instruments kontakt sound file format
 
@@ -24,5 +23,4 @@ pub(crate) mod read_bytes; // for reading bytestreams
 pub(crate) mod utils; // various utils for logging etc
 
 pub use detect::NIFileType;
-pub use monolith::NIMonolith;
 pub use nisound::Repository;

@@ -44,8 +44,8 @@ pub fn main() -> Result<()> {
                 _ => (),
             }
         }
-        NIFileType::NIMonolith => {
-            println!("format:\t\tNIMonolith");
+        NIFileType::FileContainer => {
+            println!("format:\t\tFileContainer");
         }
         NIFileType::NICompressedWave => todo!(),
         NIFileType::KoreSound => todo!(),

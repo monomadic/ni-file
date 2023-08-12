@@ -6,7 +6,7 @@ pub enum NIFileType {
     /// All presets created after Kontakt5 are generally [`NISound`](NIFileType::NISound) containers.
     NISound,
     /// Kontakt archives with samples inside are [`NIMonolith`](crate::NIMonolith) containers.
-    NIMonolith,
+    FileContainer,
     /// Generally .ncw files created with Kontakt
     NICompressedWave,
     /// Kore has its own simple format.
@@ -43,6 +43,7 @@ impl NIFileType {
                 info!("Detected: NKS (Little Endian)");
                 NIFileType::NKS
             }
+            0x2F5C204E => NIFileType::FileContainer,
             0x1290A87F => NIFileType::NKS, // BE
             0xA4D6E55A | 0x74B5A69B => {
                 panic!("kontakt: unknown");
@@ -63,7 +64,7 @@ impl NIFileType {
                     // BE monolith byte 35: 0x4916e63c
                     // .nkm
                     // check for '/\ NI FC MTD  /\' (NI FileContainer Metadata)
-                    [0x2F, 0x5C, 0x20, 0x4E] => NIFileType::NIMonolith,
+                    [0x2F, 0x5C, 0x20, 0x4E] => NIFileType::FileContainer,
 
                     // .ncw
                     [0x01, 0xA8, 0x9E, 0xD6] => NIFileType::NICompressedWave,
