@@ -1,4 +1,5 @@
 use std::{fs::File, io::Cursor};
+use tracing::{info, instrument};
 
 use color_eyre::eyre::Result;
 use ni_file::{
@@ -8,8 +9,11 @@ use ni_file::{
     NIFileType, Repository,
 };
 
+#[instrument]
 pub fn main() -> Result<()> {
-    std::env::set_var("RUST_BACKTRACE", "1");
+    #[cfg(feature = "capture-spantrace")]
+    install_tracing();
+
     color_eyre::install()?;
 
     let Some(path) = std::env::args().nth(1) else {
@@ -17,10 +21,9 @@ pub fn main() -> Result<()> {
         return Ok(());
     };
 
-    let file = File::open(&path)?;
-
-    match NIFileType::detect(&file)? {
+    match NIFileType::detect(File::open(&path)?)? {
         NIFileType::NISound => {
+            let file = File::open(&path)?;
             let sound = Repository::read(file)?;
             println!("format:\t\t\tNISound {}", sound.nisound_version()?);
 
@@ -49,6 +52,7 @@ pub fn main() -> Result<()> {
         }
         NIFileType::NKS => {
             println!("format:\t\t\tNKS Container (Kontakt)");
+            let file = File::open(&path)?;
             let nks = NKSFile::read(file)?;
 
             use NKSHeader::*;

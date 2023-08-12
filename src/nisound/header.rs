@@ -15,7 +15,7 @@ use crate::read_bytes::ReadBytesExt;
 #[derive(Debug, Clone)]
 pub struct ItemHeader {
     /// Size in bytes of the entire [`Item`](super::Item).
-    pub size: u64,
+    pub length: u64,
     /// Integer that resolves to a [`DomainID`](super::DomainID).
     pub magic: Vec<u8>, // (+0xC, uint, 'hsin')
     pub header_flags: u32, // (0x10, uint)
@@ -24,15 +24,17 @@ pub struct ItemHeader {
 
 impl ItemHeader {
     pub fn read<R: ReadBytesExt>(mut reader: R) -> Result<Self> {
-        let size = reader.read_u64_le()?;
+        let length = reader.read_u64_le()?;
         let version = reader.read_u32_le()?;
         let magic = reader.read_bytes(4)?;
         let header_flags = reader.read_u32_le()?;
         let uuid = reader.read_bytes(16)?;
 
         if magic != b"hsin" {
+            // let magic = std::str::from_utf8(&magic);
+            let magic = crate::utils::format_hex(&magic);
             return Err(NIFileError::Generic(format!(
-                "Error reading ItemHeader magic: expected 'hsin', got '{magic:?}'"
+                "Error reading ItemHeader magic: expected 0x6873696E, got 0x{magic}"
             )));
         };
 
@@ -41,7 +43,7 @@ impl ItemHeader {
         };
 
         Ok(Self {
-            size,
+            length,
             magic,
             header_flags,
             uuid,

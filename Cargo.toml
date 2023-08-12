@@ -11,6 +11,7 @@ glob = "0.3.1"
 time = "0.3.25"
 fastlz = "0.1.0"
 flate2 = "1.0.26"
+tracing = "0.1.37"
 
 [dev-dependencies]
 wax = "0.5.0"

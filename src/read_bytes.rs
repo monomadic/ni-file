@@ -81,6 +81,7 @@ pub trait ReadBytesExt: Read + Seek {
         Ok(buf)
     }
 
+    // TODO: deprecate this
     /// Checks data is a valid size and returns its content as a byte array
     fn read_sized_data(&mut self) -> io::Result<Vec<u8>> {
         let size_field = self.read_u64_le()?;
