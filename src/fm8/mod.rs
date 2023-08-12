@@ -2,6 +2,8 @@
 mod fx;
 mod matrix;
 
+use std::io::Cursor;
+
 use crate::{
     fm8::{fx::FM8EffectSettings, matrix::FM8Matrix},
     read_bytes::ReadBytesExt,
@@ -938,8 +940,8 @@ pub fn read_string<R: ReadBytesExt>(mut reader: R) -> Result<String, Error> {
 
 #[test]
 fn test_fm8_preset_read() -> Result<(), Error> {
-    let file = include_bytes!("../../tests/patchdata/fm8/1.2.0.1010/000");
-    FM8Preset::read(file.as_slice())?;
+    let file = Cursor::new(include_bytes!("../../tests/patchdata/fm8/1.2.0.1010/000"));
+    FM8Preset::read(file)?;
 
     Ok(())
 }

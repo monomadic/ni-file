@@ -80,14 +80,16 @@ impl NIFileType {
 
 #[cfg(test)]
 mod tests {
+    use std::io::Cursor;
+
     use super::*;
 
     #[test]
     fn test_kontakt_1() {
         assert_eq!(
-            NIFileType::detect(
-                include_bytes!("../tests/filetype/NKS/KontaktV1/000-crunchy.nki").as_slice()
-            )
+            NIFileType::detect(Cursor::new(include_bytes!(
+                "../tests/filetype/NKS/KontaktV1/000-crunchy.nki"
+            )))
             .unwrap(),
             NIFileType::Kontakt1
         );
@@ -96,9 +98,9 @@ mod tests {
     #[test]
     fn test_kontakt_7() {
         assert_eq!(
-            NIFileType::detect(
-                include_bytes!("../tests/filetype/NISD/kontakt/7.1.3.0/000-default.nki").as_slice()
-            )
+            NIFileType::detect(Cursor::new(include_bytes!(
+                "../tests/filetype/NISD/kontakt/7.1.3.0/000-default.nki"
+            )))
             .unwrap(),
             NIFileType::NISound
         );

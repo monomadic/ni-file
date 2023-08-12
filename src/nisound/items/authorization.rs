@@ -10,6 +10,8 @@
 //   @watermark
 // @authorization-level
 
+use std::io::Cursor;
+
 use crate::{
     nisound::item_frame::{item_id::ItemID, ItemFrame},
     prelude::*,
@@ -24,7 +26,7 @@ impl std::convert::TryFrom<ItemFrame> for Authorization {
     fn try_from(frame: ItemFrame) -> std::result::Result<Self, Self::Error> {
         log::debug!("Authorization::try_from");
         debug_assert_eq!(frame.header.item_id, ItemID::Authorization);
-        Authorization::read(frame.data.as_slice())
+        Authorization::read(Cursor::new(frame.data))
     }
 }
 
@@ -54,11 +56,11 @@ mod tests {
 
     #[test]
     fn test_authorization_read() -> Result<()> {
-        let file = include_bytes!(
+        let file = Cursor::new(include_bytes!(
             "../../../tests/data/nisound/chunks/item-frame-property/kontakt-5/106-Authorization.data"
-        );
+        ));
 
-        let _auth = Authorization::read(file.as_slice())?;
+        let _auth = Authorization::read(file)?;
 
         // TODO: auth props
 

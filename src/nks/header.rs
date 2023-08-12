@@ -1,3 +1,5 @@
+use std::io::Cursor;
+
 use time::OffsetDateTime;
 
 use crate::{read_bytes::ReadBytesExt, NIFileError};
@@ -50,8 +52,8 @@ pub struct BPatchHeaderV2 {
 
 impl BPatchHeaderV2 {
     pub fn read_le<R: ReadBytesExt>(mut reader: R) -> Result<Self, NIFileError> {
-        let reader = reader.read_bytes(170 - 10)?;
-        let mut reader = reader.as_slice();
+        // let reader = reader.read_bytes(170 - 10)?;
+        // let mut reader = reader.as_slice();
 
         let header_magic = reader.read_u32_le()?;
         assert_eq!(header_magic, u32::swap_bytes(0x722A013E));
@@ -103,8 +105,8 @@ impl BPatchHeaderV2 {
 
 impl BPatchHeaderV42 {
     pub fn read_le<R: ReadBytesExt>(mut reader: R) -> Result<Self, NIFileError> {
-        let reader = reader.read_bytes(222 - 10)?;
-        let mut reader = reader.as_slice();
+        // let reader = reader.read_bytes(222 - 10)?;
+        // let mut reader = reader.as_slice();
 
         let patch_version = reader.read_u32_le()?;
         assert_eq!(patch_version, u32::swap_bytes(0x1A6337EA));
@@ -131,7 +133,7 @@ impl BPatchHeaderV42 {
         let icon = reader.read_u32_le()?;
 
         let embedded_strings = reader.read_bytes(104)?;
-        let mut strings = embedded_strings.as_slice();
+        let mut strings = Cursor::new(embedded_strings);
         let author = strings.read_string_utf8()?;
 
         let _checksum = reader.read_bytes(16)?;
@@ -226,17 +228,21 @@ mod tests {
 
     #[test]
     fn test_header_v2_read() -> Result<(), NIFileError> {
-        let file = include_bytes!("../../tests/patchdata/NKS/BPatchHeaderV2/000");
+        let file = Cursor::new(include_bytes!(
+            "../../tests/patchdata/NKS/BPatchHeaderV2/000"
+        ));
         // let mut reader = file.as_slice();
         // NKSHeader::read_le(file.as_slice())?;
-        println!("{:?}", NKSHeader::read_le(file.as_slice())?);
+        println!("{:?}", NKSHeader::read_le(file)?);
         Ok(())
     }
 
     #[test]
     fn test_header_v42_read() -> Result<(), NIFileError> {
-        let file = include_bytes!("../../tests/patchdata/NKS/BPatchHeaderV42/000");
-        println!("{:?}", NKSHeader::read_le(file.as_slice())?);
+        let file = Cursor::new(include_bytes!(
+            "../../tests/patchdata/NKS/BPatchHeaderV42/000"
+        ));
+        println!("{:?}", NKSHeader::read_le(file)?);
         Ok(())
     }
 }

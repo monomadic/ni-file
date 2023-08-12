@@ -30,6 +30,8 @@
 //     authoring_app_version: String,
 // }
 
+use std::io::Cursor;
+
 use crate::nisound::item_frame::{app_id::AuthoringApplication, ItemFrame};
 use crate::nisound::ItemID;
 use crate::prelude::*;
@@ -47,7 +49,7 @@ impl std::convert::TryFrom<&ItemFrame> for Preset {
     fn try_from(frame: &ItemFrame) -> Result<Self> {
         log::debug!("Preset::try_from");
         debug_assert_eq!(frame.header.item_id, ItemID::Preset);
-        Preset::read(frame.data.as_slice())
+        Preset::read(Cursor::new(frame.data.clone()))
     }
 }
 

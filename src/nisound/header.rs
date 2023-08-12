@@ -48,3 +48,19 @@ impl ItemHeader {
         })
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_item_frame_read() -> Result<()> {
+        let file = io::Cursor::new(include_bytes!(
+            "../../tests/patchdata/NISD/ItemHeader/ItemHeader-RepositoryRoot-000"
+        ));
+        let item = ItemHeader::read(file)?;
+        assert_eq!(item.magic, b"hsin");
+
+        Ok(())
+    }
+}

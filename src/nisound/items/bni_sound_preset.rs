@@ -30,7 +30,7 @@ impl std::convert::TryFrom<&ItemFrame> for BNISoundPreset {
         log::debug!("BNISoundPreset::try_from");
         debug_assert_eq!(frame.header.item_id, ItemID::BNISoundPreset);
 
-        let preset: Preset = Preset::read(frame.inner.0.as_slice())?;
+        let preset: Preset = Preset::read(frame.inner.0.clone())?;
 
         // .. data
 

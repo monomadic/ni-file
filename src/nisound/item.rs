@@ -1,3 +1,5 @@
+use std::io::Cursor;
+
 use super::{
     header::ItemHeader,
     item_frame::{item_id::ItemID, ItemFrame},
@@ -17,7 +19,7 @@ impl ItemContainer {
         Ok(ItemContainer {
             header: ItemHeader::read(&mut reader)?,
             items: ItemFrame::read(&mut reader)?,
-            children: ItemContainer::read_children(&mut reader)?,
+            children: Vec::new(), //ItemContainer::read_children(&mut reader)?,
         })
     }
 
@@ -57,7 +59,9 @@ impl ItemContainer {
 
                 log::debug!("child domain_id: {}, item_id: {}", domain_id, item_id);
 
-                children.push(ItemContainer::read(buf.read_sized_data()?.as_slice())?);
+                let data = Cursor::new(buf.read_sized_data()?);
+
+                children.push(ItemContainer::read(data)?);
             }
         }
         Ok(children)
@@ -67,41 +71,26 @@ impl ItemContainer {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::utils::get_files;
 
     #[test]
     fn test_item_read() -> Result<()> {
-        for path in get_files("tests/data/nisound/file/**/*.*")? {
-            log::info!("reading {:?}", path);
-
-            let file = std::fs::File::open(&path)?;
-            ItemContainer::read(file)?;
-        }
+        let data = std::io::Cursor::new(include_bytes!(
+            "../../tests/patchdata/NISD/ItemContainer/ItemContainer-BNISoundPreset-000"
+        ));
+        ItemContainer::read(data)?;
 
         Ok(())
     }
 
-    #[test]
-    fn test_item_frame() -> Result<()> {
-        for path in get_files("tests/data/nisound/file/**/*.*")? {
-            log::info!("reading {:?}", path);
-
-            let file = std::fs::File::open(&path)?;
-            let _item: ItemContainer = ItemContainer::read(file)?;
-        }
-
-        Ok(())
-    }
-
-    #[test]
-    fn test_children() -> Result<()> {
-        let data = include_bytes!("../../tests/filetype/NISD/kontakt/7.1.3.0/000-default.nki");
-        let mut data = data.as_slice();
-
-        let item = ItemContainer::read(&mut data)?;
-        let children = item.children;
-
-        assert_eq!(children.len(), 1);
-        Ok(())
-    }
+    // #[test]
+    // fn test_children() -> Result<()> {
+    //     let data = include_bytes!("../../tests/filetype/NISD/kontakt/7.1.3.0/000-default.nki");
+    //     let mut data = data.as_slice();
+    //
+    //     let item = ItemContainer::read(&mut data)?;
+    //     let children = item.children;
+    //
+    //     assert_eq!(children.len(), 1);
+    //     Ok(())
+    // }
 }

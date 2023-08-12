@@ -1,7 +1,9 @@
-use std::io;
+use std::io::{self, Read, Seek};
+
+pub struct ReadBytesError {}
 
 /// Extensions to io::Read for simplifying reading bytes.
-pub trait ReadBytesExt: io::Read {
+pub trait ReadBytesExt: Read + Seek {
     fn read_bool(&mut self) -> io::Result<bool> {
         Ok(self.read_u8()? == 1)
     }
@@ -131,21 +133,23 @@ pub trait ReadBytesExt: io::Read {
             .map_err(|e| io::Error::new(io::ErrorKind::InvalidData, e))
     }
 }
-impl<R: io::Read + ?Sized> ReadBytesExt for R {}
+impl<R: Read + Seek + ?Sized> ReadBytesExt for R {}
 
 #[cfg(test)]
 mod tests {
     use super::ReadBytesExt;
+    use std::io;
 
     #[test]
     fn test_read_u32_le() {
         let mut bytes: &[u8] = &[32_u8, 1, 4, 56, 6, 6, 90, 4, 7];
-        let num = bytes.read_u32_le().unwrap();
+        let mut cursor = io::Cursor::new(bytes);
+        let num = cursor.read_u32_le().unwrap();
 
         assert_eq!(num, 939786528);
         assert_eq!(bytes, [6, 6, 90, 4, 7]);
 
-        let num = bytes.read_u32_le().unwrap();
+        let num = cursor.read_u32_le().unwrap();
         assert_eq!(num, 73008646);
         assert_eq!(bytes, [7]);
     }
@@ -153,7 +157,8 @@ mod tests {
     #[test]
     fn test_read_sized_data() {
         let mut bytes: &[u8] = &[9, 0, 0, 0, 0, 0, 0, 0, 4, 5];
-        let content = bytes.read_sized_data().unwrap();
+        let mut cursor = io::Cursor::new(bytes);
+        let content = cursor.read_sized_data().unwrap();
 
         assert_eq!(content, [9, 0, 0, 0, 0, 0, 0, 0, 4]);
         assert_eq!(bytes, [5]);
@@ -166,7 +171,7 @@ mod tests {
         ]
         .concat();
         assert_eq!(
-            bytes.as_slice().read_sized_data().unwrap(),
+            io::Cursor::new(bytes).read_sized_data().unwrap(),
             [12_u64.to_le_bytes().to_vec(), 64_u32.to_le_bytes().to_vec()].concat()
         );
     }

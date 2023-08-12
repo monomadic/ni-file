@@ -1,3 +1,5 @@
+use std::io::Cursor;
+
 use flate2::bufread::ZlibDecoder;
 
 use crate::{
@@ -35,20 +37,21 @@ impl NKSFile {
 
         match &header {
             NKSHeader::BPatchHeaderV2(_) => {
-                let mut compressed_data = Vec::new();
-                reader.read_to_end(&mut compressed_data)?;
-                // note: decompress with zlib-flate -uncompress < in > out
-                //          (from the qpdf package)
-                let mut decoder = ZlibDecoder::new(compressed_data.as_slice());
-
-                // store decompressed data in byte slice
-                let data = decoder.read_sized_data()?;
-
-                Ok(NKSFile {
-                    header,
-                    compressed_patch_data: data,
-                    meta_info: BPatchMetaInfoHeader::read(&mut reader)?,
-                })
+                todo!();
+                // let mut compressed_data = Vec::new();
+                // reader.read_to_end(&mut compressed_data)?;
+                // // note: decompress with zlib-flate -uncompress < in > out
+                // //          (from the qpdf package)
+                // let mut decoder = ZlibDecoder::new(compressed_data.as_slice());
+                //
+                // // store decompressed data in byte slice
+                // let data = decoder.read_sized_data()?;
+                //
+                // Ok(NKSFile {
+                //     header,
+                //     compressed_patch_data: data,
+                //     meta_info: BPatchMetaInfoHeader::read(&mut reader)?,
+                // })
             }
 
             NKSHeader::BPatchHeaderV42(h) => {
@@ -72,9 +75,10 @@ impl NKSFile {
     pub fn data(&self) -> Result<Vec<StructuredObject>, Error> {
         let mut objects = Vec::new();
 
-        while let Ok(chunk) = ChunkData::read(self.compressed_patch_data.as_slice()) {
-            let mut reader = chunk.data.as_slice();
-            objects.push(StructuredObject::read(&mut reader)?);
+        let mut compressed_data = Cursor::new(&self.compressed_patch_data);
+
+        while let Ok(chunk) = ChunkData::read(&mut compressed_data) {
+            objects.push(StructuredObject::read(Cursor::new(chunk.data))?);
         }
 
         Ok(objects)
@@ -87,8 +91,10 @@ mod tests {
 
     #[test]
     fn test_nksfile_read_v42() -> Result<(), NIFileError> {
-        let file = include_bytes!("../../tests/filetype/NKS/KontaktV42/4.2.4.5316-000.nki");
-        println!("{:?}", NKSFile::read(file.as_slice())?);
+        let file = Cursor::new(include_bytes!(
+            "../../tests/filetype/NKS/KontaktV42/4.2.4.5316-000.nki"
+        ));
+        println!("{:?}", NKSFile::read(file)?);
         Ok(())
     }
 

@@ -32,8 +32,10 @@ impl ZoneList {
 
 #[test]
 fn test_zone_list() -> Result<(), Error> {
-    let file = include_bytes!("../../tests/patchdata/KontaktV42/zone_list/4.2.2.4504/000");
-    let zonelist = ZoneList::read(file.as_slice())?;
+    let file = std::io::Cursor::new(include_bytes!(
+        "../../tests/patchdata/KontaktV42/zone_list/4.2.2.4504/000"
+    ));
+    let zonelist = ZoneList::read(file)?;
     println!("{zonelist:#?}");
     Ok(())
 }

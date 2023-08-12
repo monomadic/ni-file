@@ -4,14 +4,14 @@
 
 # Native Instruments File Format
 
-Native Instruments file format support for rust.
+Native Instruments file format support for rust. This library is the result of hundreds of hours of painstaking research.
 
 Current support:
 
 | Application   | Type     | Detect | Container | Preset Data |
 | ------------- | -------- | ------ | --------- | ----------- |
-| Kontakt 1     | Kon1     | ✅     | ❌        | ❌          |
-| Kontakt 2     | NKS      | ✅     | ✅        | 🕒 ~20%     |
+| Kontakt 1     | NKS      | ✅     | ❌        | xml         |
+| Kontakt 2     | NKS      | ✅     | ✅        | xml         |
 | Kontakt 4.22+ | NKS      | ✅     | ✅        | 🕒 ~50%     |
 | Kontakt 5+    | NISD     | ✅     | ✅        | 🕒 ~30%     |
 | Kontakt 5+    | Monolith | ✅     | ✅        | ❌          |

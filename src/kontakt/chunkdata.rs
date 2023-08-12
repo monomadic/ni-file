@@ -1,4 +1,4 @@
-use crate::{read_bytes::ReadBytesExt, Error, NIFileError};
+use crate::{read_bytes::ReadBytesExt, Error};
 
 pub struct ChunkData {
     pub id: u16,
@@ -8,12 +8,10 @@ pub struct ChunkData {
 impl ChunkData {
     pub fn read<R: ReadBytesExt>(mut reader: R) -> Result<Self, Error> {
         let id = reader.read_u16_le()?;
-        let length = reader.read_u32_le()?;
-        let data = reader.read_bytes(length as usize).map_err(|_| {
-            NIFileError::Generic(format!(
-                "Failed to read ChunkData: id=0x{id:x}, length={length}"
-            ))
-        })?;
+        let length = reader.read_u32_le()? as usize;
+        let data = reader.read_bytes(length)?;
+
+        // TODO: check size
 
         Ok(Self { id, data })
     }

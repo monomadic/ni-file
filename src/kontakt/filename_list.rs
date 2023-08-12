@@ -1,4 +1,4 @@
-use std::collections::HashMap;
+use std::{collections::HashMap, io::Cursor};
 
 use crate::{read_bytes::ReadBytesExt, Error};
 
@@ -80,10 +80,10 @@ impl BFileNameSegment {
 
 #[test]
 fn test_structured_object() -> Result<(), Error> {
-    let file =
-        include_bytes!("../../tests/patchdata/KontaktV42/filename_list_pre_k5/4.2.2.4504/000");
-    let mut file = file.as_slice();
-    println!("{:?}", FileNameListPreK51::read(&mut file)?);
+    let file = Cursor::new(include_bytes!(
+        "../../tests/patchdata/KontaktV42/filename_list_pre_k5/4.2.2.4504/000"
+    ));
+    FileNameListPreK51::read(file)?;
 
     Ok(())
 }

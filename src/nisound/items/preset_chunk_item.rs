@@ -1,3 +1,5 @@
+use std::io::Cursor;
+
 use crate::{
     nisound::{item_frame::ItemFrame, ItemID},
     prelude::*,
@@ -14,7 +16,7 @@ impl std::convert::TryFrom<ItemFrame> for PresetChunkItem {
     fn try_from(frame: ItemFrame) -> std::result::Result<Self, Self::Error> {
         log::debug!("PresetChunkItem::try_from");
         debug_assert_eq!(frame.header.item_id, ItemID::PresetChunkItem);
-        PresetChunkItem::read(frame.data.as_slice())
+        PresetChunkItem::read(Cursor::new(frame.data))
     }
 }
 

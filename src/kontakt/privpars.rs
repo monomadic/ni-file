@@ -1,3 +1,5 @@
+use std::io::Cursor;
+
 use crate::{read_bytes::ReadBytesExt, Error};
 
 #[derive(Debug)]
@@ -50,9 +52,10 @@ impl PrivParsV80 {
 #[test]
 fn test_private_parameters() -> Result<(), Error> {
     // Version 0x80
-    let file = include_bytes!("../../tests/patchdata/KontaktV42/priv_params/4.2.2.4504/000");
-    let mut file = file.as_slice();
-    PrivParsV80::read(&mut file)?;
+    let file = Cursor::new(include_bytes!(
+        "../../tests/patchdata/KontaktV42/priv_params/4.2.2.4504/000"
+    ));
+    PrivParsV80::read(file)?;
 
     // let file = include_bytes!("tests/structured_object/5.3.0.6464/000");
     // let mut file = file.as_slice();

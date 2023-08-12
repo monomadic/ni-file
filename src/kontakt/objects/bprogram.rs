@@ -1,4 +1,5 @@
 use crate::{kontakt::structured_object::StructuredObject, read_bytes::ReadBytesExt, Error};
+use std::io;
 
 #[derive(Debug)]
 pub struct BProgram {
@@ -11,8 +12,14 @@ impl TryFrom<StructuredObject> for BProgram {
 
     fn try_from(so: StructuredObject) -> Result<Self, Self::Error> {
         Ok(Self {
-            public: ProgramPublicParams::read(so.public_data.as_slice(), so.version)?,
-            private: ProgramPrivateParams::read(so.private_data.as_slice(), so.version)?,
+            public: ProgramPublicParams::read(
+                io::Cursor::new(so.public_data.as_slice()),
+                so.version,
+            )?,
+            private: ProgramPrivateParams::read(
+                io::Cursor::new(so.private_data.as_slice()),
+                so.version,
+            )?,
         })
     }
 }
@@ -131,9 +138,9 @@ mod tests {
 
     #[test]
     fn test_private_params_v80() -> Result<(), Error> {
-        let mut file =
-            include_bytes!("../../../tests/patchdata/KontaktV42/Program/v80/private_params/000")
-                .as_slice();
+        let mut file = std::io::Cursor::new(include_bytes!(
+            "../../../tests/patchdata/KontaktV42/Program/v80/private_params/000"
+        ));
         let params = ProgramPrivateParams::read(&mut file, 0x80)?;
         Ok(())
     }

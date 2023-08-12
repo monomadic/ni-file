@@ -2,6 +2,8 @@
 //  Extract raw InternalPresetData from an NISD container.
 //
 
+use std::io::Cursor;
+
 use color_eyre::eyre::Result;
 use ni_file::{nks::nksfile::NKSFile, NIFileType, Repository};
 
@@ -16,10 +18,10 @@ pub fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     let file = std::fs::read(&path)?;
 
-    match NIFileType::detect(file.as_slice())? {
+    match NIFileType::detect(Cursor::new(&file))? {
         NIFileType::NISound => {
             // read the repository
-            let repo = Repository::read(file.as_slice())?;
+            let repo = Repository::read(Cursor::new(file))?;
 
             println!("Detected NISound version: {}", repo.nisound_version()?);
 
@@ -38,7 +40,7 @@ pub fn main() -> Result<(), Box<dyn std::error::Error>> {
         NIFileType::KoreSound => todo!(),
         NIFileType::Kontakt1 => todo!(),
         NIFileType::NKS => {
-            let nks = NKSFile::read(file.as_slice())?;
+            let nks = NKSFile::read(Cursor::new(file))?;
             std::fs::write("chunk", &nks.compressed_patch_data)?;
         }
         NIFileType::KontaktResource => todo!(),

@@ -52,7 +52,9 @@ impl BParamArray {
 
 #[test]
 fn test_bparam_array() -> Result<(), Error> {
-    let file = include_bytes!("../../tests/patchdata/KontaktV42/param_array/4.2.2.4504/000");
-    assert!(BParamArray::read(file.as_slice(), 8).is_ok());
+    let file = std::io::Cursor::new(include_bytes!(
+        "../../tests/patchdata/KontaktV42/param_array/4.2.2.4504/000"
+    ));
+    assert!(BParamArray::read(file, 8).is_ok());
     Ok(())
 }

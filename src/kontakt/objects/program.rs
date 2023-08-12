@@ -1,3 +1,5 @@
+use std::io::Cursor;
+
 use crate::{
     kontakt::{
         bparam_array::BParamArray, chunkdata::ChunkData, group_list::GroupList,
@@ -19,8 +21,6 @@ pub enum BProgram {
 impl BProgram {
     /// BProgram::doReadPubPars
     pub fn read<R: ReadBytesExt>(mut reader: R) -> Result<(), Error> {
-        println!("BProgram::read");
-
         let _do_read = reader.read_bool()?;
 
         let version = reader.read_u16_le()?;
@@ -32,28 +32,28 @@ impl BProgram {
 
                 // pubdata
                 let len = reader.read_u32_le()? as usize;
-                let data = reader.read_bytes(len)?;
-                println!("{:?}", ProgramDataV80::read(data.as_slice())?);
+                let _data = reader.read_bytes(len)?;
 
                 // children
                 let len = reader.read_u32_le()? as usize;
                 let data = reader.read_bytes(len)?;
-                let mut data = data.as_slice();
+                let mut data = std::io::Cursor::new(data.as_slice());
 
                 while let Ok(chunk) = ChunkData::read(&mut data) {
-                    println!("child 0x{:x}", chunk.id);
+                    let data = Cursor::new(chunk.data);
+
                     match chunk.id {
                         0x32 => {
-                            VoiceGroups::read(&mut chunk.data.as_slice())?;
+                            VoiceGroups::read(data)?;
                         }
                         0x33 => {
-                            GroupList::read(&mut chunk.data.as_slice())?;
+                            GroupList::read(data)?;
                         }
                         0x34 => {
-                            ZoneList::read(&mut chunk.data.as_slice())?;
+                            ZoneList::read(data)?;
                         }
                         0x3A => {
-                            BParamArray::read(&mut chunk.data.as_slice(), 8)?;
+                            BParamArray::read(data, 8)?;
                         }
                         _ => {
                             panic!("unsupported child 0x{:x}", chunk.id);
@@ -68,9 +68,9 @@ impl BProgram {
 
                 // pubdata
                 let len = reader.read_u32_le()? as usize;
-                let data = reader.read_bytes(len)?;
+                let data = std::io::Cursor::new(reader.read_bytes(len)?);
 
-                ProgramDataVA5::read(&mut data.as_slice())?;
+                ProgramDataVA5::read(data)?;
             }
             0xA6 => {}
             0xA7 => {}
@@ -89,7 +89,9 @@ impl BProgram {
 
 #[test]
 fn test_bprogram() -> Result<(), Error> {
-    let file = include_bytes!("../../../tests/patchdata/KontaktV42/Program/4.2.2.4504/000");
-    assert!(BProgram::read(file.as_slice()).is_ok());
+    let file = std::io::Cursor::new(include_bytes!(
+        "../../../tests/patchdata/KontaktV42/Program/4.2.2.4504/000"
+    ));
+    assert!(BProgram::read(file).is_ok());
     Ok(())
 }

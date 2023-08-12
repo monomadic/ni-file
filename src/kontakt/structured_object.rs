@@ -1,4 +1,5 @@
-use crate::{kontakt::chunkdata::ChunkData, read_bytes::ReadBytesExt, Error, NIFileError};
+use crate::prelude::io;
+use crate::{read_bytes::ReadBytesExt, Error, NIFileError};
 
 use super::{pubdata::PubData, structured_object_data::StructuredObjectData};
 
@@ -14,29 +15,18 @@ pub struct StructuredObject {
 
 impl StructuredObject {
     pub fn read<R: ReadBytesExt>(mut reader: R) -> Result<Self, Error> {
-        println!("StructuredObject::read");
+        // let current_position = reader.seek(io::SeekFrom::End(0))?;
+        let id = reader.read_u16_le()?;
+        let length = reader.read_u32_le()? as usize;
 
-        let ChunkData { id, data } = ChunkData::read(&mut reader).map_err(|e| {
-            NIFileError::Generic(format!("Failed to read StructuredObject data: {e}"))
-        })?;
+        // Check that file has at least `length` bytes
 
-        println!("  id: 0x{id:x}");
-
-        let mut reader = data.as_slice();
         let is_data_structured = reader.read_bool()?;
 
         if !is_data_structured {
-            println!("  [raw]");
-            // return Ok(Self {
-            //     id,
-            //     data: Vec::new(),
-            //     version: 0,
-            //     private_data: reader.read_bytes(reader.len())?,
-            //     children: Vec::new(),
-            // });
             return Ok(Self {
                 id,
-                public_data: reader.read_bytes(reader.len())?,
+                public_data: reader.read_bytes(length - 1)?,
                 version: 0,
                 private_data: Vec::new(),
                 children: Vec::new(),
@@ -72,10 +62,10 @@ impl StructuredObject {
                     "Failed to read StructuredObject private_data: length={children_data_length} error={e}",
                 ))
             })?;
-        let mut children_data = children_data.as_slice();
+        let mut children_reader = io::Cursor::new(children_data);
 
         let mut children = Vec::new();
-        while let Ok(object) = StructuredObject::read(&mut children_data) {
+        while let Ok(object) = StructuredObject::read(&mut children_reader) {
             children.push(object);
         }
 
@@ -90,7 +80,7 @@ impl StructuredObject {
 
     pub fn pubdata(&self) -> Result<Option<PubData>, Error> {
         Ok(Some(PubData::from(
-            self.public_data.as_slice(),
+            io::Cursor::new(&self.public_data),
             self.id,
             self.version,
         )?))
@@ -150,8 +140,9 @@ mod tests {
 
     #[test]
     fn test_structured_object_0x28() -> Result<(), Error> {
-        let mut file =
-            include_bytes!("../../tests/patchdata/KontaktV42/StructuredObject/0x28").as_slice();
+        let mut file = io::Cursor::new(include_bytes!(
+            "../../tests/patchdata/KontaktV42/StructuredObject/0x28"
+        ));
         let obj = StructuredObject::read(&mut file)?;
 
         assert_eq!(obj.id, 0x28);
@@ -177,8 +168,9 @@ mod tests {
 
     #[test]
     fn test_structured_object_0x3d() -> Result<(), Error> {
-        let mut file =
-            include_bytes!("../../tests/patchdata/KontaktV42/StructuredObject/0x3D").as_slice();
+        let mut file = io::Cursor::new(include_bytes!(
+            "../../tests/patchdata/KontaktV42/StructuredObject/0x3D"
+        ));
         let obj = StructuredObject::read(&mut file)?;
 
         assert_eq!(obj.id, 0x3d);
@@ -194,8 +186,9 @@ mod tests {
 
     #[test]
     fn test_structured_object_0x25() -> Result<(), Error> {
-        let mut file =
-            include_bytes!("../../tests/patchdata/KontaktV42/StructuredObject/0x25").as_slice();
+        let mut file = io::Cursor::new(include_bytes!(
+            "../../tests/patchdata/KontaktV42/StructuredObject/0x25"
+        ));
         let obj = StructuredObject::read(&mut file)?;
 
         assert_eq!(obj.id, 0x25);

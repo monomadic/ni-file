@@ -1,4 +1,4 @@
-use std::fmt::Display;
+use std::{fmt::Display, io::Cursor};
 
 use crate::{
     nisound::item_frame::{item_id::ItemID, ItemFrame},
@@ -32,7 +32,7 @@ impl std::convert::TryFrom<&ItemFrame> for RepositoryRoot {
 
     fn try_from(frame: &ItemFrame) -> std::result::Result<Self, Self::Error> {
         assert_eq!(frame.header.item_id, ItemID::RepositoryRoot);
-        RepositoryRoot::read(frame.data.as_slice())
+        RepositoryRoot::read(Cursor::new(frame.data.clone()))
     }
 }
 
@@ -92,7 +92,7 @@ mod tests {
         let file =
             include_bytes!("../../../tests/data/nisound/chunks/item-frame-property/kontakt-5/118-RepositoryRoot.data");
 
-        let root = RepositoryRoot::read(file.as_slice())?;
+        let root = RepositoryRoot::read(Cursor::new(file))?;
 
         assert_eq!(1, root.major_version());
         assert_eq!(7, root.minor_version());

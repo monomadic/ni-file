@@ -31,12 +31,16 @@ impl NIMonolith {
 
 #[cfg(test)]
 mod tests {
+    use std::io::Cursor;
+
     use super::*;
 
     #[test]
     fn test_read() -> Result<()> {
-        let file = include_bytes!("../../tests/filetype/monolith/kontakt/000-default.nki");
-        NIMonolith::read(file.as_slice())?;
+        let file = Cursor::new(include_bytes!(
+            "../../tests/filetype/monolith/kontakt/000-default.nki"
+        ));
+        NIMonolith::read(file)?;
         Ok(())
     }
 }

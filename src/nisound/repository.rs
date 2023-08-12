@@ -10,7 +10,7 @@ use crate::{
     prelude::*,
     read_bytes::ReadBytesExt,
 };
-use std::convert::TryFrom;
+use std::{convert::TryFrom, io::Cursor};
 
 /// High level wrapper for NISound containers
 pub struct Repository(ItemContainer);
@@ -38,7 +38,7 @@ impl Repository {
         // first, lets try find the AppSpecific item
         // (which means this is a multi)
         if let Some(item) = self.0.find(&ItemID::AppSpecific) {
-            return Ok(AppSpecific::try_from(item)?.authoring_app);
+            return Ok(AppSpecific::try_from(item.clone())?.authoring_app);
         }
 
         // not a good way of detecting the authoring app
@@ -74,7 +74,7 @@ impl Repository {
         // first, lets try find the AppSpecific item
         // (which means this is a multi)
         if let Some(item) = self.0.find(&ItemID::AppSpecific) {
-            return Ok(AppSpecific::try_from(item)?.version);
+            return Ok(AppSpecific::try_from(item.clone())?.version);
         }
 
         self.preset_item().map(|p| p.version)
@@ -132,7 +132,7 @@ impl Repository {
 
     pub fn preset(&self) -> Result<PresetContainer> {
         self.raw_preset()
-            .and_then(|item| PresetContainer::try_from(ItemFrame::read(item.as_slice())?))
+            .and_then(|item| PresetContainer::try_from(ItemFrame::read(Cursor::new(item))?))
     }
 
     pub fn children(&self) -> &Vec<ItemContainer> {

@@ -41,6 +41,8 @@
 
 // TODO: should work on frames, not raw property data
 
+use std::io::Cursor;
+
 use crate::nisound::item_frame::ItemFrame;
 use crate::nisound::ItemID;
 use crate::prelude::*;
@@ -57,7 +59,7 @@ impl std::convert::TryFrom<ItemFrame> for SubtreeItem {
         log::debug!("BNISoundPreset::try_from");
         debug_assert_eq!(frame.header.item_id, ItemID::SubtreeItem);
 
-        Self::read(frame.data.as_slice())
+        Self::read(Cursor::new(frame.data))
     }
 }
 
@@ -96,10 +98,10 @@ mod tests {
 
     #[test]
     fn test_read_subtree() -> Result<()> {
-        let data = include_bytes!(
+        let data = Cursor::new(include_bytes!(
             "../../../tests/data/nisound/chunks/item-frame-property/kontakt-4/115-SubtreeItem.data"
-        );
-        let item = SubtreeItem::read(data.as_slice())?;
+        ));
+        let item = SubtreeItem::read(data)?;
 
         assert_eq!(item.inner_data.len(), 4524);
 

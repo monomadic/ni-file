@@ -8,7 +8,7 @@ pub fn deflate_checked(
     compressed_input: &[u8],
     decompressed_len: usize,
 ) -> Result<Vec<u8>, NIFileError> {
-    let buf = deflate(compressed_input)?;
+    let buf = deflate(std::io::Cursor::new(compressed_input))?;
 
     assert_eq!(buf.len(), decompressed_len);
     Ok(buf.to_vec())
@@ -169,6 +169,8 @@ fn q_mask(i: u8) -> u8 {
 
 #[cfg(test)]
 mod tests {
+    use std::io::Cursor;
+
     use super::*;
 
     #[test]
@@ -194,10 +196,13 @@ mod tests {
     fn test_get_control_bytes() -> Result<(), NIFileError> {
         use Offset::*;
 
-        assert_eq!(get_control_bytes([0x02].as_slice())?, Literal { length: 3 });
+        assert_eq!(
+            get_control_bytes(Cursor::new([0x02]))?,
+            Literal { length: 3 }
+        );
 
         assert_eq!(
-            get_control_bytes([0x20, 0x0E].as_slice())?,
+            get_control_bytes(Cursor::new([0x20, 0x0E]))?,
             Dictionary {
                 length: 3,
                 offset: 15
@@ -205,7 +210,7 @@ mod tests {
         );
 
         assert_eq!(
-            get_control_bytes([0x60, 0x00].as_slice())?,
+            get_control_bytes(Cursor::new([0x60, 0x00]))?,
             Dictionary {
                 length: 5,
                 offset: 1
@@ -245,7 +250,7 @@ mod tests {
     fn test_deflate() {
         let input = include_bytes!("../tests/data/nisound/fastlz/kontakt-4/001-garbo2.compressed");
         assert_eq!(
-            deflate(input.as_slice()).unwrap(),
+            deflate(Cursor::new(input)).unwrap(),
             include_bytes!("../tests/data/nisound/fastlz/kontakt-4/001-garbo2.decompressed")
         )
     }

@@ -89,8 +89,9 @@ impl PubData {
 
 #[test]
 fn test_pubdata_0x28_0x80() -> Result<(), Error> {
-    let mut file =
-        include_bytes!("../../tests/patchdata/KontaktV42/ProgramData/0x28-0x80").as_slice();
+    let mut file = std::io::Cursor::new(include_bytes!(
+        "../../tests/patchdata/KontaktV42/ProgramData/0x28-0x80"
+    ));
     let _pd = PubData::from(&mut file, 0x28, 0x80)?;
     // println!("{pd:?}");
 
