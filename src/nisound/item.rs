@@ -23,7 +23,7 @@ impl ItemContainer {
         Ok(ItemContainer {
             header,
             items: ItemFrame::read(&mut chunk_data)?,
-            children: Vec::new(), //ItemContainer::read_children(&mut reader)?,
+            children: ItemContainer::read_children(&mut chunk_data)?,
         })
     }
 

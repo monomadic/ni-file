@@ -110,10 +110,6 @@ impl Repository {
     pub fn preset_raw(&self) -> Result<Vec<u8>> {
         self.0
             .find(&ItemID::EncryptionItem)
-            .map(|o| {
-                dbg!(&o);
-                o
-            })
             .ok_or(NIFileError::Generic(format!("EncryptionItem not found")))
             .and_then(|item_frame| EncryptionItem::try_from(item_frame))
             .map(|item| item.subtree.inner_data)

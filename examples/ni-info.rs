@@ -1,5 +1,5 @@
 use std::{fs::File, io::Cursor};
-use tracing::{info, instrument};
+use tracing::instrument;
 
 use color_eyre::eyre::Result;
 use ni_file::{
