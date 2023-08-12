@@ -24,19 +24,21 @@ pub fn main() -> Result<()> {
     match NIFileType::detect(File::open(&path)?)? {
         NIFileType::NISound => {
             let file = File::open(&path)?;
-            let sound = Repository::read(file)?;
-            println!("format:\t\t\tNISound {}", sound.nisound_version()?);
-
+            let repository = Repository::read(file)?;
             println!(
-                "authoring_app:\t\t{:?} {}",
-                sound.authoring_application()?,
-                sound.preset_version()?
+                "Detected NISound version: {}",
+                repository.nisound_version()?
+            );
+            println!(
+                "Authoring Application: {:?} {}\n",
+                repository.authoring_application()?,
+                repository.preset_version()?
             );
 
             use ni_file::nisound::AuthoringApplication::*;
-            match sound.authoring_application()? {
+            match repository.authoring_application()? {
                 FM8 => {
-                    let raw_preset = Cursor::new(sound.preset_raw()?);
+                    let raw_preset = Cursor::new(repository.preset_raw()?);
                     FM8Preset::read(raw_preset)?;
                 }
                 _ => (),

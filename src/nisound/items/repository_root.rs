@@ -47,6 +47,10 @@ impl RepositoryRoot {
         let repository_magic = reader.read_u32_le()?; // 0x24
         let repository_type = reader.read_u32_le()?; // 0x2c
 
+        let mut buf = Vec::new();
+        reader.read_to_end(&mut buf)?;
+        dbg!(crate::utils::format_hex(&buf));
+
         // repositoryReferenceFn
         // FileReference::read NOT EQUAL 1
         // assert_ne!(reader.read_u32_le()?, 1);
@@ -85,19 +89,21 @@ impl RepositoryRoot {
 
 #[cfg(test)]
 mod tests {
+    use std::fs::File;
+
     use super::*;
 
     #[test]
     fn test_repository_root_read() -> Result<()> {
-        let file =
-            include_bytes!("../../../tests/data/nisound/chunks/item-frame-property/kontakt-5/118-RepositoryRoot.data");
+        let file = File::open(
+            "tests/data/nisound/chunks/item-frame-property/kontakt-5/118-RepositoryRoot.data",
+        )?;
+        let repository_root = RepositoryRoot::read(file)?;
 
-        let root = RepositoryRoot::read(Cursor::new(file))?;
-
-        assert_eq!(1, root.major_version());
-        assert_eq!(7, root.minor_version());
-        assert_eq!(14, root.patch_version());
-        assert_eq!(0, root.repository_magic);
+        assert_eq!(1, repository_root.major_version());
+        assert_eq!(7, repository_root.minor_version());
+        assert_eq!(14, repository_root.patch_version());
+        assert_eq!(0, repository_root.repository_magic);
 
         Ok(())
     }

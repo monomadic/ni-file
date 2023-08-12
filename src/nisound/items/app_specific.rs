@@ -1,3 +1,6 @@
+// properties:
+// - num-hidden-items
+
 use std::io::Cursor;
 
 use crate::{
@@ -22,6 +25,8 @@ impl std::convert::TryFrom<ItemFrame> for AppSpecific {
 }
 
 impl AppSpecific {
+    // pub fn
+
     pub fn read<R: ReadBytesExt>(mut reader: R) -> Result<Self> {
         log::debug!("SubtreeItem::read");
 

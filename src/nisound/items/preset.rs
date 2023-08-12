@@ -1,3 +1,10 @@
+// properties
+// - ni_factory_flag
+// - authoring-app
+// - authoring-app-version
+//
+//
+//
 // bool u8 +0x20 ?
 // u32 +0x24
 // Version +0x28

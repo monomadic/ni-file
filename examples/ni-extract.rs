@@ -24,16 +24,15 @@ pub fn main() -> Result<(), Box<dyn std::error::Error>> {
             let repo = Repository::read(Cursor::new(file))?;
 
             println!("Detected NISound version: {}", repo.nisound_version()?);
-
             println!(
-                "Writing preset chunk for {:?} {:?}",
-                repo.authoring_application(),
-                repo.preset_version()
+                "Authoring Application: {:?} {}\n",
+                repo.authoring_application()?,
+                repo.preset_version()?
             );
 
             let preset = repo.preset_raw()?;
-            std::fs::write("preset", &preset)?;
-            println!("Wrote: inner preset");
+            std::fs::write("inner-container", &preset)?;
+            println!("Wrote: inner-container");
         }
         NIFileType::NIMonolith => todo!(),
         NIFileType::NICompressedWave => todo!(),
