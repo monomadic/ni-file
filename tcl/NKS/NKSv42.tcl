@@ -24,7 +24,7 @@ section "BPatchHeaderV42" {
 	uint32 "icon"
 
 	bytes 104 "strings"
-	bytes 16 "checksum"
+	bytes 16 "md5_checksum"
 
 	uint32 "?"
 	hex 4 "checksum?"

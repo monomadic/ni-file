@@ -23,12 +23,12 @@ pub fn main() -> Result<()> {
 
     match NIFileType::detect(File::open(&path)?)? {
         NIFileType::NISound => {
+            println!("Detected format:\t\t\tNIS (Native Instruments Sound) Container");
+
             let file = File::open(&path)?;
             let repository = Repository::read(file)?;
-            println!(
-                "Detected NISound version: {}",
-                repository.nisound_version()?
-            );
+
+            println!("Version: {}", repository.nisound_version()?);
             println!(
                 "Authoring Application: {:?} {}\n",
                 repository.authoring_application()?,
@@ -45,15 +45,12 @@ pub fn main() -> Result<()> {
             }
         }
         NIFileType::FileContainer => {
-            println!("format:\t\tFileContainer");
+            println!("Detected format:\t\tFileContainer (Monolith)");
         }
         NIFileType::NICompressedWave => todo!(),
         NIFileType::KoreSound => todo!(),
-        NIFileType::Kontakt1 => {
-            println!("format:\t\tKontakt1");
-        }
         NIFileType::NKS => {
-            println!("format:\t\t\tNKS Container (Kontakt)");
+            println!("Detected format:\t\t\tNKS (Native Instruments Kontakt Sound) Container");
             let file = File::open(&path)?;
             let nks = NKSFile::read(file)?;
 
@@ -91,11 +88,9 @@ pub fn main() -> Result<()> {
                 }
             }
         }
-        NIFileType::Unknown => {
+        _ => {
             println!("format:\t\tunknown");
         }
-        NIFileType::KontaktResource => todo!(),
-        NIFileType::KontaktCache => todo!(),
     };
 
     Ok(())

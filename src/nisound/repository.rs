@@ -15,6 +15,12 @@ use std::{convert::TryFrom, io::Cursor};
 /// High level wrapper for NISound containers
 pub struct Repository(ItemContainer);
 
+impl From<ItemContainer> for Repository {
+    fn from(ic: ItemContainer) -> Self {
+        Self(ic)
+    }
+}
+
 impl Repository {
     /// Read a NISound repository from a [`std::io::Read`] source.
     ///

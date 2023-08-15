@@ -44,8 +44,6 @@ proc Data {} {
 			if {$dataLength > 0} {
 				bytes $dataLength "data"
 			}
-
-			# bytes [expr $length-20] "data"
 		}
 
 }
@@ -66,14 +64,16 @@ proc Item {} {
 		uint32 "version"
 		set numChildren [uint32 "numChildren"]
 
-
-		for { set i 0 } { $i < $numChildren } { incr i } {
-			uint32 "siblingIndex"
-			ascii 4 "childDomainID"
-			uint32 -hex "childItemID"
-			Item
+		section "children" {
+			for { set i 0 } { $i < $numChildren } { incr i } {
+				section "child" {
+					uint32 "siblingIndex"
+					ascii 4 "childDomainID"
+					uint32 -hex "childItemID"
+					Item
+				}
+			}
 		}
-
 	}
 }
 

@@ -5,7 +5,11 @@
 use std::io::Cursor;
 
 use color_eyre::eyre::Result;
-use ni_file::{nks::nksfile::NKSFile, NIFileType, Repository};
+use ni_file::{
+    nisound::{items::PresetChunkItem, ItemContainer, ItemID},
+    nks::nksfile::NKSFile,
+    NIFileType, Repository,
+};
 
 pub fn main() -> Result<(), Box<dyn std::error::Error>> {
     std::env::set_var("RUST_BACKTRACE", "1");
@@ -33,6 +37,17 @@ pub fn main() -> Result<(), Box<dyn std::error::Error>> {
             let preset = repo.preset_raw()?;
             std::fs::write("inner-container", &preset)?;
             println!("Wrote: inner-container");
+
+            let item = ItemContainer::read(Cursor::new(preset))?;
+            match item.find(&ItemID::PresetChunkItem) {
+                Some(preset_item_frame) => {
+                    let preset_chunk_item: PresetChunkItem =
+                        preset_item_frame.clone().try_into()?;
+                    std::fs::write("preset-chunk", &preset_chunk_item.chunk())?;
+                    println!("Wrote: preset_chunk");
+                }
+                None => todo!(),
+            }
         }
         NIFileType::FileContainer => todo!(),
         NIFileType::NICompressedWave => todo!(),

@@ -24,8 +24,8 @@ proc chunk {} {
 			}
 			0x32 {
 				sectionname "VoiceGroups"
-				#bytes $length "data"
-				include "Kontakt/VoiceGroups.tcl"
+				bytes $length "data"
+				#include "Kontakt/VoiceGroups.tcl"
 			}
 			0x33 {
 				sectionname "GroupList"
