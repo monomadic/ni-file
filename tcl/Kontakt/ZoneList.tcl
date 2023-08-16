@@ -9,12 +9,10 @@ proc ZoneList {} {
 
 		if { $length > 0 } {
 			set arrayLength [uint32 "arrayLength"]
-			set numChildren [uint32 "numChildren"]
-			set isDataStructured [int8 "isDataStructured"]
 
-			include "Kontakt/ZoneData.tcl"
-
-			# missing data
+			for { set i 0 } { $i < $arrayLength } { incr i } {
+				include "Kontakt/ZoneData.tcl"
+			}
 		}
 	}
 }

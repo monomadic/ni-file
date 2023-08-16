@@ -59,7 +59,10 @@ proc ZoneDataV98 {} {
 }
 
 proc ZoneData {} {
-	section "ZoneData" {
+	section -collapsed "ZoneData" {
+		set numChildren [uint32 "numChildren"]
+		set isDataStructured [int8 "isDataStructured"]
+
 		set version [uint16 -hex "version"]
 
 		set privateDataLength [uint32 "privateDataLength"]
@@ -82,8 +85,6 @@ proc ZoneData {} {
 		set childrenDataLength [uint32 "childrenDataLength"]
 		bytes $childrenDataLength "childrenData"
 
-		uint32 "?"
-		uint8 "?"
 	}
 }
 
