@@ -7,13 +7,15 @@ proc ZoneList {} {
 
 		set length [uint32 "length"]
 
-		set arrayLength [uint32 "arrayLength"]
-		set numChildren [uint32 "numChildren"]
-		set isDataStructured [int8 "isDataStructured"]
+		if { $length > 0 } {
+			set arrayLength [uint32 "arrayLength"]
+			set numChildren [uint32 "numChildren"]
+			set isDataStructured [int8 "isDataStructured"]
 
-		include "ZoneData.tcl"
+			include "Kontakt/ZoneData.tcl"
 
-		# missing data
+			# missing data
+		}
 	}
 }
 
