@@ -1,6 +1,7 @@
 use crate::prelude::io;
 use crate::{read_bytes::ReadBytesExt, Error, NIFileError};
 
+use super::chunkdata::ChunkData;
 use super::{pubdata::PubData, structured_object_data::StructuredObjectData};
 
 #[doc = include_str!("../../doc/schematics/nks-objects/StructuredObject.md")]
@@ -10,23 +11,25 @@ pub struct StructuredObject {
     pub version: u16,
     pub public_data: Vec<u8>,
     pub private_data: Vec<u8>,
-    pub children: Vec<StructuredObject>,
+    pub children: Vec<ChunkData>,
 }
 
 impl StructuredObject {
-    pub fn read<R: ReadBytesExt>(mut reader: R) -> Result<Self, Error> {
+    pub fn read<R: ReadBytesExt>(mut reader: R, id) -> Result<Self, Error> {
         // let current_position = reader.seek(io::SeekFrom::End(0))?;
-        let id = reader.read_u16_le()?;
-        let length = reader.read_u32_le()? as usize;
+        // let id = reader.read_u16_le()?;
+        // let length = reader.read_u32_le()? as usize;
 
         // Check that file has at least `length` bytes
 
         let is_data_structured = reader.read_bool()?;
 
         if !is_data_structured {
+            let mut buf = Vec::new();
+            reader.read_to_end(&mut buf)?;
             return Ok(Self {
                 id,
-                public_data: reader.read_bytes(length - 1)?,
+                public_data: buf,
                 version: 0,
                 private_data: Vec::new(),
                 children: Vec::new(),
@@ -64,7 +67,7 @@ impl StructuredObject {
         let mut children_reader = io::Cursor::new(children_data);
 
         let mut children = Vec::new();
-        while let Ok(object) = StructuredObject::read(&mut children_reader) {
+        while let Ok(object) = ChunkData::read(&mut children_reader) {
             children.push(object);
         }
 
@@ -77,13 +80,13 @@ impl StructuredObject {
         })
     }
 
-    pub fn pubdata(&self) -> Result<Option<PubData>, Error> {
-        Ok(Some(PubData::from(
-            io::Cursor::new(&self.public_data),
-            self.id,
-            self.version,
-        )?))
-    }
+    // pub fn pubdata(&self) -> Result<Option<PubData>, Error> {
+    //     Ok(Some(PubData::from(
+    //         io::Cursor::new(&self.public_data),
+    //         self.id,
+    //         self.version,
+    //     )?))
+    // }
 
     pub fn data(self) -> Result<StructuredObjectData, Error> {
         Ok(StructuredObjectData::try_from(self)?)

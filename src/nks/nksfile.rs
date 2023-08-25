@@ -3,9 +3,7 @@ use std::io::Cursor;
 use flate2::bufread::ZlibDecoder;
 
 use crate::{
-    kontakt::{chunkdata::ChunkData, structured_object::StructuredObject},
-    nks::meta_info::BPatchMetaInfoHeader,
-    read_bytes::ReadBytesExt,
+    kontakt::chunkdata::ChunkData, nks::meta_info::BPatchMetaInfoHeader, read_bytes::ReadBytesExt,
     Error, NIFileError,
 };
 
@@ -70,15 +68,12 @@ impl NKSFile {
         }
     }
 
-    // pub fn patch_data(&self) -> Result<Vec<u8>, Error> {}
-
-    pub fn data(&self) -> Result<Vec<StructuredObject>, Error> {
+    pub fn decompress_patch_chunks(&self) -> Result<Vec<ChunkData>, Error> {
         let mut objects = Vec::new();
-
         let mut compressed_data = Cursor::new(&self.compressed_patch_data);
 
         while let Ok(chunk) = ChunkData::read(&mut compressed_data) {
-            objects.push(StructuredObject::read(Cursor::new(chunk.data))?);
+            objects.push(chunk);
         }
 
         Ok(objects)
@@ -97,14 +92,4 @@ mod tests {
         println!("{:?}", NKSFile::read(file)?);
         Ok(())
     }
-
-    // #[test]
-    // fn test_nksfile_read_v2() -> Result<(), NIFileError> {
-    //     // let file = include_bytes!("../../tests/filetypes/nks/2.0.1.002/000.nki");
-    //     let file = include_bytes!("../../tests/filetypes/nks/2.1.0.001/000.nki");
-    //     // let file = include_bytes!("../../tests/filetypes/nks/4.2.2.4504/000.nki");
-    //     // let file = include_bytes!("../../tests/filetypes/nks/4.2.4.5316/000.nki");
-    //     println!("{:?}", NKSFile::read(file.as_slice())?);
-    //     Ok(())
-    // }
 }

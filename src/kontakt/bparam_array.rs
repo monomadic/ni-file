@@ -1,4 +1,8 @@
-use crate::{kontakt::structured_object::StructuredObject, read_bytes::ReadBytesExt, Error};
+use crate::{
+    kontakt::{chunkdata::ChunkData, structured_object::StructuredObject},
+    read_bytes::ReadBytesExt,
+    Error,
+};
 
 // id 0x3a
 #[doc = include_str!("../../doc/schematics/nks-objects/BParamArray.md")]
@@ -28,9 +32,7 @@ impl BParamArray {
                     // if doRead != '\0'
                     if do_read {
                         // StructuredObject::factory(id, length)
-                        let obj = StructuredObject::read(&mut reader)?;
-
-                        println!("PubData: {:?}", obj.pubdata()?);
+                        let obj: StructuredObject = ChunkData::read(&mut reader)?.try_into()?;
 
                         for child in &obj.children {
                             // let child = child.clone();
