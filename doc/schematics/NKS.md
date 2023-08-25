@@ -50,7 +50,7 @@ Ids are known as `SerType` or Serialization Type.
 - 0x28 BProgram
 - 0x29 BProgramContainer
 - 0x2a BSample
-- 0x2b ? VoiceGroups
+- 0x2b ? VoiceGroup
 - 0x2c BZone
 - 0x2d BZoneLevelEnv
 - 0x2e BZoneArraySer

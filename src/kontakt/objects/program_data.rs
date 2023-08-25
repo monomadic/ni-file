@@ -129,7 +129,7 @@ mod tests {
         let mut file = std::io::Cursor::new(include_bytes!(
             "../../../tests/patchdata/KontaktV42/ProgramData/0x28-0x80"
         ));
-        ProgramDataV80::read(&mut file)?;
+        println!("{:?}", ProgramDataV80::read(&mut file)?);
         Ok(())
     }
 }

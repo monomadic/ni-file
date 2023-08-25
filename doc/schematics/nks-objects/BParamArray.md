@@ -1,4 +1,4 @@
-# BParamArray
+# ParamArray
 
 An array container. Fixed sizes of 8, 16, and 32 are possible, (determined beforehand in the type signature).
 

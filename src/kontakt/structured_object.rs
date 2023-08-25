@@ -34,7 +34,6 @@ impl StructuredObject {
         }
 
         let public_data_version = reader.read_u16_le()?;
-        println!("  version: 0x{public_data_version:x}");
 
         let private_data_length = reader.read_u32_le()?;
         let private_data = reader
