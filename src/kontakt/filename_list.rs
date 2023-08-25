@@ -3,8 +3,40 @@ use std::collections::HashMap;
 use crate::{read_bytes::ReadBytesExt, Error};
 
 #[derive(Debug)]
+pub struct FNTableImpl {
+    filenames: HashMap<u32, String>,
+}
+
+#[derive(Debug)]
 pub struct FileNameListPreK51 {
     filenames: HashMap<u32, String>,
+}
+
+impl FNTableImpl {
+    pub fn read<R: ReadBytesExt>(mut reader: R) -> Result<Self, Error> {
+        let version = reader.read_u16_le()?;
+        assert!(version == 2);
+
+        let _ = reader.read_u32_le()?;
+        let _ = reader.read_u32_le()?;
+        let file_count = reader.read_u32_le()?;
+
+        let mut filenames = HashMap::new();
+        for i in 0..file_count {
+            let segments = reader.read_i32_le()?;
+
+            let mut filename = Vec::new();
+            for _ in 0..segments {
+                let _segment_type = reader.read_i8()?;
+                let segment = reader.read_widestring_utf16()?;
+                filename.push(segment);
+            }
+
+            filenames.insert(i, filename.join("/"));
+        }
+
+        Ok(Self { filenames })
+    }
 }
 
 impl FileNameListPreK51 {
@@ -12,16 +44,13 @@ impl FileNameListPreK51 {
         println!("FileNameListPreK51::read()");
 
         let _ = reader.read_u32_le()?;
-
         let file_count = reader.read_u32_le()?;
 
         let mut filenames = HashMap::new();
-
         for i in 0..file_count {
             let segments = reader.read_i32_le()?;
 
             let mut filename = Vec::new();
-
             for _ in 0..segments {
                 let _segment_type = reader.read_i8()?;
                 let segment = reader.read_widestring_utf16()?;

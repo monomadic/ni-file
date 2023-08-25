@@ -2,7 +2,7 @@ use crate::prelude::io;
 use crate::{read_bytes::ReadBytesExt, Error, NIFileError};
 
 use super::chunkdata::ChunkData;
-use super::{pubdata::PubData, structured_object_data::StructuredObjectData};
+use super::structured_object_data::StructuredObjectData;
 
 #[doc = include_str!("../../doc/schematics/nks-objects/StructuredObject.md")]
 #[derive(Debug)]
@@ -15,7 +15,8 @@ pub struct StructuredObject {
 }
 
 impl StructuredObject {
-    pub fn read<R: ReadBytesExt>(mut reader: R, id) -> Result<Self, Error> {
+    // FIXME: remove id arg
+    pub fn read<R: ReadBytesExt>(mut reader: R, id: u16) -> Result<Self, Error> {
         // let current_position = reader.seek(io::SeekFrom::End(0))?;
         // let id = reader.read_u16_le()?;
         // let length = reader.read_u32_le()? as usize;
@@ -145,7 +146,7 @@ mod tests {
         let mut file = io::Cursor::new(include_bytes!(
             "../../tests/patchdata/KontaktV42/StructuredObject/0x28"
         ));
-        let obj = StructuredObject::read(&mut file)?;
+        let obj = StructuredObject::read(&mut file, 0x28)?;
 
         assert_eq!(obj.id, 0x28);
         assert_eq!(obj.version, 0x80);
@@ -156,7 +157,6 @@ mod tests {
 
         for child in obj.children {
             println!("{child:?}");
-            child.pubdata()?;
 
             // for child in child.children {
             //     crate::kontakt::pubdata::PubData::from(child.data.as_slice(), child.id, child.version)?;
@@ -173,13 +173,11 @@ mod tests {
         let mut file = io::Cursor::new(include_bytes!(
             "../../tests/patchdata/KontaktV42/StructuredObject/0x3D"
         ));
-        let obj = StructuredObject::read(&mut file)?;
+        let obj = StructuredObject::read(&mut file, 0x3d)?;
 
         assert_eq!(obj.id, 0x3d);
         assert_eq!(obj.version, 0x00);
         assert_eq!(obj.children.len(), 0);
-
-        assert!(obj.pubdata().is_ok());
 
         // TODO: test file is read to end
 
@@ -191,7 +189,7 @@ mod tests {
         let mut file = io::Cursor::new(include_bytes!(
             "../../tests/patchdata/KontaktV42/StructuredObject/0x25"
         ));
-        let obj = StructuredObject::read(&mut file)?;
+        let obj = StructuredObject::read(&mut file, 0x25)?;
 
         assert_eq!(obj.id, 0x25);
         assert_eq!(obj.version, 0x50);

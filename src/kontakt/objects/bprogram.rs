@@ -1,10 +1,24 @@
 use crate::{kontakt::structured_object::StructuredObject, read_bytes::ReadBytesExt, Error};
 use std::io;
 
+use super::program_data::ProgramDataV80;
+
 #[derive(Debug)]
 pub struct BProgram {
-    public: ProgramPublicParams,
+    // public: ProgramPublicParams,
+    public: ProgramDataV80,
     private: ProgramPrivateParams,
+}
+
+impl BProgram {
+    pub fn read<R: ReadBytesExt>(mut reader: R) -> Result<Self, Error> {
+        let so = StructuredObject::read(&mut reader, 0)?;
+
+        Ok(Self {
+            public: ProgramDataV80::read(io::Cursor::new(so.public_data))?,
+            private: ProgramPrivateParams::read(io::Cursor::new(so.private_data), so.version)?,
+        })
+    }
 }
 
 impl TryFrom<StructuredObject> for BProgram {
@@ -12,10 +26,8 @@ impl TryFrom<StructuredObject> for BProgram {
 
     fn try_from(so: StructuredObject) -> Result<Self, Self::Error> {
         Ok(Self {
-            public: ProgramPublicParams::read(
-                io::Cursor::new(so.public_data.as_slice()),
-                so.version,
-            )?,
+            // TODO: support other versions
+            public: ProgramDataV80::read(io::Cursor::new(so.public_data.as_slice()))?,
             private: ProgramPrivateParams::read(
                 io::Cursor::new(so.private_data.as_slice()),
                 so.version,
@@ -51,11 +63,14 @@ pub struct ProgramPublicParams {
     instrument_cat3: i16,
 }
 
-impl ProgramPublicParams {
-    pub fn read<R: ReadBytesExt>(mut reader: R, version: u16) -> Result<Self, Error> {
-        todo!();
-    }
-}
+// impl ProgramPublicParams {
+//     pub fn read<R: ReadBytesExt>(mut reader: R, version: u16) -> Result<Self, Error> {
+//         match version {
+//             0x80 => ProgramDataV80::read(&mut reader),
+//             _ => todo!(),
+//         }
+//     }
+// }
 
 #[derive(Debug, Default)]
 pub struct ProgramPrivateParams {}

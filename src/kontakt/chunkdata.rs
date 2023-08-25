@@ -2,7 +2,9 @@ use std::io::Cursor;
 
 use crate::{read_bytes::ReadBytesExt, Error};
 
-use super::structured_object::StructuredObject;
+use super::{
+    filename_list::FNTableImpl, objects::bprogram::BProgram, structured_object::StructuredObject,
+};
 
 #[derive(Debug)]
 pub struct ChunkData {
@@ -32,23 +34,24 @@ impl TryFrom<ChunkData> for Chunk {
     type Error = Error;
 
     fn try_from(chunk: ChunkData) -> Result<Chunk, Error> {
-        match chunk.id {
+        Ok(match chunk.id {
             0x28 => {
-                // Program
-                let cursor = Cursor::new(chunk.data);
-                Ok(Chunk::StructuredObject(StructuredObject::read(
-                    cursor, chunk.id,
-                )?))
+                // BProgram
+                let so: StructuredObject = chunk.try_into()?;
+                Chunk::Program(so.try_into()?)
             }
-            _ => Ok(Chunk::Unsupported(chunk.id)),
-        }
+            0x4b => Chunk::FNTableImpl(FNTableImpl::read(Cursor::new(chunk.data))?),
+
+            _ => Chunk::Unsupported(chunk.id),
+        })
     }
 }
 
 #[derive(Debug)]
 pub enum Chunk {
+    Program(BProgram),
     StructuredObject(StructuredObject),
-    // FNTableImpl(FNTableImpl),
+    FNTableImpl(FNTableImpl),
     Unsupported(u16),
 }
 
@@ -61,6 +64,17 @@ mod tests {
     #[test]
     fn test_structured_object() -> Result<(), Error> {
         let file = File::open("tests/patchdata/KontaktV42/StructuredObject/0x28")?;
+        let data = ChunkData::read(file)?;
+        let chunk: Chunk = data.try_into()?;
+
+        dbg!(chunk);
+
+        Ok(())
+    }
+
+    #[test]
+    fn test_fntableimpl() -> Result<(), Error> {
+        let file = File::open("tests/patchdata/KontaktV42/FNTableImpl/FNTableImpl-001")?;
         let data = ChunkData::read(file)?;
         let chunk: Chunk = data.try_into()?;
 
