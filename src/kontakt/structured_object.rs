@@ -2,12 +2,10 @@ use crate::prelude::io;
 use crate::{read_bytes::ReadBytesExt, Error, NIFileError};
 
 use super::chunkdata::ChunkData;
-use super::structured_object_data::StructuredObjectData;
 
-#[doc = include_str!("../../doc/schematics/nks-objects/StructuredObject.md")]
+#[doc = include_str!("../../doc/schematics/kontakt/StructuredObject.md")]
 #[derive(Debug)]
 pub struct StructuredObject {
-    pub id: u16,
     pub version: u16,
     pub public_data: Vec<u8>,
     pub private_data: Vec<u8>,
@@ -16,13 +14,12 @@ pub struct StructuredObject {
 
 impl StructuredObject {
     // FIXME: remove id arg
-    pub fn read<R: ReadBytesExt>(mut reader: R, id: u16) -> Result<Self, Error> {
+    pub fn read<R: ReadBytesExt>(mut reader: R) -> Result<Self, Error> {
         let is_data_structured = reader.read_bool()?;
         if !is_data_structured {
             let mut buf = Vec::new();
             reader.read_to_end(&mut buf)?;
             return Ok(Self {
-                id,
                 public_data: buf,
                 version: 0,
                 private_data: Vec::new(),
@@ -66,82 +63,26 @@ impl StructuredObject {
         }
 
         Ok(Self {
-            id,
             private_data,
             version: public_data_version,
             public_data,
             children,
         })
     }
-
-    // pub fn pubdata(&self) -> Result<Option<PubData>, Error> {
-    //     Ok(Some(PubData::from(
-    //         io::Cursor::new(&self.public_data),
-    //         self.id,
-    //         self.version,
-    //     )?))
-    // }
-
-    pub fn data(self) -> Result<StructuredObjectData, Error> {
-        Ok(StructuredObjectData::try_from(self)?)
-    }
-
-    // pub fn factory(id: u32, length: u32) -> Option<Self> {
-    //     match id {
-    //         0..=0xe => match id {
-    //             5 => {
-    //                 // Add logic for id=5
-    //                 todo!();
-    //             }
-    //             6 => {
-    //                 todo!();
-    //                 // return Some(StructuredObjectType::PublicObject(PublicObject {
-    //                 //     id,
-    //                 //     length,
-    //                 //     // other initializations...
-    //                 // }));
-    //             }
-    //             _ => {
-    //                 // Add logic for other cases...
-    //                 todo!();
-    //             }
-    //         },
-    //         0xf..=0x2a => {
-    //             if id == 0xf {
-    //                 // Add logic for id=0xf
-    //                 todo!();
-    //             }
-    //         }
-    //         // Add other cases...
-    //         0x2b | 0x3f | 0x41 => {
-    //             todo!();
-    //             // return Some(StructuredObjectType::PublicObject(PublicObject {
-    //             //     id,
-    //             //     length,
-    //             //     // other initializations...
-    //             // }));
-    //         }
-    //         // Add more cases...
-    //         _ => {}
-    //     }
-    //
-    //     None
-    // }
 }
 
 #[cfg(test)]
 mod tests {
+    use std::fs::File;
+
     use super::*;
     use crate::utils::format_hex;
 
     #[test]
     fn test_structured_object_0x28() -> Result<(), Error> {
-        let mut file = io::Cursor::new(include_bytes!(
-            "../../tests/patchdata/KontaktV42/StructuredObject/0x28"
-        ));
-        let obj = StructuredObject::read(&mut file, 0x28)?;
+        let mut file = File::open("tests/patchdata/KontaktV42/StructuredObject/0x28")?;
+        let obj = StructuredObject::read(&mut file)?;
 
-        assert_eq!(obj.id, 0x28);
         assert_eq!(obj.version, 0x80);
         assert_eq!(obj.children.len(), 3);
 
@@ -156,42 +97,30 @@ mod tests {
             // }
         }
 
-        // TODO: test file is read to end
-
         Ok(())
     }
 
     #[test]
     fn test_structured_object_0x3d() -> Result<(), Error> {
-        let mut file = io::Cursor::new(include_bytes!(
-            "../../tests/patchdata/KontaktV42/StructuredObject/0x3D"
-        ));
-        let obj = StructuredObject::read(&mut file, 0x3d)?;
+        let mut file = File::open("tests/patchdata/KontaktV42/StructuredObject/0x3D")?;
+        let obj = StructuredObject::read(&mut file)?;
 
-        assert_eq!(obj.id, 0x3d);
         assert_eq!(obj.version, 0x00);
         assert_eq!(obj.children.len(), 0);
-
-        // TODO: test file is read to end
 
         Ok(())
     }
 
     #[test]
     fn test_structured_object_0x25() -> Result<(), Error> {
-        let mut file = io::Cursor::new(include_bytes!(
-            "../../tests/patchdata/KontaktV42/StructuredObject/0x25"
-        ));
-        let obj = StructuredObject::read(&mut file, 0x25)?;
+        let mut file = File::open("tests/patchdata/KontaktV42/StructuredObject/0x25")?;
+        let obj = StructuredObject::read(&mut file)?;
 
-        assert_eq!(obj.id, 0x25);
         assert_eq!(obj.version, 0x50);
         assert_eq!(obj.children.len(), 1);
 
         println!("public_data: {}", format_hex(&obj.public_data));
         println!("private_data: {}", format_hex(&obj.private_data));
-
-        // TODO: test file is read to end
 
         Ok(())
     }

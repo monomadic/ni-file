@@ -5,7 +5,7 @@ use crate::{
 };
 
 // id 0x3a
-#[doc = include_str!("../../doc/schematics/nks-objects/BParamArray.md")]
+#[doc = include_str!("../../doc/schematics/kontakt/BParamArray.md")]
 #[derive(Debug)]
 pub struct BParamArray;
 

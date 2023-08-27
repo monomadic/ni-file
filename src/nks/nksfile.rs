@@ -82,14 +82,14 @@ impl NKSFile {
 
 #[cfg(test)]
 mod tests {
+    use std::fs::File;
+
     use super::*;
 
     #[test]
     fn test_nksfile_read_v42() -> Result<(), NIFileError> {
-        let file = Cursor::new(include_bytes!(
-            "../../tests/filetype/NKS/KontaktV42/4.2.4.5316-000.nki"
-        ));
-        println!("{:?}", NKSFile::read(file)?);
+        let file = File::open("tests/filetype/NKS/KontaktV42/4.2.4.5316-000.nki")?;
+        let _nks = NKSFile::read(file)?;
         Ok(())
     }
 }

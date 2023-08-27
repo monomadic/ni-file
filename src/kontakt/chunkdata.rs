@@ -26,7 +26,7 @@ impl std::convert::TryFrom<ChunkData> for StructuredObject {
 
     fn try_from(chunk: ChunkData) -> Result<Self, Self::Error> {
         let cursor = Cursor::new(chunk.data);
-        Ok(StructuredObject::read(cursor, chunk.id)?)
+        Ok(StructuredObject::read(cursor)?)
     }
 }
 

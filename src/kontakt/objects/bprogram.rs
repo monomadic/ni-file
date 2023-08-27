@@ -12,7 +12,7 @@ pub struct BProgram {
 
 impl BProgram {
     pub fn read<R: ReadBytesExt>(mut reader: R) -> Result<Self, Error> {
-        let so = StructuredObject::read(&mut reader, 0)?;
+        let so = StructuredObject::read(&mut reader)?;
 
         Ok(Self {
             public: ProgramDataV80::read(io::Cursor::new(so.public_data))?,
