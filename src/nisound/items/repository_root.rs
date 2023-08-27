@@ -38,8 +38,6 @@ impl std::convert::TryFrom<&ItemFrame> for RepositoryRoot {
 
 impl RepositoryRoot {
     pub fn read<R: ReadBytesExt>(mut reader: R) -> Result<Self> {
-        log::debug!("RepositoryRoot::read");
-
         // itemVersion == 1
         assert_eq!(reader.read_u32_le()?, 1);
 

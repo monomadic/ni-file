@@ -17,14 +17,7 @@ pub struct StructuredObject {
 impl StructuredObject {
     // FIXME: remove id arg
     pub fn read<R: ReadBytesExt>(mut reader: R, id: u16) -> Result<Self, Error> {
-        // let current_position = reader.seek(io::SeekFrom::End(0))?;
-        // let id = reader.read_u16_le()?;
-        // let length = reader.read_u32_le()? as usize;
-
-        // Check that file has at least `length` bytes
-
         let is_data_structured = reader.read_bool()?;
-
         if !is_data_structured {
             let mut buf = Vec::new();
             reader.read_to_end(&mut buf)?;
