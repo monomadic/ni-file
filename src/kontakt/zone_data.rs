@@ -1,17 +1,34 @@
+use std::io::Cursor;
+
 use crate::{read_bytes::ReadBytesExt, Error};
 
+use super::structured_object::StructuredObject;
+
 #[derive(Debug)]
-pub enum ZoneData {
+pub struct ZoneData(StructuredObject);
+
+#[derive(Debug)]
+pub enum ZoneDataPublicParams {
     ZoneDataV98(ZoneDataV98),
     ZoneDataV95(ZoneDataV95),
 }
 
 impl ZoneData {
-    pub fn from_version<R: ReadBytesExt>(mut reader: R, version: u16) -> Result<Self, Error> {
-        match version {
-            _ if version < 0x96 => Ok(ZoneData::ZoneDataV98(ZoneDataV98::read(&mut reader)?)),
-            _ if version < 0x99 => Ok(ZoneData::ZoneDataV95(ZoneDataV95::read(&mut reader)?)),
-            _ => panic!("Unknown ZoneData version: {}", version),
+    pub fn read<R: ReadBytesExt>(mut reader: R) -> Result<Self, Error> {
+        Ok(Self(StructuredObject::read(&mut reader)?))
+    }
+
+    pub fn public_params<R: ReadBytesExt>(&self) -> Result<ZoneDataPublicParams, Error> {
+        let reader = Cursor::new(&self.0.public_data);
+
+        match self.0.version {
+            _ if self.0.version < 0x96 => Ok(ZoneDataPublicParams::ZoneDataV98(ZoneDataV98::read(
+                reader,
+            )?)),
+            _ if self.0.version < 0x99 => Ok(ZoneDataPublicParams::ZoneDataV95(ZoneDataV95::read(
+                reader,
+            )?)),
+            _ => panic!("Unsupported ZoneData Version: {}", self.0.version),
         }
     }
 }

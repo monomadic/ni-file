@@ -1,9 +1,6 @@
 use crate::{read_bytes::ReadBytesExt, Error};
 
-use super::{
-    structured_object::StructuredObject,
-    zone_data::{ZoneData, ZoneDataV98},
-};
+use super::zone_data::ZoneData;
 
 #[derive(Debug)]
 pub struct ZoneList {
@@ -17,9 +14,7 @@ impl ZoneList {
         let mut zones = Vec::new();
         for _ in 0..zone_count {
             let _unknown = reader.read_u32_le()?;
-            let so = StructuredObject::read(&mut reader)?;
-            let mut reader = std::io::Cursor::new(so.public_data);
-            zones.push(ZoneData::ZoneDataV98(ZoneDataV98::read(&mut reader)?));
+            zones.push(ZoneData::read(&mut reader)?);
         }
 
         Ok(Self { zones })
@@ -54,6 +49,14 @@ mod tests {
         let file = File::open("tests/patchdata/KontaktV42/ZoneList/ZoneList-002")?;
         let zonelist = ZoneList::read(file)?;
         assert_eq!(zonelist.zones.len(), 31);
+        Ok(())
+    }
+
+    #[test]
+    fn test_zone_list_003() -> Result<(), Error> {
+        let file = File::open("tests/patchdata/KontaktV42/ZoneList/ZoneList-003")?;
+        let zonelist = ZoneList::read(file)?;
+        assert_eq!(zonelist.zones.len(), 32);
         Ok(())
     }
 }
