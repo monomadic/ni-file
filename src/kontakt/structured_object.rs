@@ -13,7 +13,6 @@ pub struct StructuredObject {
 }
 
 impl StructuredObject {
-    // FIXME: remove id arg
     pub fn read<R: ReadBytesExt>(mut reader: R) -> Result<Self, Error> {
         let is_data_structured = reader.read_bool()?;
         if !is_data_structured {
@@ -99,6 +98,8 @@ mod tests {
 
         Ok(())
     }
+
+    // TODO: remove 0x3d and 0x25, they are not structured objects
 
     #[test]
     fn test_structured_object_0x3d() -> Result<(), Error> {
