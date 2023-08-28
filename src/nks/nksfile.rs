@@ -1,12 +1,9 @@
-use std::{collections::HashMap, io::Cursor};
+use std::io::Cursor;
 
 // use flate2::bufread::ZlibDecoder;
 
 use crate::{
-    kontakt::{
-        chunkdata::ChunkData,
-        filename_list::{FNTableImpl, FileNameListPreK51},
-    },
+    kontakt::{chunkdata::ChunkData, kontakt_preset::KontaktInstrument},
     nks::meta_info::BPatchMetaInfoHeader,
     read_bytes::ReadBytesExt,
     Error, NIFileError,
@@ -14,6 +11,7 @@ use crate::{
 
 use super::{error::NKSError, header::NKSHeader};
 
+// TODO: rename to NKSContainer
 #[derive(Debug)]
 pub struct NKSFile {
     pub header: NKSHeader,
@@ -84,20 +82,8 @@ impl NKSFile {
         Ok(objects)
     }
 
-    pub fn filename_table(&self) -> Result<Option<HashMap<u32, String>>, Error> {
-        let chunks = self.decompress_patch_chunks()?;
-        if let Some(fnchunk) = chunks.iter().find(|c| c.id == 0x4b) {
-            let reader = Cursor::new(&fnchunk.data);
-            let fntable = FNTableImpl::read(reader)?;
-            return Ok(Some(fntable.filenames));
-        }
-
-        if let Some(fnchunk) = chunks.iter().find(|c| c.id == 0x3d) {
-            let reader = Cursor::new(&fnchunk.data);
-            let fntable = FileNameListPreK51::read(reader)?;
-            return Ok(Some(fntable.filenames));
-        }
-        Ok(None)
+    pub fn instrument(&self) -> Result<KontaktInstrument, Error> {
+        Ok(KontaktInstrument(self.decompress_patch_chunks()?))
     }
 }
 

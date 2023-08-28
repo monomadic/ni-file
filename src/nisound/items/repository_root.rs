@@ -47,7 +47,6 @@ impl RepositoryRoot {
 
         let mut buf = Vec::new();
         reader.read_to_end(&mut buf)?;
-        dbg!(crate::utils::format_hex(&buf));
 
         // repositoryReferenceFn
         // FileReference::read NOT EQUAL 1

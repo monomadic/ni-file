@@ -6,7 +6,8 @@ use super::{
     AuthoringApplication,
 };
 use crate::{
-    nisound::items::{BNISoundPreset, Preset},
+    kontakt::{chunkdata::ChunkData, kontakt_preset::KontaktInstrument},
+    nisound::items::{BNISoundPreset, Preset, PresetChunkItem},
     prelude::*,
     read_bytes::ReadBytesExt,
 };
@@ -128,6 +129,28 @@ impl Repository {
 
     pub fn children(&self) -> &Vec<ItemContainer> {
         &self.0.children
+    }
+
+    // TODO: replace with enum
+    pub fn instrument(&self) -> Result<KontaktInstrument> {
+        let preset = self.preset_raw()?;
+        let item = ItemContainer::read(Cursor::new(preset))?;
+        match item.find(&ItemID::PresetChunkItem) {
+            Some(preset_item_frame) => {
+                let preset_chunk_item: PresetChunkItem = preset_item_frame.clone().try_into()?;
+                let data = preset_chunk_item.chunk();
+
+                let mut objects = Vec::new();
+                let mut compressed_data = Cursor::new(&data);
+
+                while let Ok(chunk) = ChunkData::read(&mut compressed_data) {
+                    objects.push(chunk);
+                }
+
+                Ok(KontaktInstrument(objects))
+            }
+            None => todo!(),
+        }
     }
 }
 

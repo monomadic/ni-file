@@ -1,3 +1,5 @@
+pub mod kontakt_preset;
+
 pub mod bparam_array;
 mod bprogram_container;
 pub mod chunkdata;

@@ -5,9 +5,23 @@ use color_eyre::eyre::Result;
 use ni_file::{
     self,
     fm8::FM8Preset,
+    kontakt::kontakt_preset::KontaktInstrument,
     nks::{header::NKSHeader, nksfile::NKSFile},
     NIFileType, Repository,
 };
+
+fn print_kontakt_instrument(instrument: KontaktInstrument) -> Result<()> {
+    if let Some(filename_table) = instrument.filename_table()? {
+        println!("\nFilename table:");
+        for (index, filename) in filename_table {
+            println!("{}:\t{}", index, filename);
+        }
+    } else {
+        println!("\nNo filename table found!");
+    }
+
+    Ok(())
+}
 
 #[instrument]
 pub fn main() -> Result<()> {
@@ -34,6 +48,9 @@ pub fn main() -> Result<()> {
                 repository.authoring_application()?,
                 repository.preset_version()?
             );
+
+            // TODO: check for non-kontakt
+            print_kontakt_instrument(repository.instrument()?)?;
 
             use ni_file::nisound::AuthoringApplication::*;
             match repository.authoring_application()? {
@@ -78,14 +95,7 @@ pub fn main() -> Result<()> {
                 }
             }
 
-            if let Some(filename_table) = nks.filename_table()? {
-                println!("\nFilename table:");
-                for (index, filename) in filename_table {
-                    println!("{}:\t{}", index, filename);
-                }
-            } else {
-                println!("\nNo filename table found!");
-            }
+            print_kontakt_instrument(nks.instrument()?)?;
         }
         _ => {
             println!("format:\t\tunknown");
