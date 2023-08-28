@@ -1,5 +1,5 @@
-use crate::nisound::item_frame::item_id::ItemID;
-use crate::nisound::Domain;
+use crate::nis::item_frame::item_id::ItemID;
+use crate::nis::Domain;
 use crate::prelude::*;
 use crate::read_bytes::ReadBytesExt;
 

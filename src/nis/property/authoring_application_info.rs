@@ -1,6 +1,4 @@
-use crate::{
-    nisound::item_frame::app_id::AuthoringApplication, prelude::*, read_bytes::ReadBytesExt,
-};
+use crate::{nis::item_frame::app_id::AuthoringApplication, prelude::*, read_bytes::ReadBytesExt};
 
 pub struct AuthoringApplicationInfo {
     authoring_app: AuthoringApplication,

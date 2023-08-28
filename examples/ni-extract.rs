@@ -6,7 +6,7 @@ use std::io::Cursor;
 
 use color_eyre::eyre::Result;
 use ni_file::{
-    nisound::{items::PresetChunkItem, ItemContainer, ItemID},
+    nis::{items::PresetChunkItem, ItemContainer, ItemID},
     nks::nksfile::NKSFile,
     NIFileType, Repository,
 };

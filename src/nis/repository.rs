@@ -7,7 +7,7 @@ use super::{
 };
 use crate::{
     kontakt::{chunkdata::ChunkData, kontakt_preset::KontaktInstrument},
-    nisound::items::{BNISoundPreset, Preset, PresetChunkItem},
+    nis::items::{BNISoundPreset, Preset, PresetChunkItem},
     prelude::*,
     read_bytes::ReadBytesExt,
 };

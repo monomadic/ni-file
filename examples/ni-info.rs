@@ -46,7 +46,7 @@ pub fn main() -> Result<()> {
 
             print_kontakt_instrument(repository.instrument()?)?;
 
-            use ni_file::nisound::AuthoringApplication::*;
+            use ni_file::nis::AuthoringApplication::*;
             match repository.authoring_application()? {
                 FM8 => {
                     let raw_preset = Cursor::new(repository.preset_raw()?);

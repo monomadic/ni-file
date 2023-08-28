@@ -2,7 +2,7 @@
 
 use std::error::Error;
 
-use ni_file::nisound::ItemContainer;
+use ni_file::nis::ItemContainer;
 
 fn print_item_ids(item: &ItemContainer, indent: usize) -> Result<(), Box<dyn Error>> {
     for item in &item.children {

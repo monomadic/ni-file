@@ -16,7 +16,7 @@ pub mod kontakt;
 
 // containers:
 pub mod file_container; // monoliths
-pub mod nisound; // nisound document // kontakt 4.2 preset
+pub mod nis; // nisound document // kontakt 4.2 preset
 pub mod nks; // native instruments kontakt sound file format
 
 // utils:
@@ -27,4 +27,4 @@ pub(crate) mod read_bytes; // for reading bytestreams
 pub(crate) mod utils; // various utils for logging etc
 
 pub use detect::NIFileType;
-pub use nisound::Repository;
+pub use nis::Repository;

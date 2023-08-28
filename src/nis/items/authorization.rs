@@ -13,7 +13,7 @@
 use std::io::Cursor;
 
 use crate::{
-    nisound::item_frame::{item_id::ItemID, ItemFrame},
+    nis::item_frame::{item_id::ItemID, ItemFrame},
     prelude::*,
     read_bytes::ReadBytesExt,
 };

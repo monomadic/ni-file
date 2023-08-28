@@ -4,7 +4,7 @@
 use std::io::Cursor;
 
 use crate::{
-    nisound::{item_frame::ItemFrame, AuthoringApplication, ItemID},
+    nis::{item_frame::ItemFrame, AuthoringApplication, ItemID},
     prelude::*,
 };
 

@@ -1,6 +1,6 @@
 mod utils;
 
-use ni_file::{nisound::AuthoringApplication, Repository};
+use ni_file::{nis::AuthoringApplication, Repository};
 use std::fs;
 
 #[test]

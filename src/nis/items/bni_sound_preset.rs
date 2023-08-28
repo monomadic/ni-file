@@ -1,7 +1,7 @@
 use std::convert::TryInto;
 
 use crate::{
-    nisound::{item_frame::ItemFrame, ItemID},
+    nis::{item_frame::ItemFrame, ItemID},
     prelude::*,
 };
 

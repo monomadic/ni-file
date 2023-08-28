@@ -18,8 +18,8 @@
 
 use std::io::Cursor;
 
-use crate::nisound::item_frame::{app_id::AuthoringApplication, ItemFrame};
-use crate::nisound::ItemID;
+use crate::nis::item_frame::{app_id::AuthoringApplication, ItemFrame};
+use crate::nis::ItemID;
 use crate::prelude::*;
 use crate::read_bytes::ReadBytesExt;
 

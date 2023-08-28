@@ -1,7 +1,7 @@
 use std::io::Cursor;
 
 use crate::{
-    nisound::{item_frame::ItemFrame, ItemID},
+    nis::{item_frame::ItemFrame, ItemID},
     prelude::*,
     read_bytes::ReadBytesExt,
 };
