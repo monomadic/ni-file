@@ -18,7 +18,7 @@ impl ZoneData {
         Ok(Self(StructuredObject::read(&mut reader)?))
     }
 
-    pub fn public_params<R: ReadBytesExt>(&self) -> Result<ZoneDataPublicParams, Error> {
+    pub fn public_params(&self) -> Result<ZoneDataPublicParams, Error> {
         let reader = Cursor::new(&self.0.public_data);
 
         match self.0.version {
@@ -64,7 +64,6 @@ pub struct ZoneDataV98 {
 
 impl ZoneDataV98 {
     pub fn read<R: ReadBytesExt>(mut reader: R) -> Result<Self, Error> {
-        // println!("K4PL_Zone<K4PL::ZoneDataV98>::read()");
         Ok(ZoneDataV98 {
             sample_start: reader.read_i32_le()?,
             sample_end: reader.read_i32_le()?,
@@ -127,7 +126,6 @@ pub struct ZoneDataV95 {
 
 impl ZoneDataV95 {
     pub fn read<R: ReadBytesExt>(mut reader: R) -> Result<Self, Error> {
-        println!("\nK4PL_Zone<K4PL::ZoneDataV95>::read()");
         Ok(ZoneDataV95 {
             sample_start: reader.read_i32_le()?,
             sample_end: reader.read_i32_le()?,

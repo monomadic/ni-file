@@ -17,9 +17,11 @@ impl NIFile {
             NIFileType::NICompressedWave => todo!(),
             NIFileType::KoreSound => todo!(),
             NIFileType::Kontakt1 => todo!(),
-            NIFileType::NKS => Ok(NIFile::KontaktInstrument(KontaktInstrument(NKSFile::read(
-                &mut reader,
-            )?))),
+            NIFileType::NKS => {
+                let nks = NKSFile::read(&mut reader)?;
+                let chunks = nks.decompress_patch_chunks()?;
+                Ok(NIFile::KontaktInstrument(KontaktInstrument(chunks)))
+            }
             NIFileType::KontaktResource => todo!(),
             NIFileType::KontaktCache => todo!(),
             NIFileType::Unknown => todo!(),
