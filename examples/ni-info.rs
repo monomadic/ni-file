@@ -3,11 +3,8 @@ use tracing::instrument;
 
 use color_eyre::eyre::Result;
 use ni_file::{
-    self,
-    fm8::FM8Preset,
-    kontakt::kontakt_preset::KontaktInstrument,
-    nks::{header::NKSHeader, nksfile::NKSFile},
-    NIFileType, Repository,
+    self, fm8::FM8Preset, kontakt::kontakt_preset::KontaktInstrument, nifile::NIFile,
+    nks::header::NKSHeader,
 };
 
 fn print_kontakt_instrument(instrument: KontaktInstrument) -> Result<()> {
@@ -35,13 +32,11 @@ pub fn main() -> Result<()> {
         return Ok(());
     };
 
-    match NIFileType::detect(File::open(&path)?)? {
-        NIFileType::NISound => {
+    let file = File::open(&path)?;
+
+    match NIFile::read(file)? {
+        NIFile::NISContainer(repository) => {
             println!("Detected format:\t\t\tNIS (Native Instruments Sound) Container");
-
-            let file = File::open(&path)?;
-            let repository = Repository::read(file)?;
-
             println!("Version: {}", repository.nisound_version()?);
             println!(
                 "Authoring Application: {:?} {}\n",
@@ -61,15 +56,11 @@ pub fn main() -> Result<()> {
                 _ => (),
             }
         }
-        NIFileType::FileContainer => {
+        NIFile::FileContainer => {
             println!("Detected format:\t\tFileContainer (Monolith)");
         }
-        NIFileType::NICompressedWave => todo!(),
-        NIFileType::KoreSound => todo!(),
-        NIFileType::NKS => {
+        NIFile::NKSContainer(nks) => {
             println!("Detected format:\t\tNKS (Native Instruments Kontakt Sound) Container");
-            let file = File::open(&path)?;
-            let nks = NKSFile::read(file)?;
 
             use NKSHeader::*;
             match &nks.header {
@@ -96,9 +87,6 @@ pub fn main() -> Result<()> {
             }
 
             print_kontakt_instrument(nks.instrument()?)?;
-        }
-        _ => {
-            println!("format:\t\tunknown");
         }
     };
 

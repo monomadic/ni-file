@@ -4,7 +4,7 @@ use crate::{read_bytes::ReadBytesExt, Error};
 #[derive(Debug, PartialEq)]
 pub enum NIFileType {
     /// All presets created after Kontakt5 are generally [`NISound`](NIFileType::NISound) containers.
-    NISound,
+    NISContainer,
     /// Kontakt archives with samples inside are [`NIMonolith`](crate::NIMonolith) containers.
     FileContainer,
     /// Generally .ncw files created with Kontakt
@@ -13,7 +13,7 @@ pub enum NIFileType {
     KoreSound,
     /// Kontakt instruments
     Kontakt1,
-    NKS,
+    NKSContainer,
 
     KontaktResource,
     KontaktCache,
@@ -41,10 +41,10 @@ impl NIFileType {
 
             0x7fa89012 | 0x10874353 | 0xab85ef01 => {
                 info!("Detected: NKS (Little Endian)");
-                NIFileType::NKS
+                NIFileType::NKSContainer
             }
             0x2F5C204E => NIFileType::FileContainer,
-            0x1290A87F => NIFileType::NKS, // BE
+            0x1290A87F => NIFileType::NKSContainer, // BE
             0xA4D6E55A | 0x74B5A69B => {
                 panic!("kontakt: unknown");
             }
@@ -59,7 +59,7 @@ impl NIFileType {
 
                 match hsin {
                     // check for 'hsin' at byte 12
-                    b"hsin" => NIFileType::NISound,
+                    b"hsin" => NIFileType::NISContainer,
 
                     // BE monolith byte 35: 0x4916e63c
                     // .nkm
@@ -103,7 +103,7 @@ mod tests {
                 "../tests/filetype/NISD/kontakt/7.1.3.0/000-default.nki"
             )))
             .unwrap(),
-            NIFileType::NISound
+            NIFileType::NISContainer
         );
     }
 }
