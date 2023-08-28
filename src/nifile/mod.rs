@@ -8,9 +8,11 @@ pub enum NIFile {
 
 impl NIFile {
     pub fn read<R: ReadBytesExt>(mut reader: R) -> Result<Self, Error> {
+        let filetype = NIFileType::detect(&mut reader)?;
+        reader.rewind()?;
+
         use NIFile::*;
-        let cursor = reader.by_ref();
-        Ok(match NIFileType::detect(cursor)? {
+        Ok(match filetype {
             NIFileType::NISContainer => NISContainer(Repository::read(reader)?),
             NIFileType::FileContainer => FileContainer,
             NIFileType::NICompressedWave => todo!(),

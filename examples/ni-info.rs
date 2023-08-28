@@ -44,7 +44,6 @@ pub fn main() -> Result<()> {
                 repository.preset_version()?
             );
 
-            // TODO: check for non-kontakt
             print_kontakt_instrument(repository.instrument()?)?;
 
             use ni_file::nisound::AuthoringApplication::*;
