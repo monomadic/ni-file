@@ -4,10 +4,11 @@ It might be worth reading [TERMINOLOGY.md](TERMINOLOGY.md) which describes terms
 
 ## Reading files
 
-You first need to know what filetype you are dealing with, so use
-[`NIFileType::detect`]. Most NI presets these days are
-[`NIFileType::NISound`], unless they are a bundle of files (Kontact instruments and samples),
-where they could be a [`NIFileType::NIMonolith`].
+There is some overlap between the many file formats NI has used across the decades. In general, one or more presets are wrapped in a container format.
+
+Kontakt originally had its own container format, called NKS (Native Instruments Kontakt Sound), and embedded inside was a compressed XML document with the actual preset data. Eventually the preset data was replaced with a custom RIFF-like binary chunk document.
+
+Eventually all NI products used one single format, NIS (Native Instruments Sound), sometimes also referred to as NISound. This is a a slightly more sturdy (though still terrible) binary chunk format similar to EBML. Kontakt still used the same chunk format as previously, without the NKS container.
 
 ### NISound Containers
 

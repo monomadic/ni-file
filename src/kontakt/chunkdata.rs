@@ -3,7 +3,7 @@ use std::io::Cursor;
 use crate::{read_bytes::ReadBytesExt, Error};
 
 use super::{
-    filename_list::FNTableImpl, objects::bprogram::BProgram, structured_object::StructuredObject,
+    filename_list::FNTableImpl, objects::bprogram::Program, structured_object::StructuredObject,
 };
 
 #[derive(Debug)]
@@ -34,14 +34,11 @@ impl TryFrom<ChunkData> for Chunk {
     type Error = Error;
 
     fn try_from(chunk: ChunkData) -> Result<Chunk, Error> {
-        Ok(match chunk.id {
-            0x28 => {
-                // BProgram
-                let so: StructuredObject = chunk.try_into()?;
-                Chunk::Program(so.try_into()?)
-            }
-            0x4b => Chunk::FNTableImpl(FNTableImpl::read(Cursor::new(chunk.data))?),
+        let reader = Cursor::new(chunk.data);
 
+        Ok(match chunk.id {
+            0x28 => Chunk::Program(Program::read(reader)?),
+            0x4b => Chunk::FNTableImpl(FNTableImpl::read(reader)?),
             _ => Chunk::Unsupported(chunk.id),
         })
     }
@@ -49,7 +46,7 @@ impl TryFrom<ChunkData> for Chunk {
 
 #[derive(Debug)]
 pub enum Chunk {
-    Program(BProgram),
+    Program(Program),
     StructuredObject(StructuredObject),
     FNTableImpl(FNTableImpl),
     Unsupported(u16),

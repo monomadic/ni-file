@@ -1,43 +1,29 @@
+use std::io::Cursor;
+
 use crate::{kontakt::structured_object::StructuredObject, read_bytes::ReadBytesExt, Error};
-use std::io;
 
 use super::program_data::ProgramDataV80;
 
 #[derive(Debug)]
-pub struct BProgram {
-    // public: ProgramPublicParams,
-    public: ProgramDataV80,
-    private: ProgramPrivateParams,
-}
+pub struct Program(StructuredObject);
 
-impl BProgram {
+impl Program {
     pub fn read<R: ReadBytesExt>(mut reader: R) -> Result<Self, Error> {
-        let so = StructuredObject::read(&mut reader)?;
-
-        Ok(Self {
-            public: ProgramDataV80::read(io::Cursor::new(so.public_data))?,
-            private: ProgramPrivateParams::read(io::Cursor::new(so.private_data), so.version)?,
-        })
+        Ok(Self(StructuredObject::read(&mut reader)?))
     }
-}
 
-impl TryFrom<StructuredObject> for BProgram {
-    type Error = Error;
+    pub fn public_params(&self) -> Result<ProgramDataV80, Error> {
+        let reader = Cursor::new(&self.0.public_data);
 
-    fn try_from(so: StructuredObject) -> Result<Self, Self::Error> {
-        Ok(Self {
-            // TODO: support other versions
-            public: ProgramDataV80::read(io::Cursor::new(so.public_data.as_slice()))?,
-            private: ProgramPrivateParams::read(
-                io::Cursor::new(so.private_data.as_slice()),
-                so.version,
-            )?,
-        })
+        match self.0.version {
+            0x80 => Ok(ProgramDataV80::read(reader)?),
+            _ => todo!(),
+        }
     }
 }
 
 #[derive(Debug, Default)]
-pub struct ProgramPublicParams {
+pub struct ProgramDataPublicParams {
     name: String,
     num_bytes_samples_total: f64,
     transpose: i8,
@@ -63,19 +49,10 @@ pub struct ProgramPublicParams {
     instrument_cat3: i16,
 }
 
-// impl ProgramPublicParams {
-//     pub fn read<R: ReadBytesExt>(mut reader: R, version: u16) -> Result<Self, Error> {
-//         match version {
-//             0x80 => ProgramDataV80::read(&mut reader),
-//             _ => todo!(),
-//         }
-//     }
-// }
-
 #[derive(Debug, Default)]
-pub struct ProgramPrivateParams {}
+pub struct ProgramDataPrivateParams {}
 
-impl ProgramPrivateParams {
+impl ProgramDataPrivateParams {
     pub fn read<R: ReadBytesExt>(mut reader: R, version: u16) -> Result<Self, Error> {
         if version != 0x80 {
             panic!("unsupported version: {version}");
@@ -149,14 +126,14 @@ impl ProgramPrivateParams {
 
 #[cfg(test)]
 mod tests {
+    use std::fs::File;
+
     use super::*;
 
     #[test]
     fn test_private_params_v80() -> Result<(), Error> {
-        let mut file = std::io::Cursor::new(include_bytes!(
-            "../../../tests/patchdata/KontaktV42/Program/v80/private_params/000"
-        ));
-        let params = ProgramPrivateParams::read(&mut file, 0x80)?;
+        let mut file = File::open("tests/patchdata/KontaktV42/Program/v80/private_params/000")?;
+        let params = ProgramDataPrivateParams::read(&mut file, 0x80)?;
         Ok(())
     }
 }
