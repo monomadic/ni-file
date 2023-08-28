@@ -1,18 +1,3 @@
-use std::io::Cursor;
-
-use time::OffsetDateTime;
-
-use crate::{read_bytes::ReadBytesExt, NIFileError};
-
-// pub enum KonaktPatchHeader {
-//     BPatchHeaderV42(BPatchHeaderV42),
-// }
-//
-// impl KonaktPatchHeader {
-//     pub fn read<R: ReadBytesExt>(mut reader: R) -> Result<Self, Error> {}
-// }
-
-/// The header of a Kontakt42 preset.
 ///
 /// magic = 0xa4d6e55a || 0xab85ef01 || 0xb36ee55e || 0x10874353 ||  0x74b5a69b || 0x7fa89012
 ///
@@ -21,7 +6,13 @@ use crate::{read_bytes::ReadBytesExt, NIFileError};
 ///     > 256 && < 271  170 bytes
 ///     > 271           222 bytes
 ///
+use std::io::Cursor;
 
+use time::OffsetDateTime;
+
+use crate::{read_bytes::ReadBytesExt, NIFileError};
+
+/// The header of a Kontakt42 NKS File.
 #[derive(Debug)]
 pub struct BPatchHeaderV42 {
     pub patch_type: PatchType,
@@ -36,6 +27,7 @@ pub struct BPatchHeaderV42 {
     pub decompressed_length: u32,
 }
 
+/// The header of a Kontakt2 NKS File.
 #[derive(Debug)]
 pub struct BPatchHeaderV2 {
     pub patch_type: PatchType,
@@ -50,11 +42,37 @@ pub struct BPatchHeaderV2 {
     pub decompressed_length: u32,
 }
 
+// #[derive(Debug)]
+// pub struct NKSPatchInfo {
+//     pub patch_type: PatchType,
+//     pub app_version: NKIAppVersion,
+//     pub icon: u32, // TODO: change to icon enum
+//     pub author: String,
+//     pub created_at: time::Date,
+//     pub app_signature: String,
+//     pub number_of_zones: u16,
+//     pub number_of_groups: u16,
+//     pub number_of_instruments: u16,
+// }
+//
+// impl From<BPatchHeaderV42> for NKSPatchInfo {
+//     fn from(p: BPatchHeaderV42) -> Self {
+//         NKSPatchInfo {
+//             patch_type: p.patch_type,
+//             app_version: p.app_version,
+//             icon: p.icon,
+//             author: p.author,
+//             created_at: p.created_at,
+//             app_signature: p.app_signature,
+//             number_of_zones: p.number_of_zones,
+//             number_of_groups: p.number_of_groups,
+//             number_of_instruments: p.number_of_instruments,
+//         }
+//     }
+// }
+
 impl BPatchHeaderV2 {
     pub fn read_le<R: ReadBytesExt>(mut reader: R) -> Result<Self, NIFileError> {
-        // let reader = reader.read_bytes(170 - 10)?;
-        // let mut reader = reader.as_slice();
-
         let header_magic = reader.read_u32_le()?;
         assert_eq!(header_magic, u32::swap_bytes(0x722A013E));
 
@@ -167,12 +185,12 @@ pub struct NKIAppVersion {
     pub minor_3: u8,
 }
 
-impl ToString for NKIAppVersion {
-    fn to_string(&self) -> String {
-        format!(
+impl std::fmt::Display for NKIAppVersion {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(&format!(
             "app_version {}.{}.{}.{}",
-            self.major, self.minor_2, self.minor_2, self.minor_3
-        )
+            self.major, self.minor_2, self.minor_2, self.minor_3,
+        ))
     }
 }
 

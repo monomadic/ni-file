@@ -1,6 +1,6 @@
 # Kontakt
 
-Kontakt 1 and 2 files are XML documents, both with different schemas. Beyond this, a structured binary format was created, very similar to RIFF chunks.
+Kontakt 1 and 2 files are XML documents, both with different schemas. Kontakt 4.2+ is a structured binary format similar to RIFF chunks.
 
 ## Kontakt Chunks
 
@@ -73,7 +73,6 @@ The id is a u16. It is referred to as a `SerType` or Serialization Type internal
 - 0x3a BParameterArraySer<BParFX,8>
 - 0x3b BParameterArraySer<BParInternalMod,16>
 - 0x3c BParameterArraySer<BParExternalMod,32>
-- 0x3d FileNameListPreK51
 - 0x3e BOutputConfiguration
 - 0x3d FileNameListPreK1 / FNTablePreK51
 - 0x3f BParEnv_AHDSR
@@ -114,3 +113,5 @@ The id is a u16. It is referred to as a `SerType` or Serialization Type internal
 - 0x61 BParFXBassPro
 - 0x63 BParFXPsycheDelay
 - 0x64 BParFXRingModulator
+
+Many of these are a `StructuredObject`, but not all. It is important to check the ID first.

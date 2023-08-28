@@ -4,12 +4,12 @@ use crate::{read_bytes::ReadBytesExt, Error};
 
 #[derive(Debug)]
 pub struct FNTableImpl {
-    filenames: HashMap<u32, String>,
+    pub filenames: HashMap<u32, String>,
 }
 
 #[derive(Debug)]
 pub struct FileNameListPreK51 {
-    filenames: HashMap<u32, String>,
+    pub filenames: HashMap<u32, String>,
 }
 
 impl FNTableImpl {
@@ -41,8 +41,6 @@ impl FNTableImpl {
 
 impl FileNameListPreK51 {
     pub fn read<R: ReadBytesExt>(mut reader: R) -> Result<Self, Error> {
-        println!("FileNameListPreK51::read()");
-
         let _ = reader.read_u32_le()?;
         let file_count = reader.read_u32_le()?;
 

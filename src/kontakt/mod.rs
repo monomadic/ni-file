@@ -1,7 +1,7 @@
 pub mod bparam_array;
 mod bprogram_container;
 pub mod chunkdata;
-mod filename_list;
+pub mod filename_list;
 pub mod group_list;
 mod privpars;
 mod pubdata;

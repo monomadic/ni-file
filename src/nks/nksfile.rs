@@ -1,9 +1,14 @@
-use std::io::Cursor;
+use std::{collections::HashMap, io::Cursor};
 
 // use flate2::bufread::ZlibDecoder;
 
 use crate::{
-    kontakt::chunkdata::ChunkData, nks::meta_info::BPatchMetaInfoHeader, read_bytes::ReadBytesExt,
+    kontakt::{
+        chunkdata::ChunkData,
+        filename_list::{FNTableImpl, FileNameListPreK51},
+    },
+    nks::meta_info::BPatchMetaInfoHeader,
+    read_bytes::ReadBytesExt,
     Error, NIFileError,
 };
 
@@ -77,6 +82,22 @@ impl NKSFile {
         }
 
         Ok(objects)
+    }
+
+    pub fn filename_table(&self) -> Result<Option<HashMap<u32, String>>, Error> {
+        let chunks = self.decompress_patch_chunks()?;
+        if let Some(fnchunk) = chunks.iter().find(|c| c.id == 0x4b) {
+            let reader = Cursor::new(&fnchunk.data);
+            let fntable = FNTableImpl::read(reader)?;
+            return Ok(Some(fntable.filenames));
+        }
+
+        if let Some(fnchunk) = chunks.iter().find(|c| c.id == 0x3d) {
+            let reader = Cursor::new(&fnchunk.data);
+            let fntable = FileNameListPreK51::read(reader)?;
+            return Ok(Some(fntable.filenames));
+        }
+        Ok(None)
     }
 }
 

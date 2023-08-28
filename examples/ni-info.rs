@@ -50,42 +50,41 @@ pub fn main() -> Result<()> {
         NIFileType::NICompressedWave => todo!(),
         NIFileType::KoreSound => todo!(),
         NIFileType::NKS => {
-            println!("Detected format:\t\t\tNKS (Native Instruments Kontakt Sound) Container");
+            println!("Detected format:\t\tNKS (Native Instruments Kontakt Sound) Container");
             let file = File::open(&path)?;
             let nks = NKSFile::read(file)?;
 
             use NKSHeader::*;
-            match nks.header {
+            match &nks.header {
                 BPatchHeaderV2(h) => {
-                    println!("type:\t\t\t{:?}", h.patch_type);
-                    println!(
-                        "kontakt_version:\t{}.{}.{}.{}",
-                        h.app_version.major,
-                        h.app_version.minor_1,
-                        h.app_version.minor_2,
-                        h.app_version.minor_3
-                    );
-                    println!("author:\t\t\t{}", h.author);
-                    println!("zones:\t\t\t{}", h.number_of_zones);
-                    println!("groups:\t\t\t{}", h.number_of_groups);
-                    println!("instruments:\t\t{}", h.number_of_instruments);
-                    println!("created_at:\t\t{}", h.created_at);
+                    println!("\nV2 header:");
+                    println!("  type:\t\t\t{:?}", h.patch_type);
+                    println!("  kontakt_version:\t{}", h.app_version);
+                    println!("  author:\t\t\t{}", h.author);
+                    println!("  zones:\t\t\t{}", h.number_of_zones);
+                    println!("  groups:\t\t\t{}", h.number_of_groups);
+                    println!("  instruments:\t\t{}", h.number_of_instruments);
+                    println!("  created_at:\t\t{}", h.created_at);
                 }
                 BPatchHeaderV42(h) => {
-                    println!("type:\t\t\t{:?}", h.patch_type);
-                    println!(
-                        "kontakt_version:\t{}.{}.{}.{}",
-                        h.app_version.major,
-                        h.app_version.minor_1,
-                        h.app_version.minor_2,
-                        h.app_version.minor_3
-                    );
-                    println!("author:\t\t\t{}", h.author);
-                    println!("zones:\t\t\t{}", h.number_of_zones);
-                    println!("groups:\t\t\t{}", h.number_of_groups);
-                    println!("instruments:\t\t{}", h.number_of_instruments);
-                    println!("created_at:\t\t{}", h.created_at);
+                    println!("\nV42 header:");
+                    println!("  type:\t\t\t{:?}", h.patch_type);
+                    println!("  kontakt_version:\t{}", h.app_version);
+                    println!("  author:\t\t{}", h.author);
+                    println!("  zones:\t\t{}", h.number_of_zones);
+                    println!("  groups:\t\t{}", h.number_of_groups);
+                    println!("  instruments:\t\t{}", h.number_of_instruments);
+                    println!("  created_at:\t\t{}", h.created_at);
                 }
+            }
+
+            if let Some(filename_table) = nks.filename_table()? {
+                println!("\nFilename table:");
+                for (index, filename) in filename_table {
+                    println!("{}:\t{}", index, filename);
+                }
+            } else {
+                println!("\nNo filename table found!");
             }
         }
         _ => {
