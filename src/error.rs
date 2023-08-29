@@ -1,4 +1,4 @@
-use crate::{nks::error::NKSError, read_bytes::ReadBytesError};
+use crate::{kontakt::error::KontaktError, nks::error::NKSError, read_bytes::ReadBytesError};
 
 pub type Result<T> = std::result::Result<T, NIFileError>;
 pub type Error = NIFileError;
@@ -14,6 +14,9 @@ pub enum NIFileError {
 
     #[error(transparent)]
     NKSError(#[from] NKSError),
+
+    #[error(transparent)]
+    KontaktError(#[from] KontaktError),
 
     #[error(transparent)]
     ReadBytesError(#[from] ReadBytesError),

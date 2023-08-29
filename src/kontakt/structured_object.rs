@@ -68,6 +68,10 @@ impl StructuredObject {
             children,
         })
     }
+
+    pub fn find_first(&self, id: u16) -> Option<&ChunkData> {
+        self.children.iter().find(|c| c.id == id)
+    }
 }
 
 #[cfg(test)]

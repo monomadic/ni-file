@@ -6,7 +6,7 @@ use super::{
     AuthoringApplication,
 };
 use crate::{
-    kontakt::{chunkdata::ChunkData, kontakt_preset::KontaktInstrument},
+    kontakt::{chunkdata::ChunkData, instrument::KontaktInstrument},
     nis::items::{BNISoundPreset, Preset, PresetChunkItem},
     prelude::*,
     read_bytes::ReadBytesExt,

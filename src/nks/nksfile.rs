@@ -3,7 +3,7 @@ use std::io::Cursor;
 // use flate2::bufread::ZlibDecoder;
 
 use crate::{
-    kontakt::{chunkdata::ChunkData, kontakt_preset::KontaktInstrument},
+    kontakt::{chunkdata::ChunkData, instrument::KontaktInstrument},
     nks::meta_info::BPatchMetaInfoHeader,
     read_bytes::ReadBytesExt,
     Error, NIFileError,

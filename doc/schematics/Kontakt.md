@@ -37,7 +37,6 @@ The id is a u16. It is referred to as a `SerType` or Serialization Type internal
 - 0x17 BParFXSendLevels
 - 0x18 BParFXFilter
 - 0x19 BParFXCompressor
-- 0x20 BParFXLoFi
 - 0x1a BParFXInverter
 - 0x1b BParFXDYX
 - 0x1c BParFXLimiter

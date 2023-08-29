@@ -1,104 +1,171 @@
-// use std::io::Cursor;
-//
-// use crate::{
-//     kontakt::{
-//         bparam_array::BParamArray, chunkdata::ChunkData, group_list::GroupList,
-//         voice_groups::VoiceGroups, zone_list::ZoneList,
-//     },
-//     read_bytes::ReadBytesExt,
-//     Error,
-// };
-//
-// use super::program_data::{ProgramDataV80, ProgramDataVA5};
-//
-// #[derive(Debug)]
-// #[allow(non_camel_case_types)]
-// pub enum BProgram {
-//     ProgramDataV80(ProgramDataV80),
-//     ProgramDataVA5(ProgramDataVA5),
-// }
-//
-// impl BProgram {
-//     /// BProgram::doReadPubPars
-//     pub fn read<R: ReadBytesExt>(mut reader: R) -> Result<(), Error> {
-//         let _do_read = reader.read_bool()?;
-//
-//         let version = reader.read_u16_le()?;
-//         match version {
-//             0x80 | 0x82 | 0x90 => {
-//                 let len = reader.read_u32_le()? as usize;
-//                 let _data = reader.read_bytes(len)?;
-//                 // PrivParsV80::read(data.as_slice())?;
-//
-//                 // pubdata
-//                 let len = reader.read_u32_le()? as usize;
-//                 let _data = reader.read_bytes(len)?;
-//
-//                 // children
-//                 let len = reader.read_u32_le()? as usize;
-//                 let data = reader.read_bytes(len)?;
-//                 let mut data = std::io::Cursor::new(data.as_slice());
-//
-//                 while let Ok(chunk) = ChunkData::read(&mut data) {
-//                     let data = Cursor::new(chunk.data);
-//
-//                     match chunk.id {
-//                         0x32 => {
-//                             VoiceGroups::read(data)?;
-//                         }
-//                         0x33 => {
-//                             GroupList::read(data)?;
-//                         }
-//                         0x34 => {
-//                             ZoneList::read(data)?;
-//                         }
-//                         0x3A => {
-//                             BParamArray::read(data, 8)?;
-//                         }
-//                         _ => {
-//                             panic!("unsupported child 0x{:x}", chunk.id);
-//                         }
-//                     };
-//                 }
-//             }
-//             0x91 | 0x92 | 0xA0 | 0xA1 | 0xA2 | 0xA3 | 0xA4 | 0xA5 => {
-//                 // private
-//                 let len = reader.read_u32_le()? as usize;
-//                 let _data = reader.read_bytes(len)?;
-//
-//                 // pubdata
-//                 let len = reader.read_u32_le()? as usize;
-//                 let data = std::io::Cursor::new(reader.read_bytes(len)?);
-//
-//                 ProgramDataVA5::read(data)?;
-//             }
-//             0xA6 => {}
-//             0xA7 => {}
-//             0xA8 | 0xA9 | 0xAA | 0xAB | 0xAC | 0xAD | 0xAE => {}
-//             0xAF => {}
-//             _ => panic!("Unsupported BProgram Version: 0x{:x}", version),
-//         }
-//
-//         // if version > 0xA1 {
-//         //     ??
-//         // }
-//
-//         Ok(())
-//     }
-// }
-//
-// #[cfg(test)]
-// mod tests {
-//     use std::fs::File;
-//
-//     use crate::Error;
-//
-//     use super::*;
-//
-//     #[test]
-//     fn test_bprogram() -> Result<(), Error> {
-//         let file = File::open("tests/patchdata/KontaktV42/Program/4.2.2.4504/000")?;
-//         assert!(BProgram::read(file).is_ok());
-//         Ok(())
-//     }
-// }
+use std::io::Cursor;
+
+use crate::{
+    kontakt::{
+        chunkdata::ChunkData, error::KontaktError, structured_object::StructuredObject,
+        zone_data::ZoneData, zone_list::ZoneList,
+    },
+    read_bytes::ReadBytesExt,
+    Error,
+};
+
+use super::program_data::ProgramDataV80;
+
+#[derive(Debug)]
+pub struct Program(StructuredObject);
+
+impl Program {
+    pub fn read<R: ReadBytesExt>(mut reader: R) -> Result<Self, Error> {
+        Ok(Self(StructuredObject::read(&mut reader)?))
+    }
+
+    pub fn public_params(&self) -> Result<ProgramDataV80, Error> {
+        let reader = Cursor::new(&self.0.public_data);
+
+        match self.0.version {
+            0x80 => Ok(ProgramDataV80::read(reader)?),
+            _ => todo!(),
+        }
+    }
+
+    pub fn zones(&self) -> Option<Result<Vec<ZoneData>, Error>> {
+        self.0
+            .find_first(0x34)
+            .map(|chunk| ZoneList::try_from(chunk).map(|z| z.zones))
+    }
+
+    // 0x32 VoiceGroups
+    // 0x33 GroupList
+}
+
+impl std::convert::TryFrom<&ChunkData> for Program {
+    type Error = Error;
+
+    fn try_from(chunk: &ChunkData) -> Result<Self, Self::Error> {
+        if chunk.id != 0x28 {
+            return Err(KontaktError::IncorrectID {
+                expected: 0x28,
+                got: chunk.id,
+            }
+            .into());
+        }
+        let reader = Cursor::new(&chunk.data);
+        Self::read(reader)
+    }
+}
+
+#[derive(Debug, Default)]
+pub struct ProgramDataPublicParams {
+    name: String,
+    num_bytes_samples_total: f64,
+    transpose: i8,
+    volume: f32,
+    pan: f32,
+    tune: f32,
+    low_velocity: u8,
+    high_velocity: u8,
+    low_key: u8,
+    high_key: u8,
+    default_key_switch: i16,
+    dfd_channel_preload_size: i32,
+    library_id: i32,
+    fingerprint: u32,
+    loading_flags: u32,
+    group_solo: bool,
+    cat_icon_idx: i32,
+    instrument_credits: String,
+    instrument_author: String,
+    instrument_url: String,
+    instrument_cat1: i16,
+    instrument_cat2: i16,
+    instrument_cat3: i16,
+}
+
+#[derive(Debug, Default)]
+pub struct ProgramDataPrivateParams {}
+
+impl ProgramDataPrivateParams {
+    pub fn read<R: ReadBytesExt>(mut reader: R, version: u16) -> Result<Self, Error> {
+        if version != 0x80 {
+            panic!("unsupported version: {version}");
+        }
+        // assume v80 for now
+
+        let version = reader.read_u32_le()?;
+        println!("version {:?}", version);
+        assert!(
+            version < 2,
+            "ProgramPrivateParams unsupported version: {version}"
+        );
+
+        println!("{:?}", reader.read_bool()?);
+        println!("{:?}", reader.read_bool()?);
+        println!("{:?}", reader.read_i32_le()?);
+        println!("{:?}", reader.read_bool()?);
+        println!("{:?}", reader.read_i32_le()?);
+        println!("{:?}", reader.read_i32_le()?);
+        println!("{:?}", reader.read_bool()?);
+        println!("{:?}", reader.read_i32_le()?);
+        println!("{:?}", reader.read_bool()?);
+        println!("{:?}", reader.read_bool()?);
+        println!("{:?}", reader.read_bool()?);
+        println!("{:?}", reader.read_i32_le()?);
+        println!("{:?}", reader.read_bool()?);
+        println!("{:?}", reader.read_bool()?);
+        println!("{:?}", reader.read_bool()?);
+        println!("{:?}", reader.read_bool()?);
+        println!("{:?}", reader.read_bool()?);
+        println!("{:?}", reader.read_bool()?);
+        println!("{:?}", reader.read_bool()?);
+        println!("{:?}", reader.read_bool()?);
+        println!("{:?}", reader.read_bool()?);
+        println!("{:?}", reader.read_bool()?);
+        println!("{:?}", reader.read_bool()?);
+        println!("{:?}", reader.read_bool()?);
+        println!("{:?}", reader.read_bool()?);
+        println!("{:?}", reader.read_i32_le()?);
+        println!("{:?}", reader.read_i32_le()?);
+        println!("{:?}", reader.read_i32_le()?);
+        println!("{:?}", reader.read_bool()?);
+        println!("{:?}", reader.read_bool()?);
+        println!("{:?}", reader.read_i16_le()?);
+        println!("{:?}", reader.read_bool()?);
+
+        // BFileName - SER::ReadBFNTrns
+        // should be -1
+        let filename = reader.read_i32_le()?;
+        if filename > 0 {
+            panic!("Unsupported: SER::ReadBFNTrns");
+        }
+
+        // 5 x SER::Read(stream,(BSerializable *)&this[0xcb].field_0x12d, ctx);
+
+        // SER::ReadBHeapArr<>
+
+        // SER::ARRAY::ReadInsert<>
+        // SER::ARRAY::ReadInsert<>
+
+        let filename = reader.read_i32_le()?;
+        if filename > 0 {
+            panic!("Unsupported: SER::ReadBFNTrns");
+        }
+
+        // another BFileName
+
+        Ok(Self {})
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use std::fs::File;
+
+    use super::*;
+
+    #[test]
+    fn test_private_params_v80() -> Result<(), Error> {
+        let mut file = File::open("tests/patchdata/KontaktV42/Program/v80/private_params/000")?;
+        let _params = ProgramDataPrivateParams::read(&mut file, 0x80)?;
+        Ok(())
+    }
+}

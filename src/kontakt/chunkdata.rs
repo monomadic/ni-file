@@ -3,7 +3,7 @@ use std::io::Cursor;
 use crate::{read_bytes::ReadBytesExt, Error};
 
 use super::{
-    filename_list::FNTableImpl, objects::bprogram::Program, structured_object::StructuredObject,
+    filename_list::FNTableImpl, objects::program::Program, structured_object::StructuredObject,
 };
 
 #[derive(Debug)]

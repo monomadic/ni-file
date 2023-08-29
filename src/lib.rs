@@ -7,17 +7,17 @@ extern crate log;
 mod error;
 pub use error::*;
 
-// wrappers:
-pub mod nifile; // generic, simplified api for supported filetypes
-
-// preset types:
-pub mod fm8;
-pub mod kontakt;
+// generic wrapper:
+pub mod nifile; // simplified api for all supported filetypes
 
 // containers:
 pub mod file_container; // monoliths
 pub mod nis; // nisound document // kontakt 4.2 preset
 pub mod nks; // native instruments kontakt sound file format
+
+// preset types:
+pub mod fm8;
+pub mod kontakt;
 
 // utils:
 pub mod deflate; // fastlz decompression

@@ -1,10 +1,10 @@
 use crate::{read_bytes::ReadBytesExt, Error};
 
-use super::zone_data::ZoneData;
+use super::{chunkdata::ChunkData, error::KontaktError, zone_data::ZoneData};
 
 #[derive(Debug)]
 pub struct ZoneList {
-    zones: Vec<ZoneData>,
+    pub zones: Vec<ZoneData>,
 }
 
 impl ZoneList {
@@ -18,6 +18,22 @@ impl ZoneList {
         }
 
         Ok(Self { zones })
+    }
+}
+
+impl std::convert::TryFrom<&ChunkData> for ZoneList {
+    type Error = Error;
+
+    fn try_from(chunk: &ChunkData) -> Result<Self, Self::Error> {
+        if chunk.id != 0x34 {
+            return Err(KontaktError::IncorrectID {
+                expected: 0x34,
+                got: chunk.id,
+            }
+            .into());
+        }
+        let reader = std::io::Cursor::new(&chunk.data);
+        Self::read(reader)
     }
 }
 

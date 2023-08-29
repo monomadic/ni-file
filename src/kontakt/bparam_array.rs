@@ -1,54 +1,35 @@
-use crate::{
-    kontakt::{chunkdata::ChunkData, structured_object::StructuredObject},
-    read_bytes::ReadBytesExt,
-    Error,
-};
+use crate::{kontakt::chunkdata::ChunkData, read_bytes::ReadBytesExt, Error};
 
 // id 0x3a
+// known versions: 0x10, 0x11, 0x12
 #[doc = include_str!("../../doc/schematics/kontakt/BParamArray.md")]
 #[derive(Debug)]
-pub struct BParamArray;
+pub struct BParamArray(Vec<ChunkData>);
 
 impl BParamArray {
     pub fn read<R: ReadBytesExt>(mut reader: R, num_items: u32) -> Result<Self, Error> {
-        println!("BParamArray<{num_items}>::read()");
-
-        let unused = reader.read_bool()?;
-        assert!(!unused); // always false?
+        let is_structured_data = reader.read_bool()?;
+        assert!(!is_structured_data); // always false?
 
         let version = reader.read_u16_le()?;
-        println!("- Version: 0x{version:x}");
 
         let mut items = Vec::new();
-
         match version {
             0x11 => {
                 panic!("Unsupported BParamArray: v11");
             }
             _ => {
                 for _ in 0..num_items {
-                    let do_read = reader.read_bool()?;
-
-                    // if doRead != '\0'
-                    if do_read {
-                        // StructuredObject::factory(id, length)
-                        let obj: StructuredObject = ChunkData::read(&mut reader)?.try_into()?;
-
-                        for child in &obj.children {
-                            // let child = child.clone();
-                            // // println!("{}", crate::utils::format_hex(&child.data));
-                            // println!("{obj:?}");
-                            // println!("{child:?}");
-                            // println!("{:?}", child_data);
-                        }
-
-                        items.push(obj);
+                    let has_item = reader.read_bool()?;
+                    if has_item {
+                        let chunk = ChunkData::read(&mut reader)?;
+                        items.push(chunk);
                     }
                 }
             }
         }
 
-        Ok(Self)
+        Ok(Self(items))
     }
 }
 
@@ -61,9 +42,18 @@ mod tests {
     use super::*;
 
     #[test]
-    fn test_bparam_array() -> Result<(), Error> {
-        let file = File::open("tests/patchdata/KontaktV42/param_array/4.2.2.4504/000")?;
-        assert!(BParamArray::read(file, 8).is_ok());
+    fn test_bparam_array_v10() -> Result<(), Error> {
+        let file = File::open("tests/patchdata/KontaktV42/BParameterArray/BParameterArray-001")?;
+        let arr = BParamArray::read(file, 8)?;
+        dbg!(arr);
+        Ok(())
+    }
+
+    #[test]
+    fn test_bparam_array_v12() -> Result<(), Error> {
+        let file = File::open("tests/patchdata/KontaktV42/BParameterArray/BParameterArray-000")?;
+        let arr = BParamArray::read(file, 8)?;
+        dbg!(arr);
         Ok(())
     }
 }

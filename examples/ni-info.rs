@@ -3,15 +3,48 @@ use tracing::instrument;
 
 use color_eyre::eyre::Result;
 use ni_file::{
-    self, fm8::FM8Preset, kontakt::kontakt_preset::KontaktInstrument, nifile::NIFile,
+    self,
+    fm8::FM8Preset,
+    kontakt::{instrument::KontaktInstrument, zone_data::ZoneDataPublicParams},
+    nifile::NIFile,
     nks::header::NKSHeader,
 };
 
 fn print_kontakt_instrument(instrument: KontaktInstrument) -> Result<()> {
     if let Some(filename_table) = instrument.filename_table() {
         println!("\nFilename table:");
-        for (index, filename) in filename_table? {
+        let filename_table = filename_table?;
+
+        for (index, filename) in &filename_table {
             println!("{}:\t{}", index, filename);
+        }
+
+        if let Some(program) = instrument.program() {
+            if let Some(zones) = program?.zones() {
+                println!("\nZones:");
+                for zone in zones? {
+                    match zone.public_params()? {
+                        ZoneDataPublicParams::ZoneDataV98(zone) => {
+                            println!(
+                                "zone: {:?} {:?}",
+                                zone,
+                                filename_table.get(&(zone.filename_id as u32))
+                            );
+                        }
+                        ZoneDataPublicParams::ZoneDataV95(zone) => {
+                            println!(
+                                "zone: {:?} {:?}",
+                                zone,
+                                filename_table.get(&(zone.filename_id as u32))
+                            );
+                        }
+                    };
+                }
+            } else {
+                println!("\nNo zones found!");
+            }
+        } else {
+            println!("\nNo program found!");
         }
     } else {
         println!("\nNo filename table found!");
