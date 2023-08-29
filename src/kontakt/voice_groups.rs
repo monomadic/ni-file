@@ -3,12 +3,17 @@ use crate::{kontakt::voice_limit::VoiceLimit, read_bytes::ReadBytesExt, Error};
 #[derive(Debug)]
 pub struct VoiceGroups;
 
-// ALWAYS 0x32
+#[derive(Debug)]
+pub struct VoiceGroup;
+
+// SerId 0x32
 impl VoiceGroups {
     pub fn read<R: ReadBytesExt>(mut reader: R) -> Result<Self, Error> {
         println!("VoiceGroups::read");
 
-        let _is_chunked = reader.read_bool()?;
+        let is_structured = reader.read_bool()?;
+        assert_eq!(is_structured, false);
+
         let version = reader.read_u16_le()?;
 
         match version {
@@ -26,15 +31,16 @@ impl VoiceGroups {
     }
 }
 
-#[test]
-fn test_zone_list() -> Result<(), Error> {
-    let file = std::io::Cursor::new(include_bytes!(
-        "../../tests/patchdata/KontaktV42/VoiceGroups/v60/000"
-    ));
-    assert!(VoiceGroups::read(file).is_ok());
+#[cfg(test)]
+mod tests {
+    use std::fs::File;
 
-    // let file = include_bytes!("tests/voice_groups/default/000").as_slice();
-    // assert!(VoiceGroups::read(file).is_ok());
+    use super::*;
 
-    Ok(())
+    #[test]
+    fn test_voice_groups_v60() -> Result<(), Error> {
+        let file = File::open("tests/patchdata/KontaktV42/VoiceGroups/v60/000")?;
+        assert!(VoiceGroups::read(file).is_ok());
+        Ok(())
+    }
 }

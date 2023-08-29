@@ -155,7 +155,7 @@ mod tests {
 
     #[test]
     fn test_read_u32_le() {
-        let mut bytes: &[u8] = &[32_u8, 1, 4, 56, 6, 6, 90, 4, 7];
+        let bytes: &[u8] = &[32_u8, 1, 4, 56, 6, 6, 90, 4, 7];
         let mut cursor = io::Cursor::new(bytes);
         let num = cursor.read_u32_le().unwrap();
 
@@ -169,7 +169,7 @@ mod tests {
 
     #[test]
     fn test_read_sized_data() {
-        let mut bytes: &[u8] = &[9, 0, 0, 0, 0, 0, 0, 0, 4, 5];
+        let bytes: &[u8] = &[9, 0, 0, 0, 0, 0, 0, 0, 4, 5];
         let mut cursor = io::Cursor::new(bytes);
         let content = cursor.read_sized_data().unwrap();
 

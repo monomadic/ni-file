@@ -2,6 +2,8 @@ use std::collections::HashMap;
 
 use crate::{read_bytes::ReadBytesExt, Error};
 
+use super::chunkdata::ChunkData;
+
 #[derive(Debug)]
 pub struct FNTableImpl {
     pub filenames: HashMap<u32, String>,
@@ -10,6 +12,30 @@ pub struct FNTableImpl {
 #[derive(Debug)]
 pub struct FileNameListPreK51 {
     pub filenames: HashMap<u32, String>,
+}
+
+impl std::convert::TryFrom<&ChunkData> for FileNameListPreK51 {
+    type Error = Error;
+
+    fn try_from(chunk: &ChunkData) -> Result<Self, Self::Error> {
+        if chunk.id != 0x3d {
+            panic!("fixme: error here");
+        }
+        let reader = std::io::Cursor::new(&chunk.data);
+        Self::read(reader)
+    }
+}
+
+impl std::convert::TryFrom<&ChunkData> for FNTableImpl {
+    type Error = Error;
+
+    fn try_from(chunk: &ChunkData) -> Result<Self, Self::Error> {
+        if chunk.id != 0x4b {
+            panic!("fixme: error here");
+        }
+        let reader = std::io::Cursor::new(&chunk.data);
+        Self::read(reader)
+    }
 }
 
 impl FNTableImpl {

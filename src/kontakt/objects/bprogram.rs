@@ -1,6 +1,10 @@
 use std::io::Cursor;
 
-use crate::{kontakt::structured_object::StructuredObject, read_bytes::ReadBytesExt, Error};
+use crate::{
+    kontakt::{chunkdata::ChunkData, structured_object::StructuredObject},
+    read_bytes::ReadBytesExt,
+    Error,
+};
 
 use super::program_data::ProgramDataV80;
 
@@ -19,6 +23,18 @@ impl Program {
             0x80 => Ok(ProgramDataV80::read(reader)?),
             _ => todo!(),
         }
+    }
+}
+
+impl std::convert::TryFrom<&ChunkData> for Program {
+    type Error = Error;
+
+    fn try_from(chunk: &ChunkData) -> Result<Self, Self::Error> {
+        if chunk.id != 0x4b {
+            panic!("fixme: error here");
+        }
+        let reader = Cursor::new(&chunk.data);
+        Self::read(reader)
     }
 }
 
@@ -133,7 +149,7 @@ mod tests {
     #[test]
     fn test_private_params_v80() -> Result<(), Error> {
         let mut file = File::open("tests/patchdata/KontaktV42/Program/v80/private_params/000")?;
-        let params = ProgramDataPrivateParams::read(&mut file, 0x80)?;
+        let _params = ProgramDataPrivateParams::read(&mut file, 0x80)?;
         Ok(())
     }
 }

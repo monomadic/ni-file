@@ -8,9 +8,9 @@ use ni_file::{
 };
 
 fn print_kontakt_instrument(instrument: KontaktInstrument) -> Result<()> {
-    if let Some(filename_table) = instrument.filename_table()? {
+    if let Some(filename_table) = instrument.filename_table() {
         println!("\nFilename table:");
-        for (index, filename) in filename_table {
+        for (index, filename) in filename_table? {
             println!("{}:\t{}", index, filename);
         }
     } else {
