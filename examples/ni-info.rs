@@ -30,22 +30,10 @@ fn print_kontakt_instrument(instrument: KontaktInstrument) -> Result<()> {
             if let Some(zones) = program?.zones() {
                 println!("\nZones:");
                 for zone in zones? {
-                    match zone.public_params()? {
-                        ZoneDataPublicParams::ZoneDataV98(zone) => {
-                            println!(
-                                "zone: {:?} {:?}",
-                                zone,
-                                filename_table.get(&(zone.filename_id as u32))
-                            );
-                        }
-                        ZoneDataPublicParams::ZoneDataV95(zone) => {
-                            println!(
-                                "zone: {:?} {:?}",
-                                zone,
-                                filename_table.get(&(zone.filename_id as u32))
-                            );
-                        }
-                    };
+                    let zone_data = zone.public_params()?;
+                    if let Some(filename) = filename_table.get(&(zone_data.filename_id as u32)) {
+                        println!("Zone: {}", filename);
+                    }
                 }
             } else {
                 println!("\nNo zones found!");

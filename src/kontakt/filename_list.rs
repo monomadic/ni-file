@@ -54,9 +54,10 @@ impl FNTableImpl {
         let version = reader.read_u16_le()?;
         assert!(version == 2);
 
-        assert_eq!(reader.read_u32_le()?, 1); // always 1
+        let _table_count = reader.read_u32_le()?; // usually 1, but if higher, extra data included
+                                                  // at bottom.
 
-        let absolute_path = read_filename(&mut reader)?.join("/");
+        let _absolute_path = read_filename(&mut reader)?.join("/");
 
         let file_count = reader.read_u32_le()?;
 
