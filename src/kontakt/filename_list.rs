@@ -14,6 +14,17 @@ pub struct FileNameListPreK51 {
     pub filenames: HashMap<u32, String>,
 }
 
+pub fn read_filename<R: ReadBytesExt>(mut reader: R) -> Result<Vec<String>, Error> {
+    let segments = reader.read_i32_le()?;
+    let mut filename = Vec::new();
+    for _ in 0..segments {
+        let _segment_type = reader.read_i8()?;
+        let segment = reader.read_widestring_utf16()?;
+        filename.push(segment);
+    }
+    Ok(filename)
+}
+
 impl std::convert::TryFrom<&ChunkData> for FileNameListPreK51 {
     type Error = Error;
 
@@ -43,22 +54,15 @@ impl FNTableImpl {
         let version = reader.read_u16_le()?;
         assert!(version == 2);
 
-        let _ = reader.read_u32_le()?;
-        let _ = reader.read_u32_le()?;
+        assert_eq!(reader.read_u32_le()?, 1); // always 1
+
+        let absolute_path = read_filename(&mut reader)?.join("/");
+
         let file_count = reader.read_u32_le()?;
 
         let mut filenames = HashMap::new();
         for i in 0..file_count {
-            let segments = reader.read_i32_le()?;
-
-            let mut filename = Vec::new();
-            for _ in 0..segments {
-                let _segment_type = reader.read_i8()?;
-                let segment = reader.read_widestring_utf16()?;
-                filename.push(segment);
-            }
-
-            filenames.insert(i, filename.join("/"));
+            filenames.insert(i, read_filename(&mut reader)?.join("/"));
         }
 
         Ok(Self { filenames })

@@ -28,9 +28,9 @@ proc BInsertBus {} {
 		section "children" {
 			set chunkSize [uint32 "length"]
 			set maxPos [expr [pos] + $chunkSize]
-			while {[pos] < $maxPos} {
-				include "StructuredObjectSimple.tcl"
-			}
+			# while {[pos] < $maxPos} {
+			# 	#include "Kontakt/StructuredObjectSimple.tcl"
+			# }
 		}
 	}
 }

@@ -13,7 +13,7 @@ proc BParameterArray8 {} {
 	for { set i 0 } { $i < 8 } { incr i } {
 		set hasItem [int8 "hasItem"]
 		if { $hasItem } {
-			include "StructuredObjectSimple.tcl"
+			include "Kontakt/StructuredObjectSimple.tcl"
 		}
 	}
 }
