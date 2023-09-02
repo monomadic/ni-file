@@ -1,13 +1,14 @@
 use super::{
     item::ItemContainer,
     item_frame::{item_id::ItemID, ItemFrame},
-    items::{AppSpecific, EncryptionItem, RepositoryRoot, RepositoryVersion},
+    items::{AppSpecific, BNISoundHeader, EncryptionItem, RepositoryRoot, RepositoryVersion},
     preset_container::PresetContainer,
     AuthoringApplication,
 };
 use crate::{
     kontakt::{chunkdata::ChunkData, instrument::KontaktInstrument},
     nis::items::{BNISoundPreset, Preset, PresetChunkItem},
+    nks::header::BPatchHeaderV42,
     prelude::*,
     read_bytes::ReadBytesExt,
 };
@@ -33,6 +34,14 @@ impl Repository {
     /// ```
     pub fn read<R: ReadBytesExt>(reader: R) -> Result<Self> {
         Ok(Self(ItemContainer::read(reader)?))
+    }
+
+    pub fn nks_header(&self) -> Result<BPatchHeaderV42> {
+        if let Some(item) = self.0.find(&ItemID::BNISoundHeader) {
+            let reader = Cursor::new(&item.data);
+            return Ok(BNISoundHeader::read(reader)?.0);
+        }
+        Err(NIFileError::Static("could not find BNISoundHeader"))
     }
 
     /// Returns the [`RepositoryVersion`], also referred to sometimes as the NISD Version.

@@ -3,10 +3,7 @@ use tracing::instrument;
 
 use color_eyre::eyre::Result;
 use ni_file::{
-    self,
-    fm8::FM8Preset,
-    kontakt::{instrument::KontaktInstrument, zone_data::ZoneDataPublicParams},
-    nifile::NIFile,
+    self, fm8::FM8Preset, kontakt::instrument::KontaktInstrument, nifile::NIFile,
     nks::header::NKSHeader,
 };
 
@@ -15,7 +12,9 @@ fn print_kontakt_instrument(instrument: KontaktInstrument) -> Result<()> {
     if let Some(Ok(program)) = instrument.program() {
         if let Ok(params) = program.public_params() {
             println!("\nProgram:");
-            println!("  name:\t{}", params.name);
+            println!("  name:\t\t{}", params.name);
+            println!("  credits:\t{}", params.instrument_credits);
+            println!("  author:\t{}", params.instrument_author);
         }
     }
     if let Some(filename_table) = instrument.filename_table() {
@@ -65,12 +64,24 @@ pub fn main() -> Result<()> {
     match NIFile::read(file)? {
         NIFile::NISContainer(repository) => {
             println!("Detected format:\t\t\tNIS (Native Instruments Sound) Container");
+            println!("\nNIS Data:\n");
             println!("Version: {}", repository.nisound_version()?);
             println!(
                 "Authoring Application: {:?} {}\n",
                 repository.authoring_application()?,
                 repository.preset_version()?
             );
+
+            if let Ok(h) = repository.nks_header() {
+                println!("\nBPatchHeaderV42:");
+                println!("  type:\t\t\t{:?}", h.patch_type);
+                println!("  kontakt_version:\t{}", h.app_version);
+                println!("  author:\t\t{}", h.author);
+                println!("  zones:\t\t{}", h.number_of_zones);
+                println!("  groups:\t\t{}", h.number_of_groups);
+                println!("  instruments:\t\t{}", h.number_of_instruments);
+                println!("  created_at:\t\t{}", h.created_at);
+            }
 
             print_kontakt_instrument(repository.instrument()?)?;
 
@@ -88,11 +99,12 @@ pub fn main() -> Result<()> {
         }
         NIFile::NKSContainer(nks) => {
             println!("Detected format:\t\tNKS (Native Instruments Kontakt Sound) Container");
+            println!("\nNKS Data:\n");
 
             use NKSHeader::*;
             match &nks.header {
                 BPatchHeaderV2(h) => {
-                    println!("\nV2 header:");
+                    println!("\nBPatchHeaderV2:");
                     println!("  type:\t\t\t{:?}", h.patch_type);
                     println!("  kontakt_version:\t{}", h.app_version);
                     println!("  author:\t\t\t{}", h.author);
@@ -102,7 +114,7 @@ pub fn main() -> Result<()> {
                     println!("  created_at:\t\t{}", h.created_at);
                 }
                 BPatchHeaderV42(h) => {
-                    println!("\nV42 header:");
+                    println!("\nBPatchHeaderV42:");
                     println!("  type:\t\t\t{:?}", h.patch_type);
                     println!("  kontakt_version:\t{}", h.app_version);
                     println!("  author:\t\t{}", h.author);

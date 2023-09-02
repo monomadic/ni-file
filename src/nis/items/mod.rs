@@ -13,6 +13,9 @@ pub mod bank;
 pub mod bank_container;
 pub mod binary_chunk_item;
 
+mod bni_sound_header;
+pub use bni_sound_header::BNISoundHeader;
+
 mod bni_sound_preset;
 pub use bni_sound_preset::BNISoundPreset;
 

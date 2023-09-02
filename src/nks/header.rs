@@ -42,35 +42,6 @@ pub struct BPatchHeaderV2 {
     pub decompressed_length: u32,
 }
 
-// #[derive(Debug)]
-// pub struct NKSPatchInfo {
-//     pub patch_type: PatchType,
-//     pub app_version: NKIAppVersion,
-//     pub icon: u32, // TODO: change to icon enum
-//     pub author: String,
-//     pub created_at: time::Date,
-//     pub app_signature: String,
-//     pub number_of_zones: u16,
-//     pub number_of_groups: u16,
-//     pub number_of_instruments: u16,
-// }
-//
-// impl From<BPatchHeaderV42> for NKSPatchInfo {
-//     fn from(p: BPatchHeaderV42) -> Self {
-//         NKSPatchInfo {
-//             patch_type: p.patch_type,
-//             app_version: p.app_version,
-//             icon: p.icon,
-//             author: p.author,
-//             created_at: p.created_at,
-//             app_signature: p.app_signature,
-//             number_of_zones: p.number_of_zones,
-//             number_of_groups: p.number_of_groups,
-//             number_of_instruments: p.number_of_instruments,
-//         }
-//     }
-// }
-
 impl BPatchHeaderV2 {
     pub fn read_le<R: ReadBytesExt>(mut reader: R) -> Result<Self, NIFileError> {
         let header_magic = reader.read_u32_le()?;
@@ -188,7 +159,7 @@ pub struct NKIAppVersion {
 impl std::fmt::Display for NKIAppVersion {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         f.write_str(&format!(
-            "app_version {}.{}.{}.{}",
+            "{}.{}.{}.{}",
             self.major, self.minor_2, self.minor_2, self.minor_3,
         ))
     }
