@@ -1,7 +1,6 @@
 pub mod instrument;
 
 pub mod bparam_array;
-mod bprogram_container;
 pub mod chunkdata;
 pub mod error;
 pub mod filename_list;

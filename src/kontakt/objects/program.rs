@@ -9,7 +9,7 @@ use crate::{
     Error,
 };
 
-use super::program_data::ProgramDataV80;
+use super::program_data::ProgramPublicParams;
 
 #[derive(Debug)]
 pub struct Program(StructuredObject);
@@ -19,19 +19,29 @@ impl Program {
         Ok(Self(StructuredObject::read(&mut reader)?))
     }
 
-    pub fn public_params(&self) -> Result<ProgramDataV80, Error> {
+    pub fn public_params(&self) -> Result<ProgramPublicParams, Error> {
         let reader = Cursor::new(&self.0.public_data);
 
-        match self.0.version {
-            0x80 => Ok(ProgramDataV80::read(reader)?),
-            _ => todo!(),
-        }
+        ProgramPublicParams::read(reader, self.0.version)
+
+        // match self.0.version {
+        //     0x80 | 0x82 | 0x90 => Ok(ProgramDataV80::read(reader)?),
+        //     0xa6 => todo!(),
+        //     0xa7 => todo!(),
+        //     0xa8 | 0xa9 | 0xaa | 0xab | 0xac | 0xad | 0xae => todo!(),
+        //     0xaf => todo!(),
+        //     _ => todo!(),
+        // }
     }
 
     pub fn zones(&self) -> Option<Result<Vec<ZoneData>, Error>> {
         self.0
             .find_first(0x34)
             .map(|chunk| ZoneList::try_from(chunk).map(|z| z.zones))
+    }
+
+    pub fn children(&self) -> &Vec<ChunkData> {
+        &self.0.children
     }
 
     // 0x32 VoiceGroups
@@ -52,33 +62,6 @@ impl std::convert::TryFrom<&ChunkData> for Program {
         let reader = Cursor::new(&chunk.data);
         Self::read(reader)
     }
-}
-
-#[derive(Debug, Default)]
-pub struct ProgramDataPublicParams {
-    name: String,
-    num_bytes_samples_total: f64,
-    transpose: i8,
-    volume: f32,
-    pan: f32,
-    tune: f32,
-    low_velocity: u8,
-    high_velocity: u8,
-    low_key: u8,
-    high_key: u8,
-    default_key_switch: i16,
-    dfd_channel_preload_size: i32,
-    library_id: i32,
-    fingerprint: u32,
-    loading_flags: u32,
-    group_solo: bool,
-    cat_icon_idx: i32,
-    instrument_credits: String,
-    instrument_author: String,
-    instrument_url: String,
-    instrument_cat1: i16,
-    instrument_cat2: i16,
-    instrument_cat3: i16,
 }
 
 #[derive(Debug, Default)]

@@ -11,6 +11,13 @@ use ni_file::{
 };
 
 fn print_kontakt_instrument(instrument: KontaktInstrument) -> Result<()> {
+    println!("\nKontakt Data:");
+    if let Some(Ok(program)) = instrument.program() {
+        if let Ok(params) = program.public_params() {
+            println!("\nProgram:");
+            println!("  name:\t{}", params.name);
+        }
+    }
     if let Some(filename_table) = instrument.filename_table() {
         println!("\nFilename table:");
         let filename_table = filename_table?;
