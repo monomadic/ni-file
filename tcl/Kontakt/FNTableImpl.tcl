@@ -56,16 +56,16 @@ proc FNTableImpl {} {
 	set length [uint32 "length"]
 	set version [uint16 -hex "version"]
 
-
 	if {$version != 0x02} { error "Unsupported FNTableImpl: v$version" }
 
-	set fileCount [uint32 "? always 1"]
+	set tableCount [uint32 "tableCount"]
 
-	section "directory?" {
+	section "absolutePath" {
 		BFileName
 	}
 
 	set fileCount [uint32 "fileCount"]
+
 	section "filenameTable" {
 		for { set i 0 } { $i < $fileCount } { incr i } {
 			BFileName

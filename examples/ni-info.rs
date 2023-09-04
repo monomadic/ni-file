@@ -64,12 +64,12 @@ pub fn main() -> Result<()> {
     match NIFile::read(file)? {
         NIFile::NISContainer(repository) => {
             println!("Detected format:\t\t\tNIS (Native Instruments Sound) Container");
-            println!("\nNIS Data:\n");
-            println!("Version: {}", repository.nisound_version()?);
+            println!("\nNIS Data:");
+            println!("  NIS Version: {}", repository.nisound_version()?);
+            println!("  Preset Version: {}", repository.preset_version()?);
             println!(
-                "Authoring Application: {:?} {}\n",
+                "  Authoring Application: {:?}",
                 repository.authoring_application()?,
-                repository.preset_version()?
             );
 
             if let Ok(h) = repository.nks_header() {
@@ -99,7 +99,6 @@ pub fn main() -> Result<()> {
         }
         NIFile::NKSContainer(nks) => {
             println!("Detected format:\t\tNKS (Native Instruments Kontakt Sound) Container");
-            println!("\nNKS Data:\n");
 
             use NKSHeader::*;
             match &nks.header {

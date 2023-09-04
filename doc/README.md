@@ -10,7 +10,7 @@ Kontakt originally had its own container format, called NKS (Native Instruments 
 
 Eventually all NI products used one single format, NIS (Native Instruments Sound), sometimes also referred to as NISound. This is a a slightly more sturdy (though still terrible) binary chunk format similar to EBML. Kontakt still used the same chunk format as previously, without the NKS container.
 
-### NISound Containers
+### NIS Containers
 
 Each [`NISound`] is like a mini database of sorts, and you can read these repositories with low
 level structs (embedded [`Item`](crate::nisound::Item)s) or use high-level structs such as [`NISound`]. It is
@@ -20,7 +20,7 @@ undocumented by the library.
 ```
 use ni_file::{NIFileType, NISound, NIMonolith};
 
-let file = std::fs::read("tests/data/nisound/file/fm8/1.2.0.1010/001-fm7.nfm8").unwrap();
+let file = std::fs::File("tests/data/nisound/file/fm8/1.2.0.1010/001-fm7.nfm8").unwrap();
 
 match NIFileType::detect(&file) {
     NIFileType::NISound => {

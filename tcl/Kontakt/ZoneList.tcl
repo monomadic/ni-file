@@ -5,13 +5,15 @@ proc ZoneList {} {
 		# 	error "ZoneList must have id 0x34, found $id"
 		# }
 
-		set length [uint32 "length"]
+		set arrayLength [uint32 "arrayLength"]
 
-		if { $length > 0 } {
-			set arrayLength [uint32 "arrayLength"]
+		if { $arrayLength > 0 } {
 
 			for { set i 0 } { $i < $arrayLength } { incr i } {
-				include "Kontakt/ZoneData.tcl"
+				section "ZoneData" {
+					uint32 "?"
+					include "Kontakt/StructuredObjectRaw.tcl"
+				}
 			}
 		}
 	}
