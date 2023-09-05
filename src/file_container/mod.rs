@@ -31,15 +31,13 @@ impl NIFileContainer {
 
 #[cfg(test)]
 mod tests {
-    use std::io::Cursor;
+    use std::fs::File;
 
     use super::*;
 
     #[test]
     fn test_read() -> Result<()> {
-        let file = Cursor::new(include_bytes!(
-            "../../tests/filetype/monolith/kontakt/000-default.nki"
-        ));
+        let file = File::open("tests/filetype/monolith/kontakt/000-default.nki")?;
         NIFileContainer::read(file)?;
         Ok(())
     }

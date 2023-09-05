@@ -15,7 +15,7 @@ pub fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     //let file = std::fs::read(&path)?;
 
-    ni_file::ncw::decode(&path)?;
+    ni_file::ncw::decode(&path).unwrap();
 
     Ok(())
 }

@@ -51,6 +51,12 @@ pub trait ReadBytesExt: Read + Seek {
         Ok(u32::from_le_bytes(buf))
     }
 
+    fn read_i32_be(&mut self) -> io::Result<i32> {
+        let mut buf = [0u8; 4];
+        self.read_exact(&mut buf)?;
+        Ok(i32::from_be_bytes(buf))
+    }
+
     fn read_u32_be(&mut self) -> io::Result<u32> {
         let mut buf = [0u8; 4];
         self.read_exact(&mut buf)?;
@@ -79,6 +85,12 @@ pub trait ReadBytesExt: Read + Seek {
         let mut buf = [0u8; 8];
         self.read_exact(&mut buf)?;
         Ok(u64::from_le_bytes(buf))
+    }
+
+    fn read_u64_be(&mut self) -> io::Result<u64> {
+        let mut buf = [0u8; 8];
+        self.read_exact(&mut buf)?;
+        Ok(u64::from_be_bytes(buf))
     }
 
     /// Read a number of bytes (failable)
