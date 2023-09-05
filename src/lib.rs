@@ -12,6 +12,7 @@ pub mod nifile; // simplified api for all supported filetypes
 
 // containers:
 pub mod file_container; // monoliths
+pub mod ncw; // native instruments compressed wave
 pub mod nis; // nisound document // kontakt 4.2 preset
 pub mod nks; // native instruments kontakt sound file format
 
