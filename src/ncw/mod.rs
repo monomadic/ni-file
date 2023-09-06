@@ -28,10 +28,30 @@ pub fn write_wav<R: Read + Seek>(reader: &mut R, outfile: &mut File) -> Result<(
     let mut writer = WavWriter::new(outfile, spec).unwrap();
 
     for sample in reader.read_block()? {
-        writer.write_sample(sample).unwrap();
+        writer.write_sample(sample as i16).unwrap();
     }
 
     writer.finalize().unwrap();
 
     Ok(())
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::fs::File;
+
+    #[test]
+    fn test_read_16bit() -> Result<(), Error> {
+        let mut file = File::open("test-data/NCW/16-bit.ncw")?;
+        write_wav(&mut file, &mut File::create("16.wav")?)?;
+        Ok(())
+    }
+
+    #[test]
+    fn test_read_24bit() -> Result<(), Error> {
+        let mut file = File::open("test-data/NCW/24-bit.ncw")?;
+        write_wav(&mut file, &mut File::create("16.wav")?)?;
+        Ok(())
+    }
 }

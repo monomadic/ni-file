@@ -4,6 +4,8 @@ use crate::{read_bytes::ReadBytesExt, Error};
 
 const HEADER_SIZE: usize = 120;
 const BLOCK_HEADER_SIZE: usize = 16;
+const NCW_SAMPLES: usize = 512;
+const MAX_CHANNELS: usize = 6;
 
 #[derive(Debug)]
 pub struct NcwReader<R> {
@@ -38,6 +40,7 @@ impl<R: Read + Seek> NcwReader<R> {
 
         let block_offsets_len = header.data_offset - header.blocks_offset;
         let num_blocks = block_offsets_len / 4;
+
         let mut block_offsets = Vec::new();
         for _ in 1..num_blocks {
             block_offsets.push(reader.read_u32_le()?);
@@ -56,22 +59,34 @@ impl<R: Read + Seek> NcwReader<R> {
         block_offsets_len / 4
     }
 
-    pub fn read_block(&mut self) -> Result<Vec<i16>, Error> {
+    pub fn read_block(&mut self) -> Result<Vec<i32>, Error> {
         let mut samples = Vec::new();
 
-        for block_offset in &self.block_offsets {
+        dbg!(self.block_offsets.len());
+        dbg!(self.num_blocks());
+
+        for (i, block_offset) in self.block_offsets.iter().enumerate() {
+            dbg!(i);
             self.reader.seek(SeekFrom::Start(
                 (self.header.data_offset + block_offset) as u64,
             ))?;
 
             let block_header = BlockHeader::read(&mut self.reader)?;
+            dbg!(&block_header);
+            if block_header.flags == 1 {
+                panic!("mid/side");
+            }
+
+            let bits = block_header.bits.abs() as usize;
+            let block_data_len = bits * 64;
+            let mut block_data = vec![0; block_data_len];
+            self.reader.read_exact(&mut block_data).unwrap();
+            //let block_data = self.reader.read_bytes(bits * 64)?;
 
             if block_header.bits > 0 {
                 // Delta decode, block_data represents the delta from base_value
-                let bits = block_header.bits as usize;
-                let block_data = self.reader.read_bytes(bits * 64)?;
 
-                samples.append(&mut decode_delta_block_i16(
+                samples.append(&mut decode_delta_block_i32(
                     block_header.base_value,
                     &block_data,
                     bits,
@@ -92,34 +107,16 @@ impl<R: Read + Seek> NcwReader<R> {
                 // }
             } else if block_header.bits < 0 {
                 // Bit truncation (simple compression)
-
                 let bits = block_header.bits.abs() as usize;
-                let block_data = self.reader.read_bytes(bits * 64)?;
-
-                samples.append(&mut decode_truncated_block_i16(&block_data, bits));
-
-                // for byte in block_data {
-                //     let truncated = byte & (2u8.pow(bits) - 1);
-                //     samples.push(truncated as i16);
-                // }
-
-                // let mut read_buffer = [0; 8]; // Max 64 bits per read
-                // self.reader
-                //     .read_exact(&mut read_buffer[..((num_bits + 7) / 8)])?;
-
-                // let mut read_idx = 0;
-                // while read_idx < read_buffer.len() * 8 {
-                //     let sample = (read_buffer[read_idx / 8] as i16) & ((1 << num_bits) - 1);
-                //     samples.push(sample);
-                //     read_idx += num_bits;
-                // }
+                samples.append(&mut decode_truncated_block_i32(&block_data, bits));
             } else {
+                todo!();
                 // No compression
                 let bytes_per_sample = self.header.bits_per_sample as usize / 8;
 
                 for _ in 0..512 {
                     let sample_bytes = self.reader.read_bytes(bytes_per_sample).unwrap();
-                    let sample = i16::from_le_bytes(sample_bytes.try_into().unwrap());
+                    let sample = i32::from_le_bytes(sample_bytes.try_into().unwrap());
                     samples.push(sample);
                 }
             }
@@ -140,46 +137,50 @@ impl<R: Read + Seek> NcwReader<R> {
     // }
 }
 
-fn decode_delta_block_i16(base_sample: i32, deltas: &[u8], bit_size: usize) -> Vec<i16> {
-    let mut samples: Vec<i16> = Vec::new();
-    let mut bit_offset = 0;
-    let mut current_base = base_sample.abs() as u32;
+fn decode_delta_block_i32(base_sample: i32, deltas: &[u8], bits: usize) -> Vec<i32> {
+    assert_eq!(deltas.len(), bits * 64);
 
-    samples.push(current_base as i16);
+    let mut samples: Vec<i32> = vec![0; NCW_SAMPLES];
+    let mut prev_base = base_sample;
+    let delta_values = read_packed_values_i32(deltas, bits);
 
-    while bit_offset + bit_size <= (deltas.len() * 8) {
-        let byte_offset = bit_offset / 8;
-        let bit_remainder = bit_offset % 8;
-
-        let mut temp: usize = 0;
-        for i in 0..((bit_size + 7) / 8) {
-            temp |= (deltas[(byte_offset + i) as usize] as usize) << (i * 8);
-        }
-
-        let delta = (temp >> bit_remainder) & ((1 << bit_size) - 1);
-        current_base += delta as u32;
-        samples.push(current_base as i16);
-
-        bit_offset += bit_size;
+    for (i, delta) in delta_values.iter().enumerate() {
+        samples[i] = prev_base;
+        prev_base = prev_base + delta;
     }
 
     samples
 }
 
-fn decode_truncated_block_i16(data: &[u8], bit_size: usize) -> Vec<i16> {
-    let mut samples: Vec<i16> = Vec::new();
+fn decode_delta_block_i16(base_sample: i32, deltas: &[u8], bits: usize) -> Vec<i16> {
+    let mut samples: Vec<i16> = vec![0; NCW_SAMPLES];
+    let mut prev_base = base_sample;
+
+    let delta_values = read_packed_values_i32(deltas, bits);
+
+    for (i, delta) in delta_values.iter().enumerate() {
+        samples[i] = prev_base as i16;
+        let value = prev_base + delta;
+        prev_base = value;
+    }
+
+    samples
+}
+
+fn decode_truncated_block_i32(data: &[u8], bit_size: usize) -> Vec<i32> {
+    let mut samples: Vec<i32> = Vec::new();
     let mut bit_offset = 0;
 
     while bit_offset + bit_size <= (data.len() * 8) {
         let byte_offset = bit_offset / 8;
         let bit_remainder = bit_offset % 8;
 
-        let mut temp: u32 = 0;
+        let mut temp: i32 = 0;
         for i in 0..((bit_size + 7) / 8) {
-            temp |= (data[byte_offset as usize + i as usize] as u32) << (i * 8);
+            temp |= (data[byte_offset as usize + i as usize] as i32) << (i * 8);
         }
         let value = (temp >> bit_remainder) & ((1 << bit_size) - 1);
-        samples.push(value as i16);
+        samples.push(value);
 
         bit_offset += bit_size;
     }
@@ -187,22 +188,30 @@ fn decode_truncated_block_i16(data: &[u8], bit_size: usize) -> Vec<i16> {
     samples
 }
 
-fn read_packed_values_u32(data: &[u8], bit_size: u32) -> Vec<u32> {
-    let mut values: Vec<u32> = Vec::new();
-    let mut bit_offset = 0;
+fn read_packed_values_i32(data: &[u8], precision_in_bits: usize) -> Vec<i32> {
+    let mut values: Vec<i32> = Vec::new();
+    let mut bit_accumulator: i32 = 0;
+    let mut bits_in_accumulator: usize = 0;
+    let mut byte_index = 0;
 
-    while bit_offset + bit_size <= (data.len() * 8) as u32 {
-        let byte_offset = bit_offset / 8;
-        let bit_remainder = bit_offset % 8;
+    while byte_index < data.len() {
+        // Accumulate more bits
+        bit_accumulator |= (data[byte_index] as i32) << bits_in_accumulator;
+        bits_in_accumulator += 8;
+        byte_index += 1;
 
-        let mut temp: u32 = 0;
-        for i in 0..((bit_size + 7) / 8) {
-            temp |= (data[byte_offset as usize + i as usize] as u32) << (i * 8);
+        // Extract values as long as enough bits are available
+        while bits_in_accumulator >= precision_in_bits {
+            let mut value = bit_accumulator & ((1 << precision_in_bits) - 1);
+            if value & (1 << (precision_in_bits - 1)) != 0 {
+                value |= !0 << precision_in_bits;
+            }
+            values.push(value);
+
+            // Remove used bits
+            bit_accumulator >>= precision_in_bits;
+            bits_in_accumulator -= precision_in_bits;
         }
-        let value = (temp >> bit_remainder) & ((1 << bit_size) - 1);
-        values.push(value);
-
-        bit_offset += bit_size;
     }
 
     values
@@ -256,7 +265,8 @@ mod tests {
 
         let mut output = File::create("16.pcm")?;
         for sample in ncw.read_block()? {
-            let bytes = sample.to_le_bytes();
+            // let bytes = sample.to_le_bytes();
+            let bytes = (sample as i16).to_le_bytes();
             output.write_all(&bytes)?;
         }
 
