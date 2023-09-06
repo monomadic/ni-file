@@ -3,7 +3,10 @@ use crate::{nks::nksfile::NKSFile, read_bytes::*, Error, NIFileType, Repository}
 pub enum NIFile {
     NKSContainer(NKSFile),
     NISContainer(Repository),
-    FileContainer,
+    Monolith,
+    KontaktResource,
+    NICompressedWave,
+    NICache,
 }
 
 impl NIFile {
@@ -14,14 +17,17 @@ impl NIFile {
         use NIFile::*;
         Ok(match filetype {
             NIFileType::NISContainer => NISContainer(Repository::read(reader)?),
-            NIFileType::FileContainer => FileContainer,
-            NIFileType::NICompressedWave => todo!(),
+            NIFileType::Monolith => Monolith,
+            NIFileType::NICompressedWave => NICompressedWave,
             NIFileType::KoreSound => todo!(),
             NIFileType::Kontakt1 => todo!(),
             NIFileType::NKSContainer => NKSContainer(NKSFile::read(reader)?),
-            NIFileType::KontaktResource => todo!(),
+            NIFileType::KontaktResource => KontaktResource,
             NIFileType::KontaktCache => todo!(),
-            NIFileType::Unknown => todo!(),
+            NIFileType::NKSArchive => todo!(),
+            NIFileType::NICache => NICache,
+
+            _ => todo!("Unsupported: {:?}", filetype),
         })
     }
 }

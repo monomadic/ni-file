@@ -70,7 +70,6 @@ fn read_bits(data: &[u8], index: usize, num_bits: usize) -> u32 {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use std::io::Cursor;
 
     #[test]
     fn test_read_bits() {

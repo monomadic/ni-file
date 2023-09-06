@@ -49,7 +49,7 @@ pub fn main() -> Result<(), Box<dyn std::error::Error>> {
                 None => todo!(),
             }
         }
-        NIFileType::FileContainer => todo!(),
+        NIFileType::Monolith => todo!(),
         NIFileType::NICompressedWave => todo!(),
         NIFileType::KoreSound => todo!(),
         NIFileType::Kontakt1 => todo!(),
@@ -59,7 +59,8 @@ pub fn main() -> Result<(), Box<dyn std::error::Error>> {
         }
         NIFileType::KontaktResource => todo!(),
         NIFileType::KontaktCache => todo!(),
-        NIFileType::Unknown => todo!(),
+        NIFileType::NKSArchive => todo!(),
+        _ => todo!(),
     }
 
     Ok(())

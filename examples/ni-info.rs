@@ -94,8 +94,17 @@ pub fn main() -> Result<()> {
                 _ => (),
             }
         }
-        NIFile::FileContainer => {
-            println!("Detected format:\t\tFileContainer (Monolith)");
+        NIFile::KontaktResource => {
+            println!("Detected format:\t\tKontaktResource");
+        }
+        NIFile::NICache => {
+            println!("Detected format:\t\tNICache");
+        }
+        NIFile::NICompressedWave => {
+            println!("Detected format:\t\tNICompressedWave");
+        }
+        NIFile::Monolith => {
+            println!("Detected format:\t\tMonolith (FileContainer Archive)");
         }
         NIFile::NKSContainer(nks) => {
             println!("Detected format:\t\tNKS (Native Instruments Kontakt Sound) Container");
