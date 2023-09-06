@@ -1,21 +1,22 @@
 //
-// NCW is actually just Differential PCM (DPCM), and is not proprietary technology.
+// NCW is actually just Differential PCM (DPCM).
 //
+
 mod bitreader;
 mod new;
 mod reader;
 
 use hound::{WavSpec, WavWriter};
-use std::{
-    fs::File,
-    io::{Read, Seek},
-};
+use std::io::{Read, Seek, Write};
 
 use crate::Error;
 
 use self::reader::NcwReader;
 
-pub fn write_wav<R: Read + Seek>(reader: &mut R, outfile: &mut File) -> Result<(), Error> {
+pub fn write_wav<R: Read + Seek, W: Write + Seek>(
+    reader: &mut R,
+    writer: &mut W,
+) -> Result<(), Error> {
     let mut reader = NcwReader::read(reader)?;
 
     let spec = WavSpec {
@@ -25,13 +26,12 @@ pub fn write_wav<R: Read + Seek>(reader: &mut R, outfile: &mut File) -> Result<(
         sample_format: hound::SampleFormat::Int,
     };
 
-    let mut writer = WavWriter::new(outfile, spec).unwrap();
+    let mut writer = WavWriter::new(writer, spec)?;
 
     for sample in reader.read_block()? {
-        writer.write_sample(sample as i16).unwrap();
+        writer.write_sample(sample as i16)?;
     }
-
-    writer.finalize().unwrap();
+    writer.finalize()?;
 
     Ok(())
 }
@@ -39,19 +39,21 @@ pub fn write_wav<R: Read + Seek>(reader: &mut R, outfile: &mut File) -> Result<(
 #[cfg(test)]
 mod tests {
     use super::*;
-    use std::fs::File;
+    use std::{fs::File, io::Cursor};
 
     #[test]
-    fn test_read_16bit() -> Result<(), Error> {
+    fn test_read_16bit_mono() -> Result<(), Error> {
         let mut file = File::open("test-data/NCW/16-bit.ncw")?;
-        write_wav(&mut file, &mut File::create("16.wav")?)?;
+        let mut buffer = Cursor::new(Vec::new());
+        write_wav(&mut file, &mut buffer)?;
         Ok(())
     }
 
     #[test]
-    fn test_read_24bit() -> Result<(), Error> {
+    fn test_read_24bit_stereo() -> Result<(), Error> {
         let mut file = File::open("test-data/NCW/24-bit.ncw")?;
-        write_wav(&mut file, &mut File::create("16.wav")?)?;
+        let mut buffer = Cursor::new(Vec::new());
+        write_wav(&mut file, &mut buffer)?;
         Ok(())
     }
 }

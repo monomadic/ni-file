@@ -12,12 +12,12 @@ Native Instruments file format support for rust. This library is the result of h
 - 🕒 FM8 _partial_
 - ✅ Kontakt 4.22+ _partial: NKS Container, Program, FileTable, Zones_
 - ✅ Kontakt 5-7 _partial: NIS Container, Program, FileTable, Zones_
+- 🕒 NKW Compression _partial: 16-bit mono supported, other formats to follow_
 
 ## Planned Features
 
 - ❌ FileContainer / Monolith _detection only_
-- ❌ NKS Compression
-- ❌ WebAssembly / nostd
+- ❌ WebAssembly / nostd _internal lz77 compression temporarily retired, needs refactoring to remove zlib dependency_
 - ❌ All other NI formats...
 
 Anyone who wants to join the effort, please join the telegram group at https://t.me/ni_file
