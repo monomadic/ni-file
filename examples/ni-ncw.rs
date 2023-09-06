@@ -2,6 +2,8 @@
 //  Decompress NCW files into PCM data.
 //
 
+use std::fs::File;
+
 use color_eyre::eyre::Result;
 
 pub fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -9,13 +11,14 @@ pub fn main() -> Result<(), Box<dyn std::error::Error>> {
     color_eyre::install()?;
 
     let Some(path) = std::env::args().nth(1) else {
-        println!("usage: ni-extract <FILE>");
+        println!("usage: ni-ncw <FILE>");
         return Ok(());
     };
 
-    //let file = std::fs::read(&path)?;
+    let mut reader = File::open(&path)?;
+    let mut outfile = File::create("sample.wav")?;
 
-    ni_file::ncw::decode(&path).unwrap();
+    ni_file::ncw::write_wav(&mut reader, &mut outfile).unwrap();
 
     Ok(())
 }
