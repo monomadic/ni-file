@@ -17,13 +17,23 @@ impl NIFileContainer {
         );
 
         let _header_chunk = reader.read_bytes(256)?;
-        let _file_count = reader.read_u64_le()?;
+        let file_count = reader.read_u64_le()?;
         let _total_size = reader.read_u64_le()?;
 
         // NI FC TOC
         // Native Instruments FileContainer Table Of Contents
+        // Table 1
         let mtd_magic = reader.read_bytes(16)?;
         debug_assert_eq!(mtd_magic, b"/\\ NI FC TOC  /\\");
+
+        let _header_chunk = reader.read_bytes(600)?;
+
+        for _ in 0..file_count {
+            let file_index = reader.read_u64_le()?;
+            let _ = reader.read_bytes(16)?;
+            let filename = reader.read_bytes(600)?;
+            let _ = reader.read_u64_le()?;
+        }
 
         Ok(Self(Vec::new()))
     }
