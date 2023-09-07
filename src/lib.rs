@@ -1,9 +1,6 @@
 #![allow(dead_code)]
 #![doc = include_str!("../doc/README.md")]
 
-#[macro_use]
-extern crate log;
-
 mod error;
 pub use error::*;
 

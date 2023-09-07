@@ -67,7 +67,6 @@ impl<R: Read + Seek> NcwReader<R> {
         let mut samples = Vec::new();
 
         if block_header.bits == 0 {
-            todo!();
             // No compression, read directly
             for _ in 0..sample_count {
                 let mut buffer = vec![0u8; 4]; // Assuming 32-bit samples

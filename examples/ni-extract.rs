@@ -22,7 +22,7 @@ pub fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     let file = std::fs::read(&path)?;
 
-    match NIFileType::detect(Cursor::new(&file))? {
+    match NIFileType::read(Cursor::new(&file))? {
         NIFileType::NISContainer => {
             // read the repository
             let repo = Repository::read(Cursor::new(file))?;
@@ -52,8 +52,8 @@ pub fn main() -> Result<(), Box<dyn std::error::Error>> {
         NIFileType::Monolith => todo!(),
         NIFileType::NICompressedWave => todo!(),
         NIFileType::KoreSound => todo!(),
-        NIFileType::Kontakt1 => todo!(),
-        NIFileType::NKSContainer => {
+        NIFileType::KontaktInstrumentV1 => todo!(),
+        NIFileType::NKSInstrument => {
             let nks = NKSFile::read(Cursor::new(file))?;
             std::fs::write("chunk", &nks.compressed_patch_data)?;
         }

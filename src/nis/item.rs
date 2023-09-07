@@ -6,6 +6,8 @@ use super::{
 };
 use crate::{prelude::*, read_bytes::ReadBytesExt};
 
+// TODO: simplify this to only read data pertaining to ItemContainer
+
 /// NISound documents are made up of nested [`Item`]s.
 #[derive(Clone, Debug)]
 pub struct ItemContainer {
@@ -29,7 +31,7 @@ impl ItemContainer {
 
     /// Returns the first instance of Item by ItemID within child Items.
     pub fn find(&self, kind: &ItemID) -> Option<&ItemFrame> {
-        // check this Item first
+        // Check this Item first
         if &self.items.header.item_id == kind {
             return Some(&self.items);
         }
@@ -63,7 +65,9 @@ impl ItemContainer {
 
                 log::debug!("child domain_id: {}, item_id: {}", domain_id, item_id);
 
-                let data = Cursor::new(buf.read_sized_data()?);
+                let len = buf.read_u64_le()? as usize;
+                // FIXME: expects a rewind
+                let data = Cursor::new(buf.read_bytes(len)?);
 
                 children.push(ItemContainer::read(data)?);
             }
@@ -75,26 +79,13 @@ impl ItemContainer {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use std::fs::File;
 
     #[test]
     fn test_item_read() -> Result<()> {
-        let data = std::io::Cursor::new(include_bytes!(
-            "../../tests/patchdata/NISD/ItemContainer/ItemContainer-BNISoundPreset-000"
-        ));
-        ItemContainer::read(data)?;
-
+        let data = File::open("test-data/NIS/Item/BNISoundPreset/BNISoundPreset-000")?;
+        let item = ItemContainer::read(data)?;
+        assert_eq!(item.children.len(), 0);
         Ok(())
     }
-
-    // #[test]
-    // fn test_children() -> Result<()> {
-    //     let data = include_bytes!("../../tests/filetype/NISD/kontakt/7.1.3.0/000-default.nki");
-    //     let mut data = data.as_slice();
-    //
-    //     let item = ItemContainer::read(&mut data)?;
-    //     let children = item.children;
-    //
-    //     assert_eq!(children.len(), 1);
-    //     Ok(())
-    // }
 }

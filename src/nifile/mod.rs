@@ -11,7 +11,7 @@ pub enum NIFile {
 
 impl NIFile {
     pub fn read<R: ReadBytesExt>(mut reader: R) -> Result<Self, Error> {
-        let filetype = NIFileType::detect(&mut reader)?;
+        let filetype = NIFileType::read(&mut reader)?;
         reader.rewind()?;
 
         use NIFile::*;
@@ -20,8 +20,8 @@ impl NIFile {
             NIFileType::Monolith => Monolith,
             NIFileType::NICompressedWave => NICompressedWave,
             NIFileType::KoreSound => todo!(),
-            NIFileType::Kontakt1 => todo!(),
-            NIFileType::NKSContainer => NKSContainer(NKSFile::read(reader)?),
+            NIFileType::KontaktInstrumentV1 => todo!(),
+            NIFileType::NKSInstrument => NKSContainer(NKSFile::read(reader)?),
             NIFileType::KontaktResource => KontaktResource,
             NIFileType::KontaktCache => todo!(),
             NIFileType::NKSArchive => todo!(),

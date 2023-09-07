@@ -2,8 +2,8 @@
 // NCW is actually just Differential PCM (DPCM).
 //
 
-mod bitreader;
-mod new;
+// mod bitreader;
+// mod new;
 mod reader;
 
 use hound::{WavSpec, WavWriter};

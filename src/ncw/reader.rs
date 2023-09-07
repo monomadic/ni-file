@@ -59,6 +59,7 @@ impl<R: Read + Seek> NcwReader<R> {
         block_offsets_len / 4
     }
 
+    /// Decode all blocks in 32-bit PCM samples.
     pub fn read_block(&mut self) -> Result<Vec<i32>, Error> {
         let mut samples = Vec::new();
 
@@ -110,7 +111,6 @@ impl<R: Read + Seek> NcwReader<R> {
                 let bits = block_header.bits.abs() as usize;
                 samples.append(&mut decode_truncated_block_i32(&block_data, bits));
             } else {
-                todo!();
                 // No compression
                 let bytes_per_sample = self.header.bits_per_sample as usize / 8;
 
@@ -125,16 +125,6 @@ impl<R: Read + Seek> NcwReader<R> {
         }
         Ok(samples)
     }
-
-    // pub fn read_samples(&mut self) -> Result<Vec<i16>, Error> {
-    //     let mut output = Vec::new();
-    //     while let Some(samples) = self.read_block()? {
-    //         for sample in samples {
-    //             output.push(sample);
-    //         }
-    //     }
-    //     Ok(output)
-    // }
 }
 
 fn decode_delta_block_i32(base_sample: i32, deltas: &[u8], bits: usize) -> Vec<i32> {

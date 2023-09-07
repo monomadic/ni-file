@@ -9,10 +9,58 @@ pub enum ReadBytesError {
     IO(#[from] std::io::Error),
 }
 
+pub trait FromBytes: Sized {
+    fn from_be_bytes(bytes: &[u8]) -> Self;
+    fn from_le_bytes(bytes: &[u8]) -> Self;
+}
+
+pub enum Endian {
+    LE,
+    BE,
+}
+
+macro_rules! impl_from_bytes {
+    ($($t:ty),*) => {
+        $(
+            impl FromBytes for $t {
+                fn from_be_bytes(bytes: &[u8]) -> Self {
+                    let mut array = [0u8; std::mem::size_of::<Self>()];
+                    array.copy_from_slice(bytes);
+                    <$t>::from_le_bytes(array)
+                }
+
+                fn from_le_bytes(bytes: &[u8]) -> Self {
+                    let mut array = [0u8; std::mem::size_of::<Self>()];
+                    array.copy_from_slice(bytes);
+                    <$t>::from_le_bytes(array)
+                }
+            }
+        )*
+    };
+}
+
+impl_from_bytes!(u8, i8, u16, i16, u32, i32, u64, i64, f32, f64);
+
 /// Extensions to io::Read for simplifying reading bytes.
 pub trait ReadBytesExt: Read + Seek {
+    fn read_be_bytes<T: FromBytes>(&mut self) -> io::Result<T> {
+        let mut buf = vec![0u8; std::mem::size_of::<T>()];
+        self.read_exact(&mut buf)?;
+        Ok(T::from_be_bytes(&buf))
+    }
+
+    fn read_le_bytes<T: FromBytes>(&mut self) -> io::Result<T> {
+        let mut buf = vec![0u8; std::mem::size_of::<T>()];
+        self.read_exact(&mut buf)?;
+        Ok(T::from_le_bytes(&buf))
+    }
+
     fn read_bool(&mut self) -> io::Result<bool> {
-        Ok(self.read_u8()? == 1)
+        Ok(self.read_le_bytes::<u8>()? == 1)
+    }
+
+    fn read_u16_le(&mut self) -> io::Result<u16> {
+        self.read_le_bytes::<u16>()
     }
 
     fn read_u8(&mut self) -> io::Result<u8> {
@@ -25,12 +73,6 @@ pub trait ReadBytesExt: Read + Seek {
         let mut buf = [0u8; 1];
         self.read_exact(&mut buf)?;
         Ok(i8::from_le_bytes(buf))
-    }
-
-    fn read_u16_le(&mut self) -> io::Result<u16> {
-        let mut buf = [0u8; 2];
-        self.read_exact(&mut buf)?;
-        Ok(u16::from_le_bytes(buf))
     }
 
     fn read_u16_be(&mut self) -> io::Result<u16> {
@@ -101,28 +143,6 @@ pub trait ReadBytesExt: Read + Seek {
         Ok(buf)
     }
 
-    // TODO: deprecate this
-    /// Checks data is a valid size and returns its content as a byte array
-    fn read_sized_data(&mut self) -> Result<Vec<u8>, ReadBytesError> {
-        let size_field = self.read_u64_le()?;
-        let size_field_len = std::mem::size_of::<u64>();
-
-        // Calculate the length of the data part, ensuring no underflow.
-        let data_len = size_field
-            .checked_sub(size_field_len as u64)
-            .ok_or_else(|| io::Error::new(io::ErrorKind::InvalidData, "Size field is too small"))?
-            as usize;
-
-        // Read the data bytes
-        let mut data = self.read_bytes(data_len)?;
-
-        // Create a single buffer to store both the size field and the data.
-        let mut buffer = size_field.to_le_bytes().to_vec();
-        buffer.append(&mut data);
-
-        Ok(buffer)
-    }
-
     fn read_string_utf8(&mut self) -> io::Result<String> {
         let mut bytes = Vec::new();
         loop {
@@ -179,25 +199,25 @@ mod tests {
         assert_eq!(bytes, [7]);
     }
 
-    #[test]
-    fn test_read_sized_data() {
-        let bytes: &[u8] = &[9, 0, 0, 0, 0, 0, 0, 0, 4, 5];
-        let mut cursor = io::Cursor::new(bytes);
-        let content = cursor.read_sized_data().unwrap();
-
-        assert_eq!(content, [9, 0, 0, 0, 0, 0, 0, 0, 4]);
-        assert_eq!(bytes, [5]);
-
-        // test two
-        let bytes = [
-            12_u64.to_le_bytes().to_vec(),
-            64_u32.to_le_bytes().to_vec(),
-            24_u32.to_le_bytes().to_vec(),
-        ]
-        .concat();
-        assert_eq!(
-            io::Cursor::new(bytes).read_sized_data().unwrap(),
-            [12_u64.to_le_bytes().to_vec(), 64_u32.to_le_bytes().to_vec()].concat()
-        );
-    }
+    // #[test]
+    // fn test_read_sized_data() {
+    //     let bytes: &[u8] = &[9, 0, 0, 0, 0, 0, 0, 0, 4, 5];
+    //     let mut cursor = io::Cursor::new(bytes);
+    //     let content = cursor.read_sized_data().unwrap();
+    //
+    //     assert_eq!(content, [9, 0, 0, 0, 0, 0, 0, 0, 4]);
+    //     assert_eq!(bytes, [5]);
+    //
+    //     // test two
+    //     let bytes = [
+    //         12_u64.to_le_bytes().to_vec(),
+    //         64_u32.to_le_bytes().to_vec(),
+    //         24_u32.to_le_bytes().to_vec(),
+    //     ]
+    //     .concat();
+    //     assert_eq!(
+    //         io::Cursor::new(bytes).read_sized_data().unwrap(),
+    //         [12_u64.to_le_bytes().to_vec(), 64_u32.to_le_bytes().to_vec()].concat()
+    //     );
+    // }
 }
