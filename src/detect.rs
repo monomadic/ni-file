@@ -1,4 +1,4 @@
-use crate::{read_bytes::ReadBytesExt, Error};
+use crate::{nis::ItemContainer, read_bytes::ReadBytesExt, Error};
 
 /// Supported NI filetypes.
 #[derive(Debug, PartialEq)]
@@ -45,7 +45,13 @@ impl NIFileType {
             0x01A89ED6 => NIFileType::NICompressedWave,
             0x7A10E13F => NIFileType::NICache,
             0x2F5C204E => NIFileType::Monolith,
-            _ => NIFileType::Unknown,
+            _ => {
+                reader.rewind()?;
+                match ItemContainer::read(&mut reader) {
+                    Ok(_) => NIFileType::NISContainer,
+                    Err(_) => NIFileType::Unknown,
+                }
+            }
         })
     }
 }

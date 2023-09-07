@@ -189,14 +189,12 @@ mod tests {
     fn test_read_u32_le() {
         let bytes: &[u8] = &[32_u8, 1, 4, 56, 6, 6, 90, 4, 7];
         let mut cursor = io::Cursor::new(bytes);
-        let num = cursor.read_u32_le().unwrap();
 
+        let num = cursor.read_u32_le().unwrap();
         assert_eq!(num, 939786528);
-        assert_eq!(bytes, [6, 6, 90, 4, 7]);
 
         let num = cursor.read_u32_le().unwrap();
         assert_eq!(num, 73008646);
-        assert_eq!(bytes, [7]);
     }
 
     // #[test]

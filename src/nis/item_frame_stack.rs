@@ -8,8 +8,8 @@ pub struct ItemFrameStack(pub Cursor<Vec<u8>>);
 
 impl ItemFrameStack {
     pub fn read<R: ReadBytesExt>(mut reader: R) -> Result<Self> {
-        // FIXME: expects a rewind
         let len = reader.read_u64_le()? as usize;
+        reader.seek(io::SeekFrom::Current(-8))?;
         let cursor = Cursor::new(reader.read_bytes(len)?);
         Ok(Self(cursor))
     }

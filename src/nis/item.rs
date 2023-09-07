@@ -35,6 +35,7 @@ impl ItemContainer {
         if &self.items.header.item_id == kind {
             return Some(&self.items);
         }
+        // Recursively search the children
         for item in &self.children {
             if let Some(frame) = item.find(kind) {
                 return Some(frame);
@@ -44,14 +45,10 @@ impl ItemContainer {
     }
 
     fn read_children<R: ReadBytesExt>(mut buf: R) -> Result<Vec<ItemContainer>> {
-        log::debug!("RepositoryRoot::read_children");
-
         let version = buf.read_u32_le()?;
         debug_assert_eq!(version, 1);
 
         let num_children = buf.read_u32_le()?;
-        log::debug!("num_children: {}", num_children);
-        // note: need to switch this out as it doesn't work like this
 
         let mut children = Vec::new();
         if num_children > 0 {
@@ -65,8 +62,13 @@ impl ItemContainer {
 
                 log::debug!("child domain_id: {}, item_id: {}", domain_id, item_id);
 
+                // let pos = buf.stream_position()?;
+                // let len = buf.read_u64_le()? as usize;
+                // buf.seek(io::SeekFrom::Start(pos))?;
+
                 let len = buf.read_u64_le()? as usize;
-                // FIXME: expects a rewind
+                buf.seek(io::SeekFrom::Current(-8))?;
+
                 let data = Cursor::new(buf.read_bytes(len)?);
 
                 children.push(ItemContainer::read(data)?);
@@ -86,6 +88,14 @@ mod tests {
         let data = File::open("test-data/NIS/Item/BNISoundPreset/BNISoundPreset-000")?;
         let item = ItemContainer::read(data)?;
         assert_eq!(item.children.len(), 0);
+        Ok(())
+    }
+
+    #[test]
+    fn test_item_with_children_read() -> Result<()> {
+        let data = File::open("tests/filetype/NISD/kontakt/7.1.3.0/000-default.nki")?;
+        let item = ItemContainer::read(data)?;
+        assert_eq!(item.children.len(), 1);
         Ok(())
     }
 }
