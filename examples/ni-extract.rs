@@ -2,13 +2,12 @@
 //  Extract raw InternalPresetData from an NISD container.
 //
 
-use std::io::Cursor;
+use std::{fs::File, io::Cursor};
 
 use color_eyre::eyre::Result;
 use ni_file::{
     nis::{items::PresetChunkItem, ItemContainer, ItemID},
-    nks::nksfile::NKSFile,
-    NIFileType, Repository,
+    NIFile,
 };
 
 pub fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -20,13 +19,10 @@ pub fn main() -> Result<(), Box<dyn std::error::Error>> {
         return Ok(());
     };
 
-    let file = std::fs::read(&path)?;
+    let file = File::open(&path)?;
 
-    match NIFileType::read(Cursor::new(&file))? {
-        NIFileType::NISContainer => {
-            // read the repository
-            let repo = Repository::read(Cursor::new(file))?;
-
+    match NIFile::read(file)? {
+        NIFile::NISContainer(repo) => {
             println!("Detected NISound version: {}", repo.nisound_version()?);
             println!(
                 "Authoring Application: {:?} {}\n",
@@ -49,17 +45,9 @@ pub fn main() -> Result<(), Box<dyn std::error::Error>> {
                 None => todo!(),
             }
         }
-        NIFileType::Monolith => todo!(),
-        NIFileType::NICompressedWave => todo!(),
-        NIFileType::KoreSound => todo!(),
-        NIFileType::KontaktInstrumentV1 => todo!(),
-        NIFileType::NKSInstrument => {
-            let nks = NKSFile::read(Cursor::new(file))?;
+        NIFile::NKSContainer(nks) => {
             std::fs::write("chunk", &nks.compressed_patch_data)?;
         }
-        NIFileType::KontaktResource => todo!(),
-        NIFileType::KontaktCache => todo!(),
-        NIFileType::NKSArchive => todo!(),
         _ => todo!(),
     }
 

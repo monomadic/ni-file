@@ -8,11 +8,12 @@ Native Instruments file format support for rust. This library is the result of h
 
 ## Features
 
-- 🕒 Kontakt 1/2 _partial_
-- 🕒 FM8 _partial_
+- ✅ NCW Compression
+- 🕒 Kontakt v1 _partial_
+- 🕒 Kontakt v2 _partial_
 - ✅ Kontakt 4.22+ _partial: NKS Container, Program, FileTable, Zones_
 - ✅ Kontakt 5-7 _partial: NIS Container, Program, FileTable, Zones_
-- 🕒 NKW Compression _partial: 16-bit mono supported, other formats to follow_
+- 🕒 FM8 _partial_
 
 ## Planned Features
 
@@ -51,16 +52,31 @@ cargo run --example ni-info -- tests/data/nisound/file/**/*.nkm
 ## FAQ
 
 Q: Why are you doing this?
-A: One of my life goals is to break the proprietary nature of audio software by reverse engineering every single proprietary format out there, under fair use, and Native Instruments formats are particularly egregious, locked in, and monopolistic, so they are first. If you or NI don't like it, eat me I don't care. If your sole business proposition is vendor lock in, you deserve a smart person with unlimited time on your ass. This is legal and fair use and even if it wasn't I'd still release this stuff, as long as I have power and laptop, because I believe in doing so. The audio software industry should be as good as every other software industry, but it isn't because open source isn't given a chance. This project is the culmination of literally hundreds of hours of my life, but the skills I have gained will make the next project take a tenth the time.
 
-Q: Can I extract .wav files from kontakt monolith files?
+A: The audio software industry is ruined because of vendor lockin. As a kid, I always hoped it would change. Several decades later here we are, worse than ever. So one of my life goals is to forcibly reverse engineer every single proprietary standard out there. Don't like it? Tough shit.
+
+Also, I am a reverse engineer at heart, it's fun, and this is a good cause.
+
+---
+
+Q: Can I extract embedded files from monolith containers?
+
 A: Not **yet** but there is functionality in the code for extracting samples from monoliths. This is not a difficult task, PRs welcome.
 
+---
+
 Q: Can I extract any meaningful information besides library and file metadata from any preset types?
+
 A: Yes! Program Info, ZoneData, and FileTables are extractable from most Kontakt files.
 
+---
+
 Q: Will there be write support?
-A: Eventually, but this is a low priority. Please get involved if you wish to see write support earlier.
+
+A: Maybe, I doubt it, nothing is stopping anyone adding it but mostly I want to enable conversion to more open formats. Please get involved if you wish to see write support earlier.
+
+---
 
 Q: Are compressed samples/presets supported?
-A: Yes, files mostly use FastLZ compression internally and decompression is supported by the library.
+
+A: Yes, files mostly use FastLZ compression internally and decompression is supported by the library. Samples use NCW compression, which is fully supported.

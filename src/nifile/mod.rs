@@ -1,4 +1,4 @@
-use crate::{nks::nksfile::NKSFile, read_bytes::*, Error, NIFileType, Repository};
+use crate::{detect::NIFileType, nks::nksfile::NKSFile, read_bytes::*, Error, Repository};
 
 pub enum NIFile {
     NKSContainer(NKSFile),
