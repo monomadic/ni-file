@@ -5,6 +5,7 @@
 use std::fs::File;
 
 use color_eyre::eyre::Result;
+use ni_file::ncw::NcwReader;
 
 pub fn main() -> Result<(), Box<dyn std::error::Error>> {
     std::env::set_var("RUST_BACKTRACE", "1");
@@ -15,9 +16,10 @@ pub fn main() -> Result<(), Box<dyn std::error::Error>> {
         return Ok(());
     };
 
-    let mut reader = File::open(&path)?;
-    let mut outfile = File::create("sample.wav")?;
+    let file = File::open(&path)?;
+    let mut reader = NcwReader::read(file)?;
 
+    let mut outfile = File::create("sample.wav")?;
     ni_file::ncw::write_wav(&mut reader, &mut outfile).unwrap();
 
     Ok(())

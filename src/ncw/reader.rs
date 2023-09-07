@@ -4,7 +4,7 @@ use crate::{read_bytes::ReadBytesExt, Error};
 
 const HEADER_SIZE: usize = 120;
 const BLOCK_HEADER_SIZE: usize = 16;
-const NCW_SAMPLES: usize = 512;
+const MAX_SAMPLES_PER_BLOCK: usize = 512;
 const MAX_CHANNELS: usize = 6;
 
 #[derive(Debug)]
@@ -36,8 +36,6 @@ pub struct BlockHeader {
 impl<R: Read + Seek> NcwReader<R> {
     pub fn read(mut reader: R) -> Result<Self, Error> {
         let header = NcwHeader::read(&mut reader)?;
-        // dbg!(&header);
-
         let block_offsets_len = header.data_offset - header.blocks_offset;
         let num_blocks = block_offsets_len / 4;
 
@@ -54,17 +52,16 @@ impl<R: Read + Seek> NcwReader<R> {
         })
     }
 
-    pub fn num_blocks(&self) -> u32 {
-        let block_offsets_len = self.header.data_offset - self.header.blocks_offset;
-        block_offsets_len / 4
-    }
+    // pub fn num_blocks(&self) -> u32 {
+    //     let block_offsets_len = self.header.data_offset - self.header.blocks_offset;
+    //     block_offsets_len / 4
+    // }
 
     /// Decode all blocks in 32-bit PCM samples.
     pub fn decode_samples(&mut self) -> Result<Vec<i32>, Error> {
         let mut samples = Vec::new();
 
-        for (i, block_offset) in self.block_offsets.iter().enumerate() {
-            // dbg!(i);
+        for block_offset in &self.block_offsets {
             self.reader.seek(SeekFrom::Start(
                 (self.header.data_offset + block_offset) as u64,
             ))?;
@@ -100,8 +97,6 @@ impl<R: Read + Seek> NcwReader<R> {
                     samples.push(sample);
                 }
             }
-
-            // self.current_block += 1;
         }
         Ok(samples)
     }
@@ -110,28 +105,13 @@ impl<R: Read + Seek> NcwReader<R> {
 fn decode_delta_block_i32(base_sample: i32, deltas: &[u8], bits: usize) -> Vec<i32> {
     assert_eq!(deltas.len(), bits * 64);
 
-    let mut samples: Vec<i32> = vec![0; NCW_SAMPLES];
+    let mut samples: Vec<i32> = vec![0; MAX_SAMPLES_PER_BLOCK];
     let mut prev_base = base_sample;
     let delta_values = read_packed_values_i32(deltas, bits);
 
     for (i, delta) in delta_values.iter().enumerate() {
         samples[i] = prev_base;
         prev_base = prev_base + delta;
-    }
-
-    samples
-}
-
-fn decode_delta_block_i16(base_sample: i32, deltas: &[u8], bits: usize) -> Vec<i16> {
-    let mut samples: Vec<i16> = vec![0; NCW_SAMPLES];
-    let mut prev_base = base_sample;
-
-    let delta_values = read_packed_values_i32(deltas, bits);
-
-    for (i, delta) in delta_values.iter().enumerate() {
-        samples[i] = prev_base as i16;
-        let value = prev_base + delta;
-        prev_base = value;
     }
 
     samples
@@ -223,25 +203,14 @@ impl NcwHeader {
 
 #[cfg(test)]
 mod tests {
-    use std::fs::File;
-    use std::io::Write;
-
     use super::*;
+    use std::fs::File;
 
     #[test]
     fn test_read_16bit() -> Result<(), Error> {
         let file = File::open("test-data/NCW/16-bit.ncw")?;
         let mut ncw = NcwReader::read(file)?;
-
-        let mut output = File::create("16.pcm")?;
-        for sample in ncw.decode_samples()? {
-            // let bytes = sample.to_le_bytes();
-            let bytes = (sample as i16).to_le_bytes();
-            output.write_all(&bytes)?;
-        }
-
-        //assert_eq!(ncw.header.num_samples as usize, ncw.read_samples()?.len());
-
+        ncw.decode_samples()?;
         Ok(())
     }
 
@@ -249,21 +218,7 @@ mod tests {
     fn test_read_24bit() -> Result<(), Error> {
         let file = File::open("test-data/NCW/24-bit.ncw")?;
         let mut ncw = NcwReader::read(file)?;
-
-        let mut bytes: Vec<u8> = Vec::new();
-        for sample in ncw.decode_samples()? {
-            let low_byte = (sample & 0xFF) as u8;
-            let high_byte = ((sample >> 8) & 0xFF) as u8;
-
-            bytes.push(low_byte);
-            bytes.push(high_byte);
-        }
-
-        let mut output_file = File::create("24.pcm")?;
-        output_file.write_all(&bytes)?;
-
-        // assert_eq!(ncw.header.num_samples as usize, ncw.read_samples()?.len());
-
+        ncw.decode_samples()?;
         Ok(())
     }
 }

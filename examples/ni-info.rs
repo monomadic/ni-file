@@ -3,7 +3,7 @@ use tracing::instrument;
 
 use color_eyre::eyre::Result;
 use ni_file::{
-    self, fm8::FM8Preset, kontakt::instrument::KontaktInstrument, nifile::NIFile,
+    self, fm8::FM8Preset, kontakt::instrument::KontaktInstrument, ncw::NcwReader, nifile::NIFile,
     nks::header::NKSHeader,
 };
 
@@ -102,6 +102,12 @@ pub fn main() -> Result<()> {
         }
         NIFile::NICompressedWave => {
             println!("Detected format:\t\tNICompressedWave");
+            let file = File::open(&path)?;
+            let ncw = NcwReader::read(&file)?;
+            println!("\nNCW:");
+            println!("  channels:\t\t{}", ncw.header.channels);
+            println!("  bits_per_sample:\t{}", ncw.header.bits_per_sample);
+            println!("  sample_rate:\t\t{}", ncw.header.sample_rate);
         }
         NIFile::Monolith => {
             println!("Detected format:\t\tMonolith (FileContainer Archive)");
