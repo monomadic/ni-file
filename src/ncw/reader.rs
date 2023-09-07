@@ -36,7 +36,7 @@ pub struct BlockHeader {
 impl<R: Read + Seek> NcwReader<R> {
     pub fn read(mut reader: R) -> Result<Self, Error> {
         let header = NcwHeader::read(&mut reader)?;
-        dbg!(&header);
+        // dbg!(&header);
 
         let block_offsets_len = header.data_offset - header.blocks_offset;
         let num_blocks = block_offsets_len / 4;
@@ -60,20 +60,16 @@ impl<R: Read + Seek> NcwReader<R> {
     }
 
     /// Decode all blocks in 32-bit PCM samples.
-    pub fn read_block(&mut self) -> Result<Vec<i32>, Error> {
+    pub fn decode_samples(&mut self) -> Result<Vec<i32>, Error> {
         let mut samples = Vec::new();
 
-        dbg!(self.block_offsets.len());
-        dbg!(self.num_blocks());
-
         for (i, block_offset) in self.block_offsets.iter().enumerate() {
-            dbg!(i);
+            // dbg!(i);
             self.reader.seek(SeekFrom::Start(
                 (self.header.data_offset + block_offset) as u64,
             ))?;
 
             let block_header = BlockHeader::read(&mut self.reader)?;
-            dbg!(&block_header);
             if block_header.flags == 1 {
                 panic!("mid/side");
             }
@@ -82,30 +78,14 @@ impl<R: Read + Seek> NcwReader<R> {
             let block_data_len = bits * 64;
             let mut block_data = vec![0; block_data_len];
             self.reader.read_exact(&mut block_data).unwrap();
-            //let block_data = self.reader.read_bytes(bits * 64)?;
 
             if block_header.bits > 0 {
                 // Delta decode, block_data represents the delta from base_value
-
                 samples.append(&mut decode_delta_block_i32(
                     block_header.base_value,
                     &block_data,
                     bits,
                 ));
-
-                // let mut read_buffer = [0; 8]; // Max 64 bits per read
-                // self.reader
-                //     .read_exact(&mut read_buffer[..((bits + 7) / 8)])?;
-                //
-                // let mut read_idx = 0;
-                // let mut current_base = block_header.base_value;
-                // while read_idx < read_buffer.len() * 8 {
-                //     let sample = read_buffer[read_idx / 8] as i16;
-                //     let delta = sample & ((1 >> bits) - 1);
-                //     current_base += delta as i32;
-                //     samples.push(current_base as i16);
-                //     read_idx += bits;
-                // }
             } else if block_header.bits < 0 {
                 // Bit truncation (simple compression)
                 let bits = block_header.bits.abs() as usize;
@@ -254,7 +234,7 @@ mod tests {
         let mut ncw = NcwReader::read(file)?;
 
         let mut output = File::create("16.pcm")?;
-        for sample in ncw.read_block()? {
+        for sample in ncw.decode_samples()? {
             // let bytes = sample.to_le_bytes();
             let bytes = (sample as i16).to_le_bytes();
             output.write_all(&bytes)?;
@@ -271,7 +251,7 @@ mod tests {
         let mut ncw = NcwReader::read(file)?;
 
         let mut bytes: Vec<u8> = Vec::new();
-        for sample in ncw.read_block()? {
+        for sample in ncw.decode_samples()? {
             let low_byte = (sample & 0xFF) as u8;
             let high_byte = ((sample >> 8) & 0xFF) as u8;
 

@@ -1,5 +1,7 @@
 //
-// NCW is actually just Differential PCM (DPCM).
+// NCW is basically just Differential PCM (DPCM).
+// I'm not sure why NI claimed to have their own format for the sake of it,
+// except to lock you in.
 //
 
 // mod bitreader;
@@ -25,11 +27,23 @@ pub fn write_wav<R: Read + Seek, W: Write + Seek>(
         bits_per_sample: reader.header.bits_per_sample,
         sample_format: hound::SampleFormat::Int,
     };
+    dbg!(spec);
 
     let mut writer = WavWriter::new(writer, spec)?;
 
-    for sample in reader.read_block()? {
-        writer.write_sample(sample as i16)?;
+    for sample in reader.decode_samples()? {
+        match reader.header.bits_per_sample {
+            32 | 24 => {
+                writer.write_sample(sample as i32)?;
+            }
+            16 => {
+                writer.write_sample(sample as i16)?;
+            }
+            8 => {
+                writer.write_sample(sample as i8)?;
+            }
+            _ => panic!("Unknown output sample format"),
+        }
     }
     writer.finalize()?;
 
@@ -46,6 +60,10 @@ mod tests {
         let mut file = File::open("test-data/NCW/16-bit.ncw")?;
         let mut buffer = Cursor::new(Vec::new());
         write_wav(&mut file, &mut buffer)?;
+
+        // let mut output_file = File::create("16.wav")?;
+        // output_file.write_all(&buffer.into_inner())?;
+
         Ok(())
     }
 
@@ -54,6 +72,10 @@ mod tests {
         let mut file = File::open("test-data/NCW/24-bit.ncw")?;
         let mut buffer = Cursor::new(Vec::new());
         write_wav(&mut file, &mut buffer)?;
+
+        // let mut output_file = File::create("24.wav")?;
+        // output_file.write_all(&buffer.into_inner())?;
+
         Ok(())
     }
 }
