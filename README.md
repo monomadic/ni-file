@@ -29,7 +29,7 @@ I'm on telegram at `@deathdisco`.
 
 Please check the [docs](/doc/README.md) for the latest api changes and schematics.
 
-You might also wish to check out the [working repository](https://github.com/monomadic/hexfiend-templates) I use for [hexfiend](https://hexfiend.com/). This is where a lot of my work in reverse engineering for file formats, and has some file information not present in this repository (and some other RE projects). If a file is not reading correctly with this library, the place to start looking is usually by having a set of these templates on hand and viewing the file with that.
+You might also wish to check out my [working repository](https://github.com/monomadic/hexfiend-templates) of [hexfiend](https://hexfiend.com/) templates. This is where a lot of my work in reverse engineering file formats begins, and has some file information not present in this repository (and some other RE projects). If a file is not reading correctly with this library, the place to start looking is usually by having a set of these templates on hand and viewing the file with that.
 
 ## Installation
 
@@ -55,21 +55,21 @@ cargo run --example ni-info -- tests/data/nisound/file/**/*.nkm
 
 Q: Why are you doing this?
 
-A: The audio software industry is ruined because of vendor lockin. As a kid, I always hoped it would change. Several decades later here we are, worse than ever. So one of my life goals is to forcibly reverse engineer every single proprietary standard out there. Don't like it? Tough shit.
+A: Creating music with audio software is a totally ruined experience because of vendor lock-in. As a kid, I always hoped it would change. Several decades later here we are, worse than ever. So one of my life goals is to forcibly reverse engineer every proprietary audio format out there. Don't like it? Tough shit.
 
 Also, I am a reverse engineer at heart, it's fun, and this is a good cause.
 
 ---
 
-Q: Can I extract embedded files from monolith containers?
+Q: What is the purpose of this library?
 
-A: Not **yet** but there is functionality in the code for extracting samples from monoliths. This is not a difficult task, PRs welcome.
+A: First, to document and expose these file types so that artists can have actual control of their own work, and second, to allow anyone to convert out of proprietary formats into open source standards. There are other use cases for this software, such as file support in third party software, but those are not interesting to me and not the primary focus of this knowledge work.
 
 ---
 
-Q: Can I extract any meaningful information besides library and file metadata from any preset types?
+Q: What can this library do?
 
-A: Yes! Program Info, ZoneData, and FileTables are extractable from most Kontakt files.
+A: It has been a long slog but finally various formats are starting to be supported. The focus is on Kontakt single instruments for now (all versions). You can currently decompress samples, extract a lot of information such as Key Zones and metadata. You could in theory write a SFZ conversion tool for example, but it would lack many features.
 
 ---
 
@@ -79,6 +79,6 @@ A: Maybe, I doubt it, nothing is stopping anyone adding it but mostly I want to 
 
 ---
 
-Q: Are compressed samples/presets supported?
+Q: Can I help?
 
-A: Yes, files mostly use FastLZ compression internally and decompression is supported by the library. Samples use NCW compression, which is fully supported.
+A: Please do! Join our [telegram group](https://t.me/ni_file) and we would be happy to answer any questions you have.
