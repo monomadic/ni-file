@@ -29,6 +29,8 @@ I'm on telegram at `@deathdisco`.
 
 Please check the [docs](/doc/README.md) for the latest api changes and schematics.
 
+You might also wish to check out the [working repository](https://github.com/monomadic/hexfiend-templates) I use for [hexfiend](https://hexfiend.com/). This is where a lot of my work in reverse engineering for file formats, and has some file information not present in this repository (and some other RE projects). If a file is not reading correctly with this library, the place to start looking is usually by having a set of these templates on hand and viewing the file with that.
+
 ## Installation
 
 This is a library, but there are helper binaries in the examples folder:
