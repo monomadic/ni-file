@@ -6,7 +6,9 @@ use super::chunkdata::ChunkData;
 
 #[derive(Debug)]
 pub struct FNTableImpl {
-    pub filenames: HashMap<u32, String>,
+    pub special_filetable: HashMap<u32, String>,
+    pub sample_filetable: HashMap<u32, String>,
+    pub other_filetable: HashMap<u32, String>,
 }
 
 #[derive(Debug)]
@@ -18,9 +20,7 @@ pub fn read_filename<R: ReadBytesExt>(mut reader: R) -> Result<Vec<String>, Erro
     let segments = reader.read_i32_le()?;
     let mut filename = Vec::new();
     for _ in 0..segments {
-        let _segment_type = reader.read_i8()?;
-        let segment = reader.read_widestring_utf16()?;
-        filename.push(segment);
+        filename.push(BFileNameSegment::read(&mut reader)?);
     }
     Ok(filename)
 }
@@ -52,21 +52,44 @@ impl std::convert::TryFrom<&ChunkData> for FNTableImpl {
 impl FNTableImpl {
     pub fn read<R: ReadBytesExt>(mut reader: R) -> Result<Self, Error> {
         let version = reader.read_u16_le()?;
-        assert!(version == 2);
+        assert!(version == 2); // hard-coded to 2, throws exception otherwise
 
-        let _table_count = reader.read_u32_le()?; // usually 1, but if higher, extra data included
-                                                  // at bottom.
-
-        let _absolute_path = read_filename(&mut reader)?.join("/");
-
-        let file_count = reader.read_u32_le()?;
-
-        let mut filenames = HashMap::new();
+        // special filetable
+        let file_count = reader.read_u32_le()?; // usually 1, but if higher, extra data included
+        let mut special_filetable = HashMap::new();
         for i in 0..file_count {
-            filenames.insert(i, read_filename(&mut reader)?.join("/"));
+            special_filetable.insert(i, read_filename(&mut reader)?.join("/"));
         }
 
-        Ok(Self { filenames })
+        // sample filetable
+        let file_count = reader.read_u32_le()?;
+        let mut sample_filetable = HashMap::new();
+        for i in 0..file_count {
+            sample_filetable.insert(i, read_filename(&mut reader)?.join("/"));
+        }
+
+        // hashtable?
+        for _ in 0..file_count {
+            reader.read_u64_le()?;
+        }
+
+        // offsets?
+        for _ in 0..file_count {
+            reader.read_u32_le()?;
+        }
+
+        // other filetable
+        let file_count = reader.read_u32_le()?;
+        let mut other_filetable = HashMap::new();
+        for i in 0..file_count {
+            other_filetable.insert(i, read_filename(&mut reader)?.join("/"));
+        }
+
+        Ok(Self {
+            special_filetable,
+            sample_filetable,
+            other_filetable,
+        })
     }
 }
 
@@ -111,28 +134,20 @@ impl BFileName {
 struct BFileNameSegment;
 
 impl BFileNameSegment {
-    pub fn read<R: ReadBytesExt>(mut reader: R) -> Result<BFileNameSegment, Error> {
-        let i = reader.read_i8()?;
-        // if i < 11
-        if i < 0xb {
-            let _a = reader.read_u16_le()?;
-            // if (0x316U >> (uVar5 & 0x1F)) & 1 == 0 {}
-            if false {
-                match i {
-                    5 => {}
-                    10 => {}
-                    _ => panic!(),
-                }
-            } else {
-                let _s = reader.read_widestring_utf16()?;
+    pub fn read<R: ReadBytesExt>(mut reader: R) -> Result<String, Error> {
+        let segment_type = reader.read_u8()?;
+        Ok(match segment_type {
+            1 => {
+                // drive
+                format!("{}:", reader.read_widestring_utf16()?)
             }
-        }
-        if i < 0 {
-            reader.read_widestring_utf16()?;
-        } else if i > 0 {
-        }
-
-        Ok(BFileNameSegment)
+            2 | 3 | 4 | 5 => reader.read_widestring_utf16()?,
+            6 => {
+                // set special type
+                String::new()
+            }
+            _ => panic!("unknown segment id: {segment_type}"),
+        })
     }
 }
 
@@ -146,6 +161,30 @@ mod tests {
     fn test_structured_object() -> Result<(), Error> {
         let file = File::open("tests/patchdata/KontaktV42/filename_list_pre_k5/4.2.2.4504/000")?;
         FileNameListPreK51::read(file)?;
+        Ok(())
+    }
+
+    #[test]
+    fn test_fntableimpl() -> Result<(), Error> {
+        let mut file = File::open("test-data/kontakt/fntableimpl/v02/fntableimplv02-000")?;
+        file.read_bytes(6)?; // skip chunk header
+        FNTableImpl::read(file)?;
+
+        let mut file = File::open("test-data/kontakt/fntableimpl/v02/fntableimplv02-001")?;
+        file.read_bytes(6)?; // skip chunk header
+        FNTableImpl::read(file)?;
+
+        let mut file = File::open("test-data/kontakt/fntableimpl/v02/fntableimplv02-002")?;
+        file.read_bytes(6)?; // skip chunk header
+        FNTableImpl::read(file)?;
+
+        let mut file = File::open("test-data/kontakt/fntableimpl/v02/fntableimplv02-003")?;
+        file.read_bytes(6)?; // skip chunk header
+        FNTableImpl::read(file)?;
+
+        let mut file = File::open("test-data/Kontakt/FNTableImpl/V02/FNTableImplV02-004")?;
+        file.read_bytes(6)?; // skip chunk header
+        FNTableImpl::read(file)?;
 
         Ok(())
     }

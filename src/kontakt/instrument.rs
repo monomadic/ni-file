@@ -25,7 +25,7 @@ impl KontaktInstrument {
 
     pub fn filename_table(&self) -> Option<Result<HashMap<u32, String>, Error>> {
         if let Some(chunk) = self.find_first(0x4b) {
-            return Some(FNTableImpl::try_from(chunk).map(|f| f.filenames));
+            return Some(FNTableImpl::try_from(chunk).map(|f| f.sample_filetable));
         }
 
         if let Some(chunk) = self.find_first(0x3d) {
