@@ -23,6 +23,16 @@ impl KontaktInstrument {
         self.find_first(0x28).map(Program::try_from)
     }
 
+    pub fn filename_tables(&self) -> Result<Option<FNTableImpl>, Error> {
+        if let Some(chunk) = self.find_first(0x4b) {
+            return Ok(Some(FNTableImpl::try_from(chunk)?));
+        }
+
+        // TODO: convert FileNameListPreK51
+
+        Ok(None)
+    }
+
     pub fn filename_table(&self) -> Option<Result<HashMap<u32, String>, Error>> {
         if let Some(chunk) = self.find_first(0x4b) {
             return Some(FNTableImpl::try_from(chunk).map(|f| f.sample_filetable));

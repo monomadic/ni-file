@@ -17,11 +17,21 @@ fn print_kontakt_instrument(instrument: KontaktInstrument) -> Result<()> {
             println!("  author:\t{}", params.instrument_author);
         }
     }
-    if let Some(filename_table) = instrument.filename_table() {
-        println!("\nFilename table:");
-        let filename_table = filename_table?;
+    if let Some(filename_table) = instrument.filename_tables()? {
+        println!("\nFilename tables:");
 
-        for (index, filename) in &filename_table {
+        println!("\nOther:");
+        for (index, filename) in &filename_table.other_filetable {
+            println!("{}:\t{}", index, filename);
+        }
+
+        println!("\nSamples:");
+        for (index, filename) in &filename_table.sample_filetable {
+            println!("{}:\t{}", index, filename);
+        }
+
+        println!("\nSpecial:");
+        for (index, filename) in &filename_table.special_filetable {
             println!("{}:\t{}", index, filename);
         }
 
@@ -30,7 +40,10 @@ fn print_kontakt_instrument(instrument: KontaktInstrument) -> Result<()> {
                 println!("\nZones:");
                 for zone in zones? {
                     let zone_data = zone.public_params()?;
-                    if let Some(filename) = filename_table.get(&(zone_data.filename_id as u32)) {
+                    if let Some(filename) = filename_table
+                        .sample_filetable
+                        .get(&(zone_data.filename_id as u32))
+                    {
                         println!("Zone: {}", filename);
                     }
                 }
