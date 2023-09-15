@@ -4,20 +4,20 @@
 
 # Native Instruments File Format
 
-Native Instruments file format support for rust. This library is the result of hundreds of hours of painstaking research.
+Native Instruments file format support for rust. This library is the result of hundreds of hours of painstaking reverse engineering and research.
 
 ## Features
 
 - ✅ NCW Compression: available as a [separate crate](https://github.com/monomadic/ncw) cli utility.
-- 🕒 Kontakt v1 _partial_
-- 🕒 Kontakt v2 _partial_
 - ✅ Kontakt 4.22+ _partial: NKS Container, Program, FileTable, Zones_
 - ✅ Kontakt 5-7 _partial: NIS Container, Program, FileTable, Zones_
-- 🕒 FM8 _partial_
+- ✅ Kontakt FileContainer/Monolith: _Read/Extract Support_
 
 ## Planned Features
 
-- ❌ FileContainer / Monolith _detection only_
+- 🕒 Kontakt v1 _partial_
+- 🕒 Kontakt v2 _partial_
+- 🕒 FM8 _partial_
 - ❌ WebAssembly / nostd _internal lz77 compression temporarily retired, needs refactoring to remove zlib dependency_
 - ❌ All other NI formats...
 
@@ -36,8 +36,8 @@ You might also wish to check out my [working repository](https://github.com/mono
 This is a library, but there are helper binaries in the examples folder:
 
 - `ni-info` prints information about NI file formats.
-- `ni-tree` prints the tree structure of NISD containers.
-- `ni-extract` dumps internal preset data from NISD containers.
+- `ni-tree` prints the tree structure of NIS containers.
+- `ni-extract` dumps internal preset data from NIS Containers, NKI Instruments and NIS FileContainers.
 - `ni-convert` (coming soon) converts between formats
 
 ```bash
