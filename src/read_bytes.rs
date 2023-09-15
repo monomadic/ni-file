@@ -14,11 +14,6 @@ pub trait FromBytes: Sized {
     fn from_le_bytes(bytes: &[u8]) -> Self;
 }
 
-pub enum Endian {
-    LE,
-    BE,
-}
-
 macro_rules! impl_from_bytes {
     ($($t:ty),*) => {
         $(
@@ -40,6 +35,11 @@ macro_rules! impl_from_bytes {
 }
 
 impl_from_bytes!(u8, i8, u16, i16, u32, i32, u64, i64, f32, f64);
+
+pub enum Endian {
+    LE,
+    BE,
+}
 
 /// Extensions to io::Read for simplifying reading bytes.
 pub trait ReadBytesExt: Read + Seek {

@@ -4,13 +4,13 @@
 - `NISound` / `NIS` most modern format for NI presets and instruments.
 - `Container` the structure of a NISound file.
 - `NKI` Native Instruments Kontakt Instrument
+- `NKS` Native Instruments Kontakt Secure Monolith (encrypted)
+- `NKX` Native Instruments Kontakt Xtra Secure Monolith (encrypted plus drm)
 - `NKM` Native Instruments Kontakt Multi
 - `NKB` Native Instruments Kontakt Bank
 - `NKP` Native Instruments Preset
 - `NKR` Native Instruments Resource
 - `NCW` Native Instruments Lossless Compression Audio File
-- `NKX` Native Instruments Monolith
-- `NKS` Native Instruments Kontakt Player Instrument
 - `NKC` Native Instruments Cache
 - `NKSN` Native Instruments Snapshot
 - `GP` unknown, perhaps 'General Purpose'?

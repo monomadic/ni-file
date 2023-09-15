@@ -184,21 +184,6 @@ impl FM8Preset {
             println!("? {}", reader.read_i8()?);
             println!("? {}", reader.read_i8()?);
             println!("? {}", reader.read_i8()?);
-
-            println!("? {}", reader.read_i8()?);
-            println!("? {}", reader.read_i8()?);
-            println!("? {}", reader.read_i8()?);
-            println!("? {}", reader.read_i8()?);
-
-            println!("? {}", reader.read_i8()?);
-            println!("? {}", reader.read_i8()?);
-            println!("? {}", reader.read_i8()?);
-            println!("? {}", reader.read_i8()?);
-            println!("? {}", reader.read_i8()?);
-            println!("? {}", reader.read_i8()?);
-            println!("? {}", reader.read_i8()?);
-            println!("? {}", reader.read_i8()?);
-
             println!("? {}", reader.read_i8()?);
             println!("? {}", reader.read_i8()?);
             println!("? {}", reader.read_i8()?);
@@ -208,7 +193,6 @@ impl FM8Preset {
             println!("? {}", reader.read_i8()?);
             println!("? {}", reader.read_i8()?);
             println!("? {}", reader.read_i8()?);
-
             println!("? {}", reader.read_i8()?);
             println!("? {}", reader.read_i8()?);
             println!("? {}", reader.read_i8()?);
@@ -216,7 +200,18 @@ impl FM8Preset {
             println!("? {}", reader.read_i8()?);
             println!("? {}", reader.read_i8()?);
             println!("? {}", reader.read_i8()?);
-
+            println!("? {}", reader.read_i8()?);
+            println!("? {}", reader.read_i8()?);
+            println!("? {}", reader.read_i8()?);
+            println!("? {}", reader.read_i8()?);
+            println!("? {}", reader.read_i8()?);
+            println!("? {}", reader.read_i8()?);
+            println!("? {}", reader.read_i8()?);
+            println!("? {}", reader.read_i8()?);
+            println!("? {}", reader.read_i8()?);
+            println!("? {}", reader.read_i8()?);
+            println!("? {}", reader.read_i8()?);
+            println!("? {}", reader.read_i8()?);
             println!("? {}", reader.read_i8()?);
             println!("? {}", reader.read_i8()?);
             println!("? {}", reader.read_i8()?);
@@ -637,6 +632,7 @@ impl FM8Preset {
             println!("308 {:?}", reader.read_f32_le()?);
             println!("320 {:?}", reader.read_f32_le()?);
             println!("332 {:?}", reader.read_f32_le()?);
+
             println!("344 {:?}", reader.read_u32_le()?);
             println!("356 {:?}", reader.read_u32_le()?);
             println!("368 {:?}", reader.read_u32_le()?);
@@ -657,27 +653,22 @@ impl FM8Preset {
             println!("509 {:?}", reader.read_i8()?);
             println!("509 {:?}", reader.read_i8()?);
             println!("509 {:?}", reader.read_i8()?);
-
             println!("509 {:?}", reader.read_i8()?);
             println!("509 {:?}", reader.read_i8()?);
             println!("509 {:?}", reader.read_i8()?);
             println!("509 {:?}", reader.read_i8()?);
-
             println!("509 {:?}", reader.read_i8()?);
             println!("509 {:?}", reader.read_i8()?);
             println!("509 {:?}", reader.read_i8()?);
             println!("509 {:?}", reader.read_i8()?);
-
             println!("509 {:?}", reader.read_i8()?);
             println!("509 {:?}", reader.read_i8()?);
             println!("509 {:?}", reader.read_i8()?);
             println!("509 {:?}", reader.read_i8()?);
-
             println!("509 {:?}", reader.read_i8()?);
             println!("509 {:?}", reader.read_i8()?);
             println!("509 {:?}", reader.read_i8()?);
             println!("509 {:?}", reader.read_i8()?);
-
             println!("509 {:?}", reader.read_i8()?);
             println!("509 {:?}", reader.read_i8()?);
             println!("509 {:?}", reader.read_i8()?);
@@ -862,16 +853,13 @@ impl FM8Preset {
             println!("382 {:?}", reader.read_i32_le()?);
             println!("384 {:?}", reader.read_i32_le()?);
             println!("386 0x{:x}", reader.read_u32_be()?);
-
             println!("387 {:?}", reader.read_i32_le()?);
             println!("381 {:?}", reader.read_i32_le()?);
             println!("383 {:?}", reader.read_i32_le()?);
             println!("385 {:?}", reader.read_i32_le()?);
             println!("387 {:?}", reader.read_i32_le()?);
-
             println!("389 {:?}", reader.read_u32_le()?);
             println!("391 {:?}", reader.read_u32_le()?);
-
             println!("395 {:?}", reader.read_u32_le()?);
 
             println!("393 {:?}", reader.read_u8()?);
@@ -892,6 +880,7 @@ impl FM8Preset {
             println!("3922 {:?}", reader.read_i8()?);
             println!("3923 {:?}", reader.read_i8()?);
             println!("3924 {:?}", reader.read_i8()?);
+
             println!("Tempo Note Length {:?}", reader.read_i8()?);
             println!("3926 {:?}", reader.read_i8()?);
             println!("Tempo Triplets/Dotted {:?}", reader.read_i8()?); // 0: Off 1: Triplets 2: Dotted

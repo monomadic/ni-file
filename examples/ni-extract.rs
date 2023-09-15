@@ -2,7 +2,10 @@
 //  Extract raw InternalPresetData from an NISD container.
 //
 
-use std::{fs::File, io::Cursor};
+use std::{
+    fs::File,
+    io::{Cursor, Read, Seek, SeekFrom, Write},
+};
 
 use color_eyre::eyre::Result;
 use ni_file::{
@@ -43,6 +46,24 @@ pub fn main() -> Result<(), Box<dyn std::error::Error>> {
                     println!("Wrote: preset_chunk");
                 }
                 None => todo!(),
+            }
+        }
+        NIFile::Monolith(container) => {
+            println!("Detected format:\t\tMonolith (FileContainer Archive)\n");
+
+            let mut file = File::open(&path)?;
+            for item in container.items {
+                println!("Writing: {}", &item.filename);
+
+                file.seek(SeekFrom::Start(
+                    item.file_start_offset + container.file_section_offset,
+                ))?;
+                let mut output = File::create(&item.filename)?;
+
+                let mut buf = vec![0u8; item.file_size as usize];
+                file.read_exact(&mut buf)?;
+
+                output.write_all(&buf)?;
             }
         }
         NIFile::NKSContainer(nks) => {

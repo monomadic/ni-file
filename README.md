@@ -8,7 +8,7 @@ Native Instruments file format support for rust. This library is the result of h
 
 ## Features
 
-- ✅ NCW Compression
+- ✅ NCW Compression: available as a [separate crate](https://github.com/monomadic/ncw) cli utility.
 - 🕒 Kontakt v1 _partial_
 - 🕒 Kontakt v2 _partial_
 - ✅ Kontakt 4.22+ _partial: NKS Container, Program, FileTable, Zones_

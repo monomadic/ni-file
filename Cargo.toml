@@ -12,7 +12,7 @@ time = "0.3.25"
 fastlz = "0.1.0"
 flate2 = "1.0.26"
 tracing = "0.1.37"
-hound = "3.5.0"
+ncw = "0.0.1"
 
 [dev-dependencies]
 wax = "0.5.0"

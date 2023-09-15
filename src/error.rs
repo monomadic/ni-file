@@ -13,9 +13,6 @@ pub enum NIFileError {
     IO(#[from] std::io::Error),
 
     #[error(transparent)]
-    WavError(#[from] hound::Error),
-
-    #[error(transparent)]
     NKSError(#[from] NKSError),
 
     #[error(transparent)]

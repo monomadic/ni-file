@@ -1,9 +1,10 @@
+use ncw::NcwReader;
 use std::{fs::File, io::Cursor};
 use tracing::instrument;
 
 use color_eyre::eyre::Result;
 use ni_file::{
-    self, fm8::FM8Preset, kontakt::instrument::KontaktInstrument, ncw::NcwReader, nifile::NIFile,
+    self, fm8::FM8Preset, kontakt::instrument::KontaktInstrument, nifile::NIFile,
     nks::header::NKSHeader,
 };
 
@@ -122,8 +123,12 @@ pub fn main() -> Result<()> {
             println!("  bits_per_sample:\t{}", ncw.header.bits_per_sample);
             println!("  sample_rate:\t\t{}", ncw.header.sample_rate);
         }
-        NIFile::Monolith => {
-            println!("Detected format:\t\tMonolith (FileContainer Archive)");
+        NIFile::Monolith(container) => {
+            println!("Detected format:\t\tMonolith (FileContainer Archive)\n");
+            println!("Files:");
+            for item in container.items {
+                println!("  {}", item.filename);
+            }
         }
         NIFile::NKSContainer(nks) => {
             println!("Detected format:\t\tNKS (Native Instruments Kontakt Sound) Container");

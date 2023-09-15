@@ -213,12 +213,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "d2fabcfbdc87f4758337ca535fb41a6d701b65693ce38287d856d1674551ec9b"
 
 [[package]]
-name = "hound"
-version = "3.5.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "4d13cdbd5dbb29f9c88095bbdc2590c9cba0d0a1269b983fef6b2cdd7e9f4db1"
-
-[[package]]
 name = "indent_write"
 version = "2.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -303,6 +297,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "ncw"
+version = "0.0.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "5af5a0825f3783089193b7b0c803110913553d5d6ea2e0744fffbc8924fc00c5"
+
+[[package]]
 name = "ni-file"
 version = "0.0.1"
 dependencies = [
@@ -310,8 +310,8 @@ dependencies = [
  "fastlz",
  "flate2",
  "glob",
- "hound",
  "log",
+ "ncw",
  "thiserror",
  "time",
  "tracing",
