@@ -4,11 +4,13 @@ Kontakt 1 and 2 files are XML documents, both with different schemas. Kontakt 4.
 
 ## Kontakt Chunks
 
-The basic structure of a Kontakt chunk is as follows.
+Chunks start with a 16-bit id, internally these are referred to as `SerType` or Serialization Type. Then followed by 32-bit length, then the data.
 
+```
 ID | SIZE | DATA
+```
 
-The id is a u16. It is referred to as a `SerType` or Serialization Type internally. These ids are:
+### SerTypes
 
 - 0x00 BParModBase
 - 0x01 BAutomationObject

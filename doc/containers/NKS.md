@@ -1,8 +1,6 @@
 # NKS Container
 
-## Kontakt Objects
-
-Ids are known as `SerType` or Serialization Type.
+Prior to NISound containers, Kontakt instruments had their own file format known as NKS. They are fairly simple formats with a header and a compressed preset following.
 
 - `GetHeaderVersionPreNIS(file);` returns:
   - 1: 36 bytes PreV2
