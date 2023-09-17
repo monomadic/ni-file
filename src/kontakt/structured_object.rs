@@ -3,7 +3,7 @@ use crate::{read_bytes::ReadBytesExt, Error, NIFileError};
 
 use super::chunkdata::ChunkData;
 
-#[doc = include_str!("../../doc/schematics/kontakt/StructuredObject.md")]
+#[doc = include_str!("../../doc/presets/Kontakt/StructuredObject.md")]
 #[derive(Debug)]
 pub struct StructuredObject {
     pub version: u16,

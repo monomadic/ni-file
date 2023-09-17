@@ -16,7 +16,7 @@
 - `GP` unknown, perhaps 'General Purpose'?
 - `AB` AudioBlock?
 - `NISD` Native Instruments Sound Domain. (a domainID).
-- `StructuredObject` Building blocks of patch data. Generic form.
+- `StructuredObject` Generic structure for Kontakt patch chunks.
 - `K4PO` Kontakt 4 Public Object
 - `Chunk` a block of data in a Kontakt preset. Generally has an id and a length followed by the data.
 - `SER` Serializer/Deserializer

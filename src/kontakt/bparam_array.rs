@@ -2,7 +2,7 @@ use crate::{kontakt::chunkdata::ChunkData, read_bytes::ReadBytesExt, Error};
 
 // id 0x3a
 // known versions: 0x10, 0x11, 0x12
-#[doc = include_str!("../../doc/schematics/kontakt/BParamArray.md")]
+#[doc = include_str!("../../doc/presets/Kontakt/BParamArray.md")]
 #[derive(Debug)]
 pub struct BParamArray(Vec<ChunkData>);
 

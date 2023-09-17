@@ -11,7 +11,7 @@ Native Instruments file format support for rust. This library is the result of h
 - ✅ **Kontakt 4.22+** _partial support: NKS Container, Program, FileTable, Zones_
 - ✅ **Kontakt 5-7** _partial support: NIS Container, Program, FileTable, Zones_
 - ✅ **Kontakt FileContainer/Monolith**: _read support_
-- ✅ **NCW Compression**: _read support - also available as a [separate crate](https://github.com/monomadic/ncw) cli utility_.
+- ✅ **NCW Compression**: _read support - also available as a [cli utility](https://github.com/monomadic/ncw)_.
 
 ## Planned Features
 
@@ -27,7 +27,7 @@ I'm on telegram at `@deathdisco`.
 
 ## Usage
 
-Please check the [docs](/doc/README.md) for the latest api changes and schematics.
+For the rust api check [[https://docs.rs/ni-file/]]. For file schematics check the repository [docs](/doc/README.md) directory. There are also several [examples](/examples/) included which show more advanced usage.
 
 You might also wish to check out my [working repository](https://github.com/monomadic/hexfiend-templates) of [hexfiend](https://hexfiend.com/) templates. This is where a lot of my work in reverse engineering file formats begins, and has some file information not present in this repository (and some other RE projects). If a file is not reading correctly with this library, the place to start looking is usually by having a set of these templates on hand and viewing the file with that.
 
@@ -63,7 +63,7 @@ Also, I am a reverse engineer at heart, it's fun, and this is a good cause.
 
 Q: What is the purpose of this library?
 
-A: First, to document and expose these file types so that artists can have actual control of their own work, and second, to allow anyone to convert out of proprietary formats into open source standards. There are other use cases for this software, such as file support in third party software, but those are not interesting to me and not the primary focus of this knowledge work.
+A: First, to document and expose these file types so that artists can have actual control of their own work, and second, to allow anyone to convert out of proprietary formats into open source standards. There are other use cases for this software, such as file support in third party software, but those are not interesting to me and not the primary focus of this knowledge work. Note that the focus is on reversing file formats for user-created NI files, not the proprietary heavily encrypted libraries - we are not trying to make it easy to pirate. But you should be able to convert libraries you created or bought that have nothing to do with NI.
 
 ---
 
