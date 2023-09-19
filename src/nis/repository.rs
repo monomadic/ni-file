@@ -1,9 +1,12 @@
 use super::{
     item::ItemContainer,
-    item_frame::{item_id::ItemID, ItemFrame},
-    items::{AppSpecific, BNISoundHeader, EncryptionItem, RepositoryRoot, RepositoryVersion},
+    item_data::ItemData,
+    items::{
+        AppSpecific, AuthoringApplication, BNISoundHeader, EncryptionItem, RepositoryRoot,
+        RepositoryVersion,
+    },
     preset_container::PresetContainer,
-    AuthoringApplication,
+    ItemID,
 };
 use crate::{
     kontakt::{chunkdata::ChunkData, instrument::KontaktInstrument},
@@ -46,7 +49,7 @@ impl Repository {
 
     /// Returns the [`RepositoryVersion`], also referred to sometimes as the NISD Version.
     pub fn nisound_version(&self) -> Result<RepositoryVersion> {
-        RepositoryRoot::try_from(&self.0.items).map(|root| root.version())
+        RepositoryRoot::try_from(&self.0.data).map(|root| root.version())
     }
 
     /// Returns the [`AuthoringApplication`] which created this document.
@@ -54,7 +57,7 @@ impl Repository {
         // first, lets try find the AppSpecific item
         // (which means this is a multi)
         if let Some(item) = self.0.find(&ItemID::AppSpecific) {
-            return Ok(AppSpecific::try_from(item.clone())?.authoring_app);
+            return Ok(AppSpecific::try_from(item)?.authoring_app);
         }
 
         // not a good way of detecting the authoring app
@@ -64,7 +67,7 @@ impl Repository {
             None => self
                 .0
                 .find(&ItemID::Preset)
-                .and_then(|item_frame| Preset::try_from(item_frame.clone()).ok())
+                .and_then(|item_frame| Preset::try_from(item_frame).ok())
                 .map(|preset| preset.authoring_app)
                 .ok_or(NIFileError::Generic("not found".to_owned())),
         }
@@ -90,14 +93,14 @@ impl Repository {
         // first, lets try find the AppSpecific item
         // (which means this is a multi)
         if let Some(item) = self.0.find(&ItemID::AppSpecific) {
-            return Ok(AppSpecific::try_from(item.clone())?.version);
+            return Ok(AppSpecific::try_from(item)?.version);
         }
 
         self.preset_item().map(|p| p.version)
     }
 
     pub fn root(&self) -> Result<RepositoryRoot> {
-        RepositoryRoot::try_from(&self.0.items)
+        RepositoryRoot::try_from(&self.0.data)
     }
 
     /// Get a reference to the underlying [`Item`]. This is switching to the lower level components
@@ -118,7 +121,7 @@ impl Repository {
                 .0
                 .find(&ItemID::Preset)
                 .ok_or(NIFileError::Static("Missing chunk: Preset"))
-                .and_then(|item| Preset::try_from(item.clone()))
+                .and_then(|item| Preset::try_from(item))
                 .map(|preset| preset),
         }
     }
@@ -133,7 +136,7 @@ impl Repository {
 
     pub fn preset(&self) -> Result<PresetContainer> {
         self.preset_raw()
-            .and_then(|item| PresetContainer::try_from(ItemFrame::read(Cursor::new(item))?))
+            .and_then(|item| PresetContainer::try_from(ItemData::read(Cursor::new(item))?))
     }
 
     pub fn children(&self) -> &Vec<ItemContainer> {

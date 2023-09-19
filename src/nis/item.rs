@@ -1,18 +1,13 @@
 use std::io::Cursor;
 
-use super::{
-    header::ItemHeader,
-    item_frame::{item_id::ItemID, ItemFrame},
-};
+use super::{item_data::ItemData, item_header::ItemHeader, ItemID};
 use crate::{prelude::*, read_bytes::ReadBytesExt};
-
-// TODO: simplify this to only read data pertaining to ItemContainer
 
 /// NISound documents are made up of nested [`Item`]s.
 #[derive(Clone, Debug)]
 pub struct ItemContainer {
     pub header: ItemHeader,
-    pub items: ItemFrame,
+    pub data: ItemData,
     pub children: Vec<ItemContainer>,
 }
 
@@ -24,16 +19,16 @@ impl ItemContainer {
 
         Ok(ItemContainer {
             header,
-            items: ItemFrame::read(&mut chunk_data)?,
+            data: ItemData::read(&mut chunk_data)?,
             children: ItemContainer::read_children(&mut chunk_data)?,
         })
     }
 
     /// Returns the first instance of Item by ItemID within child Items.
-    pub fn find(&self, kind: &ItemID) -> Option<&ItemFrame> {
+    pub fn find(&self, kind: &ItemID) -> Option<&ItemData> {
         // Check this Item first
-        if &self.items.header.item_id == kind {
-            return Some(&self.items);
+        if &self.data.header.item_id == kind {
+            return Some(&self.data);
         }
         // Recursively search the children
         for item in &self.children {

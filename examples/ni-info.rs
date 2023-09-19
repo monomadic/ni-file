@@ -5,7 +5,7 @@ use tracing::instrument;
 use color_eyre::eyre::Result;
 use ni_file::{
     self, fm8::FM8Preset, kontakt::instrument::KontaktInstrument, nifile::NIFile,
-    nks::header::NKSHeader,
+    nis::items::AuthoringApplication, nks::header::NKSHeader,
 };
 
 fn print_kontakt_instrument(instrument: KontaktInstrument) -> Result<()> {
@@ -99,9 +99,8 @@ pub fn main() -> Result<()> {
 
             print_kontakt_instrument(repository.instrument()?)?;
 
-            use ni_file::nis::AuthoringApplication::*;
             match repository.authoring_application()? {
-                FM8 => {
+                AuthoringApplication::FM8 => {
                     let raw_preset = Cursor::new(repository.preset_raw()?);
                     FM8Preset::read(raw_preset)?;
                 }

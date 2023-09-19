@@ -41,7 +41,7 @@
 
 use std::io::Cursor;
 
-use crate::nis::item_frame::ItemFrame;
+use crate::nis::item_data::ItemData;
 use crate::nis::ItemID;
 use crate::prelude::*;
 use crate::read_bytes::ReadBytesExt;
@@ -50,12 +50,12 @@ pub struct SubtreeItem {
     pub inner_data: Vec<u8>,
 }
 
-impl std::convert::TryFrom<ItemFrame> for SubtreeItem {
+impl std::convert::TryFrom<&ItemData> for SubtreeItem {
     type Error = NIFileError;
 
-    fn try_from(frame: ItemFrame) -> Result<Self> {
+    fn try_from(frame: &ItemData) -> Result<Self> {
         debug_assert_eq!(frame.header.item_id, ItemID::SubtreeItem);
-        Self::read(Cursor::new(frame.data))
+        Self::read(Cursor::new(&frame.data))
     }
 }
 

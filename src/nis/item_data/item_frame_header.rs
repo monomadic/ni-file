@@ -1,5 +1,4 @@
-use crate::nis::item_frame::item_id::ItemID;
-use crate::nis::Domain;
+use crate::nis::{Domain, ItemID};
 use crate::prelude::*;
 use crate::read_bytes::ReadBytesExt;
 

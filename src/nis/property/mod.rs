@@ -1,2 +1,1 @@
-mod authoring_application;
 mod authoring_application_info;

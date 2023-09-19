@@ -1,4 +1,4 @@
-use crate::{nis::item_frame::app_id::AuthoringApplication, prelude::*, read_bytes::ReadBytesExt};
+use crate::{nis::items::AuthoringApplication, read_bytes::ReadBytesExt, NIFileError};
 
 pub struct AuthoringApplicationInfo {
     authoring_app: AuthoringApplication,
@@ -6,7 +6,7 @@ pub struct AuthoringApplicationInfo {
 }
 
 impl AuthoringApplicationInfo {
-    pub fn read<R>(mut reader: R) -> Result<AuthoringApplicationInfo>
+    pub fn read<R>(mut reader: R) -> Result<AuthoringApplicationInfo, NIFileError>
     where
         R: ReadBytesExt,
     {

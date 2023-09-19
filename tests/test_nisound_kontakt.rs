@@ -1,6 +1,6 @@
 mod utils;
 
-use ni_file::{nis::AuthoringApplication, Repository};
+use ni_file::{nis::items::AuthoringApplication, Repository};
 use std::fs;
 
 #[test]

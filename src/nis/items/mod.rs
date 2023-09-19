@@ -40,7 +40,7 @@ mod preset_chunk_item;
 pub use preset_chunk_item::PresetChunkItem;
 
 mod preset;
-pub use preset::Preset;
+pub use preset::{AuthoringApplication, Preset};
 
 mod repository_root;
 pub use repository_root::*;

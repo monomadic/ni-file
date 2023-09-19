@@ -13,17 +13,17 @@
 use std::io::Cursor;
 
 use crate::{
-    nis::item_frame::{item_id::ItemID, ItemFrame},
+    nis::{item_data::ItemData, ItemID},
     prelude::*,
     read_bytes::ReadBytesExt,
 };
 
 pub struct Authorization(Vec<u8>);
 
-impl std::convert::TryFrom<&ItemFrame> for Authorization {
+impl std::convert::TryFrom<&ItemData> for Authorization {
     type Error = NIFileError;
 
-    fn try_from(frame: &ItemFrame) -> std::result::Result<Self, Self::Error> {
+    fn try_from(frame: &ItemData) -> std::result::Result<Self, Self::Error> {
         debug_assert_eq!(frame.header.item_id, ItemID::Authorization);
         Authorization::read(Cursor::new(&frame.data))
     }

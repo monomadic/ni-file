@@ -1,7 +1,7 @@
 use std::{fmt::Display, io::Cursor};
 
 use crate::{
-    nis::item_frame::{item_id::ItemID, ItemFrame},
+    nis::{item_data::ItemData, ItemID},
     prelude::*,
     read_bytes::ReadBytesExt,
 };
@@ -27,10 +27,10 @@ impl Display for RepositoryVersion {
     }
 }
 
-impl std::convert::TryFrom<&ItemFrame> for RepositoryRoot {
+impl std::convert::TryFrom<&ItemData> for RepositoryRoot {
     type Error = NIFileError;
 
-    fn try_from(frame: &ItemFrame) -> std::result::Result<Self, Self::Error> {
+    fn try_from(frame: &ItemData) -> std::result::Result<Self, Self::Error> {
         assert_eq!(frame.header.item_id, ItemID::RepositoryRoot);
         RepositoryRoot::read(Cursor::new(frame.data.clone()))
     }

@@ -1,7 +1,7 @@
 use std::convert::TryInto;
 
 use crate::{
-    nis::{item_frame::ItemFrame, ItemID},
+    nis::{item_data::ItemData, ItemID},
     prelude::*,
 };
 
@@ -12,13 +12,13 @@ pub struct BNISoundPreset {
     pub preset: Preset,
 }
 
-impl std::convert::TryFrom<&ItemFrame> for BNISoundPreset {
+impl std::convert::TryFrom<&ItemData> for BNISoundPreset {
     type Error = NIFileError;
 
-    fn try_from(frame: &ItemFrame) -> Result<Self> {
+    fn try_from(frame: &ItemData) -> Result<Self> {
         debug_assert_eq!(frame.header.item_id, ItemID::BNISoundPreset);
 
-        let frame = *frame.inner.clone().unwrap();
+        let frame = &*frame.inner.clone().unwrap();
 
         // .. data
 

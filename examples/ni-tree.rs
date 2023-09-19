@@ -9,11 +9,11 @@ fn print_item_ids(item: &ItemContainer, indent: usize) -> Result<(), Box<dyn Err
         print!(
             "{:>width$}{:?}",
             " ",
-            item.items.header.item_id,
+            item.data.header.item_id,
             width = indent
         );
 
-        if let Some(inner) = &item.items.inner {
+        if let Some(inner) = &item.data.inner {
             print!(", {:?}", inner.header.item_id);
             // two levels down?
             if let Some(inner) = &inner.inner {
@@ -69,7 +69,7 @@ pub fn main() -> Result<(), Box<dyn std::error::Error>> {
             sound.preset_version()?
         );
 
-        println!("{:?}", item.items.header.item_id);
+        println!("{:?}", item.data.header.item_id);
 
         print_item_ids(&item, 1)?;
     }
