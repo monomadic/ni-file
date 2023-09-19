@@ -1,6 +1,7 @@
-use crate::NIFileError;
-
-use super::{item_data::ItemData, Domain};
+use crate::{
+    nis::{item_data::ItemData, Domain},
+    NIFileError,
+};
 
 pub struct PresetContainer(ItemData);
 

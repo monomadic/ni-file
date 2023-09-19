@@ -9,7 +9,7 @@ use std::{
 
 use color_eyre::eyre::Result;
 use ni_file::{
-    nis::{items::PresetChunkItem, ItemContainer, ItemID},
+    nis::{ItemContainer, ItemID, PresetChunkItem},
     NIFile,
 };
 

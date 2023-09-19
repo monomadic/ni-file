@@ -5,7 +5,7 @@ use tracing::instrument;
 use color_eyre::eyre::Result;
 use ni_file::{
     self, fm8::FM8Preset, kontakt::instrument::KontaktInstrument, nifile::NIFile,
-    nis::items::AuthoringApplication, nks::header::NKSHeader,
+    nis::AuthoringApplication, nks::header::NKSHeader,
 };
 
 fn print_kontakt_instrument(instrument: KontaktInstrument) -> Result<()> {

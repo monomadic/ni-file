@@ -21,13 +21,3 @@ impl From<u32> for Domain {
         }
     }
 }
-
-// #[cfg(test)]
-// mod tests {
-//     use super::*;
-//
-//     #[test]
-//     fn test_domain_id() {
-//         Ok(())
-//     }
-// }
