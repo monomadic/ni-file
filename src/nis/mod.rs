@@ -1,7 +1,6 @@
 mod header;
 mod item;
 mod item_frame;
-mod item_frame_stack;
 pub mod items;
 pub mod preset_container;
 mod property;

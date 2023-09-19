@@ -20,20 +20,17 @@ use crate::{
 
 pub struct Authorization(Vec<u8>);
 
-impl std::convert::TryFrom<ItemFrame> for Authorization {
+impl std::convert::TryFrom<&ItemFrame> for Authorization {
     type Error = NIFileError;
 
-    fn try_from(frame: ItemFrame) -> std::result::Result<Self, Self::Error> {
-        log::debug!("Authorization::try_from");
+    fn try_from(frame: &ItemFrame) -> std::result::Result<Self, Self::Error> {
         debug_assert_eq!(frame.header.item_id, ItemID::Authorization);
-        Authorization::read(Cursor::new(frame.data))
+        Authorization::read(Cursor::new(&frame.data))
     }
 }
 
 impl Authorization {
     pub fn read<R: ReadBytesExt>(mut reader: R) -> Result<Self> {
-        log::debug!("Authorization::read");
-
         // version == 1
         assert_eq!(reader.read_u32_le()?, 1);
 
@@ -52,13 +49,15 @@ impl Authorization {
 
 #[cfg(test)]
 mod tests {
+    use std::fs::File;
+
     use super::*;
 
     #[test]
     fn test_authorization_read() -> Result<()> {
-        let file = Cursor::new(include_bytes!(
-            "../../../tests/data/nisound/chunks/item-frame-property/kontakt-5/106-Authorization.data"
-        ));
+        let file = File::open(
+            "tests/data/nisound/chunks/item-frame-property/kontakt-5/106-Authorization.data",
+        )?;
 
         let _auth = Authorization::read(file)?;
 

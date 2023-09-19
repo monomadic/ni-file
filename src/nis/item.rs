@@ -53,14 +53,11 @@ impl ItemContainer {
         let mut children = Vec::new();
         if num_children > 0 {
             for _ in 0..num_children {
-                let unknown = buf.read_u32_le()?;
-                log::debug!("unknown tag: {}", unknown);
+                let _unknown = buf.read_u32_le()?;
 
                 // childs domain id
-                let domain_id = buf.read_u32_le()?;
-                let item_id = buf.read_u32_le()?;
-
-                log::debug!("child domain_id: {}, item_id: {}", domain_id, item_id);
+                let _domain_id = buf.read_u32_le()?;
+                let _item_id = buf.read_u32_le()?;
 
                 // let pos = buf.stream_position()?;
                 // let len = buf.read_u64_le()? as usize;
