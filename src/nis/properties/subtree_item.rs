@@ -1,3 +1,8 @@
+// SubtreeItem
+//
+// Properties
+// - num-hidden-items
+
 /*
     SubtreeItem (0x73, 115)
     appears on compressed segments
@@ -65,14 +70,10 @@ impl SubtreeItem {
         assert_eq!(prop_version, 1);
 
         let is_compressed = reader.read_u8()?;
-        log::debug!("is_compressed: {}", is_compressed);
+        assert_eq!(is_compressed, 1);
 
         let decompressed_size = reader.read_u32_le()?;
-        log::debug!("decompressed_size: {}", decompressed_size);
-
         let compressed_size = reader.read_u32_le()?;
-        log::debug!("compressed_size: {}", compressed_size);
-
         let compressed_data = reader.read_bytes(compressed_size as usize)?;
 
         // let inner_data =
@@ -87,13 +88,13 @@ impl SubtreeItem {
 
 #[cfg(test)]
 mod tests {
+    use std::fs::File;
+
     use super::*;
 
     #[test]
     fn test_read_subtree() -> Result<()> {
-        let data = Cursor::new(include_bytes!(
-            "../../../tests/data/nisound/chunks/item-frame-property/kontakt-4/115-SubtreeItem.data"
-        ));
+        let data = File::open("test-data/NIS/properties/SubtreeItem/SubtreeItem-000")?;
         let item = SubtreeItem::read(data)?;
 
         assert_eq!(item.inner_data.len(), 4524);

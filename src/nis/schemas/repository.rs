@@ -44,7 +44,7 @@ impl Repository {
 
     /// Returns the [`RepositoryVersion`], also referred to sometimes as the NISD Version.
     pub fn nisound_version(&self) -> Result<RepositoryVersion> {
-        RepositoryRoot::try_from(&self.0.data).map(|root| root.version())
+        RepositoryRoot::try_from(&self.0.data).map(|root| root.nisound_version)
     }
 
     /// Returns the [`AuthoringApplication`] which created this document.

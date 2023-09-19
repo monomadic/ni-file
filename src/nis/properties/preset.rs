@@ -1,4 +1,4 @@
-// properties
+// Properties
 // - ni_factory_flag
 // - authoring-app
 // - authoring-app-version
@@ -23,7 +23,7 @@ use crate::prelude::*;
 use crate::read_bytes::ReadBytesExt;
 
 pub struct Preset {
-    pub is_compressed: bool,
+    pub is_factory_preset: bool,
     pub authoring_app: AuthoringApplication,
     pub version: String,
 }
@@ -78,21 +78,15 @@ impl Preset {
     pub fn read<R: ReadBytesExt>(mut reader: R) -> Result<Self> {
         assert_eq!(reader.read_u32_le()?, 1);
 
-        let is_compressed = reader.read_u8()?;
-        log::debug!("is_compressed: {}", is_compressed);
-
+        let is_factory_preset = reader.read_bool()?;
         let authoring_app: AuthoringApplication = reader.read_u32_le()?.into();
-        log::debug!("authoring_app_id: {:?}", authoring_app);
 
-        // AuthoringApplicationInfo
-
-        // check ver
         assert_eq!(reader.read_u32_le()?, 1);
 
         let version = reader.read_widestring_utf16()?;
 
         Ok(Preset {
-            is_compressed: is_compressed == 1,
+            is_factory_preset,
             authoring_app,
             version,
         })
@@ -135,5 +129,23 @@ impl From<u32> for AuthoringApplication {
             31 => AuthoringApplication::Traktor,
             _ => AuthoringApplication::Unknown(app_id),
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use std::fs::File;
+
+    use super::*;
+
+    #[test]
+    fn test_app_specific_read() -> Result<()> {
+        let file = File::open("test-data/NIS/properties/Preset/Preset-000")?;
+        let item = Preset::read(file)?;
+
+        assert!(!item.is_factory_preset);
+        assert_eq!(item.authoring_app, AuthoringApplication::Kontakt);
+        assert_eq!(item.version, String::from("7.1.3.0"));
+        Ok(())
     }
 }

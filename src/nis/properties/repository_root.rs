@@ -7,18 +7,28 @@ use crate::{
 };
 
 /// Usually the top-level [`Item`][crate::nisound::Item] of a repository. Contains NISound version information.
-#[derive(Debug, Clone)]
+#[derive(Debug)]
 pub struct RepositoryRoot {
-    pub nisound_version: u32,
+    pub nisound_version: RepositoryVersion,
     pub repository_magic: u32,
     pub repository_type: u32,
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub struct RepositoryVersion {
     pub major: u32,
     pub minor: u32,
     pub patch: u32,
+}
+
+impl From<u32> for RepositoryVersion {
+    fn from(i: u32) -> Self {
+        RepositoryVersion {
+            major: (i >> 0x14) & 0xff,
+            minor: (i >> 0xc) & 0xff,
+            patch: i & 0xfff,
+        }
+    }
 }
 
 impl Display for RepositoryVersion {
@@ -41,12 +51,14 @@ impl RepositoryRoot {
         // itemVersion == 1
         assert_eq!(reader.read_u32_le()?, 1);
 
-        let nisound_version = reader.read_u32_le()?; // 0x20
-        let repository_magic = reader.read_u32_le()?; // 0x24
-        let repository_type = reader.read_u32_le()?; // 0x2c
+        let nisound_version = RepositoryVersion::from(reader.read_u32_le()?);
+        let repository_magic = reader.read_u32_le()?;
+        let repository_type = reader.read_u32_le()?;
 
         let mut buf = Vec::new();
         reader.read_to_end(&mut buf)?;
+
+        dbg!(buf.len());
 
         // repositoryReferenceFn
         // FileReference::read NOT EQUAL 1
@@ -62,26 +74,6 @@ impl RepositoryRoot {
             repository_type,
         })
     }
-
-    pub fn major_version(&self) -> u32 {
-        (self.nisound_version >> 0x14) & 0xff
-    }
-
-    pub fn minor_version(&self) -> u32 {
-        (self.nisound_version >> 0xc) & 0xff
-    }
-
-    pub fn patch_version(&self) -> u32 {
-        self.nisound_version & 0xfff
-    }
-
-    pub fn version(&self) -> RepositoryVersion {
-        RepositoryVersion {
-            major: (self.nisound_version >> 0x14) & 0xff,
-            minor: (self.nisound_version >> 0xc) & 0xff,
-            patch: self.nisound_version & 0xfff,
-        }
-    }
 }
 
 #[cfg(test)]
@@ -92,15 +84,19 @@ mod tests {
 
     #[test]
     fn test_repository_root_read() -> Result<()> {
-        let file = File::open(
-            "tests/data/nisound/chunks/item-frame-property/kontakt-5/118-RepositoryRoot.data",
-        )?;
-        let repository_root = RepositoryRoot::read(file)?;
+        let file = File::open("test-data/NIS/properties/RepositoryRoot/RepositoryRoot-000")?;
+        let item = RepositoryRoot::read(file)?;
 
-        assert_eq!(1, repository_root.major_version());
-        assert_eq!(7, repository_root.minor_version());
-        assert_eq!(14, repository_root.patch_version());
-        assert_eq!(0, repository_root.repository_magic);
+        assert_eq!(
+            item.nisound_version,
+            RepositoryVersion {
+                major: 1,
+                minor: 7,
+                patch: 14,
+            }
+        );
+        assert_eq!(0, item.repository_magic);
+        assert_eq!(1, item.repository_type);
 
         Ok(())
     }
