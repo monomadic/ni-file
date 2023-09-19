@@ -41,8 +41,7 @@
 
 use std::io::Cursor;
 
-use crate::nis::item_data::ItemData;
-use crate::nis::ItemID;
+use crate::nis::{ItemData, ItemID};
 use crate::prelude::*;
 use crate::read_bytes::ReadBytesExt;
 

@@ -2,10 +2,9 @@ use super::preset_container::PresetContainer;
 use crate::{
     kontakt::{chunkdata::ChunkData, instrument::KontaktInstrument},
     nis::{
-        item_data::ItemData,
-        items::{BNISoundPreset, Preset, PresetChunkItem},
-        AppSpecific, AuthoringApplication, BNISoundHeader, EncryptionItem, ItemContainer, ItemID,
-        RepositoryRoot, RepositoryVersion,
+        properties::{BNISoundPreset, Preset, PresetChunkItem},
+        AppSpecific, AuthoringApplication, BNISoundHeader, EncryptionItem, ItemContainer, ItemData,
+        ItemID, RepositoryRoot, RepositoryVersion,
     },
     nks::header::BPatchHeaderV42,
     prelude::*,

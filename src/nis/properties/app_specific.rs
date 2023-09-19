@@ -4,7 +4,7 @@
 use std::io::Cursor;
 
 use crate::{
-    nis::{item_data::ItemData, ItemID},
+    nis::{ItemData, ItemID},
     prelude::*,
 };
 

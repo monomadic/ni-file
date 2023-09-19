@@ -1,5 +1,5 @@
 use crate::{
-    nis::{item_data::ItemData, Domain},
+    nis::{Domain, ItemData},
     NIFileError,
 };
 

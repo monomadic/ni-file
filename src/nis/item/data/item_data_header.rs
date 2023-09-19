@@ -1,18 +1,18 @@
 use crate::nis::{Domain, ItemID};
-use crate::prelude::*;
 use crate::read_bytes::ReadBytesExt;
+use crate::NIFileError;
 
 /// 20 bytes
 #[derive(Debug, Clone)]
-pub struct ItemFrameHeader {
+pub struct ItemDataHeader {
     pub length: u64,
     pub domain: Domain,
     pub item_id: ItemID,
     pub version: u32,
 }
 
-impl ItemFrameHeader {
-    pub fn read<R: ReadBytesExt>(mut reader: R) -> Result<Self> {
+impl ItemDataHeader {
+    pub fn read<R: ReadBytesExt>(mut reader: R) -> Result<Self, NIFileError> {
         let length: u64 = reader.read_u64_le()?;
         let domain: Domain = reader.read_u32_le()?.into();
         let item_id: ItemID = reader.read_u32_le()?.into();

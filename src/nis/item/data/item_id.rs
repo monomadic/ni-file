@@ -1,7 +1,6 @@
 /// ID representing an Item type.
-#[derive(PartialEq, Debug, Clone, Default)]
+#[derive(PartialEq, Debug, Clone)]
 pub enum ItemID {
-    /// [`AppSpecific`](crate::nisound::items::AppSpecific) item.
     AppSpecific,
     AudioSampleItem,
     Authorization,
@@ -14,7 +13,6 @@ pub enum ItemID {
     ControllerAssignments,
     EncryptionItem,
     ExternalFileReference,
-    GenericItem(Box<ItemID>),
     InternalResourceReferenceItem,
     Item,
     Module,
@@ -24,7 +22,6 @@ pub enum ItemID {
     PresetChunkItem,
     PresetContainer,
     PresetInner,
-    #[default]
     RepositoryRoot,
     Resources,
     SoundInfoItem,
@@ -35,7 +32,6 @@ pub enum ItemID {
 impl From<u32> for ItemID {
     fn from(id: u32) -> Self {
         match id {
-            // ItemFrame
             1 => ItemID::Item,
             3 => ItemID::BNISoundPreset, // domainID NIK4 only
             4 => ItemID::BNISoundHeader, // NIK4 only
@@ -60,7 +56,6 @@ impl From<u32> for ItemID {
             121 => ItemID::ControllerAssignments,
             122 => ItemID::Module,
             123 => ItemID::ModuleBank,
-            // ?? => SegmentType::Container,
             _ => ItemID::Unknown(id),
         }
     }

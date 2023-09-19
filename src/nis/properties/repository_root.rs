@@ -1,7 +1,7 @@
 use std::{fmt::Display, io::Cursor};
 
 use crate::{
-    nis::{item_data::ItemData, ItemID},
+    nis::{ItemData, ItemID},
     prelude::*,
     read_bytes::ReadBytesExt,
 };

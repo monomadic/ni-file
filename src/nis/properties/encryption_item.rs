@@ -1,7 +1,7 @@
 use std::convert::TryInto;
 
 use crate::{
-    nis::{item_data::ItemData, ItemID},
+    nis::{ItemData, ItemID},
     prelude::*,
 };
 

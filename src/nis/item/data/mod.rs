@@ -1,23 +1,24 @@
 pub mod domain_id;
-pub mod item_frame_header;
+pub mod item_data_header;
 pub mod item_id;
 
-pub use item_frame_header::ItemFrameHeader;
+pub use domain_id::*;
+pub use item_data_header::*;
+pub use item_id::*;
 
 use crate::{prelude::*, read_bytes::ReadBytesExt};
-use item_id::ItemID;
 use std::io::{Cursor, Read};
 
 #[derive(Clone, Debug)]
 pub struct ItemData {
-    pub header: ItemFrameHeader,
+    pub header: ItemDataHeader,
     pub inner: Option<Box<ItemData>>,
     pub data: Vec<u8>,
 }
 
 impl ItemData {
     pub fn read<R: ReadBytesExt>(mut reader: R) -> Result<Self> {
-        let header = ItemFrameHeader::read(&mut reader)?;
+        let header = ItemDataHeader::read(&mut reader)?;
         let length = header.length as usize - 20;
 
         match header.item_id {
