@@ -1,14 +1,8 @@
-// Authorization {
-//  item Item,
-//  license LicenseInfo {}, // 11 x u32?
-//  u32 1,
-//  u32 0,
-// }
-// props:
-// - LicenseInfo::importProperties
-//   @product-bindings
-//   @watermark
-// @authorization-level
+// Authorization
+//
+// Properties
+// - LicenseInfo
+// - authorizaton-level
 
 use std::io::Cursor;
 

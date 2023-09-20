@@ -11,6 +11,7 @@ use crate::{
 pub struct RepositoryRoot {
     pub nisound_version: RepositoryVersion,
     pub repository_magic: u32,
+    /// Usually 1, 2, or 3
     pub repository_type: u32,
 }
 
@@ -55,18 +56,31 @@ impl RepositoryRoot {
         let repository_magic = reader.read_u32_le()?;
         let repository_type = reader.read_u32_le()?;
 
+        assert_eq!(reader.read_u32_le()?, 1);
+
+        let a = reader.read_u32_le()?;
+        dbg!(a);
+
+        let a = reader.read_widestring_utf16()?;
+        dbg!(a);
+
+        let a = reader.read_widestring_utf16()?;
+        dbg!(a);
+
+        // SNPID::read
+
+        // UUID::read
+
+        // let a = reader.read_u64_le()?;
+        // dbg!(a);
+
         let mut buf = Vec::new();
         reader.read_to_end(&mut buf)?;
 
         dbg!(buf.len());
 
-        // repositoryReferenceFn
-        // FileReference::read NOT EQUAL 1
-        // assert_ne!(reader.read_u32_le()?, 1);
-        // usually 1
-        // panic!("repo ref: {:?}", reader.read_u32_le()?);
-
-        // ItemUuid::read
+        // repository-type
+        // referenced-item-uuid
 
         Ok(Self {
             nisound_version,
@@ -83,8 +97,27 @@ mod tests {
     use super::*;
 
     #[test]
-    fn test_repository_root_read() -> Result<()> {
+    fn test_repository_root_read_000() -> Result<()> {
         let file = File::open("test-data/NIS/properties/RepositoryRoot/RepositoryRoot-000")?;
+        let item = RepositoryRoot::read(file)?;
+
+        assert_eq!(
+            item.nisound_version,
+            RepositoryVersion {
+                major: 1,
+                minor: 7,
+                patch: 14,
+            }
+        );
+        assert_eq!(0, item.repository_magic);
+        assert_eq!(1, item.repository_type);
+
+        Ok(())
+    }
+
+    #[test]
+    fn test_repository_root_read_001() -> Result<()> {
+        let file = File::open("test-data/NIS/properties/RepositoryRoot/RepositoryRoot-001")?;
         let item = RepositoryRoot::read(file)?;
 
         assert_eq!(

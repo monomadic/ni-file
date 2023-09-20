@@ -49,6 +49,11 @@ impl ItemHeader {
             uuid,
         })
     }
+
+    /// Returns the only known header flag.
+    pub fn deferred_flag(&self) -> u32 {
+        self.header_flags & 0x00000001
+    }
 }
 
 #[cfg(test)]
