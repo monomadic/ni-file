@@ -43,12 +43,22 @@ pub enum Endian {
 
 /// Extensions to io::Read for simplifying reading bytes.
 pub trait ReadBytesExt: Read + Seek {
+    /// Read a number of bytes (failable)
+    fn read_bytes(&mut self, bytes: usize) -> Result<Vec<u8>, ReadBytesError> {
+        let mut buf = vec![0u8; bytes];
+        self.read_exact(&mut buf)
+            .map_err(|_| ReadBytesError::Generic(format!("Failed to read {bytes} bytes")))?;
+        Ok(buf)
+    }
+
+    /// Read a generic big-endian type
     fn read_be_bytes<T: FromBytes>(&mut self) -> io::Result<T> {
         let mut buf = vec![0u8; std::mem::size_of::<T>()];
         self.read_exact(&mut buf)?;
         Ok(T::from_be_bytes(&buf))
     }
 
+    /// Read a generic little-endian type
     fn read_le_bytes<T: FromBytes>(&mut self) -> io::Result<T> {
         let mut buf = vec![0u8; std::mem::size_of::<T>()];
         self.read_exact(&mut buf)?;
@@ -64,83 +74,51 @@ pub trait ReadBytesExt: Read + Seek {
     }
 
     fn read_u8(&mut self) -> io::Result<u8> {
-        let mut buf = [0u8; 1];
-        self.read_exact(&mut buf)?;
-        Ok(u8::from_le_bytes(buf))
+        self.read_le_bytes::<u8>()
     }
 
     fn read_i8(&mut self) -> io::Result<i8> {
-        let mut buf = [0u8; 1];
-        self.read_exact(&mut buf)?;
-        Ok(i8::from_le_bytes(buf))
+        self.read_le_bytes::<i8>()
     }
 
     fn read_u16_be(&mut self) -> io::Result<u16> {
-        let mut buf = [0u8; 2];
-        self.read_exact(&mut buf)?;
-        Ok(u16::from_be_bytes(buf))
+        self.read_be_bytes::<u16>()
     }
 
     fn read_i16_le(&mut self) -> io::Result<i16> {
-        let mut buf = [0u8; 2];
-        self.read_exact(&mut buf)?;
-        Ok(i16::from_le_bytes(buf))
+        self.read_le_bytes::<i16>()
     }
 
     fn read_u32_le(&mut self) -> io::Result<u32> {
-        let mut buf = [0u8; 4];
-        self.read_exact(&mut buf)?;
-        Ok(u32::from_le_bytes(buf))
+        self.read_le_bytes::<u32>()
     }
 
     fn read_i32_be(&mut self) -> io::Result<i32> {
-        let mut buf = [0u8; 4];
-        self.read_exact(&mut buf)?;
-        Ok(i32::from_be_bytes(buf))
+        self.read_le_bytes::<i32>()
     }
 
     fn read_u32_be(&mut self) -> io::Result<u32> {
-        let mut buf = [0u8; 4];
-        self.read_exact(&mut buf)?;
-        Ok(u32::from_be_bytes(buf))
+        self.read_le_bytes::<u32>()
     }
 
     fn read_i32_le(&mut self) -> io::Result<i32> {
-        let mut buf = [0u8; 4];
-        self.read_exact(&mut buf)?;
-        Ok(i32::from_le_bytes(buf))
+        self.read_le_bytes::<i32>()
     }
 
     fn read_f32_le(&mut self) -> io::Result<f32> {
-        let mut buf = [0u8; 4];
-        self.read_exact(&mut buf)?;
-        Ok(f32::from_le_bytes(buf))
+        self.read_le_bytes::<f32>()
     }
 
     fn read_f64_le(&mut self) -> io::Result<f64> {
-        let mut buf = [0u8; 8];
-        self.read_exact(&mut buf)?;
-        Ok(f64::from_le_bytes(buf))
+        self.read_le_bytes::<f64>()
     }
 
     fn read_u64_le(&mut self) -> io::Result<u64> {
-        let mut buf = [0u8; 8];
-        self.read_exact(&mut buf)?;
-        Ok(u64::from_le_bytes(buf))
+        self.read_le_bytes::<u64>()
     }
 
     fn read_u64_be(&mut self) -> io::Result<u64> {
-        let mut buf = [0u8; 8];
-        self.read_exact(&mut buf)?;
-        Ok(u64::from_be_bytes(buf))
-    }
-
-    /// Read a number of bytes (failable)
-    fn read_bytes(&mut self, bytes: usize) -> Result<Vec<u8>, ReadBytesError> {
-        let mut buf = vec![0u8; bytes];
-        self.read_exact(&mut buf)
-            .map_err(|_| ReadBytesError::Generic(format!("Failed to read {bytes} bytes")))?;
-        Ok(buf)
+        self.read_be_bytes::<u64>()
     }
 
     fn read_string_utf8(&mut self) -> io::Result<String> {

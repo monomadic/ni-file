@@ -13,7 +13,8 @@
 - `NCW` Native Instruments Lossless Compression Audio File
 - `NKC` Native Instruments Cache
 - `NKSN` Native Instruments Snapshot
-- `GP` unknown, perhaps 'General Purpose'?
+- `GP` unknown namespace, perhaps 'General Purpose'?
+- `PA` product authentication namespace
 - `AB` AudioBlock?
 - `NISD` Native Instruments Sound Domain. (a domainID).
 - `StructuredObject` Generic structure for Kontakt patch chunks.

@@ -12,6 +12,9 @@ pub enum NIFileError {
     #[error(transparent)]
     IO(#[from] std::io::Error),
 
+    #[error("Version Mismatch: expected {expected}, got {got}")]
+    VersionMismatch { expected: u32, got: u32 },
+
     #[error(transparent)]
     NKSError(#[from] NKSError),
 

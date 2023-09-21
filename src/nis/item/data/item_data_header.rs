@@ -25,9 +25,10 @@ impl ItemDataHeader {
         }
 
         if version != 1 {
-            return Err(NIFileError::Generic(format!(
-                "ItemFrameHeader version error: expected 0x1, got 0x{version:x}"
-            )));
+            return Err(NIFileError::VersionMismatch {
+                expected: 1,
+                got: version,
+            });
         }
 
         Ok(Self {

@@ -12,7 +12,11 @@ use crate::{
     read_bytes::ReadBytesExt,
 };
 
-pub struct Authorization(Vec<u8>);
+#[derive(Debug)]
+pub struct Authorization {
+    level: u32,
+    read_checksum: u32,
+}
 
 impl std::convert::TryFrom<&ItemData> for Authorization {
     type Error = NIFileError;
@@ -31,13 +35,23 @@ impl Authorization {
         let a = reader.read_u32_le()?; // 0x18
         if a == 1 {
             // LicenseInfo::read
+            let num_snpids = reader.read_u32_le()?;
+            for _ in 0..num_snpids {
+                let snp_id = reader.read_widestring_utf16()?;
+                assert_eq!(snp_id.len(), 0);
+            }
         }
 
-        // authorizationLevel
-        let _authorization_level = reader.read_u32_le()?; // 24, default: 1
-        let _read_checksum = reader.read_u32_le()?; // 28, default: 0
+        reader.read_u32_le()?;
 
-        Ok(Authorization(vec![]))
+        // authorizationLevel
+        let level = reader.read_u32_le()?; // 24, default: 1
+        let read_checksum = reader.read_u32_le()?; // 28, default: 0
+
+        Ok(Authorization {
+            level,
+            read_checksum,
+        })
     }
 }
 
@@ -53,9 +67,11 @@ mod tests {
             "tests/data/nisound/chunks/item-frame-property/kontakt-5/106-Authorization.data",
         )?;
 
-        let _auth = Authorization::read(file)?;
+        let _auth = Authorization::read(&file)?;
 
-        // TODO: auth props
+        // let mut data = Vec::new();
+        // file.read_to_end(&mut data)?;
+        // dbg!(data);
 
         Ok(())
     }

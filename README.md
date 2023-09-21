@@ -27,7 +27,7 @@ I'm on telegram at `@deathdisco`.
 
 ## Usage
 
-For the rust api check [[https://docs.rs/ni-file/]]. For file schematics check the repository [docs](/doc/README.md) directory. There are also several [examples](/examples/) included which show more advanced usage.
+For the rust api check https://docs.rs/ni-file. For file schematics check the repository [docs](/doc/README.md) directory. There are also several [examples](/examples/) included which show more advanced usage.
 
 You might also wish to check out my [working repository](https://github.com/monomadic/hexfiend-templates) of [hexfiend](https://hexfiend.com/) templates. This is where a lot of my work in reverse engineering file formats begins, and has some file information not present in this repository (and some other RE projects). If a file is not reading correctly with this library, the place to start looking is usually by having a set of these templates on hand and viewing the file with that.
 

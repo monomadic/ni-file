@@ -28,6 +28,7 @@ trait ReadBytes: Read {
 
         let cursor = Cursor::new(buf);
         let mut value = T::default();
+
         unsafe {
             std::ptr::copy_nonoverlapping(
                 cursor.get_ref().as_ptr() as *const _,
