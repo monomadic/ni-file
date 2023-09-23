@@ -52,73 +52,73 @@ pub trait ReadBytesExt: Read + Seek {
     }
 
     /// Read a generic big-endian type
-    fn read_be_bytes<T: FromBytes>(&mut self) -> io::Result<T> {
+    fn read_be<T: FromBytes>(&mut self) -> io::Result<T> {
         let mut buf = vec![0u8; std::mem::size_of::<T>()];
         self.read_exact(&mut buf)?;
         Ok(T::from_be_bytes(&buf))
     }
 
     /// Read a generic little-endian type
-    fn read_le_bytes<T: FromBytes>(&mut self) -> io::Result<T> {
+    fn read_le<T: FromBytes>(&mut self) -> io::Result<T> {
         let mut buf = vec![0u8; std::mem::size_of::<T>()];
         self.read_exact(&mut buf)?;
         Ok(T::from_le_bytes(&buf))
     }
 
     fn read_bool(&mut self) -> io::Result<bool> {
-        Ok(self.read_le_bytes::<u8>()? == 1)
+        Ok(self.read_le::<u8>()? == 1)
     }
 
     fn read_u16_le(&mut self) -> io::Result<u16> {
-        self.read_le_bytes::<u16>()
+        self.read_le::<u16>()
     }
 
     fn read_u8(&mut self) -> io::Result<u8> {
-        self.read_le_bytes::<u8>()
+        self.read_le::<u8>()
     }
 
     fn read_i8(&mut self) -> io::Result<i8> {
-        self.read_le_bytes::<i8>()
+        self.read_le::<i8>()
     }
 
     fn read_u16_be(&mut self) -> io::Result<u16> {
-        self.read_be_bytes::<u16>()
+        self.read_be::<u16>()
     }
 
     fn read_i16_le(&mut self) -> io::Result<i16> {
-        self.read_le_bytes::<i16>()
+        self.read_le::<i16>()
     }
 
     fn read_u32_le(&mut self) -> io::Result<u32> {
-        self.read_le_bytes::<u32>()
+        self.read_le::<u32>()
     }
 
     fn read_i32_be(&mut self) -> io::Result<i32> {
-        self.read_le_bytes::<i32>()
+        self.read_le::<i32>()
     }
 
     fn read_u32_be(&mut self) -> io::Result<u32> {
-        self.read_le_bytes::<u32>()
+        self.read_le::<u32>()
     }
 
     fn read_i32_le(&mut self) -> io::Result<i32> {
-        self.read_le_bytes::<i32>()
+        self.read_le::<i32>()
     }
 
     fn read_f32_le(&mut self) -> io::Result<f32> {
-        self.read_le_bytes::<f32>()
+        self.read_le::<f32>()
     }
 
     fn read_f64_le(&mut self) -> io::Result<f64> {
-        self.read_le_bytes::<f64>()
+        self.read_le::<f64>()
     }
 
     fn read_u64_le(&mut self) -> io::Result<u64> {
-        self.read_le_bytes::<u64>()
+        self.read_le::<u64>()
     }
 
     fn read_u64_be(&mut self) -> io::Result<u64> {
-        self.read_be_bytes::<u64>()
+        self.read_be::<u64>()
     }
 
     fn read_string_utf8(&mut self) -> io::Result<String> {

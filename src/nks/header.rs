@@ -42,6 +42,38 @@ pub struct BPatchHeaderV2 {
     pub decompressed_length: u32,
 }
 
+/// The header of a Kontakt1 NKS File.
+#[derive(Debug)]
+pub struct BPatchHeaderV1 {
+    pub created_at: time::Date,
+    pub samples_size: u32,
+}
+
+impl BPatchHeaderV1 {
+    pub fn read_le<R: ReadBytesExt>(mut reader: R) -> Result<Self, NIFileError> {
+        let _header_length = reader.read_u32_le()?;
+
+        reader.read_u16_le()?; // unknown
+        reader.read_u16_le()?; // version? usually 2
+
+        reader.read_u32_le()?; // ?
+        reader.read_u32_le()?; // ?
+        reader.read_u32_le()?; // ?
+
+        let timestamp = OffsetDateTime::from_unix_timestamp(reader.read_u32_le()? as i64).unwrap();
+        let created_at: time::Date = timestamp.date();
+
+        let samples_size = reader.read_u32_le()?; // total size of all samples
+
+        reader.read_u32_le()?; // always 0
+
+        Ok(Self {
+            created_at,
+            samples_size,
+        })
+    }
+}
+
 impl BPatchHeaderV2 {
     pub fn read_le<R: ReadBytesExt>(mut reader: R) -> Result<Self, NIFileError> {
         let header_magic = reader.read_u32_le()?;
@@ -201,9 +233,9 @@ impl NKSHeader {
     pub fn read_le<R: ReadBytesExt>(mut reader: R) -> Result<Self, NIFileError> {
         let header_version = reader.read_u16_le()?;
         Ok(match header_version {
-            // // Kontakt2 LE
+            // Kontakt2
             0x0100 => NKSHeader::BPatchHeaderV2(BPatchHeaderV2::read_le(&mut reader)?),
-            // // Kontakt42 LE
+            // Kontakt42
             0x0110 => NKSHeader::BPatchHeaderV42(BPatchHeaderV42::read_le(&mut reader)?),
             // Unknown
             _ => panic!("Unsupported header version: 0x{:x}", header_version),
