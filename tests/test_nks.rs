@@ -8,17 +8,10 @@ fn test_reading_nks() -> Result<(), Box<dyn std::error::Error>> {
     for path in utils::get_test_files("tests/filetype/NKS/KontaktV2/*.*")? {
         dbg!(&path);
         let file = fs::File::open(path.as_path())?;
-        let nks = NKSContainer::read(file)?;
-        match nks {
-            NKSContainer::V1(v1) => {
-                dbg!(v1.preset_xml().unwrap());
-            }
-            NKSContainer::V2(v2) => {
-                dbg!(v2.header);
-            }
-            NKSContainer::V42(v42) => {
-                dbg!(v42.header);
-            }
+        match NKSContainer::read(file)?.header {
+            ni_file::nks::header::BPatchHeader::BPatchHeaderV1(_) => todo!(),
+            ni_file::nks::header::BPatchHeader::BPatchHeaderV2(_) => todo!(),
+            ni_file::nks::header::BPatchHeader::BPatchHeaderV42(_) => todo!(),
         };
     }
 

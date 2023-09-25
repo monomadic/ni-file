@@ -10,7 +10,27 @@ use std::io::Cursor;
 
 use time::OffsetDateTime;
 
-use crate::{read_bytes::ReadBytesExt, NIFileError};
+use crate::read_bytes::ReadBytesExt;
+
+use super::error::NKSError;
+
+#[derive(Debug)]
+pub enum BPatchHeader {
+    BPatchHeaderV1(BPatchHeaderV1),
+    BPatchHeaderV2(BPatchHeaderV2),
+    BPatchHeaderV42(BPatchHeaderV42),
+}
+
+impl BPatchHeader {
+    pub fn read_le<R: ReadBytesExt>(mut reader: R) -> Result<Self, NKSError> {
+        let header_version = reader.read_u16_le()?;
+        Ok(match header_version {
+            0x0..=0xff => Self::BPatchHeaderV1(BPatchHeaderV1::read_le(&mut reader)?),
+            0x100..=0x10f => Self::BPatchHeaderV2(BPatchHeaderV2::read_le(&mut reader)?),
+            _ => Self::BPatchHeaderV42(BPatchHeaderV42::read_le(&mut reader)?),
+        })
+    }
+}
 
 /// The header of a Kontakt42 NKS File.
 #[derive(Debug)]
@@ -51,20 +71,17 @@ pub struct BPatchHeaderV1 {
 }
 
 impl BPatchHeaderV1 {
-    pub fn read_le<R: ReadBytesExt>(mut reader: R) -> Result<Self, NIFileError> {
-        let _header_length = reader.read_u32_le()?;
-
-        dbg!(reader.read_u16_le()?); // unknown
-        dbg!(reader.read_u16_le()?); // version? usually 2
-        dbg!(reader.read_u32_le()?); // ?
-        dbg!(reader.read_u32_le()?); // ?
-        dbg!(reader.read_u32_le()?); // ?
+    pub fn read_le<R: ReadBytesExt>(mut reader: R) -> Result<Self, NKSError> {
+        reader.read_u16_le()?; // version? usually 2
+        reader.read_u32_le()?; // ?
+        reader.read_u32_le()?; // ?
+        reader.read_u32_le()?; // ?
 
         let timestamp = OffsetDateTime::from_unix_timestamp(reader.read_u32_le()? as i64).unwrap();
         let created_at: time::Date = timestamp.date();
         let samples_size = reader.read_u32_le()?; // total size of all samples
 
-        dbg!(reader.read_u32_le()?); // always 0
+        reader.read_u32_le()?; // always 0
 
         let checksum = reader.read_u64_le()?;
 
@@ -77,7 +94,7 @@ impl BPatchHeaderV1 {
 }
 
 impl BPatchHeaderV2 {
-    pub fn read_le<R: ReadBytesExt>(mut reader: R) -> Result<Self, NIFileError> {
+    pub fn read_le<R: ReadBytesExt>(mut reader: R) -> Result<Self, NKSError> {
         let header_magic = reader.read_u32_le()?;
         assert_eq!(header_magic, u32::swap_bytes(0x722A013E));
 
@@ -108,9 +125,6 @@ impl BPatchHeaderV2 {
         let _unknown = reader.read_u32_le()?;
         let decompressed_length = reader.read_u32_le()?;
 
-        // seems all zero bytes
-        //let _unknown = reader.read_bytes(32)?;
-
         Ok(Self {
             patch_type,
             app_version,
@@ -127,7 +141,7 @@ impl BPatchHeaderV2 {
 }
 
 impl BPatchHeaderV42 {
-    pub fn read_le<R: ReadBytesExt>(mut reader: R) -> Result<Self, NIFileError> {
+    pub fn read_le<R: ReadBytesExt>(mut reader: R) -> Result<Self, NKSError> {
         let magic: u32 = reader.read_le()?;
 
         assert_eq!(
@@ -235,26 +249,6 @@ impl From<u16> for PatchType {
     }
 }
 
-#[derive(Debug)]
-pub enum NKSHeader {
-    BPatchHeaderV2(BPatchHeaderV2),
-    BPatchHeaderV42(BPatchHeaderV42),
-}
-
-impl NKSHeader {
-    pub fn read_le<R: ReadBytesExt>(mut reader: R) -> Result<Self, NIFileError> {
-        let header_version = reader.read_u16_le()?;
-        Ok(match header_version {
-            // Kontakt2
-            0x0100 => NKSHeader::BPatchHeaderV2(BPatchHeaderV2::read_le(&mut reader)?),
-            // Kontakt42
-            0x0110 => NKSHeader::BPatchHeaderV42(BPatchHeaderV42::read_le(&mut reader)?),
-            // Unknown
-            _ => panic!("Unsupported header version: 0x{:x}", header_version),
-        })
-    }
-}
-
 #[cfg(test)]
 mod tests {
     use std::fs::File;
@@ -262,25 +256,23 @@ mod tests {
     use super::*;
 
     #[test]
-    fn test_header_v1_read() -> Result<(), NIFileError> {
+    fn test_header_v1_read() -> Result<(), NKSError> {
         let file = File::open("tests/patchdata/NKS/BPatchHeaderV1/BPatchHeaderV1-000")?;
-        println!("{:?}", BPatchHeaderV1::read_le(file)?);
+        println!("{:?}", BPatchHeader::read_le(file)?);
         Ok(())
     }
 
     #[test]
-    fn test_header_v2_read() -> Result<(), NIFileError> {
-        let file = File::open("tests/patchdata/NKS/BPatchHeaderV2/000")?;
-        // let mut reader = file.as_slice();
-        // NKSHeader::read_le(file.as_slice())?;
-        println!("{:?}", NKSHeader::read_le(file)?);
+    fn test_header_v2_read() -> Result<(), NKSError> {
+        let file = File::open("tests/patchdata/NKS/BPatchHeaderV2/BPatchHeaderV2-000")?;
+        println!("{:?}", BPatchHeader::read_le(file)?);
         Ok(())
     }
 
     #[test]
-    fn test_header_v42_read() -> Result<(), NIFileError> {
-        let file = File::open("tests/patchdata/NKS/BPatchHeaderV42/000")?;
-        println!("{:?}", NKSHeader::read_le(file)?);
+    fn test_header_v42_read() -> Result<(), NKSError> {
+        let file = File::open("tests/patchdata/NKS/BPatchHeaderV42/BPatchHeaderV42-000")?;
+        println!("{:?}", BPatchHeader::read_le(file)?);
         Ok(())
     }
 }

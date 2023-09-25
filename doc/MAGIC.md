@@ -10,3 +10,7 @@ Numbers are listed as big-endian.
 - `0x54AC705E` NKS Directory / Resource
 - `0x5EE56EB3` Kon1
 - `0x7A10E13F`
+- `0x4e205c2f` FileContainer "N \/"
+- `0x43462049` FileContainer "CF I"
+- `0x44544d20` FileContainer "DTM "
+- `0x5c2f2020` FileContainer "\/ "

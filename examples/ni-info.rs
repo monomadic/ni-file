@@ -3,8 +3,12 @@ use std::{fs::File, io::Cursor};
 
 use color_eyre::eyre::Result;
 use ni_file::{
-    self, fm8::FM8Preset, kontakt::instrument::KontaktInstrument, nifile::NIFile,
-    nis::AuthoringApplication, nks::nksfile::NKSContainer,
+    self,
+    fm8::FM8Preset,
+    kontakt::instrument::KontaktInstrument,
+    nifile::NIFile,
+    nis::AuthoringApplication,
+    nks::{header::BPatchHeader, nksfile::KontaktPreset},
 };
 
 fn print_kontakt_instrument(instrument: KontaktInstrument) -> Result<()> {
@@ -127,14 +131,12 @@ pub fn main() -> Result<()> {
         NIFile::NKSContainer(nks) => {
             println!("Detected format:\t\tNKS (Native Instruments Kontakt Sound) Container");
 
-            match nks {
-                NKSContainer::V1(v1) => {
-                    let h = v1.header;
+            match nks.header {
+                BPatchHeader::BPatchHeaderV1(h) => {
                     println!("\nBPatchHeaderV1:");
                     println!("  created_at:\t\t{}", h.created_at);
                 }
-                NKSContainer::V2(v2) => {
-                    let h = v2.header;
+                BPatchHeader::BPatchHeaderV2(h) => {
                     println!("\nBPatchHeaderV2:");
                     println!("  type:\t\t\t{:?}", h.patch_type);
                     println!("  kontakt_version:\t{}", h.app_version);
@@ -144,8 +146,7 @@ pub fn main() -> Result<()> {
                     println!("  instruments:\t\t{}", h.number_of_instruments);
                     println!("  created_at:\t\t{}", h.created_at);
                 }
-                NKSContainer::V42(v42) => {
-                    let h = v42.header;
+                BPatchHeader::BPatchHeaderV42(h) => {
                     println!("\nBPatchHeaderV42:");
                     println!("  type:\t\t\t{:?}", h.patch_type);
                     println!("  kontakt_version:\t{}", h.app_version);

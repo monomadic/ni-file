@@ -62,20 +62,19 @@ zlib-flate -uncompress < compressed_data > output
 | ------ | ------ | -------- | ------------------ | ---------- | ---------------------------------------------------------- |
 | 0x00   | 0x04   | uint32_t | magic              | 0x1290A87F | 0xa4d6e55a, 0xab85ef01, 0xb36ee55e, 0x10874353, 0x74b5a69b |
 | 0x04   | 0x04   | uint32_t | zLibLength         |            | Internal preset compressed size                            |
-| 0x08   | 0x02   | uint16_t | headerVersion      | 0x1001     | Found 272                                                  |
+| 0x08   | 0x02   | uint16_t | headerVersion      | 0x1001     | Always 272                                                 |
 | 0x0A   | 0x04   | uint32_t | headerMagic        | 0x1A6337EA |                                                            |
 | 0x0E   | 0x02   | uint16_t | patchtype          | 0x1 (nki)  | 0=nkm, 1=nki, 2=nkb, 3=nkp, 4=nkg, nkz=5                   |
 | 0x10   | 0x04   | AppVersi | appVersion         | 0x50500FF  | 0x5050FF=5.5.256                                           |
 | 0x14   | 0x04   | uint32_t | appSignature       | 0x4B34504C | "Kon4"                                                     |
-| 0x18   | 0x04   | time_t   | createdAt          |            |                                                            |
-| 0x1C   | 0x04   |          |                    |            | 0                                                          |
+| 0x18   | 0x08   | time_t   | createdAt          |            |                                                            |
 | 0x20   | 0x02   | uint16_t | numZones           |            |                                                            |
 | 0x22   | 0x02   | uint16_t | numGroups          |            |                                                            |
 | 0x24   | 0x02   | uint16_t | numInstruments     |            |                                                            |
 | 0x26   | 0x10   |          |                    |            |                                                            |
 | 0x36   | 0x10   | uint32_t | icon               |            | 0x1C is "New"                                              |
 |        |        |          |                    |            |                                                            |
-| 0xA2   | 0x10   |          | checksum           |            | OpenSSL(?) EVP MD5                                         |
+| 0xA2   | 0x10   |          | md5hash            |            | OpenSSL(?) EVP MD5                                         |
 | 0xB2   | 0x04   | uint32_t | appSVNRev          |            |                                                            |
 | 0xB6   | 0x04   | uint32_t |                    |            |                                                            |
 | 0xBA   | 0x04   | uint32_t | decompressedLength |            |                                                            |

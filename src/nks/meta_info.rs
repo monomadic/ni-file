@@ -1,4 +1,6 @@
-use crate::{read_bytes::ReadBytesExt, NIFileError};
+use crate::read_bytes::ReadBytesExt;
+
+use super::error::NKSError;
 
 /// The header of the metadata (footer) of a Kontakt42 preset.
 ///
@@ -12,7 +14,7 @@ pub struct BPatchMetaInfoHeader {
 }
 
 impl BPatchMetaInfoHeader {
-    pub fn read<R: ReadBytesExt>(mut reader: R) -> Result<Self, NIFileError> {
+    pub fn read<R: ReadBytesExt>(mut reader: R) -> Result<Self, NKSError> {
         let magic: u32 = reader.read_le()?;
 
         assert_eq!(
@@ -41,7 +43,7 @@ mod tests {
     use std::fs::File;
 
     #[test]
-    fn test_kontakt_1() -> Result<(), NIFileError> {
+    fn test_kontakt_1() -> Result<(), NKSError> {
         BPatchMetaInfoHeader::read(File::open(
             "test-data/NKS/BPatchMetaInfoHeader/BPatchMetaInfoHeader-000",
         )?)?;
