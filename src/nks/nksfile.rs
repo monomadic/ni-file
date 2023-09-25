@@ -1,7 +1,5 @@
 use std::io::{Cursor, Read};
 
-// use flate2::bufread::ZlibDecoder;
-
 use flate2::read::ZlibDecoder;
 
 use crate::{
@@ -65,13 +63,12 @@ impl NKSv1 {
         })
     }
 
+    /// Decompress the V1 preset xml document.
     pub fn preset_xml(&self) -> Result<String, NIFileError> {
-        // note: decompress with zlib-flate -uncompress < in > out
-        //          (from the qpdf package)
-
-        let mut d = ZlibDecoder::new(&self.compressed_data[..]);
+        // note: decompress with zlib-flate -uncompress < in > out (from the qpdf package)
+        let mut decoder = ZlibDecoder::new(&self.compressed_data[..]);
         let mut decompressed_data = Vec::new();
-        d.read_to_end(&mut decompressed_data)?;
+        decoder.read_to_end(&mut decompressed_data)?;
 
         // TODO: error
         Ok(String::from_utf8(decompressed_data).unwrap())
@@ -92,13 +89,33 @@ impl NKSv2 {
 }
 
 impl NKSv42 {
-    fn read<R: ReadBytesExt>(mut reader: R, zlib_length: u32) -> Result<Self, NIFileError> {
+    pub fn read<R: ReadBytesExt>(mut reader: R, zlib_length: u32) -> Result<Self, NIFileError> {
         Ok(NKSv42 {
             header: BPatchHeaderV42::read_le(&mut reader)?,
             zlib_length,
             compressed_data: reader.read_bytes(zlib_length as usize)?,
             meta_info: BPatchMetaInfoHeader::read(&mut reader)?,
         })
+    }
+
+    /// Decompress internal patch data
+    pub fn decompress_patch_data(&self) -> Result<Vec<u8>, Error> {
+        crate::deflate::deflate_with_lib(
+            &self.compressed_data,
+            self.header.decompressed_length as usize,
+        )
+    }
+
+    /// Parse patch data into Chunks
+    pub fn decompress_patch_chunks(&self) -> Result<Vec<ChunkData>, Error> {
+        let mut objects = Vec::new();
+        let mut decompressed_data = Cursor::new(self.decompress_patch_data()?);
+
+        while let Ok(chunk) = ChunkData::read(&mut decompressed_data) {
+            objects.push(chunk);
+        }
+
+        Ok(objects)
     }
 }
 

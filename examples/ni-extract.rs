@@ -10,6 +10,7 @@ use std::{
 use color_eyre::eyre::Result;
 use ni_file::{
     nis::{ItemContainer, ItemID, PresetChunkItem},
+    nks::nksfile::NKSContainer,
     NIFile,
 };
 
@@ -66,9 +67,13 @@ pub fn main() -> Result<(), Box<dyn std::error::Error>> {
                 output.write_all(&buf)?;
             }
         }
-        NIFile::NKSContainer(nks) => {
-            std::fs::write("chunk", &nks.compressed_patch_data)?;
-        }
+        NIFile::NKSContainer(nks) => match nks {
+            NKSContainer::V1(v1) => std::fs::write("preset.xml", v1.preset_xml()?)?,
+            NKSContainer::V2(_) => todo!(),
+            NKSContainer::V42(v42) => {
+                std::fs::write("chunk_data.kontakt", v42.decompress_patch_data()?)?
+            }
+        },
         _ => todo!(),
     }
 

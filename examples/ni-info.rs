@@ -1,11 +1,10 @@
 use ncw::NcwReader;
 use std::{fs::File, io::Cursor};
-use tracing::instrument;
 
 use color_eyre::eyre::Result;
 use ni_file::{
     self, fm8::FM8Preset, kontakt::instrument::KontaktInstrument, nifile::NIFile,
-    nis::AuthoringApplication, nks::header::NKSHeader,
+    nis::AuthoringApplication, nks::nksfile::NKSContainer,
 };
 
 fn print_kontakt_instrument(instrument: KontaktInstrument) -> Result<()> {
@@ -61,11 +60,7 @@ fn print_kontakt_instrument(instrument: KontaktInstrument) -> Result<()> {
     Ok(())
 }
 
-#[instrument]
 pub fn main() -> Result<()> {
-    #[cfg(feature = "capture-spantrace")]
-    install_tracing();
-
     color_eyre::install()?;
 
     let Some(path) = std::env::args().nth(1) else {
@@ -132,9 +127,14 @@ pub fn main() -> Result<()> {
         NIFile::NKSContainer(nks) => {
             println!("Detected format:\t\tNKS (Native Instruments Kontakt Sound) Container");
 
-            use NKSHeader::*;
-            match &nks.header {
-                BPatchHeaderV2(h) => {
+            match nks {
+                NKSContainer::V1(v1) => {
+                    let h = v1.header;
+                    println!("\nBPatchHeaderV1:");
+                    println!("  created_at:\t\t{}", h.created_at);
+                }
+                NKSContainer::V2(v2) => {
+                    let h = v2.header;
                     println!("\nBPatchHeaderV2:");
                     println!("  type:\t\t\t{:?}", h.patch_type);
                     println!("  kontakt_version:\t{}", h.app_version);
@@ -144,7 +144,8 @@ pub fn main() -> Result<()> {
                     println!("  instruments:\t\t{}", h.number_of_instruments);
                     println!("  created_at:\t\t{}", h.created_at);
                 }
-                BPatchHeaderV42(h) => {
+                NKSContainer::V42(v42) => {
+                    let h = v42.header;
                     println!("\nBPatchHeaderV42:");
                     println!("  type:\t\t\t{:?}", h.patch_type);
                     println!("  kontakt_version:\t{}", h.app_version);
@@ -153,10 +154,10 @@ pub fn main() -> Result<()> {
                     println!("  groups:\t\t{}", h.number_of_groups);
                     println!("  instruments:\t\t{}", h.number_of_instruments);
                     println!("  created_at:\t\t{}", h.created_at);
+
+                    // print_kontakt_instrument(v42.instrument()?)?;
                 }
             }
-
-            print_kontakt_instrument(nks.instrument()?)?;
         }
     };
 

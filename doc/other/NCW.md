@@ -3,7 +3,7 @@
 The NCW file format consists of 3 main sections:
 
 1. Main header (120 bytes)
-2. Block address table
+2. Block address table (16 bytes x numSamples)
 3. Audio data blocks
 
 ### 1. Main Header (120 bytes)
@@ -40,16 +40,16 @@ Each entry is the file offset of the start of an audio data block relative to th
 
 The audio data is divided into blocks of up to 512 samples per channel. Each block has the following structure:
 
-| Field           | Size    | Description                               |
-| --------------- | ------- | ----------------------------------------- |
-| Block signature | 4 bytes | 0x160C9A3E                                |
-| Base value      | 4 bytes | Initial sample value for delta encoding   |
-| Bits            | 2 bytes | Number of bits per sample used for block: |
-|                 |         | - 0 = original bit depth                  |
-|                 |         | - Negative = compressed bit depth         |
-|                 |         | - Positive = delta encoding               |
-| Flags           | 2 bytes | 1 = MID/SIDE encoding, 0 = L/R encoding   |
-| Padding         | 4 bytes | Reserved, should be zero                  |
+| Field           | Size    | Description                                    |
+| --------------- | ------- | ---------------------------------------------- |
+| Block signature | 4 bytes | 0x160C9A3E                                     |
+| Base value      | 4 bytes | Initial sample value for delta encoding        |
+| Bits            | 2 bytes | Number of bits per sample used for block:      |
+|                 |         | - 0 = original bit depth                       |
+|                 |         | - Negative = compressed bit depth              |
+|                 |         | - Positive = delta encoding                    |
+| Flags           | 2 bytes | 1 = MID/SIDE encoding, 0 = L/R encoding, 2 = ? |
+| Padding         | 4 bytes | Reserved, should be zero                       |
 
 Followed by the audio sample data for the block.
 
@@ -63,6 +63,7 @@ If Bits is positive, the block contains delta values rather than direct samples.
 
 **Channel encoding:**
 
+If Flags = 0, the block contains Left/Right channel encoding.
 If Flags = 1, the block contains Mid and Side channel data instead of Left and Right.
 
 Left channel = Mid + Side

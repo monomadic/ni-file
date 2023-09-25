@@ -13,7 +13,6 @@ pub struct BPatchMetaInfoHeader {
 
 impl BPatchMetaInfoHeader {
     pub fn read<R: ReadBytesExt>(mut reader: R) -> Result<Self, NIFileError> {
-        dbg!(reader.stream_position());
         // magic
         assert_eq!(reader.read_u32_le()?, u32::swap_bytes(0xAEE10EB0));
 

@@ -1,10 +1,10 @@
 use crate::{
-    detect::NIFileType, file_container::NIFileContainer, nks::nksfile::NKSFile, read_bytes::*,
+    detect::NIFileType, file_container::NIFileContainer, nks::nksfile::NKSContainer, read_bytes::*,
     Error, Repository,
 };
 
 pub enum NIFile {
-    NKSContainer(NKSFile),
+    NKSContainer(NKSContainer),
     NISContainer(Repository),
     Monolith(NIFileContainer),
     KontaktResource,
@@ -17,18 +17,17 @@ impl NIFile {
         let filetype = NIFileType::read(&mut reader)?;
         reader.rewind()?;
 
-        use NIFile::*;
         Ok(match filetype {
-            NIFileType::NISContainer => NISContainer(Repository::read(reader)?),
-            NIFileType::Monolith => Monolith(NIFileContainer::read(reader)?),
-            NIFileType::NICompressedWave => NICompressedWave,
+            NIFileType::KontaktInstrumentV1 => NIFile::NKSContainer(NKSContainer::read(reader)?),
+            NIFileType::NISContainer => NIFile::NISContainer(Repository::read(reader)?),
+            NIFileType::Monolith => NIFile::Monolith(NIFileContainer::read(reader)?),
+            NIFileType::NICompressedWave => NIFile::NICompressedWave,
             NIFileType::KoreSound => todo!(),
-            NIFileType::KontaktInstrumentV1 => todo!(),
-            NIFileType::NKSInstrument => NKSContainer(NKSFile::read(reader)?),
-            NIFileType::KontaktResource => KontaktResource,
+            NIFileType::NKSInstrument => NIFile::NKSContainer(NKSContainer::read(reader)?),
+            NIFileType::KontaktResource => NIFile::KontaktResource,
             NIFileType::KontaktCache => todo!(),
             NIFileType::NKSArchive => todo!(),
-            NIFileType::NICache => NICache,
+            NIFileType::NICache => NIFile::NICache,
 
             _ => todo!("Unsupported: {:?}", filetype),
         })
