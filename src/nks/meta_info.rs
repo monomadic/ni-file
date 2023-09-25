@@ -13,8 +13,12 @@ pub struct BPatchMetaInfoHeader {
 
 impl BPatchMetaInfoHeader {
     pub fn read<R: ReadBytesExt>(mut reader: R) -> Result<Self, NIFileError> {
-        // magic
-        assert_eq!(reader.read_u32_le()?, u32::swap_bytes(0xAEE10EB0));
+        let magic: u32 = reader.read_le()?;
+
+        assert_eq!(
+            magic, 0xB00EE1AE,
+            "Invalid magic: expected 0xaee10eb0 got 0x{magic:x}"
+        );
 
         // unknown
         assert_eq!(reader.read_u8()?, 1);
@@ -28,5 +32,19 @@ impl BPatchMetaInfoHeader {
         let soundinfo = String::from_utf8(soundinfo).unwrap();
 
         Ok(Self { soundinfo })
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::fs::File;
+
+    #[test]
+    fn test_kontakt_1() -> Result<(), NIFileError> {
+        BPatchMetaInfoHeader::read(File::open(
+            "test-data/NKS/BPatchMetaInfoHeader/BPatchMetaInfoHeader-000",
+        )?)?;
+        Ok(())
     }
 }

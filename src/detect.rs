@@ -36,6 +36,7 @@ impl NIFileType {
     /// ```
     pub fn read<R: ReadBytesExt>(mut reader: R) -> Result<Self, Error> {
         let magic: u32 = reader.read_le()?;
+
         // TODO: differentiate LE/BE
         Ok(match magic {
             0x5EE56EB3 | 0xB36EE55E => NIFileType::KontaktInstrumentV1,
