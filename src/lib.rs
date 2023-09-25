@@ -12,7 +12,7 @@ pub mod file_container; // monoliths
 pub mod nis; // nisound document // kontakt 4.2 preset
 pub mod nks; // native instruments kontakt sound file format
 
-// preset types:
+// property domains:
 pub mod fm8;
 pub mod kontakt;
 

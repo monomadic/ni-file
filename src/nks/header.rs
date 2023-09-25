@@ -47,29 +47,31 @@ pub struct BPatchHeaderV2 {
 pub struct BPatchHeaderV1 {
     pub created_at: time::Date,
     pub samples_size: u32,
+    pub checksum: u64,
 }
 
 impl BPatchHeaderV1 {
     pub fn read_le<R: ReadBytesExt>(mut reader: R) -> Result<Self, NIFileError> {
         let _header_length = reader.read_u32_le()?;
 
-        reader.read_u16_le()?; // unknown
-        reader.read_u16_le()?; // version? usually 2
-
-        reader.read_u32_le()?; // ?
-        reader.read_u32_le()?; // ?
-        reader.read_u32_le()?; // ?
+        dbg!(reader.read_u16_le()?); // unknown
+        dbg!(reader.read_u16_le()?); // version? usually 2
+        dbg!(reader.read_u32_le()?); // ?
+        dbg!(reader.read_u32_le()?); // ?
+        dbg!(reader.read_u32_le()?); // ?
 
         let timestamp = OffsetDateTime::from_unix_timestamp(reader.read_u32_le()? as i64).unwrap();
         let created_at: time::Date = timestamp.date();
-
         let samples_size = reader.read_u32_le()?; // total size of all samples
 
-        reader.read_u32_le()?; // always 0
+        dbg!(reader.read_u32_le()?); // always 0
+
+        let checksum = reader.read_u64_le()?;
 
         Ok(Self {
             created_at,
             samples_size,
+            checksum,
         })
     }
 }
@@ -126,11 +128,12 @@ impl BPatchHeaderV2 {
 
 impl BPatchHeaderV42 {
     pub fn read_le<R: ReadBytesExt>(mut reader: R) -> Result<Self, NIFileError> {
-        // let reader = reader.read_bytes(222 - 10)?;
-        // let mut reader = reader.as_slice();
+        let magic: u32 = reader.read_le()?;
 
-        let patch_version = reader.read_u32_le()?;
-        assert_eq!(patch_version, u32::swap_bytes(0x1A6337EA));
+        assert_eq!(
+            magic, 0xEA37631A,
+            "Invalid BPatchHeaderV42 magic number: expected 0x1a6337ea got 0x{magic:x}"
+        );
 
         let patch_type: PatchType = reader.read_u16_le()?.into();
         let app_version = NKIAppVersion {
@@ -180,12 +183,21 @@ impl BPatchHeaderV42 {
     }
 }
 
-#[derive(Debug)]
 pub struct NKIAppVersion {
     pub major: u8,
     pub minor_1: u8,
     pub minor_2: u8,
     pub minor_3: u8,
+}
+
+impl std::fmt::Debug for NKIAppVersion {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(
+            f,
+            "{}.{}.{}.{}",
+            self.major, self.minor_1, self.minor_2, self.minor_3
+        )
+    }
 }
 
 impl std::fmt::Display for NKIAppVersion {
@@ -245,13 +257,20 @@ impl NKSHeader {
 
 #[cfg(test)]
 mod tests {
+    use std::fs::File;
+
     use super::*;
 
     #[test]
+    fn test_header_v1_read() -> Result<(), NIFileError> {
+        let file = File::open("tests/patchdata/NKS/BPatchHeaderV1/BPatchHeaderV1-000")?;
+        println!("{:?}", BPatchHeaderV1::read_le(file)?);
+        Ok(())
+    }
+
+    #[test]
     fn test_header_v2_read() -> Result<(), NIFileError> {
-        let file = Cursor::new(include_bytes!(
-            "../../tests/patchdata/NKS/BPatchHeaderV2/000"
-        ));
+        let file = File::open("tests/patchdata/NKS/BPatchHeaderV2/000")?;
         // let mut reader = file.as_slice();
         // NKSHeader::read_le(file.as_slice())?;
         println!("{:?}", NKSHeader::read_le(file)?);
@@ -260,9 +279,7 @@ mod tests {
 
     #[test]
     fn test_header_v42_read() -> Result<(), NIFileError> {
-        let file = Cursor::new(include_bytes!(
-            "../../tests/patchdata/NKS/BPatchHeaderV42/000"
-        ));
+        let file = File::open("tests/patchdata/NKS/BPatchHeaderV42/000")?;
         println!("{:?}", NKSHeader::read_le(file)?);
         Ok(())
     }

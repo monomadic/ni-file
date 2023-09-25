@@ -78,9 +78,11 @@ impl NKSv1 {
 impl NKSv2 {
     pub fn read<R: ReadBytesExt>(mut reader: R, zlib_length: u32) -> Result<Self, NIFileError> {
         // FIXME: doesn't work with multis
+        let header = BPatchHeaderV2::read_le(&mut reader)?;
+        dbg!(&header);
 
         Ok(NKSv2 {
-            header: BPatchHeaderV2::read_le(&mut reader)?,
+            header,
             zlib_length,
             compressed_data: reader.read_bytes(zlib_length as usize)?,
             meta_info: BPatchMetaInfoHeader::read(&mut reader)?,
@@ -90,8 +92,9 @@ impl NKSv2 {
 
 impl NKSv42 {
     pub fn read<R: ReadBytesExt>(mut reader: R, zlib_length: u32) -> Result<Self, NIFileError> {
+        let header = BPatchHeaderV42::read_le(&mut reader)?;
         Ok(NKSv42 {
-            header: BPatchHeaderV42::read_le(&mut reader)?,
+            header,
             zlib_length,
             compressed_data: reader.read_bytes(zlib_length as usize)?,
             meta_info: BPatchMetaInfoHeader::read(&mut reader)?,
@@ -162,9 +165,6 @@ impl NKSFile {
                 let mut compressed_data = Vec::new();
                 reader.read_to_end(&mut compressed_data)?;
 
-                // note: decompress with zlib-flate -uncompress < in > out
-                //          (from the qpdf package)
-
                 let mut d = ZlibDecoder::new(&compressed_data[..]);
                 let mut decompressed_data = Vec::new();
                 d.read_to_end(&mut decompressed_data)?;
@@ -215,9 +215,16 @@ mod tests {
     use super::*;
 
     #[test]
+    fn test_nksfile_read_v2() -> Result<(), NIFileError> {
+        let file = File::open("tests/filetype/NKS/KontaktV2/KontaktV2-000.nki")?;
+        let _nks = NKSContainer::read(file)?;
+        Ok(())
+    }
+
+    #[test]
     fn test_nksfile_read_v42() -> Result<(), NIFileError> {
         let file = File::open("tests/filetype/NKS/KontaktV42/4.2.4.5316-000.nki")?;
-        let _nks = NKSFile::read(file)?;
+        let _nks = NKSContainer::read(file)?;
         Ok(())
     }
 }

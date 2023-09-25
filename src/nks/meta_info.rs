@@ -4,7 +4,7 @@ use crate::{read_bytes::ReadBytesExt, NIFileError};
 ///
 /// | Offset | Length | Type     | Meaning                     | Default    | Notes                                    |
 /// |--------|--------|----------|-----------------------------|------------|------------------------------------------|
-/// | 0x00   | 0x04   | uint32_t | metaMagic                   | 0xAEE10EB0 | 0xb00ee1ae                               |
+/// | 0x00   | 0x04   | uint32_t | metaMagic                   | 0xAEE10EB0 | BE: 0xb00ee1ae                               |
 #[derive(Debug)]
 pub struct BPatchMetaInfoHeader {
     /// An XML SoundInfoItem document.
@@ -17,7 +17,7 @@ impl BPatchMetaInfoHeader {
 
         assert_eq!(
             magic, 0xB00EE1AE,
-            "Invalid magic: expected 0xaee10eb0 got 0x{magic:x}"
+            "Invalid BPatchMetaInfoHeader magic number: expected 0xaee10eb0 got 0x{magic:x}"
         );
 
         // unknown

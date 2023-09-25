@@ -24,6 +24,13 @@ Prior to NISound containers, Kontakt instruments had their own file format known
 | 0x1C   | 0x04   | uint32_t |              |            |       |
 | 0x20   | 0x04   | uint32_t |              |            |       |
 
+Note: Internal preset XML data in V1 and V2 is compressed with zlib. You can decompress this raw data in macos with the `qpdf` package:
+
+```bash
+brew install qpdf
+zlib-flate -uncompress < compressed_data > output
+```
+
 ## BPatchHeaderV2
 
 - Size: 170 bytes
