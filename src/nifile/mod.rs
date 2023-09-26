@@ -18,12 +18,13 @@ impl NIFile {
         reader.rewind()?;
 
         Ok(match filetype {
-            NIFileType::KontaktInstrumentV1 => NIFile::NKSContainer(NKSContainer::read(reader)?),
             NIFileType::NISContainer => NIFile::NISContainer(Repository::read(reader)?),
             NIFileType::Monolith => NIFile::Monolith(NIFileContainer::read(reader)?),
             NIFileType::NICompressedWave => NIFile::NICompressedWave,
             NIFileType::KoreSound => todo!(),
-            NIFileType::NKSInstrument => NIFile::NKSContainer(NKSContainer::read(reader)?),
+            NIFileType::NKSInstrument
+            | NIFileType::KontaktInstrumentV1
+            | NIFileType::KontaktMultiV1 => NIFile::NKSContainer(NKSContainer::read(reader)?),
             NIFileType::KontaktResource => NIFile::KontaktResource,
             NIFileType::KontaktCache => todo!(),
             NIFileType::NKSArchive => todo!(),

@@ -20,7 +20,8 @@ impl NKSContainer {
         let magic = reader.read_u32_le()?;
 
         match magic {
-            0xB36EE55E | 0x7FA89012 =>{},
+            0xB36EE55E | 0x7FA89012 | 0xA4D6E55A =>{
+            },
             _ => panic!("Invalid BPatchMetaInfoHeader magic number: expected 0xB36EE55E | 0x7FA89012 got 0x{magic:x}")
         };
 
