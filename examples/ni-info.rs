@@ -3,8 +3,12 @@ use std::{fs::File, io::Cursor};
 
 use color_eyre::eyre::Result;
 use ni_file::{
-    self, fm8::FM8Preset, kontakt::instrument::KontaktInstrument, nifile::NIFile,
-    nis::AuthoringApplication, nks::header::BPatchHeader,
+    self,
+    fm8::FM8Preset,
+    kontakt::instrument::KontaktInstrument,
+    nifile::NIFile,
+    nis::AuthoringApplication,
+    nks::{container::KontaktPreset, header::BPatchHeader},
 };
 
 fn print_kontakt_instrument(instrument: KontaktInstrument) -> Result<()> {
@@ -128,11 +132,12 @@ pub fn main() -> Result<()> {
             println!("Detected format:\tNKS (Native Instruments Kontakt Sound) Container");
 
             match nks.header {
-                BPatchHeader::BPatchHeaderV1(h) => {
+                BPatchHeader::BPatchHeaderV1(ref h) => {
                     println!("\nBPatchHeaderV1:");
                     println!("  created_at:\t\t{}", h.created_at);
+                    println!("  samples_size:\t\t{}", h.samples_size);
                 }
-                BPatchHeader::BPatchHeaderV2(h) => {
+                BPatchHeader::BPatchHeaderV2(ref h) => {
                     println!("\nBPatchHeaderV2:");
                     println!("  signature:\t\t{}", h.app_signature);
                     println!("  type:\t\t\t{:?}", h.patch_type);
@@ -143,7 +148,7 @@ pub fn main() -> Result<()> {
                     println!("  instruments:\t\t{}", h.number_of_instruments);
                     println!("  created_at:\t\t{}", h.created_at);
                 }
-                BPatchHeader::BPatchHeaderV42(h) => {
+                BPatchHeader::BPatchHeaderV42(ref h) => {
                     println!("\nBPatchHeaderV42:");
                     println!("  signature:\t\t{}", h.app_signature);
                     println!("  type:\t\t\t{:?}", h.patch_type);
@@ -156,6 +161,15 @@ pub fn main() -> Result<()> {
 
                     // print_kontakt_instrument(v42.instrument()?)?;
                 }
+            }
+
+            match nks.preset()? {
+                KontaktPreset::Kon1(kon1) => {
+                    println!("\nKon1:");
+                    println!("\n{}", kon1);
+                }
+                KontaktPreset::Kon2(_) => todo!(),
+                KontaktPreset::Kon4(_) => todo!(),
             }
         }
     };

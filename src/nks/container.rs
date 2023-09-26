@@ -1,4 +1,7 @@
-use std::io::{Cursor, Read};
+use std::{
+    fmt::Display,
+    io::{Cursor, Read},
+};
 
 use flate2::read::ZlibDecoder;
 
@@ -22,7 +25,7 @@ impl NKSContainer {
         match magic {
             0xB36EE55E | 0x7FA89012 | 0xA4D6E55A =>{
             },
-            _ => panic!("Invalid BPatchMetaInfoHeader magic number: expected 0xB36EE55E | 0x7FA89012 got 0x{magic:x}")
+            _ => panic!("Invalid BPatchMetaInfoHeader magic number: expected 0xB36EE55E | 0x7FA89012 | 0xA4D6E55A got 0x{magic:x}")
         };
 
         let _header_length = reader.read_u32_le()?;
@@ -30,6 +33,7 @@ impl NKSContainer {
         let mut compressed_data = Vec::new();
 
         reader.read_to_end(&mut compressed_data)?;
+        dbg!(&header);
 
         Ok(Self {
             header,
@@ -88,6 +92,12 @@ pub enum KontaktPreset {
 #[derive(Debug)]
 pub struct Kon1(String);
 
+impl Display for Kon1 {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_fmt(format_args!("{}", self.0))
+    }
+}
+
 #[derive(Debug)]
 pub struct Kon2 {
     pub zlib_length: u32,
@@ -134,8 +144,17 @@ mod tests {
     use super::*;
 
     #[test]
-    fn test_nksfile_read_v2() -> Result<(), NKSError> {
-        let file = File::open("tests/filetype/NKS/KontaktV2/KontaktV2-000.nki")?;
+    fn test_nksv1_nki_0x5ee56eb3() -> Result<(), NKSError> {
+        let file = File::open("tests/filetype/NKS/KontaktV1/000-NKSv1-NKI.nki")?;
+        let nks = NKSContainer::read(file)?;
+
+        assert!(matches!(nks.header, BPatchHeader::BPatchHeaderV1(_)));
+        Ok(())
+    }
+
+    #[test]
+    fn test_nksfile_read_v2_single() -> Result<(), NKSError> {
+        let file = File::open("tests/filetype/NKS/KontaktV2/KontaktV2-000-empty.nki")?;
         let _nks = NKSContainer::read(file)?;
         Ok(())
     }

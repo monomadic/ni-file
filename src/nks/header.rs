@@ -14,7 +14,7 @@ use crate::read_bytes::ReadBytesExt;
 
 use super::error::NKSError;
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub enum BPatchHeader {
     BPatchHeaderV1(BPatchHeaderV1),
     BPatchHeaderV2(BPatchHeaderV2),
@@ -33,7 +33,7 @@ impl BPatchHeader {
 }
 
 /// The header of a Kontakt42 NKS File.
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub struct BPatchHeaderV42 {
     pub patch_type: PatchType,
     pub app_version: NKIAppVersion,
@@ -48,7 +48,7 @@ pub struct BPatchHeaderV42 {
 }
 
 /// The header of a Kontakt2 NKS File.
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub struct BPatchHeaderV2 {
     pub patch_type: PatchType,
     pub app_version: NKIAppVersion,
@@ -63,11 +63,10 @@ pub struct BPatchHeaderV2 {
 }
 
 /// The header of a Kontakt1 NKS File.
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub struct BPatchHeaderV1 {
     pub created_at: time::Date,
     pub samples_size: u32,
-    pub checksum: u64,
 }
 
 impl BPatchHeaderV1 {
@@ -83,12 +82,9 @@ impl BPatchHeaderV1 {
 
         reader.read_u32_le()?; // always 0
 
-        let checksum = reader.read_u64_le()?;
-
         Ok(Self {
             created_at,
             samples_size,
-            checksum,
         })
     }
 }
@@ -197,6 +193,7 @@ impl BPatchHeaderV42 {
     }
 }
 
+#[derive(PartialEq)]
 pub struct NKIAppVersion {
     pub major: u8,
     pub minor_1: u8,

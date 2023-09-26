@@ -40,9 +40,9 @@ impl NIFileType {
         // TODO: differentiate LE/BE
         Ok(match magic {
             0x5EE56EB3 | 0xB36EE55E => NIFileType::KontaktInstrumentV1,
+            0x1290A87F | 0x7FA89012 => NIFileType::NKSInstrument,
             0x5AE5D6A4 | 0xA4D6E55A => NIFileType::KontaktMultiV1,
             0x54AC705E | 0x5E70AC54 => NIFileType::KontaktResource,
-            0x1290A87F | 0x7FA89012 => NIFileType::NKSInstrument,
             0x4916E63C | 0x3CE61649 => NIFileType::NKSArchive,
             0x01A89ED6 | 0xD69EA801 => NIFileType::NICompressedWave,
             0x7A10E13F | 0x3FE1107A => NIFileType::NICache,
