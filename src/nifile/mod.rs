@@ -1,6 +1,6 @@
 use crate::{
-    detect::NIFileType, file_container::NIFileContainer, nks::nksfile::NKSContainer, read_bytes::*,
-    Error, Repository,
+    detect::NIFileType, file_container::NIFileContainer, nks::container::NKSContainer,
+    read_bytes::*, Error, Repository,
 };
 
 pub enum NIFile {

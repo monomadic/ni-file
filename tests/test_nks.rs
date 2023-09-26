@@ -1,6 +1,6 @@
 mod utils;
 
-use ni_file::nks::nksfile::NKSContainer;
+use ni_file::nks::container::NKSContainer;
 use std::fs;
 
 #[test]

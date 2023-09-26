@@ -3,12 +3,8 @@ use std::{fs::File, io::Cursor};
 
 use color_eyre::eyre::Result;
 use ni_file::{
-    self,
-    fm8::FM8Preset,
-    kontakt::instrument::KontaktInstrument,
-    nifile::NIFile,
-    nis::AuthoringApplication,
-    nks::{header::BPatchHeader, nksfile::KontaktPreset},
+    self, fm8::FM8Preset, kontakt::instrument::KontaktInstrument, nifile::NIFile,
+    nis::AuthoringApplication, nks::header::BPatchHeader,
 };
 
 fn print_kontakt_instrument(instrument: KontaktInstrument) -> Result<()> {
@@ -107,13 +103,13 @@ pub fn main() -> Result<()> {
             }
         }
         NIFile::KontaktResource => {
-            println!("Detected format:\t\tKontaktResource");
+            println!("Detected format:\tKontaktResource");
         }
         NIFile::NICache => {
-            println!("Detected format:\t\tNICache");
+            println!("Detected format:\tNICache");
         }
         NIFile::NICompressedWave => {
-            println!("Detected format:\t\tNICompressedWave");
+            println!("Detected format:\tNICompressedWave");
             let file = File::open(&path)?;
             let ncw = NcwReader::read(&file)?;
             println!("\nNCW:");
@@ -122,14 +118,14 @@ pub fn main() -> Result<()> {
             println!("  sample_rate:\t\t{}", ncw.header.sample_rate);
         }
         NIFile::Monolith(container) => {
-            println!("Detected format:\t\tMonolith (FileContainer Archive)\n");
+            println!("Detected format:\tMonolith (FileContainer Archive)\n");
             println!("Files:");
             for item in container.items {
                 println!("  {}", item.filename);
             }
         }
         NIFile::NKSContainer(nks) => {
-            println!("Detected format:\t\tNKS (Native Instruments Kontakt Sound) Container");
+            println!("Detected format:\tNKS (Native Instruments Kontakt Sound) Container");
 
             match nks.header {
                 BPatchHeader::BPatchHeaderV1(h) => {
@@ -138,16 +134,18 @@ pub fn main() -> Result<()> {
                 }
                 BPatchHeader::BPatchHeaderV2(h) => {
                     println!("\nBPatchHeaderV2:");
+                    println!("  signature:\t\t{}", h.app_signature);
                     println!("  type:\t\t\t{:?}", h.patch_type);
                     println!("  kontakt_version:\t{}", h.app_version);
-                    println!("  author:\t\t\t{}", h.author);
-                    println!("  zones:\t\t\t{}", h.number_of_zones);
-                    println!("  groups:\t\t\t{}", h.number_of_groups);
+                    println!("  author:\t\t{}", h.author);
+                    println!("  zones:\t\t{}", h.number_of_zones);
+                    println!("  groups:\t\t{}", h.number_of_groups);
                     println!("  instruments:\t\t{}", h.number_of_instruments);
                     println!("  created_at:\t\t{}", h.created_at);
                 }
                 BPatchHeader::BPatchHeaderV42(h) => {
                     println!("\nBPatchHeaderV42:");
+                    println!("  signature:\t\t{}", h.app_signature);
                     println!("  type:\t\t\t{:?}", h.patch_type);
                     println!("  kontakt_version:\t{}", h.app_version);
                     println!("  author:\t\t{}", h.author);
