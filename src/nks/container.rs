@@ -45,14 +45,11 @@ impl NKSContainer {
     pub fn preset(&self) -> Result<KontaktPreset, NKSError> {
         match &self.header {
             BPatchHeader::BPatchHeaderV1(_) => {
-                // Decompress the V1 preset xml document.
-                let mut decoder = ZlibDecoder::new(&self.compressed_data[..]);
-                let mut decompressed_data = Vec::new();
-                decoder.read_to_end(&mut decompressed_data)?;
-
-                Ok(KontaktPreset::Kon1(Kon1(
-                    String::from_utf8(decompressed_data).expect("convert xml"),
-                )))
+                // V1 headers are always Kon1 files.
+                let data = self.compressed_data.as_slice();
+                Ok(KontaktPreset::Kon1(XMLDocument::from_compressed_data(
+                    data,
+                )?))
             }
             BPatchHeader::BPatchHeaderV2(_) => todo!(),
             BPatchHeader::BPatchHeaderV42(v42) => {
@@ -83,16 +80,29 @@ impl NKSContainer {
 
 #[derive(Debug)]
 pub enum KontaktPreset {
-    Kon1(Kon1),
-    Kon2(Kon2),
+    Kon1(XMLDocument),
+    Kon2(XMLDocument),
+    Kon3(XMLDocument),
     Kon4(Kon4),
     // etc
 }
 
 #[derive(Debug)]
-pub struct Kon1(String);
+pub struct XMLDocument(String);
 
-impl Display for Kon1 {
+impl XMLDocument {
+    pub fn from_compressed_data(data: &[u8]) -> Result<Self, NKSError> {
+        let mut decoder = ZlibDecoder::new(data);
+        let mut decompressed_data = Vec::new();
+        decoder.read_to_end(&mut decompressed_data)?;
+
+        Ok(XMLDocument(
+            String::from_utf8(decompressed_data).expect("convert xml"),
+        ))
+    }
+}
+
+impl Display for XMLDocument {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         f.write_fmt(format_args!("{}", self.0))
     }

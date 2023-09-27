@@ -158,8 +158,6 @@ pub fn main() -> Result<()> {
                     println!("  groups:\t\t{}", h.number_of_groups);
                     println!("  instruments:\t\t{}", h.number_of_instruments);
                     println!("  created_at:\t\t{}", h.created_at);
-
-                    // print_kontakt_instrument(v42.instrument()?)?;
                 }
             }
 
@@ -168,8 +166,19 @@ pub fn main() -> Result<()> {
                     println!("\nKon1:");
                     println!("\n{}", kon1);
                 }
-                KontaktPreset::Kon2(_) => todo!(),
-                KontaktPreset::Kon4(_) => todo!(),
+                KontaktPreset::Kon2(kon2) => {
+                    println!("\nKon2:");
+                    println!("\n{}", kon2);
+                }
+                KontaktPreset::Kon3(kon3) => {
+                    println!("\nKon3:");
+                    println!("\n{}", kon3);
+                }
+                KontaktPreset::Kon4(kon4) => {
+                    println!("\nKon4:");
+                    println!("\n{:?}", kon4);
+                    // print_kontakt_instrument(kon4.()?)?;
+                }
             }
         }
     };
