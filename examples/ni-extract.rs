@@ -10,7 +10,7 @@ use std::{
 use color_eyre::eyre::Result;
 use ni_file::{
     nis::{ItemContainer, ItemID, PresetChunkItem},
-    nks::{container::NKSContainer, header::BPatchHeader},
+    nks::header::BPatchHeader,
     NIFile,
 };
 

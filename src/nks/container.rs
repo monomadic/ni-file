@@ -51,7 +51,10 @@ impl NKSContainer {
                     data,
                 )?))
             }
-            BPatchHeader::BPatchHeaderV2(_) => todo!(),
+            BPatchHeader::BPatchHeaderV2(v2) => match v2.app_signature.as_str() {
+                "Kon3" => unimplemented!(),
+                _ => unimplemented!(),
+            },
             BPatchHeader::BPatchHeaderV42(v42) => {
                 match v42.app_signature.as_str() {
                     "Kon4" => {
