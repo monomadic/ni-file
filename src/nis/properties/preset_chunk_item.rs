@@ -14,7 +14,6 @@ impl std::convert::TryFrom<ItemData> for PresetChunkItem {
     type Error = NIFileError;
 
     fn try_from(frame: ItemData) -> std::result::Result<Self, Self::Error> {
-        log::debug!("PresetChunkItem::try_from");
         debug_assert_eq!(frame.header.item_id, ItemID::PresetChunkItem);
         PresetChunkItem::read(Cursor::new(frame.data))
     }
@@ -22,14 +21,11 @@ impl std::convert::TryFrom<ItemData> for PresetChunkItem {
 
 impl PresetChunkItem {
     pub fn read<R: ReadBytesExt>(mut reader: R) -> Result<Self> {
-        log::debug!("PresetChunkItem::read");
-
         // version == 1
         assert_eq!(reader.read_u32_le()?, 1);
 
         // auth checksum
-        let auth_checksum = reader.read_u32_le()?;
-        log::debug!("auth_checksum: {}", auth_checksum);
+        let _auth_checksum = reader.read_u32_le()?;
 
         // BinaryChunk::read
         assert_eq!(reader.read_u32_le()?, 1);
