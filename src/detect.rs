@@ -1,25 +1,26 @@
-use crate::{nis::ItemContainer, read_bytes::ReadBytesExt, Error};
+use crate::{nis::ItemContainer, nks::detect::NKSFileType, read_bytes::ReadBytesExt, Error};
 
 /// Supported NI filetypes.
 #[derive(Debug, PartialEq)]
 pub enum NIFileType {
-    /// All presets created after Kontakt5 are generally [`NISound`](NIFileType::NISound) containers.
+    /// Kontakt Sound Container
+    NKSContainer(NKSFileType),
+    /// Native Instruments Sound Container
     NISContainer,
-    /// Kontakt archives with samples inside are [`NIMonolith`](crate::NIMonolith) containers.
+    /// Monolith/FileContainer Container
     Monolith,
-    /// NCW compressed samples created with Kontakt.
+    /// Losslessly compressed audio.
     NICompressedWave,
     /// Kore has its own simple format.
     KoreSound,
     /// Kontakt instruments
-    KontaktInstrumentV1,
     KontaktMultiV1,
-    NKSInstrument,
     NKSArchive,
     NICache,
     KontaktResource,
     KontaktCache,
     Unknown,
+    FM8LE,
 }
 
 impl NIFileType {
@@ -37,16 +38,19 @@ impl NIFileType {
     pub fn read<R: ReadBytesExt>(mut reader: R) -> Result<Self, Error> {
         let magic: u32 = reader.read_le()?;
 
+        if let Some(nks) = NKSFileType::detect(magic) {
+            return Ok(NIFileType::NKSContainer(nks));
+        }
+
         // TODO: differentiate LE/BE
         Ok(match magic {
-            0x5EE56EB3 | 0xB36EE55E => NIFileType::KontaktInstrumentV1,
-            0x1290A87F | 0x7FA89012 => NIFileType::NKSInstrument,
             0x5AE5D6A4 | 0xA4D6E55A => NIFileType::KontaktMultiV1,
             0x54AC705E | 0x5E70AC54 => NIFileType::KontaktResource,
             0x4916E63C | 0x3CE61649 => NIFileType::NKSArchive,
             0x01A89ED6 | 0xD69EA801 => NIFileType::NICompressedWave,
             0x7A10E13F | 0x3FE1107A => NIFileType::NICache,
             0x2F5C204E | 0x4E205C2F => NIFileType::Monolith,
+            0x464D3845 => NIFileType::FM8LE, // "FM8E"
             _ => {
                 reader.rewind()?;
                 match ItemContainer::read(&mut reader) {
@@ -67,7 +71,7 @@ mod tests {
     fn test_kontakt_1() -> Result<(), Error> {
         Ok(assert_eq!(
             NIFileType::read(File::open("tests/filetype/NKS/KontaktV1/000-crunchy.nki")?)?,
-            NIFileType::KontaktInstrumentV1
+            NIFileType::NKSContainer(NKSFileType::NKSv1LE)
         ))
     }
 
@@ -85,7 +89,7 @@ mod tests {
             NIFileType::read(File::open(
                 "tests/filetype/NKS/KontaktV2/KontaktV2-000.nki"
             )?)?,
-            NIFileType::NKSInstrument
+            NIFileType::NKSContainer(NKSFileType::NKSv2LE)
         ))
     }
 
@@ -95,7 +99,7 @@ mod tests {
             NIFileType::read(File::open(
                 "tests/filetype/NKS/KontaktV42/KontaktV42-000.nki"
             )?)?,
-            NIFileType::NKSInstrument
+            NIFileType::NKSContainer(NKSFileType::NKSv2LE)
         ))
     }
 

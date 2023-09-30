@@ -10,6 +10,7 @@ pub enum NIFile {
     KontaktResource,
     NICompressedWave,
     NICache,
+    FM8Preset,
 }
 
 impl NIFile {
@@ -22,13 +23,14 @@ impl NIFile {
             NIFileType::Monolith => NIFile::Monolith(NIFileContainer::read(reader)?),
             NIFileType::NICompressedWave => NIFile::NICompressedWave,
             NIFileType::KoreSound => todo!(),
-            NIFileType::NKSInstrument
-            | NIFileType::KontaktInstrumentV1
-            | NIFileType::KontaktMultiV1 => NIFile::NKSContainer(NKSContainer::read(reader)?),
+            NIFileType::NKSContainer(_) | NIFileType::KontaktMultiV1 => {
+                NIFile::NKSContainer(NKSContainer::read(reader)?)
+            }
             NIFileType::KontaktResource => NIFile::KontaktResource,
             NIFileType::KontaktCache => todo!(),
             NIFileType::NKSArchive => todo!(),
             NIFileType::NICache => NIFile::NICache,
+            NIFileType::FM8LE => NIFile::FM8Preset,
 
             _ => todo!("Unsupported: {:?}", filetype),
         })

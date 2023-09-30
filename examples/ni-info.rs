@@ -181,6 +181,9 @@ pub fn main() -> Result<()> {
                 }
             }
         }
+        NIFile::FM8Preset => {
+            println!("Detected format:\tFM8 Preset\n");
+        }
     };
 
     Ok(())
