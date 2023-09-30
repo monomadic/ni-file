@@ -8,10 +8,11 @@ Native Instruments file format support for rust. This library is the result of h
 
 ## Features
 
-- ✅ **Kontakt v1** _partial: extract xml preset_
-- ✅ **Kontakt v2** _partial: extract xml preset_
-- ✅ **Kontakt v4.22+** _partial support: NKS Container, Program, FileTable, Zones_
-- ✅ **Kontakt v5-v7** _partial support: NIS Container, Program, FileTable, Zones_
+- ✅ **Kontakt v1** _extract xml_
+- ✅ **Kontakt v2** _extract xml_
+- ✅ **Kontakt v3** _extract xml_
+- ✅ **Kontakt v4.22+** _partial: NKS Container, Program, FileTable, Zones_
+- ✅ **Kontakt v5-v7** _partial: NIS Container, Program, FileTable, Zones_
 - ✅ **Kontakt FileContainer (Modern Monolith)**: _read support_
 - ✅ **NCW Compression**: _read support - also available as a [cli utility](https://github.com/monomadic/ncw)_.
 - 🕒 **Kontakt NKS Monolith**: _coming soon_

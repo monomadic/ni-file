@@ -1,29 +1,44 @@
-# Native Instruments File Formats.
+# Overview of Native Instruments File Formats
 
-All information in this document was obtained through legal means protected by Fair Use laws.
+This document explains various file formats used by Native Instruments (NI) over the years. It focuses on how these formats evolved and how they interact with different NI products like Kontakt.
 
-## Ecosystem
+## Format Evolution
 
-There is some overlap between the many file formats NI has used across the decades. In general, one or more presets are wrapped in a container format.
+Native Instruments has multiple file formats with some common features. Typically, these formats serve as containers for preset data.
 
-Kontakt originally had its own container format, called NKS (Native Instruments Kontakt Sound), and embedded inside was a compressed XML document with the actual preset data. Around Kontakt v4.22, the preset data was replaced with a custom RIFF-like binary chunk document, keeping the outer NKS container format.
+### Kontakt and NKS
 
-Eventually all NI products (Kontakt 5.1+, etc) introduced one single container: NIS (Native Instruments Sound), sometimes also referred to as NISound. This is a a slightly more sturdy (though still terrible) binary chunk format similar to EBML. The reasoning behind this was likely when NI introduced global databases for their entire family of applications and they wanted metadata to be searchable regardless of the application the preset was intended for. NKS was replaced with NIS, but the internal preset format remains the same up until the current version of Kontakt.
+In its early versions, Kontakt used a proprietary container known as NKS (Native Instruments Kontakt Sound). This contained a compressed XML file storing the actual preset information. Starting from version 4.22, Kontakt switched from XML to a custom binary format resembling RIFF, while keeping the NKS container.
 
-To make things more complicated (which appears to be the NI way), the NIS container format does not support embedding multiple files at once. So a radically new type, a FileContainer, is used only in these cases. In the UI of Kontakt however, they refer to these as Monoliths - a named already used for a previous container format that is part of NKS. Pretty neat right?
+### Introduction of NIS
 
-Because of the complexity of this ecosystem, this library intends to make these files easier to deal with, for the cases where the content is well known. NIFile is a wrapper structure designed to do just that.
+Later, NI standardized to a single container format, NIS (Native Instruments Sound), for all products (starting with Kontakt 5.1). NIS is similar to EBML and more robust than NKS. The switch likely aimed to facilitate metadata searching across all NI applications. Although NIS replaced NKS, the internal binary chunk-based preset format hasn't changed in the latest Kontakt versions, merely introducing new versions of the old chunk types.
+
+### FileContainer and Monoliths
+
+Although the Kontakt UI refers to monoliths interchangably between all versions of Kontakt, NKS supports monoliths but NIS does not - instead a new container was introduced, internally referred to as FileContainer.
+
+### Single and Multi
+
+Presets can be single-instrument or multi instrument.
+
+## Purpose of NIFile Library
+
+Given this ecosystem's complexity, the NIFile library aims to simplify interactions with these formats with a simple interface, but also provide access to the lower level, direct structures and complexities of the internal files when needed.
 
 ## Container Formats
 
+- [NKS](containers/NKS.md) Kontakt Instrument container (Kontakt 1-4).
 - [NISound](containers/NIS.md) Generic container format for all modern NI types.
 - [FileContainer](containers/FileContainer.md) Kontakt monolith (Kontakt 5.1+)
-- [NKS](containers/NKS.md) Kontakt Instrument container (Kontakt 1-4).
 
 ## Presets
 
 Embedded presets look like IFF files. They start with a 16-bit id followed by a 32-bit length, followed by the data.
 
 - [Kontakt](presets/Kontakt.md) Kontakt 4.22+
+- [FM8](presets/FM8.md) NI's DX7 emulator / FM synth
 
 ## Other
+
+- [NCW](other/NCW.md) NI Compressed Wave
