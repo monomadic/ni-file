@@ -129,12 +129,12 @@ impl Kon4 {
     /// Decompress internal patch data
     pub fn from_compressed(
         compressed_data: Vec<u8>,
-        decompressed_length: usize,
+        _decompressed_length: usize,
     ) -> Result<Vec<ChunkData>, Error> {
-        Ok(Self::from(crate::deflate::deflate_with_lib(
-            &compressed_data,
-            decompressed_length,
-        )?)?)
+        Ok(Self::from(
+            lz77::decompress(&mut Cursor::new(compressed_data))
+                .map_err(|e| NKSError::Decompression(e.to_string()))?,
+        )?)
     }
 
     /// Parse patch data into Chunks

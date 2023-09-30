@@ -55,41 +55,27 @@ pub fn deflate<R: ReadBytesExt>(mut reader: R) -> Result<Vec<u8>, NIFileError> {
 }
 
 pub(crate) fn fetch_offset(buffer: &Vec<u8>, length: usize, offset: usize) -> Vec<u8> {
-    if buffer.len() < offset {
+    if offset > buffer.len() {
         panic!("Cannot deflate: offset seek is larger than dictionary.");
     }
 
-    let start_pos = buffer.len() - offset;
+    (0..length)
+        .map(|index| {
+            let start_pos = buffer.len() - offset;
+            let offset_pos = start_pos + index;
 
-    if start_pos + length > buffer.len() {
-        panic!("Cannot deflate: length + start_pos is larger than dictionary.");
-    }
-
-    buffer[start_pos..start_pos + length].to_vec()
+            if length > offset {
+                let circular_pos = start_pos + (index % offset);
+                if circular_pos > buffer.len() {
+                    panic!("attempt {:?}", (circular_pos, offset, buffer.len()));
+                }
+                buffer[circular_pos]
+            } else {
+                buffer[offset_pos]
+            }
+        })
+        .collect()
 }
-
-// pub(crate) fn fetch_offset(buffer: &Vec<u8>, length: usize, offset: usize) -> Vec<u8> {
-//     if offset > buffer.len() {
-//         panic!("Cannot deflate: offset seek is larger than dictionary.");
-//     }
-//
-//     (0..length)
-//         .map(|index| {
-//             let start_pos = buffer.len() - offset;
-//             let offset_pos = start_pos + index;
-//
-//             if length > offset {
-//                 let circular_pos = start_pos + (index % offset);
-//                 if circular_pos > buffer.len() {
-//                     panic!("attempt {:?}", (circular_pos, offset, buffer.len()));
-//                 }
-//                 buffer[circular_pos]
-//             } else {
-//                 buffer[offset_pos]
-//             }
-//         })
-//         .collect()
-// }
 
 #[derive(Debug, PartialEq)]
 pub(crate) enum Offset {
@@ -256,15 +242,15 @@ mod tests {
     }
 
     #[test]
-    fn test_decompress() {
-        let compressed_input =
-            include_bytes!("../tests/data/nisound/fastlz/kontakt-4/001-garbo2.compressed");
+    fn test_decompress() -> Result<(), Error> {
+        let input = include_bytes!("../tests/data/nisound/fastlz/kontakt-4/001-garbo2.compressed");
         let expected_output =
-            include_bytes!("../tests/data/nisound/fastlz/kontakt-4/001-garbo2.decompressed");
+            include_bytes!("../tests/data/nisound/fastlz/kontakt-4/001-garbo2.decompressed")
+                .to_vec();
 
-        let decompressed_output =
-            deflate_checked(compressed_input, expected_output.len()).expect("decompression failed");
+        let output = deflate_checked(input, expected_output.len()).expect("decompression failed");
 
-        assert_eq!(expected_output.to_vec(), decompressed_output);
+        assert_eq!(expected_output, output);
+        Ok(())
     }
 }

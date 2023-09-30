@@ -11,6 +11,7 @@ time = "0.3.25"
 fastlz = "0.1.0"
 flate2 = "1.0.26"
 ncw = "0.1.2"
+lz77 = "0.1.0"
 
 [dev-dependencies]
 wax = "0.5.0"

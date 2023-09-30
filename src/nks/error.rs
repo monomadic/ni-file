@@ -10,4 +10,7 @@ pub enum NKSError {
 
     #[error(transparent)]
     ReadBytesError(#[from] ReadBytesError),
+
+    #[error("Decompression error: {0}")]
+    Decompression(String),
 }

@@ -18,7 +18,7 @@ pub mod kontakt;
 
 // utils:
 pub(crate) mod byte_reader; // for reading bytestreams
-pub mod deflate; // fastlz decompression
+                            // pub mod deflate; // fastlz decompression
 mod detect; // detect filetype
 pub(crate) mod prelude;
 pub(crate) mod read_bytes; // for reading bytestreams

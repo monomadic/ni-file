@@ -72,15 +72,12 @@ impl SubtreeItem {
         let is_compressed = reader.read_u8()?;
         assert_eq!(is_compressed, 1);
 
-        let decompressed_size = reader.read_u32_le()?;
+        let _decompressed_size = reader.read_u32_le()?;
         let compressed_size = reader.read_u32_le()?;
         let compressed_data = reader.read_bytes(compressed_size as usize)?;
 
-        // let inner_data =
-        //     crate::deflate::deflate_checked(&compressed_data, decompressed_size as usize)?;
-
-        let inner_data =
-            crate::deflate::deflate_with_lib(&compressed_data, decompressed_size as usize)?;
+        let inner_data = lz77::decompress(&mut Cursor::new(compressed_data))
+            .map_err(|e| NIFileError::Generic(e.to_string()))?;
 
         Ok(SubtreeItem { inner_data })
     }
