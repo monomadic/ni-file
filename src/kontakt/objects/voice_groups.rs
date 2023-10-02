@@ -1,4 +1,4 @@
-use crate::{kontakt::voice_limit::VoiceLimit, read_bytes::ReadBytesExt, Error};
+use crate::{kontakt::objects::voice_limit::VoiceLimit, read_bytes::ReadBytesExt, Error};
 
 #[derive(Debug)]
 pub struct VoiceGroups;

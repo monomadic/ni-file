@@ -1,6 +1,10 @@
-use crate::{read_bytes::ReadBytesExt, Error};
+use crate::{
+    kontakt::{chunk::Chunk, error::KontaktError},
+    read_bytes::ReadBytesExt,
+    Error,
+};
 
-use super::{chunkdata::ChunkData, error::KontaktError, zone_data::ZoneData};
+use super::zone_data::ZoneData;
 
 #[derive(Debug)]
 pub struct ZoneList {
@@ -21,10 +25,10 @@ impl ZoneList {
     }
 }
 
-impl std::convert::TryFrom<&ChunkData> for ZoneList {
+impl std::convert::TryFrom<&Chunk> for ZoneList {
     type Error = Error;
 
-    fn try_from(chunk: &ChunkData) -> Result<Self, Self::Error> {
+    fn try_from(chunk: &Chunk) -> Result<Self, Self::Error> {
         if chunk.id != 0x34 {
             return Err(KontaktError::IncorrectID {
                 expected: 0x34,

@@ -1,3 +1,11 @@
+use std::io::Cursor;
+
+use crate::{
+    kontakt::{error::KontaktError, structured_object::StructuredObject, Chunk},
+    read_bytes::ReadBytesExt,
+    Error,
+};
+
 #[derive(Debug)]
 pub struct BParFX(StructuredObject);
 
@@ -7,10 +15,10 @@ impl BParFX {
     }
 }
 
-impl std::convert::TryFrom<&ChunkData> for BParFX {
+impl std::convert::TryFrom<&Chunk> for BParFX {
     type Error = Error;
 
-    fn try_from(chunk: &ChunkData) -> Result<Self, Self::Error> {
+    fn try_from(chunk: &Chunk) -> Result<Self, Self::Error> {
         if chunk.id != 0x25 {
             return Err(KontaktError::IncorrectID {
                 expected: 0x25,

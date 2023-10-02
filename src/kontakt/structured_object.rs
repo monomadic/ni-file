@@ -1,7 +1,7 @@
 use crate::prelude::io;
 use crate::{read_bytes::ReadBytesExt, Error, NIFileError};
 
-use super::chunkdata::ChunkData;
+use super::chunk::Chunk;
 
 #[doc = include_str!("../../doc/presets/Kontakt/StructuredObject.md")]
 #[derive(Debug)]
@@ -9,7 +9,7 @@ pub struct StructuredObject {
     pub version: u16,
     pub public_data: Vec<u8>,
     pub private_data: Vec<u8>,
-    pub children: Vec<ChunkData>,
+    pub children: Vec<Chunk>,
 }
 
 impl StructuredObject {
@@ -57,7 +57,7 @@ impl StructuredObject {
         let mut children_reader = io::Cursor::new(children_data);
 
         let mut children = Vec::new();
-        while let Ok(object) = ChunkData::read(&mut children_reader) {
+        while let Ok(object) = Chunk::read(&mut children_reader) {
             children.push(object);
         }
 
@@ -69,7 +69,7 @@ impl StructuredObject {
         })
     }
 
-    pub fn find_first(&self, id: u16) -> Option<&ChunkData> {
+    pub fn find_first(&self, id: u16) -> Option<&Chunk> {
         self.children.iter().find(|c| c.id == id)
     }
 }

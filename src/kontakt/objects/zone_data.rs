@@ -1,8 +1,6 @@
 use std::io::Cursor;
 
-use crate::{read_bytes::ReadBytesExt, Error};
-
-use super::structured_object::StructuredObject;
+use crate::{kontakt::structured_object::StructuredObject, read_bytes::ReadBytesExt, Error};
 
 #[derive(Debug)]
 pub struct ZoneData(StructuredObject);

@@ -1,6 +1,6 @@
 use super::preset_container::PresetContainer;
 use crate::{
-    kontakt::{chunkdata::ChunkData, instrument::KontaktInstrument},
+    kontakt::{instrument::KontaktInstrument, Chunk},
     nis::{
         properties::{BNISoundPreset, Preset, PresetChunkItem},
         AppSpecific, AuthoringApplication, BNISoundHeader, EncryptionItem, ItemContainer, ItemData,
@@ -151,7 +151,7 @@ impl Repository {
                         let mut objects = Vec::new();
                         let mut compressed_data = Cursor::new(&data);
 
-                        while let Ok(chunk) = ChunkData::read(&mut compressed_data) {
+                        while let Ok(chunk) = Chunk::read(&mut compressed_data) {
                             objects.push(chunk);
                         }
 

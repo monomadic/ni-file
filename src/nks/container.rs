@@ -6,7 +6,9 @@ use std::{
 use flate2::read::ZlibDecoder;
 
 use crate::{
-    kontakt::chunkdata::ChunkData, nks::meta_info::BPatchMetaInfoHeader, read_bytes::ReadBytesExt,
+    kontakt::{Chunk, Kon4},
+    nks::meta_info::BPatchMetaInfoHeader,
+    read_bytes::ReadBytesExt,
     Error,
 };
 
@@ -65,7 +67,7 @@ impl NKSContainer {
                         let mut decompressed_data = Cursor::new(decompressed_data);
 
                         let mut chunks = Vec::new();
-                        while let Ok(chunk) = ChunkData::read(&mut decompressed_data) {
+                        while let Ok(chunk) = Chunk::read(&mut decompressed_data) {
                             chunks.push(chunk);
                         }
 
@@ -119,18 +121,12 @@ pub struct Kon2 {
     pub meta_info: BPatchMetaInfoHeader,
 }
 
-#[derive(Debug)]
-pub struct Kon4 {
-    pub chunks: Vec<ChunkData>,
-    pub meta_info: BPatchMetaInfoHeader,
-}
-
 impl Kon4 {
     /// Decompress internal patch data
     pub fn from_compressed(
         compressed_data: Vec<u8>,
         _decompressed_length: usize,
-    ) -> Result<Vec<ChunkData>, Error> {
+    ) -> Result<Vec<Chunk>, Error> {
         Ok(Self::from(
             lz77::decompress(&mut Cursor::new(compressed_data))
                 .map_err(|e| NKSError::Decompression(e.to_string()))?,
@@ -138,11 +134,11 @@ impl Kon4 {
     }
 
     /// Parse patch data into Chunks
-    pub fn from(decompressed_data: Vec<u8>) -> Result<Vec<ChunkData>, Error> {
+    pub fn from(decompressed_data: Vec<u8>) -> Result<Vec<Chunk>, Error> {
         let mut objects = Vec::new();
         let mut decompressed_data = Cursor::new(decompressed_data);
 
-        while let Ok(chunk) = ChunkData::read(&mut decompressed_data) {
+        while let Ok(chunk) = Chunk::read(&mut decompressed_data) {
             objects.push(chunk);
         }
 

@@ -14,6 +14,7 @@ pub mod nks; // native instruments kontakt sound file format
 
 // property domains:
 pub mod fm8;
+/// data types relating to the Kontakt sampler
 pub mod kontakt;
 
 // utils:

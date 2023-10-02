@@ -1,15 +1,12 @@
 use std::io::Cursor;
 
 use crate::{
-    kontakt::{
-        chunkdata::ChunkData, error::KontaktError, structured_object::StructuredObject,
-        zone_data::ZoneData, zone_list::ZoneList,
-    },
+    kontakt::{chunk::Chunk, error::KontaktError, structured_object::StructuredObject},
     read_bytes::ReadBytesExt,
     Error,
 };
 
-use super::program_data::ProgramPublicParams;
+use super::{program_data::ProgramPublicParams, zone_data::ZoneData, zone_list::ZoneList};
 
 #[derive(Debug)]
 pub struct Program(StructuredObject);
@@ -40,7 +37,7 @@ impl Program {
             .map(|chunk| ZoneList::try_from(chunk).map(|z| z.zones))
     }
 
-    pub fn children(&self) -> &Vec<ChunkData> {
+    pub fn children(&self) -> &Vec<Chunk> {
         &self.0.children
     }
 
@@ -48,10 +45,10 @@ impl Program {
     // 0x33 GroupList
 }
 
-impl std::convert::TryFrom<&ChunkData> for Program {
+impl std::convert::TryFrom<&Chunk> for Program {
     type Error = Error;
 
-    fn try_from(chunk: &ChunkData) -> Result<Self, Self::Error> {
+    fn try_from(chunk: &Chunk) -> Result<Self, Self::Error> {
         if chunk.id != 0x28 {
             return Err(KontaktError::IncorrectID {
                 expected: 0x28,

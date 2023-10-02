@@ -1,8 +1,6 @@
 use std::collections::HashMap;
 
-use crate::{read_bytes::ReadBytesExt, Error};
-
-use super::chunkdata::ChunkData;
+use crate::{kontakt::chunk::Chunk, read_bytes::ReadBytesExt, Error};
 
 #[derive(Debug)]
 pub struct FNTableImpl {
@@ -25,10 +23,10 @@ pub fn read_filename<R: ReadBytesExt>(mut reader: R) -> Result<Vec<String>, Erro
     Ok(filename)
 }
 
-impl std::convert::TryFrom<&ChunkData> for FileNameListPreK51 {
+impl std::convert::TryFrom<&Chunk> for FileNameListPreK51 {
     type Error = Error;
 
-    fn try_from(chunk: &ChunkData) -> Result<Self, Self::Error> {
+    fn try_from(chunk: &Chunk) -> Result<Self, Self::Error> {
         if chunk.id != 0x3d {
             panic!("fixme: error here");
         }
@@ -37,10 +35,10 @@ impl std::convert::TryFrom<&ChunkData> for FileNameListPreK51 {
     }
 }
 
-impl std::convert::TryFrom<&ChunkData> for FNTableImpl {
+impl std::convert::TryFrom<&Chunk> for FNTableImpl {
     type Error = Error;
 
-    fn try_from(chunk: &ChunkData) -> Result<Self, Self::Error> {
+    fn try_from(chunk: &Chunk) -> Result<Self, Self::Error> {
         if chunk.id != 0x4b {
             panic!("fixme: error here");
         }

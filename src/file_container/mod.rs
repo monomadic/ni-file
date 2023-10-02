@@ -2,6 +2,8 @@ use crate::prelude::*;
 use crate::read_bytes::ReadBytesExt;
 use crate::string_reader::StringReader;
 
+const FC_TOC_MARKER_END: u64 = 0xF1F1F1F1F1F1F1F1;
+
 /// Kontakt archive that bundles a preset, samples and other files.
 pub struct NIFileContainer {
     pub file_section_offset: u64,
@@ -63,7 +65,7 @@ impl NIFileContainer {
         }
 
         let end_marker = reader.read_u64_le()?;
-        assert_eq!(end_marker, 0xF1F1F1F1F1F1F1F1);
+        assert_eq!(end_marker, FC_TOC_MARKER_END);
 
         let _pad = reader.read_bytes(16)?;
 
@@ -103,19 +105,4 @@ mod tests {
         NIFileContainer::read(file)?;
         Ok(())
     }
-
-    // #[test]
-    // fn test_filecontainer_delete() -> Result<()> {
-    //     let mut file = File::open("tests/filetype/monolith/kontakt/DELETE.nki")?;
-    //     let container = NIFileContainer::read(&file)?;
-    //
-    //     for item in container.items {
-    //         file.seek(SeekFrom::Start(
-    //             item.file_start_offset + container.file_section_offset,
-    //         ))?;
-    //         let mut output = File::create(&item.filename)?;
-    //         output.write_all(&file.read_bytes(item.file_size as usize)?)?;
-    //     }
-    //     Ok(())
-    // }
 }

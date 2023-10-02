@@ -1,10 +1,10 @@
-use crate::{kontakt::chunkdata::ChunkData, read_bytes::ReadBytesExt, Error};
+use crate::{kontakt::chunk::Chunk, read_bytes::ReadBytesExt, Error};
 
 // id 0x3a
 // known versions: 0x10, 0x11, 0x12
-#[doc = include_str!("../../doc/presets/Kontakt/BParamArray.md")]
+#[doc = include_str!("../../../doc/presets/Kontakt/BParamArray.md")]
 #[derive(Debug)]
-pub struct BParamArray(Vec<ChunkData>);
+pub struct BParamArray(Vec<Chunk>);
 
 impl BParamArray {
     pub fn read<R: ReadBytesExt>(mut reader: R, num_items: u32) -> Result<Self, Error> {
@@ -22,7 +22,7 @@ impl BParamArray {
                 for _ in 0..num_items {
                     let has_item = reader.read_bool()?;
                     if has_item {
-                        let chunk = ChunkData::read(&mut reader)?;
+                        let chunk = Chunk::read(&mut reader)?;
                         items.push(chunk);
                     }
                 }

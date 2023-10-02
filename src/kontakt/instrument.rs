@@ -3,19 +3,21 @@ use std::collections::HashMap;
 use crate::Error;
 
 use super::{
-    chunkdata::ChunkData,
-    filename_list::{FNTableImpl, FileNameListPreK51},
-    objects::program::Program,
+    chunk::Chunk,
+    objects::{
+        filename_list::{FNTableImpl, FileNameListPreK51},
+        program::Program,
+    },
 };
 
-pub struct KontaktInstrument(pub Vec<ChunkData>);
+pub struct KontaktInstrument(pub Vec<Chunk>);
 
 impl KontaktInstrument {
-    pub fn find_first(&self, id: u16) -> Option<&ChunkData> {
+    pub fn find_first(&self, id: u16) -> Option<&Chunk> {
         self.0.iter().find(|c| c.id == id)
     }
 
-    pub fn find(&self, id: u16) -> Vec<&ChunkData> {
+    pub fn find(&self, id: u16) -> Vec<&Chunk> {
         self.0.iter().filter(|c| c.id == id).collect()
     }
 
