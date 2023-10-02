@@ -50,7 +50,7 @@ mod tests {
 
     #[test]
     fn test_zone_list_empty() -> Result<(), Error> {
-        let file = File::open("tests/patchdata/KontaktV42/ZoneList/ZoneList-000")?;
+        let file = File::open("tests/data/Objects/KontaktV42/ZoneList/ZoneList-000")?;
         let zonelist = ZoneList::read(file)?;
         assert_eq!(zonelist.zones.len(), 0);
         Ok(())
@@ -58,7 +58,7 @@ mod tests {
 
     #[test]
     fn test_zone_list_001() -> Result<(), Error> {
-        let file = File::open("tests/patchdata/KontaktV42/ZoneList/ZoneList-001")?;
+        let file = File::open("tests/data/Objects/KontaktV42/ZoneList/ZoneList-001")?;
         let zonelist = ZoneList::read(file)?;
         assert_eq!(zonelist.zones.len(), 61);
         Ok(())
@@ -66,7 +66,7 @@ mod tests {
 
     #[test]
     fn test_zone_list_002() -> Result<(), Error> {
-        let file = File::open("tests/patchdata/KontaktV42/ZoneList/ZoneList-002")?;
+        let file = File::open("tests/data/Objects/KontaktV42/ZoneList/ZoneList-002")?;
         let zonelist = ZoneList::read(file)?;
         assert_eq!(zonelist.zones.len(), 31);
         Ok(())
@@ -74,7 +74,7 @@ mod tests {
 
     #[test]
     fn test_zone_list_003() -> Result<(), Error> {
-        let file = File::open("tests/patchdata/KontaktV42/ZoneList/ZoneList-003")?;
+        let file = File::open("tests/data/Objects/KontaktV42/ZoneList/ZoneList-003")?;
         let zonelist = ZoneList::read(file)?;
         assert_eq!(zonelist.zones.len(), 32);
         Ok(())

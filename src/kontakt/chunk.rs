@@ -31,7 +31,6 @@ impl std::convert::TryFrom<Chunk> for StructuredObject {
     }
 }
 
-// TODO: remove this
 #[derive(Debug)]
 pub enum ChunkType {
     Program(Program),

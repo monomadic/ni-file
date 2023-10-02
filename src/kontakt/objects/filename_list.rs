@@ -157,30 +157,35 @@ mod tests {
 
     #[test]
     fn test_structured_object() -> Result<(), Error> {
-        let file = File::open("tests/patchdata/KontaktV42/filename_list_pre_k5/4.2.2.4504/000")?;
+        let file = File::open("tests/data/Objects/KontaktV42/filename_list_pre_k5/4.2.2.4504/000")?;
         FileNameListPreK51::read(file)?;
         Ok(())
     }
 
     #[test]
     fn test_fntableimpl() -> Result<(), Error> {
-        let mut file = File::open("test-data/kontakt/fntableimpl/v02/fntableimplv02-000")?;
+        let mut file =
+            File::open("tests/data/Objects/KontaktV42/FNTableImpl/v02/FNTableImplV02-000")?;
         file.read_bytes(6)?; // skip chunk header
         FNTableImpl::read(file)?;
 
-        let mut file = File::open("test-data/kontakt/fntableimpl/v02/fntableimplv02-001")?;
+        let mut file =
+            File::open("tests/data/Objects/KontaktV42/FNTableImpl/v02/FNTableImplV02-001")?;
         file.read_bytes(6)?; // skip chunk header
         FNTableImpl::read(file)?;
 
-        let mut file = File::open("test-data/kontakt/fntableimpl/v02/fntableimplv02-002")?;
+        let mut file =
+            File::open("tests/data/Objects/KontaktV42/FNTableImpl/v02/FNTableImplV02-002")?;
         file.read_bytes(6)?; // skip chunk header
         FNTableImpl::read(file)?;
 
-        let mut file = File::open("test-data/kontakt/fntableimpl/v02/fntableimplv02-003")?;
+        let mut file =
+            File::open("tests/data/Objects/KontaktV42/FNTableImpl/v02/FNTableImplV02-003")?;
         file.read_bytes(6)?; // skip chunk header
         FNTableImpl::read(file)?;
 
-        let mut file = File::open("test-data/Kontakt/FNTableImpl/V02/FNTableImplV02-004")?;
+        let mut file =
+            File::open("tests/data/Objects/KontaktV42/FNTableImpl/v02/FNTableImplV02-004")?;
         file.read_bytes(6)?; // skip chunk header
         FNTableImpl::read(file)?;
 

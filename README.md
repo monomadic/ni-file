@@ -20,7 +20,7 @@ Native Instruments file format support for rust. This library is the result of h
 ## Planned Features
 
 - 🕒 FM8 _partial_
-- ❌ WebAssembly / nostd _internal lz77 compression temporarily retired, needs refactoring to remove zlib dependency_
+- ❌ WebAssembly _needs testing_
 - ❌ All other NI formats...
 
 Anyone who wants to join the effort, please join the telegram group at https://t.me/ni_file

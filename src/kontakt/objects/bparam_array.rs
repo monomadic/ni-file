@@ -43,17 +43,17 @@ mod tests {
 
     #[test]
     fn test_bparam_array_v10() -> Result<(), Error> {
-        let file = File::open("tests/patchdata/KontaktV42/BParameterArray/BParameterArray-001")?;
+        let file = File::open("tests/data/Objects/KontaktV42/BParameterArray/BParameterArray-001")?;
         let arr = BParamArray::read(file, 8)?;
-        dbg!(arr);
+        // dbg!(arr);
         Ok(())
     }
 
     #[test]
     fn test_bparam_array_v12() -> Result<(), Error> {
-        let file = File::open("tests/patchdata/KontaktV42/BParameterArray/BParameterArray-000")?;
+        let file = File::open("tests/data/Objects/KontaktV42/BParameterArray/BParameterArray-000")?;
         let arr = BParamArray::read(file, 8)?;
-        dbg!(arr);
+        // dbg!(arr);
         Ok(())
     }
 }

@@ -7,3 +7,5 @@ pub enum KontaktPreset {
     Kon3(XMLDocument),
     Kon4(Kon4),
 }
+
+impl KontaktPreset {}

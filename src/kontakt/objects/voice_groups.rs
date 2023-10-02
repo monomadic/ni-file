@@ -9,8 +9,6 @@ pub struct VoiceGroup;
 // SerId 0x32
 impl VoiceGroups {
     pub fn read<R: ReadBytesExt>(mut reader: R) -> Result<Self, Error> {
-        println!("VoiceGroups::read");
-
         let is_structured = reader.read_bool()?;
         assert_eq!(is_structured, false);
 
@@ -39,7 +37,7 @@ mod tests {
 
     #[test]
     fn test_voice_groups_v60() -> Result<(), Error> {
-        let file = File::open("tests/patchdata/KontaktV42/VoiceGroups/v60/000")?;
+        let file = File::open("tests/data/Objects/KontaktV42/VoiceGroups/v60/000")?;
         assert!(VoiceGroups::read(file).is_ok());
         Ok(())
     }
