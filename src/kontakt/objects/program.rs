@@ -147,7 +147,7 @@ mod tests {
 
     #[test]
     fn test_private_params_v80() -> Result<(), Error> {
-        let mut file = File::open("tests/patchdata/KontaktV42/Program/v80/private_params/000")?;
+        let mut file = File::open("tests/data/Objects/KontaktV42/Program/v80/private_params/000")?;
         let _params = ProgramDataPrivateParams::read(&mut file, 0x80)?;
         Ok(())
     }

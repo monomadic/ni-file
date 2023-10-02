@@ -87,6 +87,7 @@ pub fn main() -> Result<()> {
 
             if let Ok(h) = repository.nks_header() {
                 println!("\nBPatchHeaderV42:");
+                println!("  signature:\t\t{}", h.app_signature);
                 println!("  type:\t\t\t{:?}", h.patch_type);
                 println!("  kontakt_version:\t{}", h.app_version);
                 println!("  author:\t\t{}", h.author);

@@ -1,8 +1,15 @@
 // This example shows the basic hierarchical structure of an NISound container
 
-use std::error::Error;
+use std::{error::Error, path::PathBuf};
 
 use ni_file::nis::ItemContainer;
+
+fn get_files(path: &str) -> Result<Vec<PathBuf>, Box<dyn Error>> {
+    Ok(glob::glob(path)?
+        .filter_map(|path| path.ok())
+        .filter(|path| path.file_name().unwrap() != ".DS_Store")
+        .collect())
+}
 
 fn print_item_ids(item: &ItemContainer, indent: usize) -> Result<(), Box<dyn Error>> {
     for item in &item.children {
@@ -38,19 +45,7 @@ pub fn main() -> Result<(), Box<dyn std::error::Error>> {
         return Ok(());
     };
 
-    let paths: Vec<std::path::PathBuf> = wax::Glob::new(&path)
-        .unwrap()
-        .walk(".")
-        .flatten()
-        .map(|entry| entry.into_path())
-        .filter(|entry| entry.is_file())
-        .filter(|path| path.file_name().unwrap() != ".DS_Store")
-        .collect();
-
-    // let paths: Vec<std::path::PathBuf> = glob::glob(&path)?
-    //     .filter_map(|path| path.ok())
-    //     .filter(|path| path.file_name().unwrap() != ".DS_Store")
-    //     .collect();
+    let paths = get_files(&path)?;
 
     // repository containers (used in most instruments)
     for path in paths {
@@ -58,8 +53,6 @@ pub fn main() -> Result<(), Box<dyn std::error::Error>> {
 
         let file = std::fs::File::open(path)?;
         let sound = ni_file::Repository::read(&file)?;
-
-        // let item = Item::read(&file)?;
         let item = sound.item();
 
         println!("format:\t\t\tNISound {}", sound.nisound_version()?);

@@ -92,14 +92,14 @@ mod tests {
 
     #[test]
     fn test_filecontainer_nki() -> Result<()> {
-        let file = File::open("tests/filetype/monolith/kontakt/000-default.nki")?;
+        let file = File::open("tests/data/Containers/FileContainer/files/000-default.nki")?;
         NIFileContainer::read(file)?;
         Ok(())
     }
 
     #[test]
     fn test_filecontainer_nkm() -> Result<()> {
-        let file = File::open("tests/filetype/monolith/kontakt/001-multi.nkm")?;
+        let file = File::open("tests/data/Containers/FileContainer/files/001-multi.nkm")?;
         NIFileContainer::read(file)?;
         Ok(())
     }
