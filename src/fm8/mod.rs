@@ -1,3 +1,5 @@
+//! Data types relating to the FM8 synthesizer
+
 // mod arp;
 mod fx;
 mod matrix;

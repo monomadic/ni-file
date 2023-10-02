@@ -1,5 +1,12 @@
 // Kon4 Schema:
 //
+// 0x28 Program
+//  0x3A BParameterArraySer<BParFX,8>
+//  0x3A BParameterArraySer<BParFX,8>
+//  0x32 VoiceGroups
+//  0x33 GroupList
+//  0x34 ZoneList
+// 0x3d FileNameListPreK1
 
 use crate::{kontakt::Chunk, nks::BPatchMetaInfoHeader};
 

@@ -1,3 +1,5 @@
+//! Byte reading utilities
+
 use std::{
     any::TypeId,
     io::{Cursor, Read, Result},
