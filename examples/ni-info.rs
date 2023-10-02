@@ -165,7 +165,7 @@ pub fn main() -> Result<()> {
             match nks.preset()? {
                 KontaktPreset::Kon1(kon1) => {
                     println!("\nKon1:");
-                    println!("\n{}", kon1);
+                    println!("\n{}", kon1.preset);
                 }
                 KontaktPreset::Kon2(kon2) => {
                     println!("\nKon2:");

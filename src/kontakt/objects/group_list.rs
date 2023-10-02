@@ -10,8 +10,6 @@ impl GroupList {
 
 #[cfg(test)]
 mod tests {
-    use std::fs::File;
-
     use super::*;
 
     #[test]

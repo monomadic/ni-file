@@ -8,6 +8,7 @@ mod kon7;
 mod preset;
 mod xml;
 
+pub use kon1::Kon1;
 pub use kon2::Kon2;
 pub use kon4::Kon4;
 pub use preset::KontaktPreset;

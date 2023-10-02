@@ -1,10 +1,11 @@
 use crate::{kontakt::chunk::Chunk, read_bytes::ReadBytesExt, Error};
 
-// id 0x3a
-// known versions: 0x10, 0x11, 0x12
+// id:          0x3a
+// versions:    0x10, 0x11, 0x12
+
 #[doc = include_str!("../../../doc/presets/Kontakt/BParamArray.md")]
 #[derive(Debug)]
-pub struct BParamArray(Vec<Chunk>);
+pub struct BParamArray(Vec<Option<Chunk>>);
 
 impl BParamArray {
     pub fn read<R: ReadBytesExt>(mut reader: R, num_items: u32) -> Result<Self, Error> {
@@ -23,7 +24,11 @@ impl BParamArray {
                     let has_item = reader.read_bool()?;
                     if has_item {
                         let chunk = Chunk::read(&mut reader)?;
-                        items.push(chunk);
+                        println!("{:x}", chunk.id);
+
+                        items.push(Some(chunk));
+                    } else {
+                        items.push(None);
                     }
                 }
             }
@@ -45,7 +50,9 @@ mod tests {
     fn test_bparam_array_v10() -> Result<(), Error> {
         let file = File::open("tests/data/Objects/KontaktV42/BParameterArray/BParameterArray-001")?;
         let arr = BParamArray::read(file, 8)?;
-        // dbg!(arr);
+
+        assert_eq!(arr.0.len(), 8);
+        dbg!(arr);
         Ok(())
     }
 
@@ -53,6 +60,8 @@ mod tests {
     fn test_bparam_array_v12() -> Result<(), Error> {
         let file = File::open("tests/data/Objects/KontaktV42/BParameterArray/BParameterArray-000")?;
         let arr = BParamArray::read(file, 8)?;
+
+        assert_eq!(arr.0.len(), 8);
         // dbg!(arr);
         Ok(())
     }

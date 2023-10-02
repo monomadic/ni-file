@@ -1,12 +1,6 @@
-use std::io::{Cursor, Read};
+use std::io::Cursor;
 
-use flate2::read::ZlibDecoder;
-
-use crate::{
-    kontakt::{Chunk, Kon4, KontaktPreset, XMLDocument},
-    nks::meta_info::BPatchMetaInfoHeader,
-    read_bytes::ReadBytesExt,
-};
+use crate::{kontakt::KontaktPreset, read_bytes::ReadBytesExt};
 
 use super::{error::NKSError, header::BPatchHeader};
 
@@ -31,7 +25,7 @@ impl NKSContainer {
         let mut compressed_data = Vec::new();
 
         reader.read_to_end(&mut compressed_data)?;
-        dbg!(&header);
+        // dbg!(&header);
 
         Ok(Self {
             header,
@@ -41,39 +35,17 @@ impl NKSContainer {
 
     /// Decompress internal preset data
     pub fn preset(&self) -> Result<KontaktPreset, NKSError> {
+        let mut reader = Cursor::new(&self.compressed_data);
+
         match &self.header {
             BPatchHeader::BPatchHeaderV1(_) => {
-                // V1 headers are always Kon1 files.
-                let data = self.compressed_data.as_slice();
-                Ok(KontaktPreset::Kon1(XMLDocument::from_compressed_data(
-                    data,
-                )?))
+                Ok(KontaktPreset::from_str(&mut reader, "Kon1").unwrap())
             }
-            BPatchHeader::BPatchHeaderV2(v2) => match v2.app_signature.as_str() {
-                "Kon3" => unimplemented!(),
-                _ => unimplemented!(),
-            },
+            BPatchHeader::BPatchHeaderV2(v2) => {
+                Ok(KontaktPreset::from_str(&mut reader, v2.app_signature.as_str()).unwrap())
+            }
             BPatchHeader::BPatchHeaderV42(v42) => {
-                match v42.app_signature.as_str() {
-                    "Kon4" => {
-                        // Decompress the V1 preset xml document.
-                        let mut decoder = ZlibDecoder::new(&self.compressed_data[..]);
-                        let mut decompressed_data = Vec::new();
-                        decoder.read_to_end(&mut decompressed_data)?;
-                        let mut decompressed_data = Cursor::new(decompressed_data);
-
-                        let mut chunks = Vec::new();
-                        while let Ok(chunk) = Chunk::read(&mut decompressed_data) {
-                            chunks.push(chunk);
-                        }
-
-                        Ok(KontaktPreset::Kon4(Kon4 {
-                            chunks,
-                            meta_info: BPatchMetaInfoHeader::read(&mut decompressed_data)?,
-                        }))
-                    }
-                    _ => unimplemented!(),
-                }
+                Ok(KontaktPreset::from_str(&mut reader, v42.app_signature.as_str()).unwrap())
             }
         }
     }
