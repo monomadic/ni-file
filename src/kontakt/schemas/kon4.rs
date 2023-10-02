@@ -15,3 +15,8 @@ pub struct Kon4 {
     pub chunks: Vec<Chunk>,
     pub meta_info: BPatchMetaInfoHeader,
 }
+
+// impl Kon4 {
+//     pub fn program(&self) -> Result<Program, KontaktError> {}
+//     pub fn filenamelist(&self) -> Result<FNTableImpl, KontaktError> {}
+// }

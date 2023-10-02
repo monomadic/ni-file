@@ -5,10 +5,10 @@ use color_eyre::eyre::Result;
 use ni_file::{
     self,
     fm8::FM8Preset,
-    kontakt::instrument::KontaktInstrument,
+    kontakt::{instrument::KontaktInstrument, KontaktPreset},
     nifile::NIFile,
     nis::AuthoringApplication,
-    nks::{container::KontaktPreset, header::BPatchHeader},
+    nks::header::BPatchHeader,
 };
 
 fn print_kontakt_instrument(instrument: KontaktInstrument) -> Result<()> {

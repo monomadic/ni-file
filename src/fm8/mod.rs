@@ -10,6 +10,8 @@ use crate::{
     Error, NIFileError,
 };
 
+const FM8_MAGIC: &[u8; 4] = b"FM8E";
+
 #[derive(Debug)]
 pub struct FM8Preset;
 
@@ -18,7 +20,7 @@ impl FM8Preset {
         let magic: u32 = reader.read_le()?;
         assert_eq!(
             &magic.to_be_bytes(),
-            b"FM8E",
+            FM8_MAGIC,
             "Stream does not appear to be an FM8 Ensemble",
         );
 

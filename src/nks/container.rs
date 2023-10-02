@@ -3,7 +3,7 @@ use std::io::{Cursor, Read};
 use flate2::read::ZlibDecoder;
 
 use crate::{
-    kontakt::{Chunk, Kon4, XMLDocument},
+    kontakt::{Chunk, Kon4, KontaktPreset, XMLDocument},
     nks::meta_info::BPatchMetaInfoHeader,
     read_bytes::ReadBytesExt,
 };
@@ -79,14 +79,6 @@ impl NKSContainer {
     }
 }
 
-#[derive(Debug)]
-pub enum KontaktPreset {
-    Kon1(XMLDocument),
-    Kon2(XMLDocument),
-    Kon3(XMLDocument),
-    Kon4(Kon4),
-    // etc
-}
 #[cfg(test)]
 mod tests {
     use std::fs::File;

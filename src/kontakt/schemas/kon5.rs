@@ -1,10 +1,14 @@
-// Kon5 Schema:
+// Kon5 Schema
 //
 // 0x28 Program
-//  0x3A BParameterArraySer<BParFX,8>
-//  0x3A BParameterArraySer<BParFX,8>
-//  0x45 x ? BInsertBus
-//  ...
+//  0x3a    BParameterArraySer<BParFX,8>
+//  0x3a    BParameterArraySer<BParFX,8>
+//  0x45x16 BInsertBus
+//  0x06x5  BParScript
+//  0x4e    QuickBrowseData
+//  0x32    VoiceGroups
+//  0x33    GroupList
+//  0x34    ZoneList
 // 0x47 SaveSettings
 // 0x4B FNTableImpl
 
@@ -17,12 +21,12 @@ use crate::{
 };
 
 #[derive(Debug)]
-pub struct Kon4 {
+pub struct Kon5 {
     pub chunks: Vec<Chunk>,
     pub meta_info: BPatchMetaInfoHeader,
 }
 
-impl Kon4 {
+impl Kon5 {
     /// Decompress internal patch data
     pub fn from_compressed(
         compressed_data: Vec<u8>,
