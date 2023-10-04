@@ -6,3 +6,5 @@ It has been found to be used in:
 
 - Kontakt Multis
 - Kontakt Envelope
+
+It always seems to have (possibly inherits?) a `SubtreeItem` as its child property which carries the `Item`.

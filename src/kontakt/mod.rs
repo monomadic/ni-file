@@ -1,8 +1,9 @@
 //! Data types relating to the Kontakt sampler
 
 mod chunk;
+pub mod chunk_set;
 mod error;
-pub mod instrument;
+mod instrument;
 pub mod objects;
 mod schemas;
 pub mod structured_object;

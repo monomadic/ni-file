@@ -5,13 +5,13 @@ use color_eyre::eyre::Result;
 use ni_file::{
     self,
     fm8::FM8Preset,
-    kontakt::{instrument::KontaktInstrument, KontaktPreset},
+    kontakt::{chunk_set::KontaktChunkSet, KontaktPreset},
     nifile::NIFile,
     nis::AuthoringApplication,
     nks::header::BPatchHeader,
 };
 
-fn print_kontakt_instrument(instrument: KontaktInstrument) -> Result<()> {
+fn print_kontakt_instrument(instrument: KontaktChunkSet) -> Result<()> {
     println!("\nKontakt Data:");
     if let Some(Ok(program)) = instrument.program() {
         if let Ok(params) = program.public_params() {

@@ -1,8 +1,8 @@
 use super::{kontakt::KontaktPresetSchema, preset_container::PresetContainer};
 use crate::{
-    kontakt::{instrument::KontaktInstrument, Chunk},
+    kontakt::chunk_set::KontaktChunkSet,
     nis::{
-        properties::{BNISoundPreset, Preset, PresetChunkItem},
+        properties::{BNISoundPreset, Preset},
         AppSpecific, AuthoringApplication, BNISoundHeader, EncryptionItem, ItemContainer, ItemData,
         ItemID, RepositoryRoot, RepositoryVersion, SubtreeItem,
     },
@@ -10,7 +10,7 @@ use crate::{
     prelude::*,
     read_bytes::ReadBytesExt,
 };
-use std::{convert::TryFrom, io::Cursor};
+use std::convert::TryFrom;
 
 /// High level wrapper for NISound containers
 #[derive(Debug)]
@@ -178,13 +178,13 @@ impl Repository {
         &self.0.children
     }
 
-    pub fn instrument(&self) -> Result<KontaktInstrument> {
+    pub fn instrument(&self) -> Result<KontaktChunkSet> {
         todo!()
     }
 
-    pub fn preset(&self) -> Result<PresetContainer> {
-        todo!()
-    }
+    // pub fn preset(&self) -> Result<PresetContainer> {
+    //     todo!()
+    // }
 
     // pub fn instrument(&self) -> Option<Result<KontaktInstrument>> {
     //     if let Some(Ok(item)) = self.encryption_item() {
