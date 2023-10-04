@@ -25,7 +25,6 @@ impl NKSContainer {
         let mut compressed_data = Vec::new();
 
         reader.read_to_end(&mut compressed_data)?;
-        // dbg!(&header);
 
         Ok(Self {
             header,

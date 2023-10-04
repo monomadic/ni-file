@@ -6,3 +6,5 @@ Each [`NISound`] is like a mini database of sorts, and you can read these reposi
 level structs (embedded [`Item`](crate::nisound::Item)s) or use high-level structs such as [`NISound`]. It is
 recommended and much easier to use the latter unless you are dealing with filetypes still
 undocumented by the library.
+
+## ItemHeader

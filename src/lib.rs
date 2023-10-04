@@ -12,6 +12,7 @@ pub use nifile::NIFile;
 // containers:
 pub mod file_container; // monoliths
 pub mod nis; // nisound document // kontakt 4.2 preset
+pub mod nkr; // kontakt resource container
 pub mod nks; // native instruments kontakt sound file format
 
 pub use nis::Repository;

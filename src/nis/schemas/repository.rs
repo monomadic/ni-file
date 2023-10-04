@@ -1,10 +1,10 @@
-use super::preset_container::PresetContainer;
+use super::{kontakt::KontaktPresetSchema, preset_container::PresetContainer};
 use crate::{
     kontakt::{instrument::KontaktInstrument, Chunk},
     nis::{
         properties::{BNISoundPreset, Preset, PresetChunkItem},
         AppSpecific, AuthoringApplication, BNISoundHeader, EncryptionItem, ItemContainer, ItemData,
-        ItemID, RepositoryRoot, RepositoryVersion,
+        ItemID, RepositoryRoot, RepositoryVersion, SubtreeItem,
     },
     nks::header::BPatchHeaderV42,
     prelude::*,
@@ -13,7 +13,16 @@ use crate::{
 use std::{convert::TryFrom, io::Cursor};
 
 /// High level wrapper for NISound containers
+#[derive(Debug)]
 pub struct Repository(ItemContainer);
+
+#[derive(Debug)]
+pub enum RepositoryType {
+    KontaktPreset,
+    AppSpecific,
+    Preset,
+    Unknown,
+}
 
 impl From<ItemContainer> for Repository {
     fn from(ic: ItemContainer) -> Self {
@@ -34,12 +43,51 @@ impl Repository {
         Ok(Self(ItemContainer::read(reader)?))
     }
 
-    pub fn nks_header(&self) -> Result<BPatchHeaderV42> {
-        if let Some(item) = self.0.find(&ItemID::BNISoundHeader) {
-            let reader = Cursor::new(&item.data);
-            return Ok(BNISoundHeader::read(reader)?.0);
+    pub fn find_item(&self, item: &ItemID) -> Option<&ItemData> {
+        self.0.find(item)
+    }
+
+    pub fn detect(&self) -> RepositoryType {
+        if let Some(child) = self.0.children.get(0) {
+            match child.data.header.item_id {
+                ItemID::AppSpecific => RepositoryType::AppSpecific,
+                ItemID::BNISoundHeader => RepositoryType::KontaktPreset,
+                ItemID::Preset => RepositoryType::Preset,
+                _ => RepositoryType::Unknown,
+            }
+        } else {
+            RepositoryType::Unknown
         }
-        Err(NIFileError::Static("could not find BNISoundHeader"))
+    }
+
+    pub fn inner_preset(&self) -> Result<Preset> {
+        match self.detect() {
+            RepositoryType::KontaktPreset => KontaktPresetSchema::from(&self.0).preset_item(),
+            RepositoryType::AppSpecific => todo!(),
+            RepositoryType::Preset => todo!(),
+            RepositoryType::Unknown => todo!(),
+        }
+    }
+
+    pub fn app_specific(&self) -> Option<Result<AppSpecific>> {
+        self.find_item(&ItemID::AppSpecific)
+            .map(AppSpecific::try_from)
+    }
+
+    pub fn subtree_item(&self) -> Option<Result<SubtreeItem>> {
+        self.find_item(&ItemID::AppSpecific)
+            .and_then(|item_data| item_data.child())
+            .map(SubtreeItem::try_from)
+    }
+
+    pub fn encryption_item(&self) -> Option<Result<EncryptionItem>> {
+        self.find_item(&ItemID::EncryptionItem)
+            .map(EncryptionItem::try_from)
+    }
+
+    pub fn nks_header(&self) -> Option<Result<BPatchHeaderV42>> {
+        self.find_item(&ItemID::BNISoundHeader)
+            .map(|item_data| BNISoundHeader::try_from(item_data).map(|sh| sh.0))
     }
 
     /// Returns the [`RepositoryVersion`], also referred to sometimes as the NISD Version.
@@ -62,7 +110,7 @@ impl Repository {
             None => self
                 .0
                 .find(&ItemID::Preset)
-                .and_then(|item_frame| Preset::try_from(item_frame).ok())
+                .and_then(|item_data| Preset::try_from(item_data).ok())
                 .map(|preset| preset.authoring_app)
                 .ok_or(NIFileError::Generic("not found".to_owned())),
         }
@@ -121,48 +169,53 @@ impl Repository {
         }
     }
 
-    pub fn preset_raw(&self) -> Result<Vec<u8>> {
-        self.0
-            .find(&ItemID::EncryptionItem)
-            .ok_or(NIFileError::Generic(format!("EncryptionItem not found")))
-            .and_then(|item_frame| EncryptionItem::try_from(item_frame))
-            .map(|item| item.subtree.inner_data)
-    }
-
-    pub fn preset(&self) -> Result<PresetContainer> {
-        self.preset_raw()
-            .and_then(|item| PresetContainer::try_from(ItemData::read(Cursor::new(item))?))
-    }
+    // pub fn preset(&self) -> Result<PresetContainer> {
+    //     self.encryption_item()
+    //         .and_then(|item| PresetContainer::try_from(ItemData::read(Cursor::new(item))?))
+    // }
 
     pub fn children(&self) -> &Vec<ItemContainer> {
         &self.0.children
     }
 
     pub fn instrument(&self) -> Result<KontaktInstrument> {
-        let preset = self.preset_raw()?;
-        let item = ItemContainer::read(Cursor::new(preset))?;
-        match item.find(&ItemID::PresetChunkItem) {
-            Some(preset_item_frame) => {
-                let preset_chunk_item: PresetChunkItem = preset_item_frame.clone().try_into()?;
-                let data = preset_chunk_item.chunk();
-
-                match self.authoring_application()? {
-                    AuthoringApplication::Kontakt => {
-                        let mut objects = Vec::new();
-                        let mut compressed_data = Cursor::new(&data);
-
-                        while let Ok(chunk) = Chunk::read(&mut compressed_data) {
-                            objects.push(chunk);
-                        }
-
-                        Ok(KontaktInstrument(objects))
-                    }
-                    _ => todo!(),
-                }
-            }
-            None => todo!(),
-        }
+        todo!()
     }
+
+    pub fn preset(&self) -> Result<PresetContainer> {
+        todo!()
+    }
+
+    // pub fn instrument(&self) -> Option<Result<KontaktInstrument>> {
+    //     if let Some(Ok(item)) = self.encryption_item() {
+    //         let preset_container = item.subtree.item()?;
+    //         let data = preset_container.inner().data;
+    //         let item = ItemContainer::read(Cursor::new(data))?;
+    //         match item.find(&ItemID::PresetChunkItem) {
+    //             Some(preset_item_frame) => {
+    //                 let preset_chunk_item: PresetChunkItem =
+    //                     preset_item_frame.clone().try_into()?;
+    //                 let data = preset_chunk_item.chunk();
+    //
+    //                 match self.authoring_application()? {
+    //                     AuthoringApplication::Kontakt => {
+    //                         let mut objects = Vec::new();
+    //                         let mut compressed_data = Cursor::new(&data);
+    //
+    //                         while let Ok(chunk) = Chunk::read(&mut compressed_data) {
+    //                             objects.push(chunk);
+    //                         }
+    //
+    //                         Some(Ok(KontaktInstrument(objects)))
+    //                     }
+    //                     _ => todo!(),
+    //                 }
+    //             }
+    //             None => todo!(),
+    //         }
+    //     }
+    //     None
+    // }
 }
 
 #[cfg(test)]

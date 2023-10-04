@@ -28,26 +28,33 @@ pub fn main() -> Result<(), Box<dyn std::error::Error>> {
     match NIFile::read(file)? {
         NIFile::NISContainer(repo) => {
             println!("Detected NISound version: {}", repo.nisound_version()?);
-            println!(
-                "Authoring Application: {:?} {}\n",
-                repo.authoring_application()?,
-                repo.preset_version()?
-            );
+            println!("Authoring Application: {:?}", repo.authoring_application()?,);
 
-            let preset = repo.preset_raw()?;
-            std::fs::write("inner-container", &preset)?;
-            println!("Wrote: inner.nis");
-
-            let item = ItemContainer::read(Cursor::new(preset))?;
-            match item.find(&ItemID::PresetChunkItem) {
-                Some(preset_item_frame) => {
-                    let preset_chunk_item: PresetChunkItem =
-                        preset_item_frame.clone().try_into()?;
-                    std::fs::write("preset.chunk", &preset_chunk_item.chunk())?;
-                    println!("Wrote: preset.chunk");
-                }
-                None => todo!(),
+            if let Ok(preset_version) = repo.preset_version() {
+                println!("Preset Version: {preset_version}");
             }
+
+            if let Some(subtree) = repo.subtree_item() {
+                std::fs::write("subtree_item.nki", &subtree?.inner_data)?;
+                println!("Wrote: subtree_item.nki");
+            }
+
+            // if let Some(single) = repo.encryption_item() {
+            //     let preset = single.preset_raw()?;
+            //     std::fs::write("inner.nki", &preset)?;
+            //     println!("Wrote: inner.nki");
+            // }
+            //
+            // let item = ItemContainer::read(Cursor::new(preset))?;
+            // match item.find(&ItemID::PresetChunkItem) {
+            //     Some(preset_item_frame) => {
+            //         let preset_chunk_item: PresetChunkItem =
+            //             preset_item_frame.clone().try_into()?;
+            //         std::fs::write("preset.chunk", &preset_chunk_item.chunk())?;
+            //         println!("Wrote: preset.chunk");
+            //     }
+            //     None => todo!(),
+            // }
         }
         NIFile::Monolith(container) => {
             println!("Detected format:\t\tMonolith (FileContainer Archive)\n");

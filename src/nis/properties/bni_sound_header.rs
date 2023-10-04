@@ -1,4 +1,11 @@
-use crate::{nks::header::BPatchHeaderV42, read_bytes::ReadBytesExt, Error};
+use std::io::Cursor;
+
+use crate::{
+    nis::{ItemData, ItemID},
+    nks::header::BPatchHeaderV42,
+    read_bytes::ReadBytesExt,
+    Error, NIFileError,
+};
 
 /// Kontakt header
 #[derive(Debug)]
@@ -17,6 +24,15 @@ impl BNISoundHeader {
         let header = BPatchHeaderV42::read_le(&mut reader)?;
 
         Ok(Self(header))
+    }
+}
+
+impl std::convert::TryFrom<&ItemData> for BNISoundHeader {
+    type Error = NIFileError;
+
+    fn try_from(frame: &ItemData) -> Result<Self, NIFileError> {
+        debug_assert_eq!(frame.header.item_id, ItemID::SubtreeItem);
+        Self::read(Cursor::new(&frame.data))
     }
 }
 

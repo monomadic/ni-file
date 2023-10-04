@@ -49,22 +49,16 @@ pub fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     // repository containers (used in most instruments)
     for path in paths {
-        println!("\n{}:", path.as_os_str().to_str().unwrap());
-
         let file = std::fs::File::open(path)?;
-        let sound = ni_file::Repository::read(&file)?;
-        let item = sound.item();
+        let repository = ni_file::Repository::read(&file)?;
+        let item = repository.item();
 
-        println!("format:\t\t\tNISound {}", sound.nisound_version()?);
-        println!(
-            "authoring_app:\t\t{:?} {}",
-            sound.authoring_application()?,
-            sound.preset_version()?
-        );
-
+        println!("NISound {}\n", repository.nisound_version()?);
         println!("{:?}", item.data.header.item_id);
 
         print_item_ids(&item, 1)?;
+
+        println!("\n");
     }
 
     Ok(())

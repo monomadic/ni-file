@@ -10,6 +10,7 @@ use crate::{
 
 use super::preset::AuthoringApplication;
 
+#[derive(Debug)]
 pub struct AppSpecific {
     pub authoring_app: AuthoringApplication,
     pub version: String,
@@ -41,17 +42,23 @@ impl AppSpecific {
 
 #[cfg(test)]
 mod tests {
-    use std::fs::File;
+    use std::{fs::File, io::Read};
 
     use super::*;
 
     #[test]
     fn test_app_specific_read() -> Result<()> {
-        let file = File::open("test-data/NIS/properties/AppSpecific/AppSpecific-000")?;
-        let item = AppSpecific::read(file)?;
+        let mut file = File::open("tests/data/Containers/NIS/objects/AppSpecific/AppSpecific-000")?;
+        let item = AppSpecific::read(&mut file)?;
 
         assert_eq!(item.authoring_app, AuthoringApplication::Kontakt);
         assert_eq!(item.version, String::from("7.1.3.0"));
+
+        // ensure the read completed
+        let mut buf = Vec::new();
+        file.read_to_end(&mut buf)?;
+        assert_eq!(buf.len(), 0, "Excess data found");
+
         Ok(())
     }
 }

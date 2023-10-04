@@ -2,7 +2,7 @@
 
 Numbers are listed as big-endian.
 
-- `0x16ccf80a` NKS Encrypted
+- `0x16ccf80a` NKS Encrypted (Native Kontrol Standard)
 - `0x4953494e` NISI
 - `0x4143494e` NICA
 - `0x44494c50` PLID

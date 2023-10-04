@@ -1,5 +1,5 @@
 use ncw::NcwReader;
-use std::{fs::File, io::Cursor};
+use std::fs::File;
 
 use color_eyre::eyre::Result;
 use ni_file::{
@@ -77,15 +77,31 @@ pub fn main() -> Result<()> {
     match NIFile::read(file)? {
         NIFile::NISContainer(repository) => {
             println!("Detected format:\t\t\tNIS (Native Instruments Sound) Container");
-            println!("\nNIS Data:");
-            println!("  NIS Version: {}", repository.nisound_version()?);
-            println!("  Preset Version: {}", repository.preset_version()?);
-            println!(
-                "  Authoring Application: {:?}",
-                repository.authoring_application()?,
-            );
 
-            if let Ok(h) = repository.nks_header() {
+            if let Ok(root) = repository.root() {
+                println!("\nRepositoryRoot:");
+                println!("  NIS Version:    {}", root.nisound_version);
+                println!("  Repo Magic:     {}", root.repository_magic);
+                println!("  Repo Type:      {}", root.repository_type);
+
+                println!("  Preset Version: {}", repository.preset_version()?);
+                println!(
+                    "  Authoring Application: {:?}",
+                    repository.authoring_application()?,
+                );
+            } else {
+                println!("\nNot a RepositoryRoot");
+            }
+
+            // match repository.detect() {
+            //     ni_file::nis::RepositoryType::KontaktPreset => todo!(),
+            //     ni_file::nis::RepositoryType::AppSpecific => todo!(),
+            //     ni_file::nis::RepositoryType::Preset => todo!(),
+            //     ni_file::nis::RepositoryType::Unknown => todo!(),
+            // }
+
+            // single
+            if let Some(Ok(h)) = repository.nks_header() {
                 println!("\nBPatchHeaderV42:");
                 println!("  signature:\t\t{}", h.app_signature);
                 println!("  type:\t\t\t{:?}", h.patch_type);
@@ -95,17 +111,23 @@ pub fn main() -> Result<()> {
                 println!("  groups:\t\t{}", h.number_of_groups);
                 println!("  instruments:\t\t{}", h.number_of_instruments);
                 println!("  created_at:\t\t{}", h.created_at);
+                // print_kontakt_instrument(repository.instrument()?)?;
             }
 
-            print_kontakt_instrument(repository.instrument()?)?;
+            // multi
+            if let Some(Ok(subtree)) = repository.subtree_item() {
+                println!("\nSubtreeItem");
 
-            match repository.authoring_application()? {
-                AuthoringApplication::FM8 => {
-                    let raw_preset = Cursor::new(repository.preset_raw()?);
-                    FM8Preset::read(raw_preset)?;
-                }
-                _ => (),
+                let container = subtree.item()?;
             }
+
+            // match repository.authoring_application()? {
+            //     AuthoringApplication::FM8 => {
+            //         let raw_preset = Cursor::new(repository.encryption_item()?);
+            //         FM8Preset::read(raw_preset)?;
+            //     }
+            //     _ => (),
+            // }
         }
         NIFile::KontaktResource => {
             println!("Detected format:\tKontaktResource");

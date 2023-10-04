@@ -7,7 +7,7 @@ use crate::{
 
 use super::preset::Preset;
 
-/// Kontakt preset
+/// Wraps a Kontakt preset
 pub struct BNISoundPreset {
     pub preset: Preset,
 }

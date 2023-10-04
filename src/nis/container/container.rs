@@ -25,6 +25,10 @@ impl ItemContainer {
         })
     }
 
+    pub fn kind(&self) -> &ItemID {
+        &self.data.header.item_id
+    }
+
     /// Returns the first instance of Item by ItemID within child Items.
     pub fn find(&self, kind: &ItemID) -> Option<&ItemData> {
         // Check this Item first
@@ -49,7 +53,8 @@ impl ItemContainer {
         let mut children = Vec::new();
         if num_children > 0 {
             for _ in 0..num_children {
-                let _unknown = buf.read_u32_le()?;
+                // note: siblingIndex for soundinfoitem is 1001 to ensure it is last
+                let _index = buf.read_u32_le()?;
 
                 // childs domain id
                 let _domain_id = buf.read_u32_le()?;

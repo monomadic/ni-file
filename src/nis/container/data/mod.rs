@@ -17,6 +17,10 @@ pub struct ItemData {
 }
 
 impl ItemData {
+    pub fn child(&self) -> Option<&ItemData> {
+        self.inner.as_ref().map(Box::as_ref)
+    }
+
     pub fn read<R: ReadBytesExt>(mut reader: R) -> Result<Self> {
         let header = ItemDataHeader::read(&mut reader)?;
         let length = header.length as usize - 20;
