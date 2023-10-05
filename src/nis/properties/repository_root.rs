@@ -41,11 +41,14 @@ impl Display for RepositoryVersion {
 impl std::convert::TryFrom<&ItemData> for RepositoryRoot {
     type Error = NIFileError;
 
-    fn try_from(frame: &ItemData) -> std::result::Result<Self, Self::Error> {
-        if frame.header.item_id != ItemID::RepositoryRoot {
-            return Err(NIFileError::Static("Not a RepositoryRoot"));
+    fn try_from(item: &ItemData) -> std::result::Result<Self, Self::Error> {
+        if item.header.item_id != ItemID::RepositoryRoot {
+            return Err(NIFileError::ItemWrapError {
+                expected: ItemID::RepositoryRoot,
+                got: item.header.item_id.clone(),
+            });
         }
-        RepositoryRoot::read(Cursor::new(frame.data.clone()))
+        RepositoryRoot::read(Cursor::new(item.data.clone()))
     }
 }
 

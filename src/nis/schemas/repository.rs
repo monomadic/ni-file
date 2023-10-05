@@ -1,10 +1,10 @@
-use super::{kontakt::KontaktPresetSchema, preset_container::PresetContainer};
+use super::kontakt::KontaktPresetSchema;
 use crate::{
     kontakt::chunk_set::KontaktChunkSet,
     nis::{
         properties::{BNISoundPreset, Preset},
-        AppSpecific, AuthoringApplication, BNISoundHeader, EncryptionItem, ItemContainer, ItemData,
-        ItemID, RepositoryRoot, RepositoryVersion, SubtreeItem,
+        AppSpecific, AuthoringApplication, BNISoundHeader, EncryptionItem, ItemContainer, ItemID,
+        RepositoryRoot,
     },
     nks::header::BPatchHeaderV42,
     prelude::*,
@@ -43,10 +43,6 @@ impl Repository {
         Ok(Self(ItemContainer::read(reader)?))
     }
 
-    pub fn find_item(&self, item: &ItemID) -> Option<&ItemData> {
-        self.0.find(item)
-    }
-
     pub fn detect(&self) -> RepositoryType {
         if let Some(child) = self.0.children.get(0) {
             match child.data.header.item_id {
@@ -70,46 +66,34 @@ impl Repository {
     }
 
     pub fn app_specific(&self) -> Option<Result<AppSpecific>> {
-        self.find_item(&ItemID::AppSpecific)
-            .map(AppSpecific::try_from)
-    }
-
-    pub fn subtree_item(&self) -> Option<Result<SubtreeItem>> {
-        self.find_item(&ItemID::AppSpecific)
-            .and_then(|item_data| item_data.child())
-            .map(SubtreeItem::try_from)
+        self.0.find_item(&ItemID::AppSpecific)
     }
 
     pub fn encryption_item(&self) -> Option<Result<EncryptionItem>> {
-        self.find_item(&ItemID::EncryptionItem)
-            .map(EncryptionItem::try_from)
+        self.0.find_item(&ItemID::EncryptionItem)
     }
 
     pub fn nks_header(&self) -> Option<Result<BPatchHeaderV42>> {
-        self.find_item(&ItemID::BNISoundHeader)
-            .map(|item_data| BNISoundHeader::try_from(item_data).map(|sh| sh.0))
-    }
-
-    /// Returns the [`RepositoryVersion`], also referred to sometimes as the NISD Version.
-    pub fn nisound_version(&self) -> Result<RepositoryVersion> {
-        RepositoryRoot::try_from(&self.0.data).map(|root| root.nisound_version)
+        self.0
+            .find_item::<BNISoundHeader>(&ItemID::BNISoundHeader)
+            .map(|sh| sh.map(|h| h.0))
     }
 
     /// Returns the [`AuthoringApplication`] which created this document.
     pub fn authoring_application(&self) -> Result<AuthoringApplication> {
         // first, lets try find the AppSpecific item
         // (which means this is a multi)
-        if let Some(item) = self.0.find(&ItemID::AppSpecific) {
+        if let Some(item) = self.0.find_data(&ItemID::AppSpecific) {
             return Ok(AppSpecific::try_from(item)?.authoring_app);
         }
 
         // not a good way of detecting the authoring app
         // there must be a better solution
-        match self.0.find(&ItemID::BNISoundPreset) {
+        match self.0.find_data(&ItemID::BNISoundPreset) {
             Some(item) => Ok(BNISoundPreset::try_from(item)?.preset.authoring_app),
             None => self
                 .0
-                .find(&ItemID::Preset)
+                .find_data(&ItemID::Preset)
                 .and_then(|item_data| Preset::try_from(item_data).ok())
                 .map(|preset| preset.authoring_app)
                 .ok_or(NIFileError::Generic("not found".to_owned())),
@@ -135,15 +119,15 @@ impl Repository {
     pub fn preset_version(&self) -> Result<String> {
         // first, lets try find the AppSpecific item
         // (which means this is a multi)
-        if let Some(item) = self.0.find(&ItemID::AppSpecific) {
+        if let Some(item) = self.0.find_data(&ItemID::AppSpecific) {
             return Ok(AppSpecific::try_from(item)?.version);
         }
 
         self.preset_item().map(|p| p.version)
     }
 
-    pub fn root(&self) -> Result<RepositoryRoot> {
-        RepositoryRoot::try_from(&self.0.data)
+    pub fn find_repository_root(&self) -> Option<Result<RepositoryRoot>> {
+        self.0.find_item::<RepositoryRoot>(&ItemID::RepositoryRoot)
     }
 
     /// Get a reference to the underlying [`Item`]. This is switching to the lower level components
@@ -156,13 +140,13 @@ impl Repository {
         match self.authoring_application()? {
             AuthoringApplication::Kontakt => self
                 .0
-                .find(&ItemID::BNISoundPreset)
+                .find_data(&ItemID::BNISoundPreset)
                 .ok_or(NIFileError::Static("Missing chunk: BNISoundPreset"))
                 .and_then(|item| BNISoundPreset::try_from(item))
                 .map(|preset| preset.preset),
             _ => self
                 .0
-                .find(&ItemID::Preset)
+                .find_data(&ItemID::Preset)
                 .ok_or(NIFileError::Static("Missing chunk: Preset"))
                 .and_then(|item| Preset::try_from(item))
                 .map(|preset| preset),
@@ -226,7 +210,7 @@ mod tests {
     fn ni_container_read_test() -> Result<()> {
         let file = std::fs::File::open("tests/filetype/NISD/kontakt/7.1.3.0/000-default.nki")?;
         let repository = Repository::read(file)?;
-        repository.root()?;
+        repository.find_repository_root().unwrap()?;
         Ok(())
     }
 }

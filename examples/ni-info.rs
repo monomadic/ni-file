@@ -4,65 +4,104 @@ use std::fs::File;
 use color_eyre::eyre::Result;
 use ni_file::{
     self,
-    fm8::FM8Preset,
-    kontakt::{chunk_set::KontaktChunkSet, KontaktPreset},
+    kontakt::{KontaktInstrument, KontaktPreset},
     nifile::NIFile,
-    nis::AuthoringApplication,
+    nis::{AppSpecific, ItemID},
     nks::header::BPatchHeader,
 };
 
-fn print_kontakt_instrument(instrument: KontaktChunkSet) -> Result<()> {
-    println!("\nKontakt Data:");
-    if let Some(Ok(program)) = instrument.program() {
-        if let Ok(params) = program.public_params() {
-            println!("\nProgram:");
-            println!("  name:\t\t{}", params.name);
-            println!("  credits:\t{}", params.instrument_credits);
-            println!("  author:\t{}", params.instrument_author);
+fn print_kontakt_instrument(instrument: KontaktInstrument) {
+    match instrument.header {
+        BPatchHeader::BPatchHeaderV1(ref h) => {
+            println!("\nBPatchHeaderV1:");
+            println!("  created_at:\t\t{}", h.created_at);
+            println!("  samples_size:\t\t{}", h.samples_size);
+        }
+        BPatchHeader::BPatchHeaderV2(ref h) => {
+            println!("\nBPatchHeaderV2:");
+            println!("  signature:\t\t{}", h.app_signature);
+            println!("  type:\t\t\t{:?}", h.patch_type);
+            println!("  kontakt_version:\t{}", h.app_version);
+            println!("  author:\t\t{}", h.author);
+            println!("  zones:\t\t{}", h.number_of_zones);
+            println!("  groups:\t\t{}", h.number_of_groups);
+            println!("  instruments:\t\t{}", h.number_of_instruments);
+            println!("  created_at:\t\t{}", h.created_at);
+        }
+        BPatchHeader::BPatchHeaderV42(h) => {
+            println!("\nBPatchHeaderV42:");
+            println!("  signature:\t\t{}", h.app_signature);
+            println!("  type:\t\t\t{:?}", h.patch_type);
+            println!("  kontakt_version:\t{}", h.app_version);
+            println!("  author:\t\t{}", h.author);
+            println!("  zones:\t\t{}", h.number_of_zones);
+            println!("  groups:\t\t{}", h.number_of_groups);
+            println!("  instruments:\t\t{}", h.number_of_instruments);
+            println!("  created_at:\t\t{}", h.created_at);
         }
     }
-    if let Some(filename_table) = instrument.filename_tables()? {
-        println!("\nFilename tables:");
 
-        println!("\nOther:");
-        for (index, filename) in &filename_table.other_filetable {
-            println!("{}:\t{}", index, filename);
-        }
-
-        println!("\nSamples:");
-        for (index, filename) in &filename_table.sample_filetable {
-            println!("{}:\t{}", index, filename);
-        }
-
-        println!("\nSpecial:");
-        for (index, filename) in &filename_table.special_filetable {
-            println!("{}:\t{}", index, filename);
-        }
-
-        if let Some(program) = instrument.program() {
-            if let Some(zones) = program?.zones() {
-                println!("\nZones:");
-                for zone in zones? {
-                    let zone_data = zone.public_params()?;
-                    if let Some(filename) = filename_table
-                        .sample_filetable
-                        .get(&(zone_data.filename_id as u32))
-                    {
-                        println!("Zone: {}", filename);
-                    }
-                }
-            } else {
-                println!("\nNo zones found!");
-            }
-        } else {
-            println!("\nNo program found!");
-        }
-    } else {
-        println!("\nNo filename table found!");
+    match instrument.preset {
+        KontaktPreset::Kon1(_) => todo!(),
+        KontaktPreset::Kon2(_) => todo!(),
+        KontaktPreset::Kon3(_) => todo!(),
+        KontaktPreset::Kon4(_) => todo!(),
+        KontaktPreset::Kon7(_) => todo!(),
     }
-
-    Ok(())
 }
+
+// fn _print_kontakt_instrument(instrument: KontaktChunkSet) -> Result<()> {
+//     println!("\nKontakt Data:");
+//     if let Some(Ok(program)) = instrument.program() {
+//         if let Ok(params) = program.public_params() {
+//             println!("\nProgram:");
+//             println!("  name:\t\t{}", params.name);
+//             println!("  credits:\t{}", params.instrument_credits);
+//             println!("  author:\t{}", params.instrument_author);
+//         }
+//     }
+//     if let Some(filename_table) = instrument.filename_tables()? {
+//         println!("\nFilename tables:");
+//
+//         println!("\nOther:");
+//         for (index, filename) in &filename_table.other_filetable {
+//             println!("{}:\t{}", index, filename);
+//         }
+//
+//         println!("\nSamples:");
+//         for (index, filename) in &filename_table.sample_filetable {
+//             println!("{}:\t{}", index, filename);
+//         }
+//
+//         println!("\nSpecial:");
+//         for (index, filename) in &filename_table.special_filetable {
+//             println!("{}:\t{}", index, filename);
+//         }
+//
+//         if let Some(program) = instrument.program() {
+//             if let Some(zones) = program?.zones() {
+//                 println!("\nZones:");
+//                 for zone in zones? {
+//                     let zone_data = zone.public_params()?;
+//                     if let Some(filename) = filename_table
+//                         .sample_filetable
+//                         .get(&(zone_data.filename_id as u32))
+//                     {
+//                         println!("Zone: {}", filename);
+//                     }
+//                 }
+//             } else {
+//                 println!("\nNo zones found!");
+//             }
+//         } else {
+//             println!("\nNo program found!");
+//         }
+//     } else {
+//         println!("\nNo filename table found!");
+//     }
+//
+//     Ok(())
+// }
 
 pub fn main() -> Result<()> {
     color_eyre::install()?;
@@ -76,21 +115,38 @@ pub fn main() -> Result<()> {
 
     match NIFile::read(file)? {
         NIFile::NISContainer(repository) => {
-            println!("Detected format:\t\t\tNIS (Native Instruments Sound) Container");
-
-            if let Ok(root) = repository.root() {
-                println!("\nRepositoryRoot:");
-                println!("  NIS Version:    {}", root.nisound_version);
-                println!("  Repo Magic:     {}", root.repository_magic);
-                println!("  Repo Type:      {}", root.repository_type);
-
-                println!("  Preset Version: {}", repository.preset_version()?);
-                println!(
-                    "  Authoring Application: {:?}",
-                    repository.authoring_application()?,
-                );
+            if let Some(root) = repository.find_repository_root() {
+                let root = root?;
+                println!("RepositoryRoot:");
+                println!("  version:            NISound {}", root.nisound_version);
+                println!("  repository_magic:   {}", root.repository_magic);
+                println!("  repository_type:    {}", root.repository_type);
             } else {
                 println!("\nNot a RepositoryRoot");
+            }
+
+            if let Some(preset) = repository.item().find_preset_item() {
+                let preset = preset?;
+                println!("\nPreset:");
+                println!(
+                    "  authoring_app:\t{:?} {}",
+                    preset.authoring_app, preset.version
+                );
+                println!("  is_factory_preset:\t{}", preset.is_factory_preset);
+            }
+
+            if let Some(preset) = repository.item().find_kontakt_preset_item() {
+                let preset = preset?;
+                println!("\nKontakt Preset:");
+                println!(
+                    "  authoring_app:\t{:?} {}",
+                    preset.authoring_app, preset.version
+                );
+                println!("  is_factory_preset:\t{}", preset.is_factory_preset);
+
+                if let Some(kontakt_preset) = repository.item().extract_kontakt_preset() {
+                    print_kontakt_instrument(kontakt_preset?);
+                }
             }
 
             // match repository.detect() {
@@ -100,34 +156,12 @@ pub fn main() -> Result<()> {
             //     ni_file::nis::RepositoryType::Unknown => todo!(),
             // }
 
-            // single
-            if let Some(Ok(h)) = repository.nks_header() {
-                println!("\nBPatchHeaderV42:");
-                println!("  signature:\t\t{}", h.app_signature);
-                println!("  type:\t\t\t{:?}", h.patch_type);
-                println!("  kontakt_version:\t{}", h.app_version);
-                println!("  author:\t\t{}", h.author);
-                println!("  zones:\t\t{}", h.number_of_zones);
-                println!("  groups:\t\t{}", h.number_of_groups);
-                println!("  instruments:\t\t{}", h.number_of_instruments);
-                println!("  created_at:\t\t{}", h.created_at);
-                // print_kontakt_instrument(repository.instrument()?)?;
-            }
-
             // multi
-            if let Some(Ok(subtree)) = repository.subtree_item() {
-                println!("\nSubtreeItem");
-
-                let container = subtree.item()?;
+            if let Some(app_specific) = repository.item().find(&ItemID::AppSpecific) {
+                let app = AppSpecific::try_from(&app_specific.data)?;
+                println!("\nAppSpecific:");
+                println!("  authoring_app:\t{:?} {}", app.authoring_app, app.version);
             }
-
-            // match repository.authoring_application()? {
-            //     AuthoringApplication::FM8 => {
-            //         let raw_preset = Cursor::new(repository.encryption_item()?);
-            //         FM8Preset::read(raw_preset)?;
-            //     }
-            //     _ => (),
-            // }
         }
         NIFile::KontaktResource => {
             println!("Detected format:\tKontaktResource");
@@ -202,6 +236,7 @@ pub fn main() -> Result<()> {
                     println!("\n{:?}", kon4);
                     // print_kontakt_instrument(kon4.()?)?;
                 }
+                KontaktPreset::Kon7(_) => todo!(),
             }
         }
         NIFile::FM8Preset => {

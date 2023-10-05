@@ -1,6 +1,10 @@
 use std::io::Cursor;
 
-use crate::{kontakt::KontaktPreset, read_bytes::ReadBytesExt};
+use crate::{
+    kontakt::{Kon1, KontaktPreset},
+    read_bytes::ReadBytesExt,
+    Error,
+};
 
 use super::{error::NKSError, header::BPatchHeader};
 
@@ -33,13 +37,11 @@ impl NKSContainer {
     }
 
     /// Decompress internal preset data
-    pub fn preset(&self) -> Result<KontaktPreset, NKSError> {
+    pub fn preset(&self) -> Result<KontaktPreset, Error> {
         let mut reader = Cursor::new(&self.compressed_data);
 
         match &self.header {
-            BPatchHeader::BPatchHeaderV1(_) => {
-                Ok(KontaktPreset::from_str(&mut reader, "Kon1").unwrap())
-            }
+            BPatchHeader::BPatchHeaderV1(_) => Ok(KontaktPreset::Kon1(Kon1::read(&mut reader)?)),
             BPatchHeader::BPatchHeaderV2(v2) => {
                 Ok(KontaktPreset::from_str(&mut reader, v2.app_signature.as_str()).unwrap())
             }

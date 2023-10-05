@@ -53,7 +53,10 @@ pub fn main() -> Result<(), Box<dyn std::error::Error>> {
         let repository = ni_file::Repository::read(&file)?;
         let item = repository.item();
 
-        println!("NISound {}\n", repository.nisound_version()?);
+        if let Some(Ok(root)) = repository.find_repository_root() {
+            println!("NISound {}\n", root.nisound_version);
+        }
+
         println!("{:?}", item.data.header.item_id);
 
         print_item_ids(&item, 1)?;

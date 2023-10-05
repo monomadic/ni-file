@@ -16,6 +16,7 @@ fn test_reading_nks() -> Result<(), Box<dyn std::error::Error>> {
             KontaktPreset::Kon2(_) => todo!(),
             KontaktPreset::Kon3(_) => todo!(),
             KontaktPreset::Kon4(_) => todo!(),
+            KontaktPreset::Kon7(_) => todo!(),
         }
 
         // match NKSContainer::read(file)?.header {
@@ -43,6 +44,7 @@ fn test_reading_nks_custom_dir() -> Result<(), Box<dyn std::error::Error>> {
             KontaktPreset::Kon2(_) => todo!(),
             KontaktPreset::Kon3(_) => todo!(),
             KontaktPreset::Kon4(_) => todo!(),
+            KontaktPreset::Kon7(_) => todo!(),
         }
     }
 

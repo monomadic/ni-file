@@ -13,5 +13,25 @@
 // 0x47 SaveSettings
 // 0x4B FNTableImpl
 
+use crate::{kontakt::Chunk, read_bytes::ReadBytesExt, Error};
+
 #[derive(Debug)]
-pub struct Kon7 {}
+pub struct Kon7 {
+    pub chunks: Vec<Chunk>,
+}
+
+impl Kon7 {
+    pub fn read<R: ReadBytesExt>(mut reader: R) -> Result<Self, Error> {
+        let mut chunks = Vec::new();
+        while let Ok(chunk) = Chunk::read(&mut reader) {
+            chunks.push(chunk);
+        }
+
+        Ok(Self { chunks })
+    }
+
+    // pub fn read_monolith<R: ReadBytesExt>(mut reader: R) -> Result<Self, Error> {}
+
+    //     pub fn program(&self) -> Result<Program, KontaktError> {}
+    //     pub fn filenamelist(&self) -> Result<FNTableImpl, KontaktError> {}
+}

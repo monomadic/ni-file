@@ -8,6 +8,7 @@ use crate::{
 use super::subtree_item::SubtreeItem;
 
 /// A container for compressed presets.
+#[derive(Debug)]
 pub struct EncryptionItem {
     pub subtree: SubtreeItem,
 }

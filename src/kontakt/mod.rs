@@ -10,4 +10,6 @@ pub mod structured_object;
 
 pub use chunk::*;
 pub use error::KontaktError;
+pub use instrument::KontaktInstrument;
 pub use schemas::*;
+

@@ -30,10 +30,10 @@ impl ItemContainer {
     }
 
     /// Returns the first instance of Item by ItemID within child Items.
-    pub fn find(&self, kind: &ItemID) -> Option<&ItemData> {
+    pub fn find(&self, kind: &ItemID) -> Option<&ItemContainer> {
         // Check this Item first
         if &self.data.header.item_id == kind {
-            return Some(&self.data);
+            return Some(&self);
         }
         // Recursively search the children
         for item in &self.children {
@@ -42,6 +42,31 @@ impl ItemContainer {
             }
         }
         None
+    }
+
+    /// Returns the first instance of Item by ItemID within child Items.
+    pub fn find_data(&self, kind: &ItemID) -> Option<&ItemData> {
+        // Check this Item first
+        if &self.data.header.item_id == kind {
+            return Some(&self.data);
+        }
+        // Recursively search the children
+        for item in &self.children {
+            if let Some(frame) = item.find_data(kind) {
+                return Some(frame);
+            }
+        }
+        None
+    }
+
+    /// Find the first Item of type ItemID in the document and return it
+    pub fn find_item<'a, I>(&'a self, kind: &'a ItemID) -> Option<Result<I>>
+    where
+        I: TryFrom<&'a ItemData, Error = NIFileError>,
+    {
+        self.find_data(&kind)
+            // .and_then(|item_data| item_data.child())
+            .map(I::try_from)
     }
 
     fn read_children<R: ReadBytesExt>(mut buf: R) -> Result<Vec<ItemContainer>> {

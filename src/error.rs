@@ -1,4 +1,4 @@
-use crate::{kontakt::KontaktError, nks::error::NKSError, read_bytes::ReadBytesError};
+use crate::{kontakt::KontaktError, nis::ItemID, nks::error::NKSError, read_bytes::ReadBytesError};
 
 pub type Result<T> = std::result::Result<T, NIFileError>;
 pub type Error = NIFileError;
@@ -26,6 +26,9 @@ pub enum NIFileError {
 
     #[error("Decompression error")]
     DecompressionError,
+
+    #[error("Attemping to wrap unexpected ItemData: expected {expected:?}, got {got:?}")]
+    ItemWrapError { expected: ItemID, got: ItemID },
 
     #[error("Incorrect Size Field: expected {expected}, got {got}")]
     IncorrectFrameSize { expected: u64, got: u64 },

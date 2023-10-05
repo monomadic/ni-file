@@ -10,12 +10,12 @@ use crate::{
 #[derive(Debug, Clone)]
 pub struct PresetChunkItem(Vec<u8>);
 
-impl std::convert::TryFrom<ItemData> for PresetChunkItem {
+impl std::convert::TryFrom<&ItemData> for PresetChunkItem {
     type Error = NIFileError;
 
-    fn try_from(frame: ItemData) -> std::result::Result<Self, Self::Error> {
+    fn try_from(frame: &ItemData) -> std::result::Result<Self, Self::Error> {
         debug_assert_eq!(frame.header.item_id, ItemID::PresetChunkItem);
-        PresetChunkItem::read(Cursor::new(frame.data))
+        PresetChunkItem::read(Cursor::new(&frame.data))
     }
 }
 
