@@ -13,7 +13,11 @@
 // 0x47 SaveSettings
 // 0x4B FNTableImpl
 
-use crate::{kontakt::Chunk, read_bytes::ReadBytesExt, Error};
+use crate::{
+    kontakt::{objects::program::Program, Chunk, KontaktError},
+    read_bytes::ReadBytesExt,
+    Error,
+};
 
 #[derive(Debug)]
 pub struct Kon7 {
@@ -32,6 +36,14 @@ impl Kon7 {
 
     // pub fn read_monolith<R: ReadBytesExt>(mut reader: R) -> Result<Self, Error> {}
 
-    //     pub fn program(&self) -> Result<Program, KontaktError> {}
+    pub fn program(&self) -> Result<Program, Error> {
+        self.chunks
+            .get(0)
+            .ok_or(Error::KontaktError(KontaktError::MissingChunk(
+                "Program".into(),
+            )))
+            .and_then(Program::try_from)
+    }
+
     //     pub fn filenamelist(&self) -> Result<FNTableImpl, KontaktError> {}
 }

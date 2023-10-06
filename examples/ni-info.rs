@@ -47,7 +47,11 @@ pub fn main() -> Result<()> {
                 print_preset(preset.properties()?.preset);
 
                 if let Some(header) = preset.header() {
-                    print_kontakt_header(BPatchHeader::BPatchHeaderV42(header?.0));
+                    print_kontakt_header(&BPatchHeader::BPatchHeaderV42(header?.0));
+                }
+
+                if let Some(preset) = preset.preset() {
+                    print_kontakt_preset(&preset?);
                 }
             }
 
@@ -63,8 +67,6 @@ pub fn main() -> Result<()> {
                 );
 
                 let inner = RepositoryRootContainer(props.subtree_item.item()?);
-                dbg!(inner.0.id());
-
                 if let Some(preset) = inner.kontakt_preset() {
                     let preset = preset?;
 
@@ -72,7 +74,7 @@ pub fn main() -> Result<()> {
                     print_preset(preset.properties()?.preset);
 
                     if let Some(header) = preset.header() {
-                        print_kontakt_header(BPatchHeader::BPatchHeaderV42(header?.0));
+                        print_kontakt_header(&BPatchHeader::BPatchHeaderV42(header?.0));
                     }
                 }
             }
@@ -102,35 +104,7 @@ pub fn main() -> Result<()> {
         NIFile::NKSContainer(nks) => {
             println!("Detected format:\tNKS (Native Instruments Kontakt Sound) Container");
 
-            match nks.header {
-                BPatchHeader::BPatchHeaderV1(ref h) => {
-                    println!("\nBPatchHeaderV1:");
-                    println!("  created_at:\t\t{}", h.created_at);
-                    println!("  samples_size:\t\t{}", h.samples_size);
-                }
-                BPatchHeader::BPatchHeaderV2(ref h) => {
-                    println!("\nBPatchHeaderV2:");
-                    println!("  signature:\t\t{}", h.app_signature);
-                    println!("  type:\t\t\t{:?}", h.patch_type);
-                    println!("  kontakt_version:\t{}", h.app_version);
-                    println!("  author:\t\t{}", h.author);
-                    println!("  zones:\t\t{}", h.number_of_zones);
-                    println!("  groups:\t\t{}", h.number_of_groups);
-                    println!("  instruments:\t\t{}", h.number_of_instruments);
-                    println!("  created_at:\t\t{}", h.created_at);
-                }
-                BPatchHeader::BPatchHeaderV42(ref h) => {
-                    println!("\nBPatchHeaderV42:");
-                    println!("  signature:\t\t{}", h.app_signature);
-                    println!("  type:\t\t\t{:?}", h.patch_type);
-                    println!("  kontakt_version:\t{}", h.app_version);
-                    println!("  author:\t\t{}", h.author);
-                    println!("  zones:\t\t{}", h.number_of_zones);
-                    println!("  groups:\t\t{}", h.number_of_groups);
-                    println!("  instruments:\t\t{}", h.number_of_instruments);
-                    println!("  created_at:\t\t{}", h.created_at);
-                }
-            }
+            print_kontakt_header(&nks.header);
 
             match nks.preset()? {
                 KontaktPreset::Kon1(kon1) => {
@@ -170,7 +144,7 @@ fn print_preset(preset: Preset) {
     println!("  is_factory_preset:\t{}", preset.is_factory_preset);
 }
 
-fn print_kontakt_header(header: BPatchHeader) {
+fn print_kontakt_header(header: &BPatchHeader) {
     match header {
         BPatchHeader::BPatchHeaderV1(ref h) => {
             println!("\nBPatchHeaderV1:");
@@ -200,6 +174,23 @@ fn print_kontakt_header(header: BPatchHeader) {
             println!("  created_at:\t\t{}", h.created_at);
         }
     }
+}
+
+fn print_kontakt_preset(preset: &KontaktPreset) -> Result<()> {
+    match preset {
+        KontaktPreset::Kon1(_) => todo!(),
+        KontaktPreset::Kon2(_) => todo!(),
+        KontaktPreset::Kon3(_) => todo!(),
+        KontaktPreset::Kon4(_) => todo!(),
+        KontaktPreset::Kon7(k) => {
+            let program = k.program()?.public_params()?;
+            println!("\nProgram");
+            println!("  name:\t\t{}", program.name);
+            println!("  library_id:\t{}", program.library_id);
+        }
+    };
+
+    Ok(())
 }
 
 // fn _print_kontakt_instrument(instrument: KontaktChunkSet) -> Result<()> {

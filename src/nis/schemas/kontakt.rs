@@ -7,7 +7,7 @@ use crate::{
         PresetChunkItem,
     },
     nks::header::{BPatchHeader, BPatchHeaderV42},
-    Error, NIFileError,
+    Error,
 };
 
 impl ItemContainer {
@@ -70,6 +70,32 @@ impl BNISoundPresetContainer {
         self.0
             .find_data(&ItemID::BNISoundHeader)
             .map(|item_data| BNISoundHeader::try_from(item_data))
+    }
+
+    pub fn preset(&self) -> Option<Result<KontaktPreset, Error>> {
+        let header = match self.header()? {
+            Ok(header) => header,
+            Err(e) => return Some(Err(e)),
+        };
+
+        match self.0.find_encryption_item()? {
+            Ok(enc) => {
+                let item = enc.subtree.item().unwrap();
+
+                match item.find_item::<PresetChunkItem>(&ItemID::PresetChunkItem) {
+                    Some(preset_chunk_item) => {
+                        let chunk = preset_chunk_item.unwrap();
+                        let chunk = chunk.chunk();
+                        Some(KontaktPreset::from_str(
+                            &mut Cursor::new(&chunk),
+                            &header.0.app_signature,
+                        ))
+                    }
+                    None => todo!(),
+                }
+            }
+            Err(e) => return Some(Err(e)),
+        }
     }
 }
 
