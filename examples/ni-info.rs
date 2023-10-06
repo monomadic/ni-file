@@ -124,6 +124,8 @@ pub fn main() -> Result<()> {
                     println!("\n{:?}", kon4);
                     // print_kontakt_instrument(kon4.()?)?;
                 }
+                KontaktPreset::Kon5(_) => todo!(),
+                KontaktPreset::Kon6(_) => todo!(),
                 KontaktPreset::Kon7(_) => todo!(),
             }
         }
@@ -182,6 +184,8 @@ fn print_kontakt_preset(preset: &KontaktPreset) -> Result<()> {
         KontaktPreset::Kon2(_) => todo!(),
         KontaktPreset::Kon3(_) => todo!(),
         KontaktPreset::Kon4(_) => todo!(),
+        KontaktPreset::Kon5(_) => todo!(),
+        KontaktPreset::Kon6(_) => todo!(),
         KontaktPreset::Kon7(k) => {
             let program = k.program()?.public_params()?;
             println!("\nProgram");

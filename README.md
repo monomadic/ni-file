@@ -4,7 +4,9 @@
 
 # Native Instruments File Format
 
-Native Instruments file format support for rust. This library is the result of hundreds of hours of painstaking reverse engineering and research.
+Native Instruments file format support for rust. This library will serve as a reference implementation is the result of countless hours of painstaking reverse engineering and research.
+
+This library is in a state of flux as we discover more the api will change rapidly, but we will soon stabilise on a 0.1 release.
 
 ## Features
 

@@ -1,6 +1,6 @@
 use crate::{read_bytes::ReadBytesExt, Error};
 
-use super::{kon7::Kon7, Kon1, Kon4, XMLDocument};
+use super::{kon5::Kon5, kon6::Kon6, kon7::Kon7, Kon1, Kon4, XMLDocument};
 
 #[derive(Debug)]
 pub enum KontaktPreset {
@@ -8,6 +8,8 @@ pub enum KontaktPreset {
     Kon2(XMLDocument),
     Kon3(XMLDocument),
     Kon4(Kon4),
+    Kon5(Kon5),
+    Kon6(Kon6),
     Kon7(Kon7),
 }
 
