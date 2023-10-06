@@ -109,7 +109,7 @@ mod tests {
         assert_eq!(subtree.inner_data.len(), 4524);
         let item = subtree.item()?;
 
-        assert_eq!(item.kind(), &ItemID::Item);
+        assert_eq!(item.id(), &ItemID::Item);
 
         // ensure the read completed
         let mut buf = Vec::new();

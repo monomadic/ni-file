@@ -1,4 +1,3 @@
-use super::kontakt::KontaktPresetSchema;
 use crate::{
     kontakt::chunk_set::KontaktChunkSet,
     nis::{
@@ -53,15 +52,6 @@ impl Repository {
             }
         } else {
             RepositoryType::Unknown
-        }
-    }
-
-    pub fn inner_preset(&self) -> Result<Preset> {
-        match self.detect() {
-            RepositoryType::KontaktPreset => KontaktPresetSchema::from(&self.0).preset_item(),
-            RepositoryType::AppSpecific => todo!(),
-            RepositoryType::Preset => todo!(),
-            RepositoryType::Unknown => todo!(),
         }
     }
 

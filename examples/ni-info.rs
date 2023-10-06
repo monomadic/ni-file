@@ -3,105 +3,11 @@ use std::fs::File;
 
 use color_eyre::eyre::Result;
 use ni_file::{
-    self,
-    kontakt::{KontaktInstrument, KontaktPreset},
+    kontakt::KontaktPreset,
     nifile::NIFile,
-    nis::{AppSpecific, ItemID},
+    nis::{items::RepositoryRootContainer, Preset},
     nks::header::BPatchHeader,
 };
-
-fn print_kontakt_instrument(instrument: KontaktInstrument) {
-    match instrument.header {
-        BPatchHeader::BPatchHeaderV1(ref h) => {
-            println!("\nBPatchHeaderV1:");
-            println!("  created_at:\t\t{}", h.created_at);
-            println!("  samples_size:\t\t{}", h.samples_size);
-        }
-        BPatchHeader::BPatchHeaderV2(ref h) => {
-            println!("\nBPatchHeaderV2:");
-            println!("  signature:\t\t{}", h.app_signature);
-            println!("  type:\t\t\t{:?}", h.patch_type);
-            println!("  kontakt_version:\t{}", h.app_version);
-            println!("  author:\t\t{}", h.author);
-            println!("  zones:\t\t{}", h.number_of_zones);
-            println!("  groups:\t\t{}", h.number_of_groups);
-            println!("  instruments:\t\t{}", h.number_of_instruments);
-            println!("  created_at:\t\t{}", h.created_at);
-        }
-        BPatchHeader::BPatchHeaderV42(h) => {
-            println!("\nBPatchHeaderV42:");
-            println!("  signature:\t\t{}", h.app_signature);
-            println!("  type:\t\t\t{:?}", h.patch_type);
-            println!("  kontakt_version:\t{}", h.app_version);
-            println!("  author:\t\t{}", h.author);
-            println!("  zones:\t\t{}", h.number_of_zones);
-            println!("  groups:\t\t{}", h.number_of_groups);
-            println!("  instruments:\t\t{}", h.number_of_instruments);
-            println!("  created_at:\t\t{}", h.created_at);
-        }
-    }
-
-    match instrument.preset {
-        KontaktPreset::Kon1(_) => todo!(),
-        KontaktPreset::Kon2(_) => todo!(),
-        KontaktPreset::Kon3(_) => todo!(),
-        KontaktPreset::Kon4(_) => todo!(),
-        KontaktPreset::Kon7(_) => todo!(),
-    }
-}
-
-// fn _print_kontakt_instrument(instrument: KontaktChunkSet) -> Result<()> {
-//     println!("\nKontakt Data:");
-//     if let Some(Ok(program)) = instrument.program() {
-//         if let Ok(params) = program.public_params() {
-//             println!("\nProgram:");
-//             println!("  name:\t\t{}", params.name);
-//             println!("  credits:\t{}", params.instrument_credits);
-//             println!("  author:\t{}", params.instrument_author);
-//         }
-//     }
-//     if let Some(filename_table) = instrument.filename_tables()? {
-//         println!("\nFilename tables:");
-//
-//         println!("\nOther:");
-//         for (index, filename) in &filename_table.other_filetable {
-//             println!("{}:\t{}", index, filename);
-//         }
-//
-//         println!("\nSamples:");
-//         for (index, filename) in &filename_table.sample_filetable {
-//             println!("{}:\t{}", index, filename);
-//         }
-//
-//         println!("\nSpecial:");
-//         for (index, filename) in &filename_table.special_filetable {
-//             println!("{}:\t{}", index, filename);
-//         }
-//
-//         if let Some(program) = instrument.program() {
-//             if let Some(zones) = program?.zones() {
-//                 println!("\nZones:");
-//                 for zone in zones? {
-//                     let zone_data = zone.public_params()?;
-//                     if let Some(filename) = filename_table
-//                         .sample_filetable
-//                         .get(&(zone_data.filename_id as u32))
-//                     {
-//                         println!("Zone: {}", filename);
-//                     }
-//                 }
-//             } else {
-//                 println!("\nNo zones found!");
-//             }
-//         } else {
-//             println!("\nNo program found!");
-//         }
-//     } else {
-//         println!("\nNo filename table found!");
-//     }
-//
-//     Ok(())
-// }
 
 pub fn main() -> Result<()> {
     color_eyre::install()?;
@@ -114,9 +20,10 @@ pub fn main() -> Result<()> {
     let file = File::open(&path)?;
 
     match NIFile::read(file)? {
-        NIFile::NISContainer(repository) => {
-            if let Some(root) = repository.find_repository_root() {
-                let root = root?;
+        NIFile::NISContainer(container) => {
+            let repository = RepositoryRootContainer::try_from(&container)?;
+
+            if let Ok(root) = repository.properties() {
                 println!("RepositoryRoot:");
                 println!("  version:            NISound {}", root.nisound_version);
                 println!("  repository_magic:   {}", root.repository_magic);
@@ -125,42 +32,49 @@ pub fn main() -> Result<()> {
                 println!("\nNot a RepositoryRoot");
             }
 
-            if let Some(preset) = repository.item().find_preset_item() {
-                let preset = preset?;
-                println!("\nPreset:");
-                println!(
-                    "  authoring_app:\t{:?} {}",
-                    preset.authoring_app, preset.version
-                );
-                println!("  is_factory_preset:\t{}", preset.is_factory_preset);
+            // regular preset
+            if let Some(preset) = repository.preset() {
+                println!("\nPreset detected");
+                dbg!(&preset);
+                print_preset(preset?.properties()?);
             }
 
-            if let Some(preset) = repository.item().find_kontakt_preset_item() {
+            // kontakt preset
+            if let Some(preset) = repository.kontakt_preset() {
                 let preset = preset?;
-                println!("\nKontakt Preset:");
-                println!(
-                    "  authoring_app:\t{:?} {}",
-                    preset.authoring_app, preset.version
-                );
-                println!("  is_factory_preset:\t{}", preset.is_factory_preset);
 
-                if let Some(kontakt_preset) = repository.item().extract_kontakt_preset() {
-                    print_kontakt_instrument(kontakt_preset?);
+                println!("\nKontakt preset detected.");
+                print_preset(preset.properties()?.preset);
+
+                if let Some(header) = preset.header() {
+                    print_kontakt_header(BPatchHeader::BPatchHeaderV42(header?.0));
                 }
             }
 
-            // match repository.detect() {
-            //     ni_file::nis::RepositoryType::KontaktPreset => todo!(),
-            //     ni_file::nis::RepositoryType::AppSpecific => todo!(),
-            //     ni_file::nis::RepositoryType::Preset => todo!(),
-            //     ni_file::nis::RepositoryType::Unknown => todo!(),
-            // }
-
             // multi
-            if let Some(app_specific) = repository.item().find(&ItemID::AppSpecific) {
-                let app = AppSpecific::try_from(&app_specific.data)?;
+            if let Some(app_specific) = repository.app_specific() {
+                let app = app_specific?;
+                let props = app.properties()?;
+
                 println!("\nAppSpecific:");
-                println!("  authoring_app:\t{:?} {}", app.authoring_app, app.version);
+                println!(
+                    "  authoring_app:\t{:?} {}",
+                    props.authoring_app, props.version
+                );
+
+                let inner = RepositoryRootContainer(props.subtree_item.item()?);
+                dbg!(inner.0.id());
+
+                if let Some(preset) = inner.kontakt_preset() {
+                    let preset = preset?;
+
+                    println!("\nKontakt preset detected.");
+                    print_preset(preset.properties()?.preset);
+
+                    if let Some(header) = preset.header() {
+                        print_kontakt_header(BPatchHeader::BPatchHeaderV42(header?.0));
+                    }
+                }
             }
         }
         NIFile::KontaktResource => {
@@ -246,3 +160,97 @@ pub fn main() -> Result<()> {
 
     Ok(())
 }
+
+fn print_preset(preset: Preset) {
+    println!("\nPreset:");
+    println!(
+        "  authoring_app:\t{:?} {}",
+        preset.authoring_app, preset.version
+    );
+    println!("  is_factory_preset:\t{}", preset.is_factory_preset);
+}
+
+fn print_kontakt_header(header: BPatchHeader) {
+    match header {
+        BPatchHeader::BPatchHeaderV1(ref h) => {
+            println!("\nBPatchHeaderV1:");
+            println!("  created_at:\t\t{}", h.created_at);
+            println!("  samples_size:\t\t{}", h.samples_size);
+        }
+        BPatchHeader::BPatchHeaderV2(ref h) => {
+            println!("\nBPatchHeaderV2:");
+            println!("  signature:\t\t{}", h.app_signature);
+            println!("  type:\t\t\t{:?}", h.patch_type);
+            println!("  kontakt_version:\t{}", h.app_version);
+            println!("  author:\t\t{}", h.author);
+            println!("  zones:\t\t{}", h.number_of_zones);
+            println!("  groups:\t\t{}", h.number_of_groups);
+            println!("  instruments:\t\t{}", h.number_of_instruments);
+            println!("  created_at:\t\t{}", h.created_at);
+        }
+        BPatchHeader::BPatchHeaderV42(h) => {
+            println!("\nBPatchHeaderV42:");
+            println!("  signature:\t\t{}", h.app_signature);
+            println!("  type:\t\t\t{:?}", h.patch_type);
+            println!("  kontakt_version:\t{}", h.app_version);
+            println!("  author:\t\t{}", h.author);
+            println!("  zones:\t\t{}", h.number_of_zones);
+            println!("  groups:\t\t{}", h.number_of_groups);
+            println!("  instruments:\t\t{}", h.number_of_instruments);
+            println!("  created_at:\t\t{}", h.created_at);
+        }
+    }
+}
+
+// fn _print_kontakt_instrument(instrument: KontaktChunkSet) -> Result<()> {
+//     println!("\nKontakt Data:");
+//     if let Some(Ok(program)) = instrument.program() {
+//         if let Ok(params) = program.public_params() {
+//             println!("\nProgram:");
+//             println!("  name:\t\t{}", params.name);
+//             println!("  credits:\t{}", params.instrument_credits);
+//             println!("  author:\t{}", params.instrument_author);
+//         }
+//     }
+//     if let Some(filename_table) = instrument.filename_tables()? {
+//         println!("\nFilename tables:");
+//
+//         println!("\nOther:");
+//         for (index, filename) in &filename_table.other_filetable {
+//             println!("{}:\t{}", index, filename);
+//         }
+//
+//         println!("\nSamples:");
+//         for (index, filename) in &filename_table.sample_filetable {
+//             println!("{}:\t{}", index, filename);
+//         }
+//
+//         println!("\nSpecial:");
+//         for (index, filename) in &filename_table.special_filetable {
+//             println!("{}:\t{}", index, filename);
+//         }
+//
+//         if let Some(program) = instrument.program() {
+//             if let Some(zones) = program?.zones() {
+//                 println!("\nZones:");
+//                 for zone in zones? {
+//                     let zone_data = zone.public_params()?;
+//                     if let Some(filename) = filename_table
+//                         .sample_filetable
+//                         .get(&(zone_data.filename_id as u32))
+//                     {
+//                         println!("Zone: {}", filename);
+//                     }
+//                 }
+//             } else {
+//                 println!("\nNo zones found!");
+//             }
+//         } else {
+//             println!("\nNo program found!");
+//         }
+//     } else {
+//         println!("\nNo filename table found!");
+//     }
+//
+//     Ok(())
+// }

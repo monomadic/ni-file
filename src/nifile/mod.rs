@@ -1,11 +1,11 @@
 use crate::{
-    detect::NIFileType, file_container::NIFileContainer, nks::container::NKSContainer,
-    read_bytes::*, Error, Repository,
+    detect::NIFileType, file_container::NIFileContainer, nis::ItemContainer,
+    nks::container::NKSContainer, read_bytes::*, Error,
 };
 
 pub enum NIFile {
     NKSContainer(NKSContainer),
-    NISContainer(Repository),
+    NISContainer(ItemContainer),
     Monolith(NIFileContainer),
     KontaktResource,
     NICompressedWave,
@@ -19,7 +19,7 @@ impl NIFile {
         reader.rewind()?;
 
         Ok(match filetype {
-            NIFileType::NISContainer => NIFile::NISContainer(Repository::read(reader)?),
+            NIFileType::NISContainer => NIFile::NISContainer(ItemContainer::read(reader)?),
             NIFileType::Monolith => NIFile::Monolith(NIFileContainer::read(reader)?),
             NIFileType::NICompressedWave => NIFile::NICompressedWave,
             NIFileType::KoreSound => todo!(),

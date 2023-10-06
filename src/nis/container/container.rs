@@ -25,7 +25,11 @@ impl ItemContainer {
         })
     }
 
-    pub fn kind(&self) -> &ItemID {
+    pub fn first_child(&self) -> Option<&ItemContainer> {
+        self.children.get(0)
+    }
+
+    pub fn id(&self) -> &ItemID {
         &self.data.header.item_id
     }
 

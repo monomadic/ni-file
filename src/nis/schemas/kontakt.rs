@@ -57,43 +57,33 @@ impl ItemContainer {
         }))
     }
 }
-#[derive(Debug)]
-pub struct KontaktPresetSchema(ItemContainer);
 
-impl From<&ItemContainer> for KontaktPresetSchema {
-    fn from(ic: &ItemContainer) -> Self {
-        Self(ic.clone())
+#[derive(Debug)]
+pub struct BNISoundPresetContainer(ItemContainer);
+
+impl BNISoundPresetContainer {
+    pub fn properties(&self) -> Result<BNISoundPreset, Error> {
+        BNISoundPreset::try_from(&self.0.data)
+    }
+
+    pub fn header(&self) -> Option<Result<BNISoundHeader, Error>> {
+        self.0
+            .find_data(&ItemID::BNISoundHeader)
+            .map(|item_data| BNISoundHeader::try_from(item_data))
     }
 }
 
-impl KontaktPresetSchema {
-    pub fn header(&self) -> Result<BPatchHeaderV42, NIFileError> {
-        self.0
-            .find_data(&ItemID::BNISoundHeader)
-            .ok_or(NIFileError::Static("missing"))
-            .and_then(|item_data| BNISoundHeader::try_from(item_data).map(|sh| sh.0))
-    }
+impl TryFrom<&ItemContainer> for BNISoundPresetContainer {
+    type Error = Error;
 
-    pub fn preset_item(&self) -> Result<Preset, NIFileError> {
-        self.0
-            .find_data(&ItemID::BNISoundPreset)
-            .ok_or(NIFileError::Static("missing"))
-            .and_then(|item_data| BNISoundPreset::try_from(item_data).map(|sh| sh.preset))
+    fn try_from(container: &ItemContainer) -> Result<Self, Self::Error> {
+        let id = container.id();
+        if id != &ItemID::BNISoundPreset {
+            return Err(Error::ItemWrapError {
+                expected: ItemID::BNISoundPreset,
+                got: id.clone(),
+            });
+        }
+        Ok(Self(container.clone()))
     }
-
-    pub fn preset_data(&self) -> Result<Vec<u8>, NIFileError> {
-        self.0
-            .find_data(&ItemID::EncryptionItem)
-            .ok_or(NIFileError::Static("missing"))
-            .and_then(|item_data| {
-                EncryptionItem::try_from(item_data).map(|sh| sh.subtree.inner_data)
-            })
-    }
-
-    // pub fn sound_info(&self) -> Result<SoundInfoItem, NIFileError> {
-    //     self.0
-    //         .find(&ItemID::BNISoundHeader)
-    //         .ok_or(NIFileError::Static("missing"))
-    //         .and_then(|item_data| BNISoundHeader::try_from(item_data).map(|sh| sh.0))
-    // }
 }

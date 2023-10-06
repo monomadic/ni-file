@@ -9,7 +9,7 @@ use std::{
 
 use color_eyre::eyre::Result;
 use ni_file::{
-    nis::{ItemContainer, ItemID, PresetChunkItem},
+    nis::{items::RepositoryRootContainer, ItemContainer, ItemID, PresetChunkItem},
     nks::header::BPatchHeader,
     NIFile,
 };
@@ -26,9 +26,11 @@ pub fn main() -> Result<(), Box<dyn std::error::Error>> {
     let file = File::open(&path)?;
 
     match NIFile::read(file)? {
-        NIFile::NISContainer(repo) => {
-            if let Ok(preset_version) = repo.preset_version() {
-                println!("Preset Version: {preset_version}");
+        NIFile::NISContainer(container) => {
+            let repository = RepositoryRootContainer::try_from(&container)?;
+
+            if let Ok(root) = repository.properties() {
+                println!("NISound {}", root.nisound_version);
             }
 
             // if let Some(subtree) = repo.subtree_item() {
