@@ -41,9 +41,10 @@ pub fn main() -> Result<()> {
 
             // kontakt preset
             if let Some(preset) = repository.kontakt_preset() {
+                println!("\nKontakt instrument detected.");
+
                 let preset = preset?;
 
-                println!("\nKontakt preset detected.");
                 print_preset(preset.properties()?.preset);
 
                 if let Some(header) = preset.header() {
@@ -57,6 +58,8 @@ pub fn main() -> Result<()> {
 
             // multi
             if let Some(app_specific) = repository.app_specific() {
+                println!("\nKontakt multi detected.");
+
                 let app = app_specific?;
                 let props = app.properties()?;
 
@@ -176,15 +179,19 @@ fn print_kontakt_preset(preset: &KontaktPreset) -> Result<()> {
         }
         KontaktPreset::Kon5(_) => todo!(),
         KontaktPreset::Kon6(k) => {
-            let program = k.program()?.public_params()?;
-            println!("\nProgram");
+            let program = k.program()?;
+            println!("\nProgramV{:X}:", program.version());
+
+            let program = program.public_params()?;
             println!("  name:\t\t{}", program.name);
             println!("  library_id:\t{}", program.library_id);
             println!("  chunks:\t{}", k.chunks.len());
         }
         KontaktPreset::Kon7(k) => {
-            let program = k.program()?.public_params()?;
-            println!("\nProgram");
+            let program = k.program()?;
+            println!("\nProgramV{:X}:", program.version());
+
+            let program = program.public_params()?;
             println!("  name:\t\t{}", program.name);
             println!("  library_id:\t{}", program.library_id);
             println!("  chunks:\t{}", k.chunks.len());

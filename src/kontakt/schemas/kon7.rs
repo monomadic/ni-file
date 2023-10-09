@@ -22,6 +22,7 @@ use crate::{
 #[derive(Debug)]
 pub struct Kon7 {
     pub chunks: Vec<Chunk>,
+    // pub program: Program, // TODO: check version?
 }
 
 impl Kon7 {

@@ -16,6 +16,10 @@ impl Program {
         Ok(Self(StructuredObject::read(&mut reader)?))
     }
 
+    pub fn version(&self) -> u16 {
+        self.0.version
+    }
+
     pub fn public_params(&self) -> Result<ProgramPublicParams, Error> {
         let reader = Cursor::new(&self.0.public_data);
 

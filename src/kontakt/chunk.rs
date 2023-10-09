@@ -20,35 +20,41 @@ impl Chunk {
         let data = reader.read_bytes(length)?;
         Ok(Self { id, data })
     }
+
+    fn into_type(&self) -> Result<KontaktObject, Error> {
+        Ok(KontaktObject::try_from(self)?)
+    }
 }
 
-impl std::convert::TryFrom<Chunk> for StructuredObject {
+impl std::convert::TryFrom<&Chunk> for StructuredObject {
     type Error = Error;
 
-    fn try_from(chunk: Chunk) -> Result<Self, Self::Error> {
-        let cursor = Cursor::new(chunk.data);
+    fn try_from(chunk: &Chunk) -> Result<Self, Self::Error> {
+        let cursor = Cursor::new(&chunk.data);
         Ok(StructuredObject::read(cursor)?)
     }
 }
 
 #[derive(Debug)]
-pub enum ChunkType {
+pub enum KontaktObject {
+    BBank,
     Program(Program),
     StructuredObject(StructuredObject),
     FNTableImpl(FNTableImpl),
     Unsupported(u16),
 }
 
-impl TryFrom<Chunk> for ChunkType {
+impl TryFrom<&Chunk> for KontaktObject {
     type Error = Error;
 
-    fn try_from(chunk: Chunk) -> Result<ChunkType, Error> {
-        let reader = Cursor::new(chunk.data);
+    fn try_from(chunk: &Chunk) -> Result<KontaktObject, Error> {
+        let reader = Cursor::new(&chunk.data);
 
         Ok(match chunk.id {
-            0x28 => ChunkType::Program(Program::read(reader)?),
-            0x4b => ChunkType::FNTableImpl(FNTableImpl::read(reader)?),
-            _ => ChunkType::Unsupported(chunk.id),
+            0x03 => KontaktObject::BBank,
+            0x28 => KontaktObject::Program(Program::read(reader)?),
+            0x4b => KontaktObject::FNTableImpl(FNTableImpl::read(reader)?),
+            _ => KontaktObject::Unsupported(chunk.id),
         })
     }
 }
@@ -61,9 +67,9 @@ mod tests {
 
     #[test]
     fn test_structured_object() -> Result<(), Error> {
-        let file = File::open("tests/patchdata/KontaktV42/StructuredObject/0x28")?;
+        let file = File::open("tests/data/Objects/KontaktV42/StructuredObject/0x28")?;
         let data = Chunk::read(file)?;
-        let chunk: ChunkType = data.try_into()?;
+        let chunk: KontaktObject = (&data).try_into()?;
 
         dbg!(chunk);
 
@@ -72,9 +78,9 @@ mod tests {
 
     #[test]
     fn test_fntableimpl() -> Result<(), Error> {
-        let file = File::open("tests/patchdata/KontaktV42/FNTableImpl/FNTableImpl-001")?;
+        let file = File::open("tests/data/Objects/KontaktV42/FNTableImpl/FNTableImpl-001")?;
         let data = Chunk::read(file)?;
-        let chunk: ChunkType = data.try_into()?;
+        let chunk: KontaktObject = (&data).try_into()?;
 
         dbg!(chunk);
 

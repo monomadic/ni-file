@@ -35,6 +35,8 @@ pub fn main() -> Result<(), Box<dyn std::error::Error>> {
                 let props = app.properties()?;
                 let inner = RepositoryRootContainer(props.subtree_item.item()?);
                 if let Some(preset) = inner.kontakt_preset() {
+                    println!("\nKontakt instrument detected.");
+
                     if let Some(preset) = preset?.preset_data() {
                         std::fs::write("kontakt-preset.chunk", &preset?)?;
                     }
