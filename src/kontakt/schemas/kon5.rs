@@ -17,6 +17,7 @@ use std::io::Cursor;
 use crate::{
     kontakt::Chunk,
     nks::{error::NKSError, BPatchMetaInfoHeader},
+    read_bytes::ReadBytesExt,
     Error,
 };
 
@@ -27,6 +28,10 @@ pub struct Kon5 {
 }
 
 impl Kon5 {
+    pub fn read<R: ReadBytesExt>(mut reader: R) -> Result<Self, Error> {
+        todo!()
+    }
+
     /// Decompress internal patch data
     pub fn from_compressed(
         compressed_data: Vec<u8>,

@@ -12,5 +12,33 @@
 // 0x47 SaveSettings
 // 0x4B FNTableImpl
 
+use crate::{
+    kontakt::{objects::program::Program, Chunk, KontaktError},
+    read_bytes::ReadBytesExt,
+    Error,
+};
+
 #[derive(Debug)]
-pub struct Kon6 {}
+pub struct Kon6 {
+    pub chunks: Vec<Chunk>,
+}
+
+impl Kon6 {
+    pub fn read<R: ReadBytesExt>(mut reader: R) -> Result<Self, Error> {
+        let mut chunks = Vec::new();
+        while let Ok(chunk) = Chunk::read(&mut reader) {
+            chunks.push(chunk);
+        }
+
+        Ok(Self { chunks })
+    }
+
+    pub fn program(&self) -> Result<Program, Error> {
+        self.chunks
+            .get(0)
+            .ok_or(Error::KontaktError(KontaktError::MissingChunk(
+                "Program".into(),
+            )))
+            .and_then(Program::try_from)
+    }
+}

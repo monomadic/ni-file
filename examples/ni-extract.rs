@@ -4,15 +4,11 @@
 
 use std::{
     fs::File,
-    io::{Cursor, Read, Seek, SeekFrom, Write},
+    io::{Read, Seek, SeekFrom, Write},
 };
 
 use color_eyre::eyre::Result;
-use ni_file::{
-    nis::{items::RepositoryRootContainer, ItemContainer, ItemID, PresetChunkItem},
-    nks::header::BPatchHeader,
-    NIFile,
-};
+use ni_file::{nis::items::RepositoryRootContainer, nks::header::BPatchHeader, NIFile};
 
 pub fn main() -> Result<(), Box<dyn std::error::Error>> {
     std::env::set_var("RUST_BACKTRACE", "1");
@@ -33,6 +29,26 @@ pub fn main() -> Result<(), Box<dyn std::error::Error>> {
                 println!("NISound {}", root.nisound_version);
             }
 
+            if let Some(app_specific) = repository.app_specific() {
+                println!("\nKontakt multi detected.");
+                let app = app_specific?;
+                let props = app.properties()?;
+                let inner = RepositoryRootContainer(props.subtree_item.item()?);
+                if let Some(preset) = inner.kontakt_preset() {
+                    if let Some(preset) = preset?.preset_data() {
+                        std::fs::write("kontakt-preset.chunk", &preset?)?;
+                    }
+                }
+            }
+
+            if let Some(preset) = repository.kontakt_preset() {
+                println!("\nKontakt instrument detected.");
+
+                if let Some(preset) = preset?.preset_data() {
+                    std::fs::write("kontakt-preset.chunk", &preset?)?;
+                }
+            }
+
             // if let Some(subtree) = repo.subtree_item() {
             //     std::fs::write("subtree_item.nki", &subtree?.inner_data)?;
             //     println!("Wrote: subtree_item.nki");
@@ -43,7 +59,7 @@ pub fn main() -> Result<(), Box<dyn std::error::Error>> {
             //     std::fs::write("inner.nki", &preset)?;
             //     println!("Wrote: inner.nki");
             // }
-            //
+
             // let item = ItemContainer::read(Cursor::new(preset))?;
             // match item.find(&ItemID::PresetChunkItem) {
             //     Some(preset_item_frame) => {

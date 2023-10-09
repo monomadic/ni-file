@@ -2,7 +2,11 @@ use std::io::{Cursor, Read};
 
 use flate2::read::ZlibDecoder;
 
-use crate::{read_bytes::ReadBytesExt, Error};
+use crate::{
+    kontakt::objects::{filename_list::FileNameListPreK51, program::Program},
+    read_bytes::ReadBytesExt,
+    Error,
+};
 
 // Kon4 Schema:
 //
@@ -43,6 +47,11 @@ impl Kon4 {
 
     // pub fn read_monolith<R: ReadBytesExt>(mut reader: R) -> Result<Self, Error> {}
 
-    //     pub fn program(&self) -> Result<Program, KontaktError> {}
-    //     pub fn filenamelist(&self) -> Result<FNTableImpl, KontaktError> {}
+    pub fn program(&self) -> Result<Program, Error> {
+        todo!()
+    }
+
+    pub fn filetable(&self) -> Result<FileNameListPreK51, Error> {
+        todo!()
+    }
 }

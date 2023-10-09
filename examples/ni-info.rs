@@ -51,7 +51,7 @@ pub fn main() -> Result<()> {
                 }
 
                 if let Some(preset) = preset.preset() {
-                    print_kontakt_preset(&preset?);
+                    print_kontakt_preset(&preset?)?;
                 }
             }
 
@@ -103,31 +103,8 @@ pub fn main() -> Result<()> {
         }
         NIFile::NKSContainer(nks) => {
             println!("Detected format:\tNKS (Native Instruments Kontakt Sound) Container");
-
             print_kontakt_header(&nks.header);
-
-            match nks.preset()? {
-                KontaktPreset::Kon1(kon1) => {
-                    println!("\nKon1:");
-                    println!("\n{}", kon1.preset);
-                }
-                KontaktPreset::Kon2(kon2) => {
-                    println!("\nKon2:");
-                    println!("\n{}", kon2);
-                }
-                KontaktPreset::Kon3(kon3) => {
-                    println!("\nKon3:");
-                    println!("\n{}", kon3);
-                }
-                KontaktPreset::Kon4(kon4) => {
-                    println!("\nKon4:");
-                    println!("\n{:?}", kon4);
-                    // print_kontakt_instrument(kon4.()?)?;
-                }
-                KontaktPreset::Kon5(_) => todo!(),
-                KontaktPreset::Kon6(_) => todo!(),
-                KontaktPreset::Kon7(_) => todo!(),
-            }
+            print_kontakt_preset(&nks.preset()?)?;
         }
         NIFile::FM8Preset => {
             println!("Detected format:\tFM8 Preset\n");
@@ -180,17 +157,37 @@ fn print_kontakt_header(header: &BPatchHeader) {
 
 fn print_kontakt_preset(preset: &KontaktPreset) -> Result<()> {
     match preset {
-        KontaktPreset::Kon1(_) => todo!(),
-        KontaktPreset::Kon2(_) => todo!(),
-        KontaktPreset::Kon3(_) => todo!(),
-        KontaktPreset::Kon4(_) => todo!(),
+        KontaktPreset::Kon1(kon1) => {
+            println!("\nKon1:");
+            println!("\n{}", kon1.preset);
+        }
+        KontaktPreset::Kon2(kon2) => {
+            println!("\nKon2:");
+            println!("\n{}", kon2.preset);
+        }
+        KontaktPreset::Kon3(kon3) => {
+            println!("\nKon3:");
+            println!("\n{}", kon3.preset);
+        }
+        KontaktPreset::Kon4(kon4) => {
+            println!("\nKon4:");
+            println!("\n{:?}", kon4);
+            // print_kontakt_instrument(kon4.()?)?;
+        }
         KontaktPreset::Kon5(_) => todo!(),
-        KontaktPreset::Kon6(_) => todo!(),
+        KontaktPreset::Kon6(k) => {
+            let program = k.program()?.public_params()?;
+            println!("\nProgram");
+            println!("  name:\t\t{}", program.name);
+            println!("  library_id:\t{}", program.library_id);
+            println!("  chunks:\t{}", k.chunks.len());
+        }
         KontaktPreset::Kon7(k) => {
             let program = k.program()?.public_params()?;
             println!("\nProgram");
             println!("  name:\t\t{}", program.name);
             println!("  library_id:\t{}", program.library_id);
+            println!("  chunks:\t{}", k.chunks.len());
         }
     };
 

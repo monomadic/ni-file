@@ -72,6 +72,24 @@ impl BNISoundPresetContainer {
             .map(|item_data| BNISoundHeader::try_from(item_data))
     }
 
+    pub fn preset_data(&self) -> Option<Result<Vec<u8>, Error>> {
+        match self.0.find_encryption_item()? {
+            Ok(enc) => {
+                let item = enc.subtree.item().unwrap();
+
+                match item.find_item::<PresetChunkItem>(&ItemID::PresetChunkItem) {
+                    Some(preset_chunk_item) => {
+                        let chunk = preset_chunk_item.unwrap();
+                        let data = chunk.chunk();
+                        return Some(Ok(data.to_owned()));
+                    }
+                    none => todo!(),
+                }
+            }
+            Err(_) => todo!(),
+        };
+    }
+
     pub fn preset(&self) -> Option<Result<KontaktPreset, Error>> {
         let header = match self.header()? {
             Ok(header) => header,
