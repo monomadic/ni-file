@@ -171,11 +171,7 @@ fn print_kontakt_preset(preset: &KontaktPreset) -> Result<()> {
             println!("\nKon2:");
             println!("\n{}", kon2.preset);
         }
-        KontaktPreset::Kon3(kon3) => {
-            println!("\nKon3:");
-            println!("\n{}", kon3.preset);
-        }
-        KontaktPreset::Kon4(kon4) => {
+        KontaktPreset::KontaktV42(kon4) => {
             let program = &kon4.program;
             println!("\nProgram 0x{:X}:", program.version());
 

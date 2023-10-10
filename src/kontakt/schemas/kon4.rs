@@ -17,12 +17,12 @@ use crate::{
 use crate::kontakt::Chunk;
 
 #[derive(Debug)]
-pub struct Kon4 {
+pub struct KontaktV42 {
     pub program: Program,
     pub filetable: FileNameListPreK51,
 }
 
-impl Kon4 {
+impl KontaktV42 {
     pub fn read<R: ReadBytesExt>(mut reader: R) -> Result<Self, Error> {
         let program: Program = Chunk::read(&mut reader).and_then(|chunk| (&chunk).try_into())?;
         let filetable: FileNameListPreK51 =

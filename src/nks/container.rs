@@ -3,7 +3,7 @@ use std::io::{Cursor, Read};
 use flate2::read::ZlibDecoder;
 
 use crate::{
-    kontakt::{Kon1, Kon2, Kon4, KontaktPreset},
+    kontakt::{KontaktPreset, KontaktV1, KontaktV2, KontaktV42},
     read_bytes::ReadBytesExt,
     Error,
 };
@@ -34,11 +34,11 @@ impl NKSContainer {
         let compressed_data = match header {
             BPatchHeader::BPatchHeaderV1(_) => reader.read_all()?,
             BPatchHeader::BPatchHeaderV2(ref h) => match h.is_monolith {
-                true => unimplemented!(),
+                true => unimplemented!("monolith"),
                 false => reader.read_bytes(compressed_length)?,
             },
             BPatchHeader::BPatchHeaderV42(ref h) => match h.is_monolith {
-                true => unimplemented!(),
+                true => unimplemented!("monolith"),
                 false => reader.read_bytes(compressed_length)?,
             },
         };
@@ -77,7 +77,7 @@ impl NKSContainer {
                 decoder.read_to_end(&mut decompressed_data)?;
                 let mut raw_preset = Cursor::new(decompressed_data);
 
-                KontaktPreset::KontaktV1(Kon1::read(&mut raw_preset)?)
+                KontaktPreset::KontaktV1(KontaktV1::read(&mut raw_preset)?)
             }
             BPatchHeader::BPatchHeaderV2(_) => {
                 // zlib compression
@@ -86,7 +86,7 @@ impl NKSContainer {
                 decoder.read_to_end(&mut decompressed_data)?;
                 let raw_preset = Cursor::new(decompressed_data);
 
-                KontaktPreset::KontaktV2(Kon2::read(raw_preset)?)
+                KontaktPreset::KontaktV2(KontaktV2::read(raw_preset)?)
             }
             BPatchHeader::BPatchHeaderV42(ref h) => {
                 // fastlz compression
@@ -94,7 +94,7 @@ impl NKSContainer {
 
                 assert_eq!(h.decompressed_length as usize, raw_preset.len());
 
-                KontaktPreset::KontaktV42(Kon4::read(&mut Cursor::new(raw_preset))?)
+                KontaktPreset::KontaktV42(KontaktV42::read(&mut Cursor::new(raw_preset))?)
             }
         })
     }
