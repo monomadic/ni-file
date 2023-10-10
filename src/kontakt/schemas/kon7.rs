@@ -14,7 +14,10 @@
 // 0x4B FNTableImpl
 
 use crate::{
-    kontakt::{objects::program::Program, Chunk, KontaktError},
+    kontakt::{
+        objects::{filename_list::FNTableImpl, program::Program},
+        Chunk, KontaktError,
+    },
     read_bytes::ReadBytesExt,
     Error,
 };
@@ -22,29 +25,36 @@ use crate::{
 #[derive(Debug)]
 pub struct Kon7 {
     pub chunks: Vec<Chunk>,
-    // pub program: Program, // TODO: check version?
+    pub program: Program, // TODO: check version?
 }
 
 impl Kon7 {
     pub fn read<R: ReadBytesExt>(mut reader: R) -> Result<Self, Error> {
+        let program: Program = Chunk::read(&mut reader).and_then(|chunk| (&chunk).try_into())?;
+
         let mut chunks = Vec::new();
         while let Ok(chunk) = Chunk::read(&mut reader) {
             chunks.push(chunk);
         }
 
-        Ok(Self { chunks })
+        Ok(Self { chunks, program })
     }
 
-    // pub fn read_monolith<R: ReadBytesExt>(mut reader: R) -> Result<Self, Error> {}
+    // pub fn program(&self) -> Result<Program, Error> {
+    //     self.chunks
+    //         .get(0)
+    //         .ok_or(Error::KontaktError(KontaktError::MissingChunk(
+    //             "Program".into(),
+    //         )))
+    //         .and_then(Program::try_from)
+    // }
 
-    pub fn program(&self) -> Result<Program, Error> {
+    pub fn fntable(&self) -> Result<FNTableImpl, Error> {
         self.chunks
-            .get(0)
+            .get(2)
             .ok_or(Error::KontaktError(KontaktError::MissingChunk(
                 "Program".into(),
             )))
-            .and_then(Program::try_from)
+            .and_then(FNTableImpl::try_from)
     }
-
-    //     pub fn filenamelist(&self) -> Result<FNTableImpl, KontaktError> {}
 }

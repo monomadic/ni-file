@@ -15,7 +15,7 @@
 use std::io::Cursor;
 
 use crate::{
-    kontakt::Chunk,
+    kontakt::{objects::program::Program, Chunk},
     nks::{error::NKSError, BPatchMetaInfoHeader},
     read_bytes::ReadBytesExt,
     Error,
@@ -24,12 +24,20 @@ use crate::{
 #[derive(Debug)]
 pub struct Kon5 {
     pub chunks: Vec<Chunk>,
-    pub meta_info: BPatchMetaInfoHeader,
+    pub program: Program, // TODO: check version?
+                          // pub meta_info: BPatchMetaInfoHeader,
 }
 
 impl Kon5 {
     pub fn read<R: ReadBytesExt>(mut reader: R) -> Result<Self, Error> {
-        todo!()
+        let program: Program = Chunk::read(&mut reader).and_then(|chunk| (&chunk).try_into())?;
+
+        let mut chunks = Vec::new();
+        while let Ok(chunk) = Chunk::read(&mut reader) {
+            chunks.push(chunk);
+        }
+
+        Ok(Self { chunks, program })
     }
 
     /// Decompress internal patch data

@@ -1,4 +1,4 @@
-use crate::{read_bytes::ReadBytesExt, Error, NIFileError};
+use crate::{kontakt::KontaktError, read_bytes::ReadBytesExt, Error, NIFileError};
 
 #[derive(Debug, Default)]
 pub struct ProgramPublicParams {
@@ -30,7 +30,7 @@ pub struct ProgramPublicParams {
 }
 
 impl ProgramPublicParams {
-    pub fn read<R: ReadBytesExt>(mut reader: R, version: u16) -> Result<Self, NIFileError> {
+    pub fn read<R: ReadBytesExt>(mut reader: R, version: u16) -> Result<Self, Error> {
         Ok(Self {
             name: reader.read_widestring_utf16()?,
             num_bytes_samples_total: reader.read_f64_le()?,

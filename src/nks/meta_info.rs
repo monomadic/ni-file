@@ -19,7 +19,7 @@ impl BPatchMetaInfoHeader {
 
         assert_eq!(
             magic, 0xB00EE1AE,
-            "Invalid BPatchMetaInfoHeader magic number: expected 0xaee10eb0 got 0x{magic:x}"
+            "Invalid BPatchMetaInfoHeader magic number: expected 0xaee10eb0 got 0x{magic:X}"
         );
 
         // unknown
@@ -45,7 +45,7 @@ mod tests {
     #[test]
     fn test_kontakt_1() -> Result<(), NKSError> {
         BPatchMetaInfoHeader::read(File::open(
-            "test-data/NKS/BPatchMetaInfoHeader/BPatchMetaInfoHeader-000",
+            "tests/data/Objects/BPatchMetaInfoHeader/BPatchMetaInfoHeader-000",
         )?)?;
         Ok(())
     }

@@ -42,7 +42,7 @@ impl ItemContainer {
                     Some(preset_chunk_item) => {
                         let chunk = preset_chunk_item.unwrap();
                         let chunk = chunk.chunk();
-                        KontaktPreset::from_str(&mut Cursor::new(&chunk), &header.app_signature)
+                        KontaktPreset::from_fourcc(&mut Cursor::new(&chunk), &header.app_signature)
                             .unwrap()
                     }
                     None => todo!(),
@@ -86,7 +86,7 @@ impl BNISoundPresetContainer {
                     none => todo!(),
                 }
             }
-            Err(_) => todo!(),
+            Err(e) => panic!("Error unpacking encryption item: {e}"),
         };
     }
 
@@ -104,7 +104,7 @@ impl BNISoundPresetContainer {
                     Some(preset_chunk_item) => {
                         let chunk = preset_chunk_item.unwrap();
                         let chunk = chunk.chunk();
-                        Some(KontaktPreset::from_str(
+                        Some(KontaktPreset::from_fourcc(
                             &mut Cursor::new(&chunk),
                             &header.0.app_signature,
                         ))

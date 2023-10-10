@@ -28,14 +28,14 @@ pub fn main() -> Result<()> {
                 println!("  version:            NISound {}", root.nisound_version);
                 println!("  repository_magic:   {}", root.repository_magic);
                 println!("  repository_type:    {}", root.repository_type);
+                println!("");
             } else {
-                println!("\nNot a RepositoryRoot");
+                println!("Not a RepositoryRoot\n");
             }
 
             // regular preset
             if let Some(preset) = repository.preset() {
                 println!("\nPreset detected");
-                dbg!(&preset);
                 print_preset(preset?.properties()?);
             }
 
@@ -137,6 +137,7 @@ fn print_kontakt_header(header: &BPatchHeader) {
             println!("\nBPatchHeaderV2:");
             println!("  signature:\t\t{}", h.app_signature);
             println!("  type:\t\t\t{:?}", h.patch_type);
+            println!("  is_monolith:\t\t{:?}", h.is_monolith);
             println!("  kontakt_version:\t{}", h.app_version);
             println!("  author:\t\t{}", h.author);
             println!("  zones:\t\t{}", h.number_of_zones);
@@ -148,6 +149,7 @@ fn print_kontakt_header(header: &BPatchHeader) {
             println!("\nBPatchHeaderV42:");
             println!("  signature:\t\t{}", h.app_signature);
             println!("  type:\t\t\t{:?}", h.patch_type);
+            println!("  is_monolith:\t\t{:?}", h.is_monolith);
             println!("  kontakt_version:\t{}", h.app_version);
             println!("  author:\t\t{}", h.author);
             println!("  zones:\t\t{}", h.number_of_zones);
@@ -156,15 +158,16 @@ fn print_kontakt_header(header: &BPatchHeader) {
             println!("  created_at:\t\t{}", h.created_at);
         }
     }
+    println!("");
 }
 
 fn print_kontakt_preset(preset: &KontaktPreset) -> Result<()> {
     match preset {
-        KontaktPreset::Kon1(kon1) => {
+        KontaktPreset::KontaktV1(kon1) => {
             println!("\nKon1:");
             println!("\n{}", kon1.preset);
         }
-        KontaktPreset::Kon2(kon2) => {
+        KontaktPreset::KontaktV2(kon2) => {
             println!("\nKon2:");
             println!("\n{}", kon2.preset);
         }
@@ -173,28 +176,47 @@ fn print_kontakt_preset(preset: &KontaktPreset) -> Result<()> {
             println!("\n{}", kon3.preset);
         }
         KontaktPreset::Kon4(kon4) => {
-            println!("\nKon4:");
-            println!("\n{:?}", kon4);
-            // print_kontakt_instrument(kon4.()?)?;
-        }
-        KontaktPreset::Kon5(_) => todo!(),
-        KontaktPreset::Kon6(k) => {
-            let program = k.program()?;
-            println!("\nProgramV{:X}:", program.version());
+            let program = &kon4.program;
+            println!("\nProgram 0x{:X}:", program.version());
 
             let program = program.public_params()?;
             println!("  name:\t\t{}", program.name);
             println!("  library_id:\t{}", program.library_id);
-            println!("  chunks:\t{}", k.chunks.len());
         }
-        KontaktPreset::Kon7(k) => {
-            let program = k.program()?;
-            println!("\nProgramV{:X}:", program.version());
+        KontaktPreset::Kon5(kon5) => {
+            let program = &kon5.program;
+            println!("\nProgram 0x{:X}:", program.version());
+            println!("  chunks:\t{}", kon5.chunks.len());
 
             let program = program.public_params()?;
             println!("  name:\t\t{}", program.name);
             println!("  library_id:\t{}", program.library_id);
-            println!("  chunks:\t{}", k.chunks.len());
+        }
+        KontaktPreset::Kon6(kon6) => {
+            let program = &kon6.program;
+            println!("\nProgram 0x{:X}:", program.version());
+            println!("  chunks:\t{}", kon6.chunks.len());
+
+            let program = program.public_params()?;
+            println!("  name:\t\t{}", program.name);
+            println!("  library_id:\t{}", program.library_id);
+        }
+        KontaktPreset::Kon7(kon7) => {
+            let program = &kon7.program;
+            println!("\nProgram 0x{:X}:", program.version());
+            println!("  chunks:\t{}", kon7.chunks.len());
+
+            let program = program.public_params()?;
+            println!("  name:\t\t{}", program.name);
+            println!("  library_id:\t{}", program.library_id);
+        }
+        KontaktPreset::KontaktV42(kon) => {
+            let program = &kon.program;
+            println!("\nProgram 0x{:X}:", program.version());
+
+            let program = program.public_params()?;
+            println!("  name:\t\t{}", program.name);
+            println!("  library_id:\t{}", program.library_id);
         }
     };
 

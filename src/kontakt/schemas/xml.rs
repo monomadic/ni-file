@@ -8,6 +8,10 @@ use crate::nks::error::NKSError;
 pub struct XMLDocument(String);
 
 impl XMLDocument {
+    pub fn from_utf8(data: &[u8]) -> Result<Self, std::string::FromUtf8Error> {
+        Ok(Self(String::from_utf8(data.to_vec())?))
+    }
+
     pub fn from_compressed_data(data: &[u8]) -> Result<Self, NKSError> {
         let mut decoder = ZlibDecoder::new(data);
         let mut decompressed = Vec::new();

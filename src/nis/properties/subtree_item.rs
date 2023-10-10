@@ -67,7 +67,7 @@ impl std::convert::TryFrom<&ItemData> for SubtreeItem {
 impl SubtreeItem {
     /// decompress and return compressed internal Item.
     pub fn read<R: ReadBytesExt>(mut reader: R) -> Result<Self> {
-        let prop_version = reader.read_u32_le()?;
+        let prop_version = reader.read_u32_le()?; // num items?
         assert_eq!(prop_version, 1);
 
         let is_compressed = reader.read_bool()?;

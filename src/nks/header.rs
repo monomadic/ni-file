@@ -44,6 +44,7 @@ pub struct BPatchHeaderV42 {
     pub number_of_zones: u16,
     pub number_of_groups: u16,
     pub number_of_instruments: u16,
+    pub is_monolith: bool,
     pub decompressed_length: u32,
 }
 
@@ -59,7 +60,7 @@ pub struct BPatchHeaderV2 {
     pub number_of_zones: u16,
     pub number_of_groups: u16,
     pub number_of_instruments: u16,
-    pub decompressed_length: u32,
+    pub is_monolith: bool,
 }
 
 /// The header of a Kontakt1 NKS File.
@@ -91,6 +92,9 @@ impl BPatchHeaderV1 {
 
 impl BPatchHeaderV2 {
     pub fn read_le<R: ReadBytesExt>(mut reader: R) -> Result<Self, NKSError> {
+        let data = reader.read_bytes(160)?; // 170 - 10
+        let mut reader = Cursor::new(data);
+
         let header_magic = reader.read_u32_le()?;
         assert_eq!(header_magic, u32::swap_bytes(0x722A013E));
 
@@ -112,14 +116,25 @@ impl BPatchHeaderV2 {
         let number_of_zones = reader.read_u16_le()?;
         let number_of_groups = reader.read_u16_le()?;
         let number_of_instruments = reader.read_u16_le()?;
-        let _unknown = reader.read_bytes(16)?;
+
+        let _u = reader.read_u16_le()?; // 2
+        let _u = reader.read_u16_le()?; // 2
+        let is_monolith = reader.read_u32_le()? == 1; // 4
+
+        let _u = reader.read_u8()?; // 1
+        let _u = reader.read_u8()?; // 1
+        let _u = reader.read_u8()?; // 1
+        let _u = reader.read_u32_le()?; // 4
+        let _u = reader.read_u8()?; // 1
+
         let icon = reader.read_u32_le()?;
-        let author = reader.read_string_utf8()?;
-        // let _unknown = reader.read_bytes(101)?;
-        let _checksum = reader.read_bytes(16)?;
-        let _unknown = reader.read_u32_le()?;
-        let _unknown = reader.read_u32_le()?;
-        let decompressed_length = reader.read_u32_le()?;
+
+        let embedded_strings = reader.read_bytes(104)?;
+        let mut strings = Cursor::new(embedded_strings);
+        let author = strings.read_string_utf8()?;
+
+        let _svn_revision = reader.read_u32_le()?;
+        let _patch_level = reader.read_u32_le()?;
 
         Ok(Self {
             patch_type,
@@ -129,15 +144,18 @@ impl BPatchHeaderV2 {
             number_of_zones,
             number_of_groups,
             number_of_instruments,
+            is_monolith,
             created_at,
             app_signature,
-            decompressed_length,
         })
     }
 }
 
 impl BPatchHeaderV42 {
     pub fn read_le<R: ReadBytesExt>(mut reader: R) -> Result<Self, NKSError> {
+        let data = reader.read_bytes(212)?; // 222 - 10
+        let mut reader = Cursor::new(data);
+
         let magic: u32 = reader.read_le()?;
 
         assert_eq!(
@@ -163,7 +181,17 @@ impl BPatchHeaderV42 {
         let number_of_zones = reader.read_u16_le()?;
         let number_of_groups = reader.read_u16_le()?;
         let number_of_instruments = reader.read_u16_le()?;
-        let _unknown = reader.read_bytes(16)?;
+
+        let _u = reader.read_u16_le()?;
+        let _u = reader.read_u16_le()?;
+        let is_monolith = reader.read_u32_le()? == 1;
+
+        let _u = reader.read_u8()?;
+        let _u = reader.read_u8()?;
+        let _u = reader.read_u8()?;
+        let _u = reader.read_u32_le()?;
+        let _u = reader.read_u8()?;
+
         let icon = reader.read_u32_le()?;
 
         let embedded_strings = reader.read_bytes(104)?;
@@ -186,6 +214,7 @@ impl BPatchHeaderV42 {
             number_of_zones,
             number_of_groups,
             number_of_instruments,
+            is_monolith,
             created_at,
             app_signature,
             decompressed_length,
@@ -254,21 +283,21 @@ mod tests {
 
     #[test]
     fn test_header_v1_read() -> Result<(), NKSError> {
-        let file = File::open("tests/patchdata/NKS/BPatchHeaderV1/BPatchHeaderV1-000")?;
+        let file = File::open("tests/data/Objects/BPatchHeaderV1/BPatchHeaderV1-000")?;
         println!("{:?}", BPatchHeader::read_le(file)?);
         Ok(())
     }
 
     #[test]
     fn test_header_v2_read() -> Result<(), NKSError> {
-        let file = File::open("tests/patchdata/NKS/BPatchHeaderV2/BPatchHeaderV2-000")?;
+        let file = File::open("tests/data/Objects/BPatchHeaderV2/BPatchHeaderV2-000")?;
         println!("{:?}", BPatchHeader::read_le(file)?);
         Ok(())
     }
 
     #[test]
     fn test_header_v42_read() -> Result<(), NKSError> {
-        let file = File::open("tests/patchdata/NKS/BPatchHeaderV42/BPatchHeaderV42-000")?;
+        let file = File::open("tests/data/Objects/BPatchHeaderV42/BPatchHeaderV42-000")?;
         println!("{:?}", BPatchHeader::read_le(file)?);
         Ok(())
     }

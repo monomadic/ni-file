@@ -51,6 +51,13 @@ pub trait ReadBytesExt: Read + Seek {
         Ok(buf)
     }
 
+    /// Read stream to end (failable)
+    fn read_all(&mut self) -> Result<Vec<u8>, ReadBytesError> {
+        let mut compressed_data = Vec::new();
+        self.read_to_end(&mut compressed_data)?;
+        Ok(compressed_data)
+    }
+
     /// Read a generic big-endian type
     fn read_be<T: FromBytes>(&mut self) -> io::Result<T> {
         let mut buf = vec![0u8; std::mem::size_of::<T>()];

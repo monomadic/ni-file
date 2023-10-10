@@ -10,15 +10,16 @@ fn test_reading_nks() -> Result<(), Box<dyn std::error::Error>> {
         let file = fs::File::open(path.as_path())?;
 
         match NKSContainer::read(file)?.preset()? {
-            KontaktPreset::Kon1(kon1) => {
+            KontaktPreset::KontaktV1(kon1) => {
                 assert!(kon1.preset.to_string().len() > 0);
             }
-            KontaktPreset::Kon2(_) => todo!(),
+            KontaktPreset::KontaktV2(_) => todo!(),
             KontaktPreset::Kon3(_) => todo!(),
             KontaktPreset::Kon4(_) => todo!(),
             KontaktPreset::Kon5(_) => todo!(),
             KontaktPreset::Kon6(_) => todo!(),
             KontaktPreset::Kon7(_) => todo!(),
+            KontaktPreset::KontaktV42(_) => todo!(),
         }
 
         // match NKSContainer::read(file)?.header {
@@ -40,15 +41,16 @@ fn test_reading_nks_custom_dir() -> Result<(), Box<dyn std::error::Error>> {
         let nks = NKSContainer::read(file)?;
 
         match nks.preset()? {
-            KontaktPreset::Kon1(kon1) => {
+            KontaktPreset::KontaktV1(kon1) => {
                 assert!(kon1.preset.to_string().len() > 0);
             }
-            KontaktPreset::Kon2(_) => todo!(),
+            KontaktPreset::KontaktV2(_) => todo!(),
             KontaktPreset::Kon3(_) => todo!(),
             KontaktPreset::Kon4(_) => todo!(),
             KontaktPreset::Kon5(_) => todo!(),
             KontaktPreset::Kon6(_) => todo!(),
             KontaktPreset::Kon7(_) => todo!(),
+            KontaktPreset::KontaktV42(_) => todo!(),
         }
     }
 

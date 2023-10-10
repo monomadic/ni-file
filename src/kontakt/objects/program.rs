@@ -49,6 +49,22 @@ impl Program {
     // 0x33 GroupList
 }
 
+// impl std::convert::TryFrom<Chunk> for Program {
+//     type Error = KontaktError;
+//
+//     fn try_from(chunk: Chunk) -> Result<Self, Self::Error> {
+//         if chunk.id != 0x28 {
+//             return Err(KontaktError::IncorrectID {
+//                 expected: 0x28,
+//                 got: chunk.id,
+//             }
+//             .into());
+//         }
+//         let reader = Cursor::new(&chunk.data);
+//         Self::read(reader)
+//     }
+// }
+
 impl std::convert::TryFrom<&Chunk> for Program {
     type Error = Error;
 
