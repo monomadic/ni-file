@@ -65,7 +65,7 @@ impl std::convert::TryFrom<&ItemData> for SubtreeItem {
 }
 
 impl SubtreeItem {
-    /// decompress and return compressed internal Item.
+    /// Decompress and return compressed internal Item.
     pub fn read<R: ReadBytesExt>(mut reader: R) -> Result<Self> {
         let prop_version = reader.read_u32_le()?; // num items?
         assert_eq!(prop_version, 1);
@@ -73,11 +73,17 @@ impl SubtreeItem {
         let is_compressed = reader.read_bool()?;
         let inner_data = match is_compressed {
             true => {
-                let _decompressed_size = reader.read_u32_le()?;
+                let decompressed_size = reader.read_u32_le()? as usize;
                 let compressed_size = reader.read_u32_le()?;
                 let compressed_data = reader.read_bytes(compressed_size as usize)?;
-                lz77::decompress(&mut Cursor::new(compressed_data))
-                    .map_err(|e| NIFileError::Generic(e.to_string()))?
+
+                let output = &mut vec![0_u8; decompressed_size];
+                fastlz::decompress(&compressed_data, output)
+                    .map_err(|_| NIFileError::Generic("lz77".into()))?
+                    .to_vec()
+
+                // lz77::decompress(&mut Cursor::new(compressed_data))
+                //     .map_err(|e| NIFileError::Generic(e.to_string()))?
             }
             false => {
                 let decompressed_size = reader.read_u64_le()? as usize;

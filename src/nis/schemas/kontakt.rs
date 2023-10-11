@@ -42,8 +42,12 @@ impl ItemContainer {
                     Some(preset_chunk_item) => {
                         let chunk = preset_chunk_item.unwrap();
                         let chunk = chunk.chunk();
-                        KontaktPreset::from_fourcc(&mut Cursor::new(&chunk), &header.app_signature)
-                            .unwrap()
+                        KontaktPreset::read(
+                            &mut Cursor::new(&chunk),
+                            &header.app_signature,
+                            &header.patch_type,
+                        )
+                        .unwrap()
                     }
                     None => todo!(),
                 }
@@ -62,16 +66,19 @@ impl ItemContainer {
 pub struct BNISoundPresetContainer(ItemContainer);
 
 impl BNISoundPresetContainer {
+    /// Parses the BNISoundPreset Items property data
     pub fn properties(&self) -> Result<BNISoundPreset, Error> {
         BNISoundPreset::try_from(&self.0.data)
     }
 
+    /// Attempts to fetch and parse the BNISoundHeader object
     pub fn header(&self) -> Option<Result<BNISoundHeader, Error>> {
         self.0
             .find_data(&ItemID::BNISoundHeader)
             .map(|item_data| BNISoundHeader::try_from(item_data))
     }
 
+    /// Attempts to fetch the raw inner preset chunk data
     pub fn preset_data(&self) -> Option<Result<Vec<u8>, Error>> {
         match self.0.find_encryption_item()? {
             Ok(enc) => {
@@ -83,7 +90,7 @@ impl BNISoundPresetContainer {
                         let data = chunk.chunk();
                         return Some(Ok(data.to_owned()));
                     }
-                    none => todo!(),
+                    None => todo!(),
                 }
             }
             Err(e) => panic!("Error unpacking encryption item: {e}"),
@@ -98,15 +105,20 @@ impl BNISoundPresetContainer {
 
         match self.0.find_encryption_item()? {
             Ok(enc) => {
+                if enc.is_encrypted {
+                    panic!("Item is encrypted.");
+                }
+
                 let item = enc.subtree.item().unwrap();
 
                 match item.find_item::<PresetChunkItem>(&ItemID::PresetChunkItem) {
                     Some(preset_chunk_item) => {
                         let chunk = preset_chunk_item.unwrap();
                         let chunk = chunk.chunk();
-                        Some(KontaktPreset::from_fourcc(
+                        Some(KontaktPreset::read(
                             &mut Cursor::new(&chunk),
                             &header.0.app_signature,
+                            &header.0.patch_type,
                         ))
                     }
                     None => todo!(),

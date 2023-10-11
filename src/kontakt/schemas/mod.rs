@@ -5,6 +5,7 @@ mod kon4;
 mod kon5;
 mod kon6;
 mod kon7;
+mod multi;
 mod preset;
 mod xml;
 

@@ -3,12 +3,14 @@ use std::io::{Cursor, Read};
 use flate2::read::ZlibDecoder;
 
 use crate::{
-    kontakt::{KontaktPreset, KontaktV1, KontaktV2, KontaktV42},
+    kontakt::{
+        objects::meta_info::BPatchMetaInfoHeader, KontaktPreset, KontaktV1, KontaktV2, KontaktV42,
+    },
     read_bytes::ReadBytesExt,
     Error,
 };
 
-use super::{error::NKSError, header::BPatchHeader, BPatchMetaInfoHeader};
+use super::{error::NKSError, header::BPatchHeader};
 
 #[derive(Debug)]
 pub struct NKSContainer {
@@ -108,7 +110,7 @@ mod tests {
 
     #[test]
     fn test_nksv1_nki_0x5ee56eb3() -> Result<(), NKSError> {
-        let file = File::open("tests/data/Containers/NKS/files/Kon1/Kon1-single.nki")?;
+        let file = File::open("tests/data/Containers/NKS/KontaktV1/000-kontaktv1-nki.nki")?;
         let nks = NKSContainer::read(file)?;
 
         assert!(matches!(nks.header, BPatchHeader::BPatchHeaderV1(_)));
@@ -119,14 +121,14 @@ mod tests {
     #[ignore]
     fn test_nksfile_read_phv2_monolith_kon2_nki() -> Result<(), NKSError> {
         let file =
-            File::open("tests/data/Containers/NKS/files/Kon2/000-phv2_monolith_kon2_nki.nki")?;
+            File::open("tests/data/Containers/NKS/KontaktV2/000-phv2_monolith_kon2_nki.nki")?;
         let _nks = NKSContainer::read(file)?;
         Ok(())
     }
 
     #[test]
     fn test_nksfile_read_v42() -> Result<(), NKSError> {
-        let file = File::open("tests/data/Containers/NKS/files/Kon4/4.2.4.5316-000.nki")?;
+        let file = File::open("tests/data/Containers/NKS/KontaktV42/4.2.4.5316-000.nki")?;
         let nks = NKSContainer::read(file)?;
 
         dbg!(nks.meta_info);

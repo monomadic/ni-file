@@ -4,9 +4,16 @@
 
 # Native Instruments File Format
 
+[![github]](https://github.com/monomadic/ni-file)//!
+[github]: https://img.shields.io/badge/github-8da0cb?style=for-the-badge&labelColor=555555&logo=github
+
 Native Instruments file format support for rust. This library will serve as a reference implementation is the result of countless hours of painstaking reverse engineering and research.
 
-This library is in a state of flux as we discover more the api will change rapidly, but we will soon stabilise on a 0.1 release.
+This library is almost at a state of being useful; the various NI compression algorithms, generic containers and wrappers, and the entire family of Kontakt formats are nearing a competent level of support. If you'd like to join the effort or just learn more about reverse engineering, please join the telegram group at https://t.me/ni_file
+
+I'm on telegram at `@deathdisco`.
+
+I also run the [rust-audio telegram group](https://t.me/+TrgB_G5z0Yl6WYat).
 
 ## Features
 
@@ -24,10 +31,6 @@ This library is in a state of flux as we discover more the api will change rapid
 - 🕒 FM8 _partial_
 - ❌ WebAssembly _needs testing_
 - ❌ All other NI formats...
-
-Anyone who wants to join the effort, please join the telegram group at https://t.me/ni_file
-
-I'm on telegram at `@deathdisco`.
 
 ## Usage
 
@@ -73,13 +76,13 @@ A: First, to document and expose these file types so that artists can have actua
 
 Q: What can this library do?
 
-A: It has been a long slog but finally various formats are starting to be supported. The focus is on Kontakt single instruments for now (all versions). You can currently decompress samples, extract a lot of information such as Key Zones and metadata. You could in theory write a SFZ conversion tool for example, but it would lack many features.
+A: It has been a long slog but finally various formats are starting to be supported. The focus is on Kontakt single instruments for now (all versions). You can currently decompress samples, extract a lot of information such as Key Zones and metadata. You could in theory write a SFZ conversion tool for example, but it would be a lossy conversion at the moment.
 
 ---
 
 Q: Will there be write support?
 
-A: Maybe, I doubt it, nothing is stopping anyone adding it but mostly I want to enable conversion to more open formats. Please get involved if you wish to see write support earlier.
+A: Maybe, nothing is stopping anyone adding it but mostly I want to enable conversion to more open formats. Please get involved if you wish to see write support earlier. I will probably implement output for NKS Kontakt 4 as the format is simpler and NI haven't really innovated on Kontakt since 1992 anyway (unless you think drm and digital purchases stuffed into your music application a 'feature'). As for NISound writing, if there's a reason I'm sure it will happen.
 
 ---
 

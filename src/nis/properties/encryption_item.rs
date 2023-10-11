@@ -11,6 +11,7 @@ use super::subtree_item::SubtreeItem;
 #[derive(Debug)]
 pub struct EncryptionItem {
     pub subtree: SubtreeItem,
+    pub is_encrypted: bool,
 }
 
 impl std::convert::TryFrom<&ItemData> for EncryptionItem {
@@ -23,10 +24,12 @@ impl std::convert::TryFrom<&ItemData> for EncryptionItem {
 
         let mut reader = Cursor::new(&frame.data);
         assert_eq!(reader.read_u32_le()?, 1); // version?
-        assert_eq!(reader.read_u8()?, 0); // encrypted?
+
+        let is_encrypted = reader.read_u8()? == 1;
 
         Ok(Self {
             subtree: subtree_frame.try_into()?,
+            is_encrypted,
         })
     }
 }

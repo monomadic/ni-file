@@ -1,6 +1,4 @@
-use crate::read_bytes::ReadBytesExt;
-
-use super::error::NKSError;
+use crate::{nks::error::NKSError, read_bytes::ReadBytesExt};
 
 /// The header of the metadata (footer) of a Kontakt42 preset.
 ///

@@ -15,7 +15,7 @@
 
 use crate::{
     kontakt::{
-        objects::{filename_list::FNTableImpl, program::Program},
+        objects::{program::Program, FNTableImpl},
         Chunk, KontaktError,
     },
     read_bytes::ReadBytesExt,

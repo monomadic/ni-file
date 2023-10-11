@@ -1,15 +1,15 @@
 use ncw::NcwReader;
 use std::fs::File;
 
-use color_eyre::eyre::Result;
+use color_eyre::eyre::{Report, Result};
 use ni_file::{
-    kontakt::KontaktPreset,
+    kontakt::{objects::filename_list::FNTableImpl, KontaktPreset},
     nifile::NIFile,
     nis::{items::RepositoryRootContainer, Preset},
     nks::header::BPatchHeader,
 };
 
-pub fn main() -> Result<()> {
+pub fn main() -> Result<(), Report> {
     color_eyre::install()?;
 
     let Some(path) = std::env::args().nth(1) else {
@@ -36,7 +36,7 @@ pub fn main() -> Result<()> {
             // regular preset
             if let Some(preset) = repository.preset() {
                 println!("\nPreset detected");
-                print_preset(preset?.properties()?);
+                print_preset_properties(preset?.properties()?);
             }
 
             // kontakt preset
@@ -45,7 +45,7 @@ pub fn main() -> Result<()> {
 
                 let preset = preset?;
 
-                print_preset(preset.properties()?.preset);
+                print_preset_properties(preset.properties()?.preset);
 
                 if let Some(header) = preset.header() {
                     print_kontakt_header(&BPatchHeader::BPatchHeaderV42(header?.0));
@@ -74,10 +74,14 @@ pub fn main() -> Result<()> {
                     let preset = preset?;
 
                     println!("\nKontakt preset detected.");
-                    print_preset(preset.properties()?.preset);
+                    print_preset_properties(preset.properties()?.preset);
 
                     if let Some(header) = preset.header() {
                         print_kontakt_header(&BPatchHeader::BPatchHeaderV42(header?.0));
+                    }
+
+                    if let Some(preset) = preset.preset() {
+                        print_kontakt_preset(&preset?)?;
                     }
                 }
             }
@@ -117,13 +121,42 @@ pub fn main() -> Result<()> {
     Ok(())
 }
 
-fn print_preset(preset: Preset) {
+fn print_preset_properties(preset: Preset) {
     println!("\nPreset:");
     println!(
         "  authoring_app:\t{:?} {}",
         preset.authoring_app, preset.version
     );
     println!("  is_factory_preset:\t{}", preset.is_factory_preset);
+}
+
+fn print_filetable(ft: &FNTableImpl) {
+    println!("\nFNTableImpl:");
+
+    println!("  Special Table:");
+    if ft.special_filetable.is_empty() {
+        println!("    (none)");
+    }
+    for (_i, path) in &ft.special_filetable {
+        println!("    {path}");
+    }
+
+    println!("\n  Sample Table:");
+    if ft.sample_filetable.is_empty() {
+        println!("    (none)");
+    }
+    for (_i, path) in &ft.sample_filetable {
+        println!("    {path}");
+    }
+
+    println!("\n  Other Table:");
+    if ft.other_filetable.is_empty() {
+        println!("    (none)");
+    }
+    for (_i, path) in &ft.other_filetable {
+        println!("    {path}");
+    }
+    println!("");
 }
 
 fn print_kontakt_header(header: &BPatchHeader) {
@@ -178,15 +211,21 @@ fn print_kontakt_preset(preset: &KontaktPreset) -> Result<()> {
             let program = program.public_params()?;
             println!("  name:\t\t{}", program.name);
             println!("  library_id:\t{}", program.library_id);
+
+            println!("\nFileNameListPreK51:");
+            for (_i, path) in &kon4.filetable.filenames {
+                println!("  {path}");
+            }
         }
-        KontaktPreset::Kon5(kon5) => {
-            let program = &kon5.program;
+        KontaktPreset::Kon5(p) => {
+            let program = &p.program;
             println!("\nProgram 0x{:X}:", program.version());
-            println!("  chunks:\t{}", kon5.chunks.len());
 
             let program = program.public_params()?;
             println!("  name:\t\t{}", program.name);
             println!("  library_id:\t{}", program.library_id);
+
+            print_filetable(&p.filetable);
         }
         KontaktPreset::Kon6(kon6) => {
             let program = &kon6.program;
@@ -196,6 +235,8 @@ fn print_kontakt_preset(preset: &KontaktPreset) -> Result<()> {
             let program = program.public_params()?;
             println!("  name:\t\t{}", program.name);
             println!("  library_id:\t{}", program.library_id);
+
+            // print_filetable(&kon6.filetable);
         }
         KontaktPreset::Kon7(kon7) => {
             let program = &kon7.program;
@@ -206,68 +247,12 @@ fn print_kontakt_preset(preset: &KontaktPreset) -> Result<()> {
             println!("  name:\t\t{}", program.name);
             println!("  library_id:\t{}", program.library_id);
         }
-        KontaktPreset::KontaktV42(kon) => {
-            let program = &kon.program;
-            println!("\nProgram 0x{:X}:", program.version());
+        KontaktPreset::KontaktMulti(p) => {
+            println!("\nBank:");
 
-            let program = program.public_params()?;
-            println!("  name:\t\t{}", program.name);
-            println!("  library_id:\t{}", program.library_id);
+            print_filetable(&p.filetable);
         }
     };
 
     Ok(())
 }
-
-// fn _print_kontakt_instrument(instrument: KontaktChunkSet) -> Result<()> {
-//     println!("\nKontakt Data:");
-//     if let Some(Ok(program)) = instrument.program() {
-//         if let Ok(params) = program.public_params() {
-//             println!("\nProgram:");
-//             println!("  name:\t\t{}", params.name);
-//             println!("  credits:\t{}", params.instrument_credits);
-//             println!("  author:\t{}", params.instrument_author);
-//         }
-//     }
-//     if let Some(filename_table) = instrument.filename_tables()? {
-//         println!("\nFilename tables:");
-//
-//         println!("\nOther:");
-//         for (index, filename) in &filename_table.other_filetable {
-//             println!("{}:\t{}", index, filename);
-//         }
-//
-//         println!("\nSamples:");
-//         for (index, filename) in &filename_table.sample_filetable {
-//             println!("{}:\t{}", index, filename);
-//         }
-//
-//         println!("\nSpecial:");
-//         for (index, filename) in &filename_table.special_filetable {
-//             println!("{}:\t{}", index, filename);
-//         }
-//
-//         if let Some(program) = instrument.program() {
-//             if let Some(zones) = program?.zones() {
-//                 println!("\nZones:");
-//                 for zone in zones? {
-//                     let zone_data = zone.public_params()?;
-//                     if let Some(filename) = filename_table
-//                         .sample_filetable
-//                         .get(&(zone_data.filename_id as u32))
-//                     {
-//                         println!("Zone: {}", filename);
-//                     }
-//                 }
-//             } else {
-//                 println!("\nNo zones found!");
-//             }
-//         } else {
-//             println!("\nNo program found!");
-//         }
-//     } else {
-//         println!("\nNo filename table found!");
-//     }
-//
-//     Ok(())
-// }

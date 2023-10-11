@@ -1,8 +1,12 @@
+mod bank;
 pub mod bparam_array;
 mod bparfx;
-pub mod filename_list;
+mod filename;
+mod filename_list;
+mod filename_table;
 pub mod group_list;
 mod loopdata;
+pub mod meta_info;
 pub mod program;
 pub mod program_data;
 mod start_criteria;
@@ -11,5 +15,9 @@ mod voice_limit;
 pub mod zone_data;
 mod zone_list;
 
+pub use bank::*;
+pub use filename::*;
+pub use filename_list::*;
+pub use filename_table::*;
 pub use loopdata::*;
 pub use start_criteria::*;

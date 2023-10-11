@@ -15,29 +15,32 @@
 use std::io::Cursor;
 
 use crate::{
-    kontakt::{objects::program::Program, Chunk},
-    nks::{error::NKSError, BPatchMetaInfoHeader},
+    kontakt::{
+        objects::{program::Program, FNTableImpl},
+        Chunk,
+    },
+    nks::error::NKSError,
     read_bytes::ReadBytesExt,
     Error,
 };
 
 #[derive(Debug)]
 pub struct Kon5 {
-    pub chunks: Vec<Chunk>,
-    pub program: Program, // TODO: check version?
-                          // pub meta_info: BPatchMetaInfoHeader,
+    pub program: Program,
+    pub filetable: FNTableImpl,
 }
 
 impl Kon5 {
     pub fn read<R: ReadBytesExt>(mut reader: R) -> Result<Self, Error> {
         let program: Program = Chunk::read(&mut reader).and_then(|chunk| (&chunk).try_into())?;
 
-        let mut chunks = Vec::new();
-        while let Ok(chunk) = Chunk::read(&mut reader) {
-            chunks.push(chunk);
-        }
+        // SaveSettings
+        let _ = Chunk::read(&mut reader)?;
 
-        Ok(Self { chunks, program })
+        let filetable: FNTableImpl =
+            Chunk::read(&mut reader).and_then(|chunk| (&chunk).try_into())?;
+
+        Ok(Self { program, filetable })
     }
 
     /// Decompress internal patch data

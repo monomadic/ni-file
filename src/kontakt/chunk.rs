@@ -3,7 +3,7 @@ use std::io::Cursor;
 use crate::{read_bytes::ReadBytesExt, Error};
 
 use super::{
-    objects::{filename_list::FNTableImpl, program::Program},
+    objects::{program::Program, Bank, FNTableImpl},
     structured_object::StructuredObject,
 };
 
@@ -37,7 +37,7 @@ impl std::convert::TryFrom<&Chunk> for StructuredObject {
 
 #[derive(Debug)]
 pub enum KontaktObject {
-    BBank,
+    Bank(Bank),
     Program(Program),
     StructuredObject(StructuredObject),
     FNTableImpl(FNTableImpl),
@@ -51,7 +51,7 @@ impl TryFrom<&Chunk> for KontaktObject {
         let reader = Cursor::new(&chunk.data);
 
         Ok(match chunk.id {
-            0x03 => KontaktObject::BBank,
+            0x03 => KontaktObject::Bank(Bank::read(reader)?),
             0x28 => KontaktObject::Program(Program::read(reader)?),
             0x4b => KontaktObject::FNTableImpl(FNTableImpl::read(reader)?),
             _ => KontaktObject::Unsupported(chunk.id),

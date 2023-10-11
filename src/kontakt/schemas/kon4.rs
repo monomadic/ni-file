@@ -1,5 +1,5 @@
 use crate::{
-    kontakt::objects::{filename_list::FileNameListPreK51, program::Program},
+    kontakt::objects::{program::Program, FileNameListPreK51},
     read_bytes::ReadBytesExt,
     Error,
 };

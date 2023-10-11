@@ -31,7 +31,7 @@ impl std::convert::TryFrom<&ItemData> for BNISoundHeader {
     type Error = NIFileError;
 
     fn try_from(frame: &ItemData) -> Result<Self, NIFileError> {
-        debug_assert_eq!(frame.header.item_id, ItemID::SubtreeItem);
+        debug_assert_eq!(frame.header.item_id, ItemID::BNISoundHeader);
         Self::read(Cursor::new(&frame.data))
     }
 }

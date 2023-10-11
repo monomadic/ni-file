@@ -4,10 +4,7 @@ use crate::Error;
 
 use super::{
     chunk::Chunk,
-    objects::{
-        filename_list::{FNTableImpl, FileNameListPreK51},
-        program::Program,
-    },
+    objects::{program::Program, FNTableImpl, FileNameListPreK51},
 };
 
 pub struct KontaktChunkSet(pub Vec<Chunk>);
