@@ -3,7 +3,7 @@ use std::fs::File;
 
 use color_eyre::eyre::{Report, Result};
 use ni_file::{
-    kontakt::{objects::filename_list::FNTableImpl, KontaktPreset},
+    kontakt::{objects::FNTableImpl, KontaktPreset},
     nifile::NIFile,
     nis::{items::RepositoryRootContainer, Preset},
     nks::header::BPatchHeader,

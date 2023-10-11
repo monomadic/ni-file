@@ -117,8 +117,6 @@ mod tests {
 
     use super::*;
 
-    // const TESTFILE_DIR: &str = "tests/data/Objects/Kontakt/FNTableImpl/v02";
-
     #[test]
     fn test_fntableimpl() -> Result<(), Error> {
         let mut file = File::open("tests/data/Objects/Kontakt/FNTableImpl/FNTableImpl-000")?;
@@ -144,8 +142,7 @@ mod tests {
     fn test_fntable_004() -> Result<(), Error> {
         let mut file = File::open("tests/data/Objects/Kontakt/FNTableImpl/FNTableImpl-004")?;
         file.read_bytes(6)?; // skip chunk header
-        let table = FNTableImpl::read(file)?;
-        dbg!(table);
+        let _table = FNTableImpl::read(file)?;
         Ok(())
     }
 
@@ -153,8 +150,7 @@ mod tests {
     fn test_fntable_005() -> Result<(), Error> {
         let mut file = File::open("tests/data/Objects/Kontakt/FNTableImpl/FNTableImpl-005")?;
         file.read_bytes(6)?; // skip chunk header
-        let table = FNTableImpl::read(file)?;
-        dbg!(table);
+        let _table = FNTableImpl::read(file)?;
         Ok(())
     }
 
@@ -162,8 +158,7 @@ mod tests {
     fn test_fntable_006() -> Result<(), Error> {
         let mut file = File::open("tests/data/Objects/Kontakt/FNTableImpl/FNTableImpl-006")?;
         file.read_bytes(6)?; // skip chunk header
-        let table = FNTableImpl::read(file)?;
-        dbg!(table);
+        let _table = FNTableImpl::read(file)?;
         Ok(())
     }
 }

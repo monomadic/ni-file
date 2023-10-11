@@ -16,11 +16,8 @@ pub struct KontaktMulti {
 impl KontaktMulti {
     pub fn read<R: ReadBytesExt>(mut reader: R) -> Result<Self, Error> {
         let bank: Bank = Chunk::read(&mut reader).and_then(|chunk| (&chunk).try_into())?;
-        dbg!(&bank);
-
         let filetable: FNTableImpl =
             Chunk::read(&mut reader).and_then(|chunk| (&chunk).try_into())?;
-        dbg!(&filetable);
 
         Ok(Self { bank, filetable })
     }
