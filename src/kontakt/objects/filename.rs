@@ -31,20 +31,20 @@ impl BFileNameSegment {
         let segment_type = reader.read_u8()?;
         Ok(match segment_type {
             1 => {
-                // drive
+                // root file node
                 format!("{}:", reader.read_widestring_utf16()?)
             }
             3 => {
-                // unknown type
-                String::new()
+                // parent dir
+                String::from("..")
             }
             2 | 4 | 5 => reader.read_widestring_utf16()?,
             6 => {
-                // set special type
+                // set special location
                 String::new()
             }
             9 => {
-                // nkm filename
+                // multi file (used like a dir)
                 reader.read_widestring_utf16()?
             }
             _ => panic!("unknown segment id: {segment_type}"),
