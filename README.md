@@ -31,6 +31,7 @@ I also run the [rust-audio telegram group](https://t.me/+TrgB_G5z0Yl6WYat).
 - 🕒 FM8 _partial_
 - ❌ WebAssembly _needs testing_
 - ❌ All other NI formats...
+- ❌ BigEndian file support (generally very very old presets... probably not worth bothering about)
 
 ## Usage
 

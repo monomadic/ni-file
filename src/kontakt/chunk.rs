@@ -21,7 +21,7 @@ impl Chunk {
         Ok(Self { id, data })
     }
 
-    fn into_type(&self) -> Result<KontaktObject, Error> {
+    pub fn into_type(&self) -> Result<KontaktObject, Error> {
         Ok(KontaktObject::try_from(self)?)
     }
 }
@@ -38,10 +38,13 @@ impl std::convert::TryFrom<&Chunk> for StructuredObject {
 #[derive(Debug)]
 pub enum KontaktObject {
     Bank(Bank),
+    BParScript,
     Program(Program),
     StructuredObject(StructuredObject),
+    SaveSettings,
     FNTableImpl(FNTableImpl),
     Unsupported(u16),
+    BOutputConfiguration,
 }
 
 impl TryFrom<&Chunk> for KontaktObject {
@@ -52,7 +55,10 @@ impl TryFrom<&Chunk> for KontaktObject {
 
         Ok(match chunk.id {
             0x03 => KontaktObject::Bank(Bank::read(reader)?),
+            0x06 => KontaktObject::BParScript,
             0x28 => KontaktObject::Program(Program::read(reader)?),
+            0x3e => KontaktObject::BOutputConfiguration,
+            0x47 => KontaktObject::SaveSettings,
             0x4b => KontaktObject::FNTableImpl(FNTableImpl::read(reader)?),
             _ => KontaktObject::Unsupported(chunk.id),
         })

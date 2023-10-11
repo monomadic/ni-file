@@ -23,3 +23,8 @@ A generic container type that contains public data, private data, and children. 
 |        |        |          | pubData           |         |                             |
 |        | 0x04   | uint32_t | childDataLength   |         |                             |
 |        |        |          | childData         |         |                             |
+
+## Known StructuredObjects
+
+- ZoneData (K4PL_ZoneDataV95)
+- BParFX
