@@ -1,7 +1,7 @@
 use std::{fmt::Display, io::Cursor};
 
 use crate::{
-    nis::{ItemData, ItemID},
+    nis::{ItemData, ItemType},
     prelude::*,
     read_bytes::ReadBytesExt,
 };
@@ -42,10 +42,10 @@ impl std::convert::TryFrom<&ItemData> for RepositoryRoot {
     type Error = NIFileError;
 
     fn try_from(item: &ItemData) -> std::result::Result<Self, Self::Error> {
-        if item.header.item_id != ItemID::RepositoryRoot {
+        if item.header.item_type() != ItemType::RepositoryRoot {
             return Err(NIFileError::ItemWrapError {
-                expected: ItemID::RepositoryRoot,
-                got: item.header.item_id.clone(),
+                expected: ItemType::RepositoryRoot,
+                got: item.header.item_type(),
             });
         }
         RepositoryRoot::read(Cursor::new(item.data.clone()))

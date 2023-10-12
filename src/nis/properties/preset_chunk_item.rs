@@ -1,7 +1,7 @@
 use std::io::Cursor;
 
 use crate::{
-    nis::{ItemData, ItemID},
+    nis::{ItemData, ItemType},
     prelude::*,
     read_bytes::ReadBytesExt,
 };
@@ -14,7 +14,7 @@ impl std::convert::TryFrom<&ItemData> for PresetChunkItem {
     type Error = NIFileError;
 
     fn try_from(frame: &ItemData) -> std::result::Result<Self, Self::Error> {
-        debug_assert_eq!(frame.header.item_id, ItemID::PresetChunkItem);
+        debug_assert_eq!(frame.header.item_type(), ItemType::PresetChunkItem);
         PresetChunkItem::read(Cursor::new(&frame.data))
     }
 }

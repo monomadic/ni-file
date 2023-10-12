@@ -4,7 +4,7 @@
 use std::io::Cursor;
 
 use crate::{
-    nis::{ItemData, ItemID, SubtreeItem},
+    nis::{ItemData, ItemType, SubtreeItem},
     prelude::*,
 };
 
@@ -21,10 +21,10 @@ impl std::convert::TryFrom<&ItemData> for AppSpecific {
     type Error = NIFileError;
 
     fn try_from(item: &ItemData) -> Result<Self> {
-        if item.header.item_id != ItemID::AppSpecific {
+        if item.header.item_type() != ItemType::AppSpecific {
             return Err(NIFileError::ItemWrapError {
-                expected: ItemID::AppSpecific,
-                got: item.header.item_id.clone(),
+                expected: ItemType::AppSpecific,
+                got: item.header.item_type(),
             });
         }
 

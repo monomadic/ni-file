@@ -18,7 +18,7 @@
 
 use std::io::Cursor;
 
-use crate::nis::{ItemData, ItemID};
+use crate::nis::{ItemData, ItemType};
 use crate::prelude::*;
 use crate::read_bytes::ReadBytesExt;
 
@@ -88,7 +88,7 @@ impl std::convert::TryFrom<&ItemData> for Preset {
     type Error = NIFileError;
 
     fn try_from(frame: &ItemData) -> Result<Self> {
-        debug_assert_eq!(frame.header.item_id, ItemID::Preset);
+        debug_assert_eq!(frame.header.item_type(), ItemType::Preset);
         Preset::read(Cursor::new(frame.data.clone()))
     }
 }

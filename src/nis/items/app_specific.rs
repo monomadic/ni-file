@@ -1,5 +1,5 @@
 use crate::{
-    nis::{AppSpecific, ItemContainer, ItemID},
+    nis::{AppSpecific, ItemContainer, ItemType},
     Error,
 };
 
@@ -14,7 +14,7 @@ impl AppSpecificItem {
 
     pub fn subtree_item(&self) -> Option<Result<SubtreeItemItem, Error>> {
         self.0
-            .find(&ItemID::SubtreeItem)
+            .find(&ItemType::SubtreeItem)
             .map(SubtreeItemItem::try_from)
     }
 }
@@ -24,9 +24,9 @@ impl TryFrom<&ItemContainer> for AppSpecificItem {
 
     fn try_from(container: &ItemContainer) -> Result<Self, Self::Error> {
         let id = container.id();
-        if id != &ItemID::AppSpecific {
+        if id != ItemType::AppSpecific {
             return Err(Error::ItemWrapError {
-                expected: ItemID::AppSpecific,
+                expected: ItemType::AppSpecific,
                 got: id.clone(),
             });
         }

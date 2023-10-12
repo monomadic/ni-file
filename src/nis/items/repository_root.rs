@@ -1,5 +1,5 @@
 use crate::{
-    nis::{kontakt::BNISoundPresetContainer, ItemContainer, ItemID, RepositoryRoot},
+    nis::{kontakt::BNISoundPresetContainer, ItemContainer, ItemType, RepositoryRoot},
     Error,
 };
 
@@ -14,17 +14,19 @@ impl RepositoryRootContainer {
 
     pub fn kontakt_preset(&self) -> Option<Result<BNISoundPresetContainer, Error>> {
         self.0
-            .find(&ItemID::BNISoundPreset)
+            .find(&ItemType::BNISoundPreset)
             .map(BNISoundPresetContainer::try_from)
     }
 
     pub fn preset(&self) -> Option<Result<PresetContainer, Error>> {
-        self.0.find(&ItemID::Preset).map(PresetContainer::try_from)
+        self.0
+            .find(&ItemType::Preset)
+            .map(PresetContainer::try_from)
     }
 
     pub fn app_specific(&self) -> Option<Result<AppSpecificItem, Error>> {
         self.0
-            .find(&ItemID::AppSpecific)
+            .find(&ItemType::AppSpecific)
             .map(AppSpecificItem::try_from)
     }
 }
@@ -34,9 +36,9 @@ impl TryFrom<&ItemContainer> for RepositoryRootContainer {
 
     fn try_from(container: &ItemContainer) -> Result<Self, Self::Error> {
         let id = container.id();
-        if id != &ItemID::RepositoryRoot {
+        if id != ItemType::RepositoryRoot {
             return Err(Error::ItemWrapError {
-                expected: ItemID::RepositoryRoot,
+                expected: ItemType::RepositoryRoot,
                 got: id.clone(),
             });
         }

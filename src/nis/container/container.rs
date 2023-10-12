@@ -2,7 +2,7 @@ use std::io::Cursor;
 
 use crate::{prelude::*, read_bytes::ReadBytesExt};
 
-use super::{ItemData, ItemHeader, ItemID};
+use super::{ItemData, ItemHeader, ItemType};
 
 /// NISound documents are made up of nested [`Item`]s.
 #[derive(Clone, Debug)]
@@ -29,14 +29,14 @@ impl ItemContainer {
         self.children.get(0)
     }
 
-    pub fn id(&self) -> &ItemID {
-        &self.data.header.item_id
+    pub fn id(&self) -> ItemType {
+        self.data.header.item_type()
     }
 
     /// Returns the first instance of Item by ItemID within child Items.
-    pub fn find(&self, kind: &ItemID) -> Option<&ItemContainer> {
+    pub fn find(&self, kind: &ItemType) -> Option<&ItemContainer> {
         // Check this Item first
-        if &self.data.header.item_id == kind {
+        if &self.data.header.item_type() == kind {
             return Some(&self);
         }
         // Recursively search the children
@@ -49,9 +49,9 @@ impl ItemContainer {
     }
 
     /// Returns the first instance of Item by ItemID within child Items.
-    pub fn find_data(&self, kind: &ItemID) -> Option<&ItemData> {
+    pub fn find_data(&self, kind: &ItemType) -> Option<&ItemData> {
         // Check this Item first
-        if &self.data.header.item_id == kind {
+        if &self.data.header.item_type() == kind {
             return Some(&self.data);
         }
         // Recursively search the children
@@ -64,7 +64,7 @@ impl ItemContainer {
     }
 
     /// Find the first Item of type ItemID in the document and return it
-    pub fn find_item<'a, I>(&'a self, kind: &'a ItemID) -> Option<Result<I>>
+    pub fn find_item<'a, I>(&'a self, kind: &'a ItemType) -> Option<Result<I>>
     where
         I: TryFrom<&'a ItemData, Error = NIFileError>,
     {

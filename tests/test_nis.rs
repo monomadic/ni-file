@@ -6,7 +6,7 @@ use std::fs;
 #[test]
 #[ignore]
 fn test_nis_kontakt_custom_dir() -> Result<(), Box<dyn std::error::Error>> {
-    for path in utils::get_test_files("../ni-file-data/nis/kontakt/**/*.*")? {
+    for path in utils::get_test_files("../ni-file-data/NISound/**/Kontakt/**/*.*")? {
         dbg!(&path);
         let file = fs::File::open(path.as_path())?;
         let nis = Repository::read(&file)?;
@@ -20,7 +20,7 @@ fn test_nis_kontakt_custom_dir() -> Result<(), Box<dyn std::error::Error>> {
 #[test]
 #[ignore]
 fn test_nis_read_all() -> Result<(), Box<dyn std::error::Error>> {
-    for path in utils::get_test_files("../ni-file-data/**/nis/**/*.*")? {
+    for path in utils::get_test_files("../ni-file-data/NISound/**/*.*")? {
         dbg!(&path);
         let file = fs::File::open(path.as_path())?;
         let repo = Repository::read(&file)?;

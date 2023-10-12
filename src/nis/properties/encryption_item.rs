@@ -1,7 +1,7 @@
 use std::{convert::TryInto, io::Cursor};
 
 use crate::{
-    nis::{ItemData, ItemID},
+    nis::{ItemData, ItemType},
     prelude::*,
 };
 
@@ -18,7 +18,7 @@ impl std::convert::TryFrom<&ItemData> for EncryptionItem {
     type Error = NIFileError;
 
     fn try_from(frame: &ItemData) -> Result<Self> {
-        debug_assert_eq!(frame.header.item_id, ItemID::EncryptionItem);
+        debug_assert_eq!(frame.header.item_type(), ItemType::EncryptionItem);
 
         let subtree_frame = &*frame.inner.clone().unwrap();
 

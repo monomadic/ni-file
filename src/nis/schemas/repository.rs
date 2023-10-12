@@ -2,7 +2,7 @@ use crate::{
     kontakt::chunk_set::KontaktChunks,
     nis::{
         properties::{BNISoundPreset, Preset},
-        AppSpecific, AuthoringApplication, BNISoundHeader, EncryptionItem, ItemContainer, ItemID,
+        AppSpecific, AuthoringApplication, BNISoundHeader, EncryptionItem, ItemContainer, ItemType,
         RepositoryRoot,
     },
     nks::header::BPatchHeaderV42,
@@ -44,10 +44,10 @@ impl Repository {
 
     pub fn detect(&self) -> RepositoryType {
         if let Some(child) = self.0.children.get(0) {
-            match child.data.header.item_id {
-                ItemID::AppSpecific => RepositoryType::AppSpecific,
-                ItemID::BNISoundHeader => RepositoryType::KontaktPreset,
-                ItemID::Preset => RepositoryType::Preset,
+            match child.data.header.item_type() {
+                ItemType::AppSpecific => RepositoryType::AppSpecific,
+                ItemType::BNISoundHeader => RepositoryType::KontaktPreset,
+                ItemType::Preset => RepositoryType::Preset,
                 _ => RepositoryType::Unknown,
             }
         } else {
@@ -56,16 +56,16 @@ impl Repository {
     }
 
     pub fn app_specific(&self) -> Option<Result<AppSpecific>> {
-        self.0.find_item(&ItemID::AppSpecific)
+        self.0.find_item(&ItemType::AppSpecific)
     }
 
     pub fn encryption_item(&self) -> Option<Result<EncryptionItem>> {
-        self.0.find_item(&ItemID::EncryptionItem)
+        self.0.find_item(&ItemType::EncryptionItem)
     }
 
     pub fn nks_header(&self) -> Option<Result<BPatchHeaderV42>> {
         self.0
-            .find_item::<BNISoundHeader>(&ItemID::BNISoundHeader)
+            .find_item::<BNISoundHeader>(&ItemType::BNISoundHeader)
             .map(|sh| sh.map(|h| h.0))
     }
 
@@ -73,17 +73,17 @@ impl Repository {
     pub fn authoring_application(&self) -> Result<AuthoringApplication> {
         // first, lets try find the AppSpecific item
         // (which means this is a multi)
-        if let Some(item) = self.0.find_data(&ItemID::AppSpecific) {
+        if let Some(item) = self.0.find_data(&ItemType::AppSpecific) {
             return Ok(AppSpecific::try_from(item)?.authoring_app);
         }
 
         // not a good way of detecting the authoring app
         // there must be a better solution
-        match self.0.find_data(&ItemID::BNISoundPreset) {
+        match self.0.find_data(&ItemType::BNISoundPreset) {
             Some(item) => Ok(BNISoundPreset::try_from(item)?.preset.authoring_app),
             None => self
                 .0
-                .find_data(&ItemID::Preset)
+                .find_data(&ItemType::Preset)
                 .and_then(|item_data| Preset::try_from(item_data).ok())
                 .map(|preset| preset.authoring_app)
                 .ok_or(NIFileError::Generic("not found".to_owned())),
@@ -109,7 +109,7 @@ impl Repository {
     pub fn preset_version(&self) -> Result<String> {
         // first, lets try find the AppSpecific item
         // (which means this is a multi)
-        if let Some(item) = self.0.find_data(&ItemID::AppSpecific) {
+        if let Some(item) = self.0.find_data(&ItemType::AppSpecific) {
             return Ok(AppSpecific::try_from(item)?.version);
         }
 
@@ -117,7 +117,8 @@ impl Repository {
     }
 
     pub fn find_repository_root(&self) -> Option<Result<RepositoryRoot>> {
-        self.0.find_item::<RepositoryRoot>(&ItemID::RepositoryRoot)
+        self.0
+            .find_item::<RepositoryRoot>(&ItemType::RepositoryRoot)
     }
 
     /// Get a reference to the underlying [`Item`]. This is switching to the lower level components
@@ -130,13 +131,13 @@ impl Repository {
         match self.authoring_application()? {
             AuthoringApplication::Kontakt => self
                 .0
-                .find_data(&ItemID::BNISoundPreset)
+                .find_data(&ItemType::BNISoundPreset)
                 .ok_or(NIFileError::Static("Missing chunk: BNISoundPreset"))
                 .and_then(|item| BNISoundPreset::try_from(item))
                 .map(|preset| preset.preset),
             _ => self
                 .0
-                .find_data(&ItemID::Preset)
+                .find_data(&ItemType::Preset)
                 .ok_or(NIFileError::Static("Missing chunk: Preset"))
                 .and_then(|item| Preset::try_from(item))
                 .map(|preset| preset),

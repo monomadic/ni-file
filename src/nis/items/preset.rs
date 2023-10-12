@@ -1,5 +1,5 @@
 use crate::{
-    nis::{ItemContainer, ItemID, Preset},
+    nis::{ItemContainer, ItemType, Preset},
     Error,
 };
 
@@ -17,9 +17,9 @@ impl TryFrom<&ItemContainer> for PresetContainer {
 
     fn try_from(container: &ItemContainer) -> Result<Self, Self::Error> {
         let id = container.id();
-        if id != &ItemID::Preset {
+        if id != ItemType::Preset {
             return Err(Error::ItemWrapError {
-                expected: ItemID::Preset,
+                expected: ItemType::Preset,
                 got: id.clone(),
             });
         }

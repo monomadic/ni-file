@@ -46,7 +46,7 @@
 
 use std::io::Cursor;
 
-use crate::nis::{ItemContainer, ItemData, ItemID};
+use crate::nis::{ItemContainer, ItemData, ItemType};
 use crate::prelude::*;
 use crate::read_bytes::ReadBytesExt;
 
@@ -59,7 +59,7 @@ impl std::convert::TryFrom<&ItemData> for SubtreeItem {
     type Error = NIFileError;
 
     fn try_from(frame: &ItemData) -> Result<Self> {
-        debug_assert_eq!(frame.header.item_id, ItemID::SubtreeItem);
+        debug_assert_eq!(frame.header.item_type(), ItemType::SubtreeItem);
         Self::read(Cursor::new(&frame.data))
     }
 }
@@ -115,7 +115,7 @@ mod tests {
         assert_eq!(subtree.inner_data.len(), 4524);
         let item = subtree.item()?;
 
-        assert_eq!(item.id(), &ItemID::Item);
+        assert_eq!(item.id(), ItemType::Item);
 
         // ensure the read completed
         let mut buf = Vec::new();

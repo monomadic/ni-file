@@ -1,7 +1,7 @@
 use std::io::Cursor;
 
 use crate::{
-    nis::{ItemData, ItemID},
+    nis::{ItemData, ItemType},
     nks::header::BPatchHeaderV42,
     read_bytes::ReadBytesExt,
     Error, NIFileError,
@@ -31,7 +31,7 @@ impl std::convert::TryFrom<&ItemData> for BNISoundHeader {
     type Error = NIFileError;
 
     fn try_from(frame: &ItemData) -> Result<Self, NIFileError> {
-        debug_assert_eq!(frame.header.item_id, ItemID::BNISoundHeader);
+        debug_assert_eq!(frame.header.item_type(), ItemType::BNISoundHeader);
         Self::read(Cursor::new(&frame.data))
     }
 }

@@ -1,7 +1,4 @@
-use crate::{
-    nis::{Domain, ItemContainer, ItemData},
-    NIFileError,
-};
+use crate::nis::ItemContainer;
 
 #[derive(Debug)]
 pub struct PresetContainer(ItemContainer);

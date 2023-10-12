@@ -1,10 +1,8 @@
-pub mod domain_id;
 pub mod item_data_header;
-pub mod item_id;
+pub mod item_type;
 
-pub use domain_id::*;
 pub use item_data_header::*;
-pub use item_id::*;
+pub use item_type::*;
 
 use crate::{prelude::*, read_bytes::ReadBytesExt};
 use std::io::{Cursor, Read};
@@ -25,8 +23,8 @@ impl ItemData {
         let header = ItemDataHeader::read(&mut reader)?;
         let length = header.length as usize - 20;
 
-        match header.item_id {
-            ItemID::Item => {
+        match header.item_type() {
+            ItemType::Item => {
                 let data = reader.read_bytes(length)?;
 
                 Ok(Self {
@@ -63,8 +61,11 @@ mod tests {
         let item = ItemData::read(file)?;
 
         assert_eq!(item.data.len(), 58);
-        assert_eq!(item.header.item_id, ItemID::RepositoryRoot);
-        assert_eq!(item.inner.unwrap().header.item_id, ItemID::Authorization);
+        assert_eq!(item.header.item_type(), ItemType::RepositoryRoot);
+        assert_eq!(
+            item.inner.unwrap().header.item_type(),
+            ItemType::Authorization
+        );
 
         Ok(())
     }
@@ -75,8 +76,11 @@ mod tests {
         let item = ItemData::read(file)?;
 
         assert_eq!(item.data.len(), 58);
-        assert_eq!(item.header.item_id, ItemID::RepositoryRoot);
-        assert_eq!(item.inner.unwrap().header.item_id, ItemID::Authorization);
+        assert_eq!(item.header.item_type(), ItemType::RepositoryRoot);
+        assert_eq!(
+            item.inner.unwrap().header.item_type(),
+            ItemType::Authorization
+        );
 
         Ok(())
     }

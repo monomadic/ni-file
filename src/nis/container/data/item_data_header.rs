@@ -1,28 +1,24 @@
-use crate::nis::{Domain, ItemID};
-use crate::read_bytes::ReadBytesExt;
-use crate::NIFileError;
+use crate::{nis::ItemType, read_bytes::ReadBytesExt, NIFileError};
 
 /// 20 bytes
 #[derive(Debug, Clone)]
 pub struct ItemDataHeader {
     pub length: u64,
-    pub domain: Domain,
-    pub item_id: ItemID,
+    pub domain_id: [u8; 4],
+    pub item_id: u32,
     pub version: u32,
 }
 
 impl ItemDataHeader {
     pub fn read<R: ReadBytesExt>(mut reader: R) -> Result<Self, NIFileError> {
         let length: u64 = reader.read_u64_le()?;
-        let domain: Domain = reader.read_u32_le()?.into();
-        let item_id: ItemID = reader.read_u32_le()?.into();
+        let mut domain_id = [0; 4];
+        reader.read_exact(&mut domain_id)?;
+        let item_id: u32 = reader.read_u32_le()?;
         let version: u32 = reader.read_u32_le()?;
 
-        if let ItemID::Unknown(id) = item_id {
-            return Err(NIFileError::Generic(format!(
-                "ItemFrameHeader unexpected ItemID error: got 0x{id:x}"
-            )));
-        }
+        // Swap to match little-endian representation
+        domain_id.reverse();
 
         if version != 1 {
             return Err(NIFileError::VersionMismatch {
@@ -33,9 +29,14 @@ impl ItemDataHeader {
 
         Ok(Self {
             length,
-            domain,
+            domain_id,
             item_id,
             version,
         })
+    }
+
+    pub fn item_type(&self) -> ItemType {
+        let domain_id = std::str::from_utf8(&self.domain_id).expect("Not UTF-8");
+        ItemType::new(self.item_id, domain_id)
     }
 }

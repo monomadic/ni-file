@@ -1,5 +1,5 @@
 use crate::{
-    nis::{ItemContainer, ItemID, SubtreeItem},
+    nis::{ItemContainer, ItemType, SubtreeItem},
     Error,
 };
 
@@ -20,9 +20,9 @@ impl TryFrom<&ItemContainer> for SubtreeItemItem {
 
     fn try_from(container: &ItemContainer) -> Result<Self, Self::Error> {
         let id = container.id();
-        if id != &ItemID::SubtreeItem {
+        if id != ItemType::SubtreeItem {
             return Err(Error::ItemWrapError {
-                expected: ItemID::SubtreeItem,
+                expected: ItemType::SubtreeItem,
                 got: id.clone(),
             });
         }
