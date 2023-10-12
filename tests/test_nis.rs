@@ -12,8 +12,6 @@ fn test_nis_kontakt_custom_dir() -> Result<(), Box<dyn std::error::Error>> {
         let nis = Repository::read(&file)?;
 
         assert_eq!(nis.authoring_application()?, AuthoringApplication::Kontakt);
-
-        // dbg!(&nis.preset()?);
     }
 
     Ok(())

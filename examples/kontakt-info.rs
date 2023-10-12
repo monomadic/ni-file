@@ -24,7 +24,14 @@ pub fn main() -> Result<(), Report> {
 
     for chunk in &kontakt.0 {
         match chunk.into_type()? {
-            KontaktObject::Program(program) => print_kontakt_program(&program)?,
+            KontaktObject::Program(program) => {
+                print_kontakt_program(&program)?;
+                for chunk in program.children() {
+                    match chunk.into_type()? {
+                        _ => println!("Chunk(0x{:x}) {:?}", &chunk.id, chunk.into_type()?),
+                    }
+                }
+            }
             KontaktObject::FNTableImpl(filetable) => print_filetable(&filetable),
             KontaktObject::BBank(bank) => println!("Bank"),
             _ => println!("Chunk(0x{:x}) {:?}", &chunk.id, chunk.into_type()?),
@@ -40,16 +47,21 @@ fn print_kontakt_program(program: &Program) -> Result<(), Report> {
     let params = program.public_params()?;
     println!("  name:\t\t\t{}", params.name);
     println!("  library_id:\t\t{}", params.library_id);
+    println!("  children:\t\t{}", program.children().len());
     println!("");
 
     if let Some(zones) = program.zones() {
         let zones = zones?;
 
         println!("ZoneList:");
-        println!("  zones:\t\t{}", &zones.len());
+        println!("  zones:\t\t{}\n", &zones.len());
 
         for zone in zones {
-            dbg!(zone);
+            let p = zone.public_params()?;
+            println!(
+                "  ZoneData: start={} end={}",
+                &p.sample_start, &p.sample_end
+            );
         }
     }
 

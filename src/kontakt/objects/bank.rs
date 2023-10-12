@@ -28,6 +28,7 @@ impl Bank {
 
     pub fn params(&self) -> Result<BankPublicParams, Error> {
         let mut reader = Cursor::new(&self.0.public_data);
+
         Ok(BankPublicParams {
             master_volume: reader.read_f32_le()?,
             master_tune: reader.read_f32_le()?,

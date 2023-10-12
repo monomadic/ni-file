@@ -34,11 +34,12 @@ pub fn main() -> Result<(), Box<dyn std::error::Error>> {
                 let app = app_specific?;
                 let props = app.properties()?;
                 let inner = RepositoryRootContainer(props.subtree_item.item()?);
+
                 if let Some(preset) = inner.kontakt_preset() {
                     println!("\nKontakt instrument detected.");
 
                     if let Some(preset) = preset?.preset_data() {
-                        std::fs::write("kontakt-preset.chunk", &preset?)?;
+                        std::fs::write("kontakt.nkm.kon", &preset?)?;
                     }
                 }
             }
@@ -47,7 +48,7 @@ pub fn main() -> Result<(), Box<dyn std::error::Error>> {
                 println!("\nKontakt instrument detected.");
 
                 if let Some(preset) = preset?.preset_data() {
-                    std::fs::write("kontakt-preset.chunk", &preset?)?;
+                    std::fs::write("kontakt.nki.kon", &preset?)?;
                 }
             }
 
@@ -94,8 +95,10 @@ pub fn main() -> Result<(), Box<dyn std::error::Error>> {
         NIFile::NKSContainer(nks) => match nks.header {
             BPatchHeader::BPatchHeaderV1(_) => todo!(),
             BPatchHeader::BPatchHeaderV2(_) => todo!(),
-            BPatchHeader::BPatchHeaderV42(_) => {
-                std::fs::write("kontakt-preset.chunk", &nks.preset_data()?)?;
+            BPatchHeader::BPatchHeaderV42(ref h) => {
+                let filename =
+                    format!("{:?}.{:?}.kon", h.app_signature, h.patch_type).to_lowercase();
+                std::fs::write(filename, &nks.preset_data()?)?;
             }
         },
         //  => std::fs::write("preset.xml", v1.preset_xml()?)?,
