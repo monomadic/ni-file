@@ -14,7 +14,7 @@ pub enum KontaktPreset {
     Kon5(Kon5),
     Kon6(Kon6),
     Kon7(Kon7),
-    KontaktMulti(KontaktMulti),
+    NKM(KontaktMulti),
     Unsupported(KontaktChunks),
 }
 
@@ -25,7 +25,7 @@ impl KontaktPreset {
         patch_type: &PatchType,
     ) -> Result<KontaktPreset, Error> {
         Ok(match patch_type {
-            PatchType::NKM => Self::KontaktMulti(KontaktMulti::read(reader)?),
+            PatchType::NKM => Self::NKM(KontaktMulti::read(reader)?),
             PatchType::NKI => match id {
                 "Kon4" => Self::KontaktV42(KontaktV42::read(reader)?),
                 "Bat4" | "Kon5" => Self::Kon5(Kon5::read(reader)?),

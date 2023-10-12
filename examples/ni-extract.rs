@@ -94,7 +94,9 @@ pub fn main() -> Result<(), Box<dyn std::error::Error>> {
         NIFile::NKSContainer(nks) => match nks.header {
             BPatchHeader::BPatchHeaderV1(_) => todo!(),
             BPatchHeader::BPatchHeaderV2(_) => todo!(),
-            BPatchHeader::BPatchHeaderV42(_) => todo!(),
+            BPatchHeader::BPatchHeaderV42(_) => {
+                std::fs::write("kontakt-preset.chunk", &nks.preset_data()?)?;
+            }
         },
         //  => std::fs::write("preset.xml", v1.preset_xml()?)?,
         // KontaktPreset::Kon2(_) => todo!(),

@@ -66,6 +66,39 @@ impl NKSContainer {
         })
     }
 
+    /// Decompress raw internal preset data
+    pub fn preset_data(&self) -> Result<Vec<u8>, Error> {
+        assert!(self.compressed_data.len() > 0);
+        let reader = Cursor::new(&self.compressed_data);
+
+        Ok(match &self.header {
+            BPatchHeader::BPatchHeaderV1(_) => {
+                // zlib compression
+                let mut decoder = ZlibDecoder::new(reader);
+                let mut decompressed_data = Vec::new();
+                decoder.read_to_end(&mut decompressed_data)?;
+
+                decompressed_data
+            }
+            BPatchHeader::BPatchHeaderV2(_) => {
+                // zlib compression
+                let mut decoder = ZlibDecoder::new(reader);
+                let mut decompressed_data = Vec::new();
+                decoder.read_to_end(&mut decompressed_data)?;
+
+                decompressed_data
+            }
+            BPatchHeader::BPatchHeaderV42(ref h) => {
+                // fastlz compression
+                let decompressed_data = lz77::decompress(reader).expect("lz77");
+
+                assert_eq!(h.decompressed_length as usize, decompressed_data.len());
+
+                decompressed_data
+            }
+        })
+    }
+
     /// Decompress internal preset data
     pub fn preset(&self) -> Result<KontaktPreset, Error> {
         assert!(self.compressed_data.len() > 0);

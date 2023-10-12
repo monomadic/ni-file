@@ -260,6 +260,21 @@ pub enum PatchType {
     Unknown(u16),
 }
 
+impl PatchType {
+    pub fn description(&self) -> String {
+        match self {
+            PatchType::NKM => "Multi",
+            PatchType::NKI => "Instrument",
+            PatchType::NKB => "Bank",
+            PatchType::NKP => "Preset",
+            PatchType::NKG => "Group",
+            PatchType::NKZ => todo!(),
+            PatchType::Unknown(_) => "?",
+        }
+        .into()
+    }
+}
+
 impl From<u16> for PatchType {
     fn from(value: u16) -> Self {
         use PatchType::*;
