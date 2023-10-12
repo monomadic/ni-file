@@ -13,35 +13,30 @@
 // 0x4B FNTableImpl
 
 use crate::{
-    kontakt::{objects::program::Program, Chunk, KontaktError},
+    kontakt::{
+        objects::{program::Program, FNTableImpl},
+        Chunk,
+    },
     read_bytes::ReadBytesExt,
     Error,
 };
 
 #[derive(Debug)]
 pub struct Kon6 {
-    pub chunks: Vec<Chunk>,
-    pub program: Program, // TODO: check version?
+    pub program: Program,
+    pub filetable: FNTableImpl,
 }
 
 impl Kon6 {
     pub fn read<R: ReadBytesExt>(mut reader: R) -> Result<Self, Error> {
         let program: Program = Chunk::read(&mut reader).and_then(|chunk| (&chunk).try_into())?;
 
-        let mut chunks = Vec::new();
-        while let Ok(chunk) = Chunk::read(&mut reader) {
-            chunks.push(chunk);
-        }
+        // SaveSettings
+        let _ = Chunk::read(&mut reader)?;
 
-        Ok(Self { chunks, program })
+        let filetable: FNTableImpl =
+            Chunk::read(&mut reader).and_then(|chunk| (&chunk).try_into())?;
+
+        Ok(Self { program, filetable })
     }
-
-    // pub fn program(&self) -> Result<Program, Error> {
-    //     self.chunks
-    //         .get(0)
-    //         .ok_or(Error::KontaktError(KontaktError::MissingChunk(
-    //             "Program".into(),
-    //         )))
-    //         .and_then(Program::try_from)
-    // }
 }

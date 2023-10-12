@@ -34,9 +34,13 @@
 // write u16 = 2
 // write u32
 
-use std::collections::HashMap;
+use std::{collections::HashMap, io::Cursor};
 
-use crate::{kontakt::chunk::Chunk, read_bytes::ReadBytesExt, Error};
+use crate::{
+    kontakt::{chunk::Chunk, KontaktError},
+    read_bytes::ReadBytesExt,
+    Error,
+};
 
 #[derive(Debug)]
 pub struct FileNameListPreK51 {
@@ -71,9 +75,13 @@ impl std::convert::TryFrom<&Chunk> for FileNameListPreK51 {
 
     fn try_from(chunk: &Chunk) -> Result<Self, Self::Error> {
         if chunk.id != 0x3d {
-            panic!("fixme: error here");
+            return Err(KontaktError::IncorrectID {
+                expected: 0x3d,
+                got: chunk.id,
+            }
+            .into());
         }
-        let reader = std::io::Cursor::new(&chunk.data);
+        let reader = Cursor::new(&chunk.data);
         Self::read(reader)
     }
 }

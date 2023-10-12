@@ -82,6 +82,10 @@ impl BNISoundPresetContainer {
     pub fn preset_data(&self) -> Option<Result<Vec<u8>, Error>> {
         match self.0.find_encryption_item()? {
             Ok(enc) => {
+                if enc.is_encrypted {
+                    panic!("Item is encrypted.");
+                }
+
                 let item = enc.subtree.item().unwrap();
 
                 match item.find_item::<PresetChunkItem>(&ItemID::PresetChunkItem) {
@@ -98,34 +102,16 @@ impl BNISoundPresetContainer {
     }
 
     pub fn preset(&self) -> Option<Result<KontaktPreset, Error>> {
-        let header = match self.header()? {
-            Ok(header) => header,
+        Some(match self.header()? {
+            Ok(header) => self.preset_data()?.and_then(|preset_data| {
+                KontaktPreset::read(
+                    &mut Cursor::new(preset_data),
+                    &header.0.app_signature,
+                    &header.0.patch_type,
+                )
+            }),
             Err(e) => return Some(Err(e)),
-        };
-
-        match self.0.find_encryption_item()? {
-            Ok(enc) => {
-                if enc.is_encrypted {
-                    panic!("Item is encrypted.");
-                }
-
-                let item = enc.subtree.item().unwrap();
-
-                match item.find_item::<PresetChunkItem>(&ItemID::PresetChunkItem) {
-                    Some(preset_chunk_item) => {
-                        let chunk = preset_chunk_item.unwrap();
-                        let chunk = chunk.chunk();
-                        Some(KontaktPreset::read(
-                            &mut Cursor::new(&chunk),
-                            &header.0.app_signature,
-                            &header.0.patch_type,
-                        ))
-                    }
-                    None => todo!(),
-                }
-            }
-            Err(e) => return Some(Err(e)),
-        }
+        })
     }
 }
 

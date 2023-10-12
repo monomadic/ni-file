@@ -1,9 +1,3 @@
-// props:
-// - masterVolume float
-// - masterTune float
-// - masterTempo uint32_t
-// - name wstring
-
 use std::io::Cursor;
 
 use crate::{
@@ -12,20 +6,23 @@ use crate::{
     Error,
 };
 
+pub const KONTAKT_BANK_ID: u16 = 0x03;
+
 #[derive(Debug)]
 pub struct Bank(StructuredObject);
 
 #[derive(Debug)]
 pub struct BankPublicParams {
-    master_volume: f32,
-    master_tune: f32,
-    master_tempo: i32,
-    name: String,
+    pub master_volume: f32,
+    pub master_tune: f32,
+    pub master_tempo: i32,
+    pub name: String,
 }
 
 impl Bank {
     pub fn read<R: ReadBytesExt>(mut reader: R) -> Result<Self, Error> {
         let so = StructuredObject::read(&mut reader)?;
+
         Ok(Self(so))
     }
 
@@ -38,15 +35,28 @@ impl Bank {
             name: reader.read_widestring_utf16()?,
         })
     }
+
+    pub fn slot_list(&self) -> Result<super::SlotList, Error> {
+        self.0.find_slot_list()
+    }
 }
+
+impl StructuredObject {}
 
 impl std::convert::TryFrom<&Chunk> for Bank {
     type Error = Error;
 
     fn try_from(chunk: &Chunk) -> Result<Self, Self::Error> {
-        if chunk.id != 0x03 {
+        // match KontaktObject::try_from(chunk)? {
+        //     KontaktObject::BBank(bank) => Ok(bank),
+        //     _ => Err(KontaktError::IncorrectID {
+        //         expected: 0x03,
+        //         got: chunk.id,
+        //     }.into())
+        // }
+        if chunk.id != KONTAKT_BANK_ID {
             return Err(KontaktError::IncorrectID {
-                expected: 0x03,
+                expected: KONTAKT_BANK_ID,
                 got: chunk.id,
             }
             .into());
@@ -58,11 +68,9 @@ impl std::convert::TryFrom<&Chunk> for Bank {
 
 #[cfg(test)]
 mod tests {
-    use std::fs::File;
-
-    use crate::Error;
-
     use super::*;
+    use crate::Error;
+    use std::fs::File;
 
     #[test]
     fn test_bank() -> Result<(), Error> {
@@ -71,6 +79,9 @@ mod tests {
         dbg!(bank.params()?);
         for chunk in bank.0.children {
             println!("{:?} {:x}", chunk.into_type()?, chunk.id);
+
+            // let filename = format!("{:?}-{:x}.chunk", chunk.into_type()?, chunk.id);
+            // std::fs::write(filename, chunk.data)?;
         }
         Ok(())
     }

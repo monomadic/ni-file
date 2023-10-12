@@ -15,8 +15,9 @@
 
 use crate::{
     kontakt::{
+        chunk_set::KontaktChunks,
         objects::{program::Program, FNTableImpl},
-        Chunk, KontaktError,
+        Chunk,
     },
     read_bytes::ReadBytesExt,
     Error,
@@ -24,37 +25,31 @@ use crate::{
 
 #[derive(Debug)]
 pub struct Kon7 {
-    pub chunks: Vec<Chunk>,
-    pub program: Program, // TODO: check version?
+    pub program: Program,
+    pub filetable: FNTableImpl,
 }
 
 impl Kon7 {
     pub fn read<R: ReadBytesExt>(mut reader: R) -> Result<Self, Error> {
         let program: Program = Chunk::read(&mut reader).and_then(|chunk| (&chunk).try_into())?;
 
-        let mut chunks = Vec::new();
-        while let Ok(chunk) = Chunk::read(&mut reader) {
-            chunks.push(chunk);
-        }
+        // SaveSettings
+        let _ = Chunk::read(&mut reader)?;
 
-        Ok(Self { chunks, program })
+        let filetable: FNTableImpl =
+            Chunk::read(&mut reader).and_then(|chunk| (&chunk).try_into())?;
+
+        Ok(Self { program, filetable })
     }
+}
 
-    // pub fn program(&self) -> Result<Program, Error> {
-    //     self.chunks
-    //         .get(0)
-    //         .ok_or(Error::KontaktError(KontaktError::MissingChunk(
-    //             "Program".into(),
-    //         )))
-    //         .and_then(Program::try_from)
-    // }
+impl std::convert::TryFrom<KontaktChunks> for Kon7 {
+    type Error = Error;
 
-    pub fn fntable(&self) -> Result<FNTableImpl, Error> {
-        self.chunks
-            .get(2)
-            .ok_or(Error::KontaktError(KontaktError::MissingChunk(
-                "Program".into(),
-            )))
-            .and_then(FNTableImpl::try_from)
+    fn try_from(chunks: KontaktChunks) -> Result<Self, Self::Error> {
+        Ok(Self {
+            program: (&chunks.0[0]).try_into()?,
+            filetable: (&chunks.0[2]).try_into()?,
+        })
     }
 }

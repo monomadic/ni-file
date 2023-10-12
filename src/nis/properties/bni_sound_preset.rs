@@ -20,8 +20,6 @@ impl std::convert::TryFrom<&ItemData> for BNISoundPreset {
 
         let frame = &*frame.inner.clone().unwrap();
 
-        // .. data
-
         Ok(Self {
             preset: frame.try_into()?,
         })

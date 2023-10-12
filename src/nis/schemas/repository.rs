@@ -1,5 +1,5 @@
 use crate::{
-    kontakt::chunk_set::KontaktChunkSet,
+    kontakt::chunk_set::KontaktChunks,
     nis::{
         properties::{BNISoundPreset, Preset},
         AppSpecific, AuthoringApplication, BNISoundHeader, EncryptionItem, ItemContainer, ItemID,
@@ -152,7 +152,7 @@ impl Repository {
         &self.0.children
     }
 
-    pub fn instrument(&self) -> Result<KontaktChunkSet> {
+    pub fn instrument(&self) -> Result<KontaktChunks> {
         todo!()
     }
 

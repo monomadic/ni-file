@@ -1,15 +1,26 @@
 use std::collections::HashMap;
 
-use crate::Error;
+use crate::{read_bytes::ReadBytesExt, Error};
 
 use super::{
     chunk::Chunk,
     objects::{program::Program, FNTableImpl, FileNameListPreK51},
 };
 
-pub struct KontaktChunkSet(pub Vec<Chunk>);
+#[derive(Debug)]
+pub struct KontaktChunks(pub Vec<Chunk>);
 
-impl KontaktChunkSet {
+impl KontaktChunks {
+    pub fn read<R: ReadBytesExt>(mut reader: R) -> Result<Self, Error> {
+        let mut objects = Vec::new();
+
+        while let Ok(chunk) = Chunk::read(&mut reader) {
+            objects.push(chunk);
+        }
+
+        Ok(Self(objects))
+    }
+
     pub fn find_first(&self, id: u16) -> Option<&Chunk> {
         self.0.iter().find(|c| c.id == id)
     }

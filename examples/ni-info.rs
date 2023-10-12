@@ -3,7 +3,10 @@ use std::fs::File;
 
 use color_eyre::eyre::{Report, Result};
 use ni_file::{
-    kontakt::{objects::FNTableImpl, KontaktPreset},
+    kontakt::{
+        objects::{program::Program, FNTableImpl},
+        KontaktPreset,
+    },
     nifile::NIFile,
     nis::{items::RepositoryRootContainer, Preset},
     nks::header::BPatchHeader,
@@ -25,9 +28,9 @@ pub fn main() -> Result<(), Report> {
 
             if let Ok(root) = repository.properties() {
                 println!("RepositoryRoot:");
-                println!("  version:            NISound {}", root.nisound_version);
-                println!("  repository_magic:   {}", root.repository_magic);
-                println!("  repository_type:    {}", root.repository_type);
+                println!("  version:\t\tNISound {}", root.nisound_version);
+                println!("  repository_magic:\t{}", root.repository_magic);
+                println!("  repository_type:\t{}", root.repository_type);
                 println!("");
             } else {
                 println!("Not a RepositoryRoot\n");
@@ -35,13 +38,13 @@ pub fn main() -> Result<(), Report> {
 
             // regular preset
             if let Some(preset) = repository.preset() {
-                println!("\nPreset detected");
+                println!("Preset detected.\n");
                 print_preset_properties(preset?.properties()?);
             }
 
             // kontakt preset
             if let Some(preset) = repository.kontakt_preset() {
-                println!("\nKontakt instrument detected.");
+                println!("Kontakt instrument detected.\n");
 
                 let preset = preset?;
 
@@ -58,7 +61,7 @@ pub fn main() -> Result<(), Report> {
 
             // multi
             if let Some(app_specific) = repository.app_specific() {
-                println!("\nKontakt multi detected.");
+                println!("Kontakt multi detected.\n");
 
                 let app = app_specific?;
                 let props = app.properties()?;
@@ -118,6 +121,26 @@ pub fn main() -> Result<(), Report> {
         }
     };
 
+    Ok(())
+}
+
+fn print_kontakt_program(program: &Program) -> Result<(), Report> {
+    println!("\nProgram 0x{:X}:", program.version());
+
+    let params = program.public_params()?;
+    println!("  name:\t\t\t{}", params.name);
+    println!("  library_id:\t\t{}", params.library_id);
+
+    if let Some(zones) = program.zones() {
+        let zones = zones?;
+
+        println!("\nZoneList:");
+        println!("  zones:\t\t{}", &zones.len());
+
+        for zone in zones {
+            dbg!(zone);
+        }
+    }
     Ok(())
 }
 
@@ -204,53 +227,46 @@ fn print_kontakt_preset(preset: &KontaktPreset) -> Result<()> {
             println!("\nKon2:");
             println!("\n{}", kon2.preset);
         }
-        KontaktPreset::KontaktV42(kon4) => {
-            let program = &kon4.program;
-            println!("\nProgram 0x{:X}:", program.version());
-
-            let program = program.public_params()?;
-            println!("  name:\t\t{}", program.name);
-            println!("  library_id:\t{}", program.library_id);
+        KontaktPreset::KontaktV42(p) => {
+            print_kontakt_program(&p.program)?;
 
             println!("\nFileNameListPreK51:");
-            for (_i, path) in &kon4.filetable.filenames {
+            for (_i, path) in &p.filetable.filenames {
                 println!("  {path}");
             }
         }
         KontaktPreset::Kon5(p) => {
-            let program = &p.program;
-            println!("\nProgram 0x{:X}:", program.version());
-
-            let program = program.public_params()?;
-            println!("  name:\t\t{}", program.name);
-            println!("  library_id:\t{}", program.library_id);
-
+            print_kontakt_program(&p.program)?;
             print_filetable(&p.filetable);
         }
-        KontaktPreset::Kon6(kon6) => {
-            let program = &kon6.program;
-            println!("\nProgram 0x{:X}:", program.version());
-            println!("  chunks:\t{}", kon6.chunks.len());
-
-            let program = program.public_params()?;
-            println!("  name:\t\t{}", program.name);
-            println!("  library_id:\t{}", program.library_id);
-
-            // print_filetable(&kon6.filetable);
+        KontaktPreset::Kon6(p) => {
+            print_kontakt_program(&p.program)?;
+            print_filetable(&p.filetable);
         }
-        KontaktPreset::Kon7(kon7) => {
-            let program = &kon7.program;
-            println!("\nProgram 0x{:X}:", program.version());
-            println!("  chunks:\t{}", kon7.chunks.len());
-
-            let program = program.public_params()?;
-            println!("  name:\t\t{}", program.name);
-            println!("  library_id:\t{}", program.library_id);
+        KontaktPreset::Kon7(p) => {
+            print_kontakt_program(&p.program)?;
+            print_filetable(&p.filetable);
         }
         KontaktPreset::KontaktMulti(p) => {
             println!("\nBank:");
 
+            let bank = &p.bank.params()?;
+            println!("  master_volume:\t{}", bank.master_volume);
+            println!("  master_tune:\t\t{}", bank.master_tune);
+            println!("  master_tempo:\t\t{}", bank.master_tempo);
+            println!("  name:\t\t\t{}", bank.name);
+
+            let slotlist = &p.bank.slot_list()?.params()?;
+            println!("\nSlotList:");
+            println!("  slots:\t{:?}", slotlist);
+
             print_filetable(&p.filetable);
+        }
+        KontaktPreset::Unsupported(chunks) => {
+            for chunk in &chunks.0 {
+                // println!("{:?} {:x}", chunk.into_type()?, chunk.id);
+                println!("Chunk(0x{:X})", chunk.id);
+            }
         }
     };
 
