@@ -194,7 +194,7 @@ fn print_kontakt_header(header: &BPatchHeader) {
             println!("  signature:\t\t{}", h.app_signature);
             println!("  type:\t\t\t{:?}", h.patch_type);
             println!("  is_monolith:\t\t{:?}", h.is_monolith);
-            println!("  kontakt_version:\t{}", h.app_version);
+            println!("  kontakt_version:\t{}", h.patch_version);
             println!("  author:\t\t{}", h.author);
             println!("  zones:\t\t{}", h.number_of_zones);
             println!("  groups:\t\t{}", h.number_of_groups);
@@ -206,7 +206,7 @@ fn print_kontakt_header(header: &BPatchHeader) {
             println!("  signature:\t\t{}", h.app_signature);
             println!("  type:\t\t\t{:?}", h.patch_type);
             println!("  is_monolith:\t\t{:?}", h.is_monolith);
-            println!("  kontakt_version:\t{}", h.app_version);
+            println!("  kontakt_version:\t{}", h.patch_version);
             println!("  author:\t\t{}", h.author);
             println!("  zones:\t\t{}", h.number_of_zones);
             println!("  groups:\t\t{}", h.number_of_groups);

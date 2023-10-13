@@ -36,7 +36,7 @@ impl BPatchHeader {
 #[derive(Debug, PartialEq)]
 pub struct BPatchHeaderV42 {
     pub patch_type: PatchType,
-    pub app_version: NKIAppVersion,
+    pub patch_version: NKIAppVersion,
     pub icon: u32,
     pub author: String,
     pub created_at: time::Date,
@@ -52,7 +52,7 @@ pub struct BPatchHeaderV42 {
 #[derive(Debug, PartialEq)]
 pub struct BPatchHeaderV2 {
     pub patch_type: PatchType,
-    pub app_version: NKIAppVersion,
+    pub patch_version: NKIAppVersion,
     pub icon: u32,
     pub author: String,
     pub created_at: time::Date,
@@ -138,7 +138,7 @@ impl BPatchHeaderV2 {
 
         Ok(Self {
             patch_type,
-            app_version,
+            patch_version: app_version,
             icon,
             author,
             number_of_zones,
@@ -208,7 +208,7 @@ impl BPatchHeaderV42 {
 
         Ok(Self {
             patch_type,
-            app_version,
+            patch_version: app_version,
             icon,
             author,
             number_of_zones,
