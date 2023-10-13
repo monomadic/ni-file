@@ -16,15 +16,15 @@ fn print_item_ids(item: &ItemContainer, indent: usize) -> Result<(), Box<dyn Err
         print!(
             "{:>width$}{:?}",
             " ",
-            item.data.header.item_id,
+            item.data.header.item_type(),
             width = indent
         );
 
         if let Some(inner) = &item.data.inner {
-            print!(", {:?}", inner.header.item_id);
+            print!(", {:?}", inner.header.item_type());
             // two levels down?
             if let Some(inner) = &inner.inner {
-                print!(", {:?}", inner.header.item_id);
+                print!(", {:?}", inner.header.item_type());
             }
         }
 
@@ -57,7 +57,7 @@ pub fn main() -> Result<(), Box<dyn std::error::Error>> {
             println!("NISound {}\n", root.nisound_version);
         }
 
-        println!("{:?}", item.data.header.item_id);
+        println!("{:?}", item.data.header.item_type());
 
         print_item_ids(&item, 1)?;
 
