@@ -9,6 +9,12 @@ undocumented by the library.
 
 ## Container Format
 
+Containers are nested blocks similar to EBML.
+
+The interesting thing about an `Item`s children having pre-data is that NI decided to stuff information into it when implementing Maschine files. It could be assumed that this metadata is an uninformed attempt at speed optimisation (avoiding parsing a child fully during searches), but because it wasn't actually of any real benefit, it was left unused until Maschine decided to repurpose it.
+
+Maschine uses the domainID as `MAS2` and the itemID as `SLOT` for `Preset` children.
+
 ### Domains and IDs
 
 Each Item (which could be thought of as a record in a document store db or an element in an xml document) is identified by two properties: its domain and ID. The ID is a u16 number and the domain, a [FOURCC](https://en.wikipedia.org/wiki/FourCC), allows for application specific objects to be defined without breaking the format.

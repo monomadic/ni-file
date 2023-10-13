@@ -1,7 +1,7 @@
 use crate::{
     kontakt::objects::{program::Program, FileNameListPreK51},
     read_bytes::ReadBytesExt,
-    Error,
+    Error, NIFileError,
 };
 
 // Kon4 Schema:
@@ -25,8 +25,9 @@ pub struct KontaktV42 {
 impl KontaktV42 {
     pub fn read<R: ReadBytesExt>(mut reader: R) -> Result<Self, Error> {
         let program: Program = Chunk::read(&mut reader).and_then(|chunk| (&chunk).try_into())?;
-        let filetable: FileNameListPreK51 =
-            Chunk::read(&mut reader).and_then(|chunk| (&chunk).try_into())?;
+        let filetable: FileNameListPreK51 = Chunk::read(&mut reader)
+            .and_then(|chunk| (&chunk).try_into())
+            .map_err(|_| NIFileError::Generic("FNTableImpl".into()))?;
 
         Ok(Self { program, filetable })
     }
