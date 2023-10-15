@@ -1,8 +1,8 @@
 use std::io::Cursor;
 
 use crate::{
+    kontakt::objects::BPatchHeaderV42,
     nis::{ItemData, ItemType},
-    nks::header::BPatchHeaderV42,
     read_bytes::ReadBytesExt,
     Error, NIFileError,
 };

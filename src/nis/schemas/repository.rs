@@ -1,11 +1,10 @@
 use crate::{
-    kontakt::chunk_set::KontaktChunks,
+    kontakt::objects::BPatchHeaderV42,
     nis::{
         properties::{BNISoundPreset, Preset},
         AppSpecific, AuthoringApplication, BNISoundHeader, EncryptionItem, ItemContainer, ItemType,
         RepositoryRoot,
     },
-    nks::header::BPatchHeaderV42,
     prelude::*,
     read_bytes::ReadBytesExt,
 };
@@ -144,53 +143,9 @@ impl Repository {
         }
     }
 
-    // pub fn preset(&self) -> Result<PresetContainer> {
-    //     self.encryption_item()
-    //         .and_then(|item| PresetContainer::try_from(ItemData::read(Cursor::new(item))?))
-    // }
-
     pub fn children(&self) -> &Vec<ItemContainer> {
         &self.0.children
     }
-
-    pub fn instrument(&self) -> Result<KontaktChunks> {
-        todo!()
-    }
-
-    // pub fn preset(&self) -> Result<PresetContainer> {
-    //     todo!()
-    // }
-
-    // pub fn instrument(&self) -> Option<Result<KontaktInstrument>> {
-    //     if let Some(Ok(item)) = self.encryption_item() {
-    //         let preset_container = item.subtree.item()?;
-    //         let data = preset_container.inner().data;
-    //         let item = ItemContainer::read(Cursor::new(data))?;
-    //         match item.find(&ItemID::PresetChunkItem) {
-    //             Some(preset_item_frame) => {
-    //                 let preset_chunk_item: PresetChunkItem =
-    //                     preset_item_frame.clone().try_into()?;
-    //                 let data = preset_chunk_item.chunk();
-    //
-    //                 match self.authoring_application()? {
-    //                     AuthoringApplication::Kontakt => {
-    //                         let mut objects = Vec::new();
-    //                         let mut compressed_data = Cursor::new(&data);
-    //
-    //                         while let Ok(chunk) = Chunk::read(&mut compressed_data) {
-    //                             objects.push(chunk);
-    //                         }
-    //
-    //                         Some(Ok(KontaktInstrument(objects)))
-    //                     }
-    //                     _ => todo!(),
-    //                 }
-    //             }
-    //             None => todo!(),
-    //         }
-    //     }
-    //     None
-    // }
 }
 
 #[cfg(test)]

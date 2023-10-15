@@ -1,6 +1,6 @@
 use crate::{
     nis::{kontakt::BNISoundPresetContainer, ItemContainer, ItemType, RepositoryRoot},
-    Error,
+    Error, NIFileError,
 };
 
 use super::{AppSpecificItem, PresetContainer};
@@ -10,6 +10,38 @@ pub struct RepositoryRootContainer(pub ItemContainer);
 impl RepositoryRootContainer {
     pub fn properties(&self) -> Result<RepositoryRoot, Error> {
         RepositoryRoot::try_from(&self.0.data)
+    }
+
+    /// Attempt to extract an inner preset from any kind of NISound document.
+    pub fn extract_preset(&self) -> Result<Vec<u8>, Error> {
+        // Check for generic preset
+        if let Some(preset) = self.preset() {
+            if let Some(preset) = preset?.preset_data() {
+                return Ok(preset?);
+            }
+        }
+
+        // Check for Kontakt NIS
+        if let Some(preset) = self.kontakt_preset() {
+            if let Some(preset) = preset?.preset_data() {
+                return Ok(preset?);
+            }
+        }
+
+        // Check for Kontakt NKM
+        if let Some(app_specific) = self.app_specific() {
+            let app = app_specific?;
+            let props = app.properties()?;
+            let inner = RepositoryRootContainer(props.subtree_item.item()?);
+
+            if let Some(preset) = inner.kontakt_preset() {
+                if let Some(preset) = preset?.preset_data() {
+                    return Ok(preset?);
+                }
+            }
+        }
+
+        Err(NIFileError::Generic("Could not find a valid preset".into()))
     }
 
     pub fn kontakt_preset(&self) -> Option<Result<BNISoundPresetContainer, Error>> {

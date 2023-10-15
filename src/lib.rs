@@ -6,7 +6,6 @@ pub use error::*;
 
 // generic wrapper:
 pub mod nifile; // simplified api for all supported filetypes
-
 pub use nifile::NIFile;
 
 // containers:

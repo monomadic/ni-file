@@ -1,12 +1,14 @@
 use std::io::Cursor;
 
 use crate::{
-    kontakt::{KontaktInstrument, KontaktPreset},
+    kontakt::{
+        objects::{BPatchHeader, BPatchHeaderV42},
+        KontaktInstrument, KontaktPreset,
+    },
     nis::{
         BNISoundHeader, BNISoundPreset, EncryptionItem, ItemContainer, ItemType, Preset,
         PresetChunkItem,
     },
-    nks::header::{BPatchHeader, BPatchHeaderV42},
     Error,
 };
 

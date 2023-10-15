@@ -1,5 +1,7 @@
 use crate::{
-    kontakt::chunk_set::KontaktChunks, nks::header::PatchType, read_bytes::ReadBytesExt, Error,
+    kontakt::{chunk_set::KontaktChunks, objects::PatchType},
+    read_bytes::ReadBytesExt,
+    Error,
 };
 
 use super::{

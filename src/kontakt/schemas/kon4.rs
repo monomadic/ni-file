@@ -27,7 +27,7 @@ impl KontaktV42 {
         let program: Program = Chunk::read(&mut reader).and_then(|chunk| (&chunk).try_into())?;
         let filetable: FileNameListPreK51 = Chunk::read(&mut reader)
             .and_then(|chunk| (&chunk).try_into())
-            .map_err(|_| NIFileError::Generic("FNTableImpl".into()))?;
+            .map_err(|_| NIFileError::Generic("FileNameListPreK51".into()))?;
 
         Ok(Self { program, filetable })
     }

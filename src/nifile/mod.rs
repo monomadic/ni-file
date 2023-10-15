@@ -35,4 +35,6 @@ impl NIFile {
             _ => todo!("Unsupported: {:?}", filetype),
         })
     }
+
+    // pub fn inner_preset(&self) -> Result<Vec<u8>, Error> {}
 }

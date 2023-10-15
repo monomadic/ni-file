@@ -4,12 +4,11 @@ use std::fs::File;
 use color_eyre::eyre::{Report, Result};
 use ni_file::{
     kontakt::{
-        objects::{program::Program, FNTableImpl},
+        objects::{program::Program, BPatchHeader, FNTableImpl},
         KontaktPreset,
     },
     nifile::NIFile,
     nis::{items::RepositoryRootContainer, Preset},
-    nks::header::BPatchHeader,
 };
 
 pub fn main() -> Result<(), Report> {

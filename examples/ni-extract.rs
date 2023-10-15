@@ -8,7 +8,7 @@ use std::{
 };
 
 use color_eyre::eyre::Result;
-use ni_file::{nis::items::RepositoryRootContainer, nks::header::BPatchHeader, NIFile};
+use ni_file::{kontakt::objects::BPatchHeader, nis::items::RepositoryRootContainer, NIFile};
 
 pub fn main() -> Result<(), Box<dyn std::error::Error>> {
     std::env::set_var("RUST_BACKTRACE", "1");

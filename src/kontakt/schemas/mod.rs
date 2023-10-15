@@ -1,6 +1,5 @@
 mod kon1;
 mod kon2;
-mod kon3;
 mod kon4;
 mod kon5;
 mod kon6;

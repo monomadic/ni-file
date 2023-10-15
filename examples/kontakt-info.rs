@@ -4,11 +4,10 @@ use color_eyre::eyre::{Report, Result};
 use ni_file::{
     kontakt::{
         chunk_set::KontaktChunks,
-        objects::{program::Program, FNTableImpl},
+        objects::{program::Program, BPatchHeader, FNTableImpl},
         KontaktObject, KontaktPreset,
     },
     nis::Preset,
-    nks::header::BPatchHeader,
 };
 
 pub fn main() -> Result<(), Report> {
@@ -56,13 +55,13 @@ fn print_kontakt_program(program: &Program) -> Result<(), Report> {
         println!("ZoneList:");
         println!("  zones:\t\t{}\n", &zones.len());
 
-        for zone in zones {
-            let p = zone.public_params()?;
-            println!(
-                "  ZoneData: start={} end={}",
-                &p.sample_start, &p.sample_end
-            );
-        }
+        // for zone in zones {
+        //     let p = zone.public_params()?;
+        //     println!(
+        //         "  ZoneData: start={} end={}",
+        //         &p.sample_start, &p.sample_end
+        //     );
+        // }
     }
 
     println!("");

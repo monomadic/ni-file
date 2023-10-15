@@ -10,9 +10,7 @@ use std::io::Cursor;
 
 use time::OffsetDateTime;
 
-use crate::read_bytes::ReadBytesExt;
-
-use super::error::NKSError;
+use crate::{nks::error::NKSError, read_bytes::ReadBytesExt};
 
 #[derive(Debug, PartialEq)]
 pub enum BPatchHeader {

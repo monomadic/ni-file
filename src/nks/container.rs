@@ -4,13 +4,14 @@ use flate2::read::ZlibDecoder;
 
 use crate::{
     kontakt::{
-        objects::meta_info::BPatchMetaInfoHeader, KontaktPreset, KontaktV1, KontaktV2, KontaktV42,
+        objects::{meta_info::BPatchMetaInfoHeader, BPatchHeader},
+        KontaktPreset, KontaktV1, KontaktV2, KontaktV42,
     },
     read_bytes::ReadBytesExt,
     Error,
 };
 
-use super::{error::NKSError, header::BPatchHeader};
+use super::error::NKSError;
 
 #[derive(Debug)]
 pub struct NKSContainer {

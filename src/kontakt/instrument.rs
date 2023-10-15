@@ -1,6 +1,4 @@
-use crate::nks::header::BPatchHeader;
-
-use super::KontaktPreset;
+use super::{objects::BPatchHeader, KontaktPreset};
 
 #[derive(Debug)]
 pub struct KontaktInstrument {
