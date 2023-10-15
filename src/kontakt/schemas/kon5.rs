@@ -16,7 +16,7 @@ use std::io::Cursor;
 
 use crate::{
     kontakt::{
-        objects::{program::Program, FNTableImpl},
+        objects::{FNTableImpl, Program},
         Chunk,
     },
     nks::error::NKSError,

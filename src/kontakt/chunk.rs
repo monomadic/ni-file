@@ -3,7 +3,7 @@ use std::io::Cursor;
 use crate::{read_bytes::ReadBytesExt, Error};
 
 use super::{
-    objects::{program::Program, Bank, FNTableImpl},
+    objects::{Bank, FNTableImpl, Program},
     structured_object::StructuredObject,
 };
 

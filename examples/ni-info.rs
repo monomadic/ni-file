@@ -4,7 +4,7 @@ use std::fs::File;
 use color_eyre::eyre::{Report, Result};
 use ni_file::{
     kontakt::{
-        objects::{program::Program, BPatchHeader, FNTableImpl},
+        objects::{BPatchHeader, FNTableImpl, Program},
         KontaktPreset,
     },
     nifile::NIFile,

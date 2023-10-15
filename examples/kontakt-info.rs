@@ -4,7 +4,7 @@ use color_eyre::eyre::{Report, Result};
 use ni_file::{
     kontakt::{
         chunk_set::KontaktChunks,
-        objects::{program::Program, BPatchHeader, FNTableImpl},
+        objects::{BPatchHeader, FNTableImpl, Program},
         KontaktObject, KontaktPreset,
     },
     nis::Preset,
@@ -32,7 +32,7 @@ pub fn main() -> Result<(), Report> {
                 }
             }
             KontaktObject::FNTableImpl(filetable) => print_filetable(&filetable),
-            KontaktObject::BBank(bank) => println!("Bank"),
+            KontaktObject::BBank(_bank) => println!("Bank"),
             _ => println!("Chunk(0x{:x}) {:?}", &chunk.id, chunk.into_type()?),
         }
     }

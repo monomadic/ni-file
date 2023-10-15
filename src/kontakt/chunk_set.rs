@@ -4,7 +4,7 @@ use crate::{read_bytes::ReadBytesExt, Error};
 
 use super::{
     chunk::Chunk,
-    objects::{program::Program, FNTableImpl, FileNameListPreK51},
+    objects::{FNTableImpl, FileNameListPreK51, Program},
 };
 
 #[derive(Debug)]

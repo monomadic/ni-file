@@ -4,7 +4,7 @@ use flate2::read::ZlibDecoder;
 
 use crate::{
     kontakt::{
-        objects::{meta_info::BPatchMetaInfoHeader, BPatchHeader},
+        objects::{BPatchHeader, BPatchMetaInfoHeader},
         KontaktPreset, KontaktV1, KontaktV2, KontaktV42,
     },
     read_bytes::ReadBytesExt,
