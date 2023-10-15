@@ -3,7 +3,7 @@ use std::io::Cursor;
 use crate::{read_bytes::ReadBytesExt, Error};
 
 use super::{
-    objects::{Bank, FNTableImpl, Program},
+    objects::{Bank, FNTableImpl, Program, VoiceGroups},
     structured_object::StructuredObject,
 };
 
@@ -21,7 +21,7 @@ impl Chunk {
         Ok(Self { id, data })
     }
 
-    pub fn into_type(&self) -> Result<KontaktObject, Error> {
+    pub fn into_object(&self) -> Result<KontaktObject, Error> {
         Ok(KontaktObject::try_from(self)?)
     }
 }
@@ -88,7 +88,7 @@ pub enum KontaktObject {
     BZoneArraySer,
     BGroupCompleteSer,
     PresetImpl,
-    VoiceGroups,
+    VoiceGroups(VoiceGroups),
     GroupList,
     ZoneList,
     PrivateRawObject,
@@ -200,7 +200,7 @@ impl TryFrom<&Chunk> for KontaktObject {
             0x2e => KontaktObject::BZoneArraySer,
             0x2f => KontaktObject::BGroupCompleteSer,
             0x30 => KontaktObject::PresetImpl,
-            0x32 => KontaktObject::VoiceGroups,
+            0x32 => KontaktObject::VoiceGroups(chunk.try_into()?),
             0x33 => KontaktObject::GroupList,
             0x34 => KontaktObject::ZoneList,
             0x35 => KontaktObject::PrivateRawObject,

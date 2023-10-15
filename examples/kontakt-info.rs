@@ -22,18 +22,19 @@ pub fn main() -> Result<(), Report> {
     let kontakt = KontaktChunks::read(file)?;
 
     for chunk in &kontakt.0 {
-        match chunk.into_type()? {
+        match chunk.into_object()? {
             KontaktObject::Program(program) => {
                 print_kontakt_program(&program)?;
                 for chunk in program.children() {
-                    match chunk.into_type()? {
-                        _ => println!("Chunk(0x{:x}) {:?}", &chunk.id, chunk.into_type()?),
+                    match chunk.into_object()? {
+                        KontaktObject::VoiceGroups(vg) => println!("{vg:?}"),
+                        _ => println!("Chunk(0x{:x}) {:?}", &chunk.id, chunk.into_object()?),
                     }
                 }
             }
             KontaktObject::FNTableImpl(filetable) => print_filetable(&filetable),
             KontaktObject::BBank(_bank) => println!("Bank"),
-            _ => println!("Chunk(0x{:x}) {:?}", &chunk.id, chunk.into_type()?),
+            _ => println!("Chunk(0x{:x}) {:?}", &chunk.id, chunk.into_object()?),
         }
     }
 

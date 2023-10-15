@@ -14,7 +14,7 @@ fn test_kontakt_obj_version_is_schema() -> Result<(), Box<dyn std::error::Error>
         let kontakt = KontaktChunks::read(file)?;
 
         for chunk in &kontakt.0 {
-            match chunk.into_type()? {
+            match chunk.into_object()? {
                 KontaktObject::Program(program) => match program.version() {
                     0x80 => assert_eq!(program.children().len(), 5),
                     0xA5 => assert_eq!(program.children().len(), 27),

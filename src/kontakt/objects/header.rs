@@ -23,8 +23,8 @@ impl BPatchHeader {
     pub fn read_le<R: ReadBytesExt>(mut reader: R) -> Result<Self, NKSError> {
         let header_version = reader.read_u16_le()?;
         Ok(match header_version {
-            0x0..=0xff => Self::BPatchHeaderV1(BPatchHeaderV1::read_le(&mut reader)?),
-            0x100..=0x10f => Self::BPatchHeaderV2(BPatchHeaderV2::read_le(&mut reader)?),
+            0..=255 => Self::BPatchHeaderV1(BPatchHeaderV1::read_le(&mut reader)?),
+            256..=271 => Self::BPatchHeaderV2(BPatchHeaderV2::read_le(&mut reader)?),
             _ => Self::BPatchHeaderV42(BPatchHeaderV42::read_le(&mut reader)?),
         })
     }
@@ -153,7 +153,6 @@ impl BPatchHeaderV42 {
     pub fn read_le<R: ReadBytesExt>(mut reader: R) -> Result<Self, NKSError> {
         let data = reader.read_bytes(212)?; // 222 - 10
         let mut reader = Cursor::new(data);
-
         let magic: u32 = reader.read_le()?;
 
         assert_eq!(

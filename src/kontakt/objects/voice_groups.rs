@@ -1,4 +1,10 @@
-use crate::{kontakt::objects::voice_limit::VoiceLimit, read_bytes::ReadBytesExt, Error};
+use std::io::Cursor;
+
+use crate::{
+    kontakt::{objects::voice_limit::VoiceLimit, Chunk, KontaktError},
+    read_bytes::ReadBytesExt,
+    Error,
+};
 
 #[derive(Debug)]
 pub struct VoiceGroups;
@@ -23,9 +29,23 @@ impl VoiceGroups {
             println!("{}: {:?}", i + 1, reader.read_u8()?);
         }
 
-        //println!("{:?}", PubData::create(&mut reader, 0x2B, version)?);
-
         Ok(Self {})
+    }
+}
+
+impl std::convert::TryFrom<&Chunk> for VoiceGroups {
+    type Error = Error;
+
+    fn try_from(chunk: &Chunk) -> Result<Self, Self::Error> {
+        if chunk.id != 0x32 {
+            return Err(KontaktError::IncorrectID {
+                expected: 0x32,
+                got: chunk.id,
+            }
+            .into());
+        }
+        let reader = Cursor::new(&chunk.data);
+        Self::read(reader)
     }
 }
 

@@ -79,7 +79,7 @@ mod tests {
         let bank = Bank::try_from(&chunk)?;
         dbg!(bank.params()?);
         for chunk in bank.0.children {
-            println!("{:?} {:x}", chunk.into_type()?, chunk.id);
+            println!("{:?} {:x}", chunk.into_object()?, chunk.id);
 
             // let filename = format!("{:?}-{:x}.chunk", chunk.into_type()?, chunk.id);
             // std::fs::write(filename, chunk.data)?;
