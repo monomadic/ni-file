@@ -46,7 +46,7 @@ mod tests {
             File::open("tests/data/Containers/NIS/objects/EncryptionItem/000-EncryptionItem")?;
 
         let item = ItemData::read(&file)?;
-        let enc = EncryptionItem::try_from(&item)?;
+        let _enc = EncryptionItem::try_from(&item)?;
 
         // ensure the read completed
         let mut buf = Vec::new();

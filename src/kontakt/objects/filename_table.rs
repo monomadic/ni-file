@@ -40,34 +40,7 @@ impl FNTableImpl {
         let version = reader.read_u16_le()?;
         assert!(version == 2); // hard-coded to 2, kontakt throws exception otherwise
 
-        // // special filetable
-        // let mut special_id = reader.read_u32_le()?;
-        // match special_id {
-        //     0 => dbg!(0, read_filename(&mut reader)?.join("/")),
-        //     1 => dbg!(1, read_filename(&mut reader)?.join("/")),
-        //     2 => {
-        //         dbg!(2, read_filename(&mut reader)?.join("/"));
-        //         dbg!(2, read_filename(&mut reader)?.join("/"))
-        //     }
-        //     3 => dbg!(3, read_filename(&mut reader)?.join("/")),
-        //     _ => panic!("{:?}", special_id),
-        // };
-        //
-        // while special_id == 3 {
-        //     special_id = reader.read_u32_le()?;
-        //     match special_id {
-        //         0 => dbg!(0, read_filename(&mut reader)?.join("/")),
-        //         1 => dbg!(1, read_filename(&mut reader)?.join("/")),
-        //         2 => {
-        //             dbg!(2, read_filename(&mut reader)?.join("/"));
-        //             dbg!(2, read_filename(&mut reader)?.join("/"))
-        //         }
-        //         3 => dbg!(3, read_filename(&mut reader)?.join("/")),
-        //         _ => panic!("{:?}", special_id),
-        //     };
-        // }
-
-        //
+        // special filetable
         let file_count = reader.read_u32_le()?;
         let mut special_filetable = HashMap::new();
         for i in 0..file_count {
@@ -92,7 +65,7 @@ impl FNTableImpl {
 
         // offsets?
         for _ in 0..file_count {
-            let a = reader.read_u32_le()?;
+            let _a = reader.read_u32_le()?;
         }
 
         // other filetable

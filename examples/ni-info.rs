@@ -5,7 +5,7 @@ use color_eyre::eyre::{Report, Result};
 use ni_file::{
     kontakt::{
         objects::{BPatchHeader, FNTableImpl, Program},
-        KontaktPreset,
+        schemas::KontaktPreset,
     },
     nifile::NIFile,
     nis::{items::RepositoryRootContainer, Preset},

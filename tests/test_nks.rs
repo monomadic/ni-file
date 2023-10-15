@@ -1,6 +1,6 @@
 mod utils;
 
-use ni_file::{kontakt::KontaktPreset, nks::container::NKSContainer};
+use ni_file::{kontakt::schemas::KontaktPreset, nks::container::NKSContainer};
 use std::fs;
 
 #[test]

@@ -1,6 +1,6 @@
 use std::fs::File;
 
-use ni_file::kontakt::{chunk_set::KontaktChunks, KontaktObject};
+use ni_file::kontakt::{KontaktChunks, KontaktObject};
 
 mod utils;
 

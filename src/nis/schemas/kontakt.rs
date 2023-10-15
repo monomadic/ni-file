@@ -3,7 +3,8 @@ use std::io::Cursor;
 use crate::{
     kontakt::{
         objects::{BPatchHeader, BPatchHeaderV42},
-        KontaktInstrument, KontaktPreset,
+        schemas::KontaktPreset,
+        KontaktInstrument,
     },
     nis::{
         BNISoundHeader, BNISoundPreset, EncryptionItem, ItemContainer, ItemType, Preset,

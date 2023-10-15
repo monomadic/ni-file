@@ -1,4 +1,4 @@
-use super::{objects::BPatchHeader, KontaktPreset};
+use super::{objects::BPatchHeader, schemas::KontaktPreset};
 
 #[derive(Debug)]
 pub struct KontaktInstrument {

@@ -3,9 +3,9 @@ use std::fs::File;
 use color_eyre::eyre::{Report, Result};
 use ni_file::{
     kontakt::{
-        chunk_set::KontaktChunks,
         objects::{BPatchHeader, FNTableImpl, Program},
-        KontaktObject, KontaktPreset,
+        schemas::KontaktPreset,
+        KontaktChunks, KontaktObject,
     },
     nis::Preset,
 };
