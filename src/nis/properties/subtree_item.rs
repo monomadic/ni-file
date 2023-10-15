@@ -117,7 +117,7 @@ mod tests {
 
         assert_eq!(item.id(), ItemType::Item);
 
-        // ensure the read completed
+        // Ensure the read completed
         let mut buf = Vec::new();
         data.read_to_end(&mut buf)?;
         assert_eq!(buf.len(), 0, "Excess data found");

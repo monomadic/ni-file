@@ -3,7 +3,7 @@ use std::io::Cursor;
 use crate::{read_bytes::ReadBytesExt, Error};
 
 use super::{
-    objects::{Bank, FNTableImpl, Program, VoiceGroups},
+    objects::{Bank, FNTableImpl, GroupList, Program, VoiceGroups},
     structured_object::StructuredObject,
 };
 
@@ -89,7 +89,7 @@ pub enum KontaktObject {
     BGroupCompleteSer,
     PresetImpl,
     VoiceGroups(VoiceGroups),
-    GroupList,
+    GroupList(GroupList),
     ZoneList,
     PrivateRawObject,
     ProgramList,
@@ -201,7 +201,7 @@ impl TryFrom<&Chunk> for KontaktObject {
             0x2f => KontaktObject::BGroupCompleteSer,
             0x30 => KontaktObject::PresetImpl,
             0x32 => KontaktObject::VoiceGroups(chunk.try_into()?),
-            0x33 => KontaktObject::GroupList,
+            0x33 => KontaktObject::GroupList(chunk.try_into()?),
             0x34 => KontaktObject::ZoneList,
             0x35 => KontaktObject::PrivateRawObject,
             0x36 => KontaktObject::ProgramList,

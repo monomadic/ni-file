@@ -17,11 +17,10 @@ I also run the [rust-audio telegram group](https://t.me/+TrgB_G5z0Yl6WYat).
 
 ## Features
 
-- ✅ **Kontakt v1** _extract xml_
-- ✅ **Kontakt v2** _extract xml_
-- ✅ **Kontakt v3** _extract xml_
-- ✅ **Kontakt v4.22+** _partial: NKS Container, Program, FileTable, Zones_
-- ✅ **Kontakt v5-v7** _partial: NIS Container, Program, FileTable, Zones_
+- ✅ **Kontakt v1** _100%: extract xml_
+- ✅ **Kontakt v2** _50%: extract xml, no monolith support yet_
+- ✅ **Kontakt v4.22+** _70%: NKS Container, Program, FileTable, Zones_
+- ✅ **Kontakt v5-v7** _50%: NIS Container, Program, FileTable, Zones_
 - ✅ **Kontakt FileContainer (Modern Monolith)**: _read support_
 - ✅ **NCW Compression**: _read support - also available as a [cli utility](https://github.com/monomadic/ncw)_.
 - 🕒 **Kontakt NKS Monolith**: _coming soon_
