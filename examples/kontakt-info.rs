@@ -39,7 +39,9 @@ fn print_chunk(chunk: &Chunk) -> Result<(), Report> {
                 print_chunk(chunk)?;
             }
         }
-        KontaktObject::BParFX(bparfx) => println!("BParFX {bparfx:?}"),
+        KontaktObject::BParFX(bparfx) => {
+            println!("BParFX v{:X}", bparfx.version());
+        }
         KontaktObject::FNTableImpl(filetable) => print_filetable(&filetable),
         KontaktObject::LoopArray(looparray) => println!("{looparray:?}"),
         KontaktObject::BBank(bank) => println!("Bank {:?}", bank.params()?),
@@ -48,9 +50,10 @@ fn print_chunk(chunk: &Chunk) -> Result<(), Report> {
         KontaktObject::StartCritList => println!("StartCritList"),
         KontaktObject::BParameterArraySerBParFX8(pa) => {
             println!("BParamArrayBParFX8 v{:X}", pa.version);
+            println!("  params: {}", pa.len());
             for (i, param) in pa.params.iter().enumerate() {
                 if let Some(param) = param {
-                    println!("- [{}] BParFX v{:X}", i, param.version());
+                    println!("  - [{}] BParFX v{:X}", i, param.version());
                 }
             }
         }

@@ -8,10 +8,13 @@ use crate::{
 
 const MAX_VOICE_GROUPS: usize = 128;
 
-/// SerType:        0x32
-/// Known Versions: 0x60
-/// Kontakt 7:      BProgram::readVoiceGroups()
-/// KontaktIO:      VoiceGroups
+/// An array of VoiceGroups.
+///
+/// - SerType:        0x32
+/// - Known Versions: 0x60
+/// - Kontakt 7:      BProgram::readVoiceGroups()
+/// - KontaktIO:      VoiceGroups
+///
 #[derive(Debug)]
 pub struct VoiceGroups {
     voice_limit: VoiceLimit,
@@ -21,7 +24,6 @@ pub struct VoiceGroups {
 #[derive(Debug)]
 pub struct VoiceGroup;
 
-/// ID 0x32
 impl VoiceGroups {
     pub fn read<R: ReadBytesExt>(mut reader: R) -> Result<Self, Error> {
         let is_structured = reader.read_bool()?;
@@ -41,7 +43,7 @@ impl VoiceGroups {
         for i in 0..8 {
             if indexes[i >> 3] & (1 << (i & 7)) != 0 {
                 // groups[i] = None;
-                // println!("{}: {:?}", i + 1, reader.read_u8()?);
+                println!("{}: {:?}", i + 1, reader.read_u8()?);
             }
         }
 

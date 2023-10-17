@@ -47,6 +47,14 @@ impl BParamArrayBParFX8 {
 
         Ok(Self { version, params })
     }
+
+    pub fn len(&self) -> usize {
+        self.params
+            .iter()
+            .filter(|p| p.is_some())
+            .collect::<Vec<&Option<_>>>()
+            .len()
+    }
 }
 
 impl std::convert::TryFrom<&Chunk> for BParamArrayBParFX8 {
