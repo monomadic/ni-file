@@ -5,34 +5,40 @@ use crate::{kontakt::structured_object::StructuredObject, read_bytes::ReadBytesE
 #[derive(Debug)]
 pub struct ZoneData(StructuredObject);
 
+/// Type:           StructuredObject
+/// Kontakt 7:      BProgram::readZones()
+/// KontaktIO:      K4PL_Zone<K4PO::K4PL_ZoneDataV95>
 #[derive(Debug)]
-pub struct ZoneDataPublicParams {
+pub struct ZoneDataParams {
     pub sample_start: i32,
     pub sample_end: i32,
-    sample_start_mod_range: i32,
-    low_velocity: i16,
-    high_velocity: i16,
-    low_key: i16,
-    high_key: i16,
-    fade_low_velocity: i16,
-    fade_high_velocity: i16,
-    fade_low_key: i16,
-    fade_high_key: i16,
-    root_key: i16,
-    zone_volume: f32,
-    zone_pan: f32,
-    zone_tune: f32,
+    pub sample_start_mod_range: i32,
+    pub low_velocity: i16,
+    pub high_velocity: i16,
+    pub low_key: i16,
+    pub high_key: i16,
+    pub fade_low_velocity: i16,
+    pub fade_high_velocity: i16,
+    pub fade_low_key: i16,
+    pub fade_high_key: i16,
+    pub root_key: i16,
+    pub zone_volume: f32,
+    pub zone_pan: f32,
+    pub zone_tune: f32,
     pub filename_id: i32,
-    sample_data_type: i32,
-    sample_rate: i32,
-    num_channels: u8,
-    num_frames: i32,
-    reserved1: i32,
-    reserved2: Option<i32>,
+    pub sample_data_type: i32,
+    pub sample_rate: i32,
+    pub num_channels: u8,
+    pub num_frames: i32,
+    pub reserved1: i32,
+    pub reserved2: Option<i32>,
     pub root_note: i32,
-    tuning: f32,
-    reserved3: bool,
-    reserved4: i32,
+    pub tuning: f32,
+    pub reserved3: bool,
+    pub reserved4: i32,
+    // LoopArray 0x39
+    // QuickBrowseData 0x4e
+    // PrivateRawObject 0x35
 }
 
 impl ZoneData {
@@ -40,10 +46,14 @@ impl ZoneData {
         Ok(Self(StructuredObject::read(&mut reader)?))
     }
 
-    pub fn public_params(&self) -> Result<ZoneDataPublicParams, Error> {
+    pub fn params(&self) -> Result<ZoneDataParams, Error> {
         let mut reader = Cursor::new(&self.0.public_data);
 
-        Ok(ZoneDataPublicParams {
+        for chunk in &self.0.children {
+            println!("{:?} {:x}", chunk.into_object()?, chunk.id);
+        }
+
+        Ok(ZoneDataParams {
             sample_start: reader.read_i32_le()?,
             sample_end: reader.read_i32_le()?,
             sample_start_mod_range: reader.read_i32_le()?,
@@ -80,126 +90,18 @@ impl ZoneData {
     }
 }
 
-// #[derive(Debug)]
-// pub struct ZoneDataV98 {
-//     pub sample_start: i32,
-//     pub sample_end: i32,
-//     sample_start_mod_range: i32,
-//     low_velocity: i16,
-//     high_velocity: i16,
-//     low_key: i16,
-//     high_key: i16,
-//     fade_low_velocity: i16,
-//     fade_high_velocity: i16,
-//     fade_low_key: i16,
-//     fade_high_key: i16,
-//     root_key: i16,
-//     zone_volume: f32,
-//     zone_pan: f32,
-//     zone_tune: f32,
-//     pub filename_id: i32,
-//     sample_data_type: i32,
-//     sample_rate: i32,
-//     num_channels: u8,
-//     num_frames: i32,
-//     reserved1: i32,
-//     pub root_note: i32,
-//     tuning: f32,
-//     reserved3: bool,
-//     reserved4: i32,
-// }
-//
-// impl ZoneDataV98 {
-//     pub fn read<R: ReadBytesExt>(mut reader: R) -> Result<Self, Error> {
-//         Ok(ZoneDataV98 {
-//             sample_start: reader.read_i32_le()?,
-//             sample_end: reader.read_i32_le()?,
-//             sample_start_mod_range: reader.read_i32_le()?,
-//             low_velocity: reader.read_i16_le()?,
-//             high_velocity: reader.read_i16_le()?,
-//             low_key: reader.read_i16_le()?,
-//             high_key: reader.read_i16_le()?,
-//             fade_low_velocity: reader.read_i16_le()?,
-//             fade_high_velocity: reader.read_i16_le()?,
-//             fade_low_key: reader.read_i16_le()?,
-//             fade_high_key: reader.read_i16_le()?,
-//             root_key: reader.read_i16_le()?,
-//             zone_volume: reader.read_f32_le()?,
-//             zone_pan: reader.read_f32_le()?,
-//             zone_tune: reader.read_f32_le()?,
-//             filename_id: reader.read_i32_le()?,
-//             sample_data_type: reader.read_i32_le()?,
-//             sample_rate: reader.read_i32_le()?,
-//             num_channels: reader.read_u8()?,
-//             num_frames: reader.read_i32_le()?,
-//             reserved1: reader.read_i32_le()?,
-//             root_note: reader.read_i32_le()?,
-//             tuning: reader.read_f32_le()?,
-//             reserved3: reader.read_bool()?,
-//             reserved4: reader.read_i32_le()?,
-//         })
-//     }
-// }
-//
-// #[derive(Debug)]
-// pub struct ZoneDataV95 {
-//     pub sample_start: i32,
-//     pub sample_end: i32,
-//     sample_start_mod_range: i32,
-//     low_velocity: i16,
-//     high_velocity: i16,
-//     low_key: i16,
-//     high_key: i16,
-//     fade_low_velocity: i16,
-//     fade_high_velocity: i16,
-//     fade_low_key: i16,
-//     fade_high_key: i16,
-//     root_key: i16,
-//     zone_volume: f32,
-//     zone_pan: f32,
-//     zone_tune: f32,
-//     pub filename_id: i32,
-//     sample_data_type: i32,
-//     sample_rate: i32,
-//     num_channels: u8,
-//     num_frames: i32,
-//     reserved1: i32,
-//     reserved2: i32,
-//     pub root_note: i32,
-//     tuning: f32,
-//     reserved3: bool,
-//     reserved4: i32,
-// }
-//
-// impl ZoneDataV95 {
-//     pub fn read<R: ReadBytesExt>(mut reader: R) -> Result<Self, Error> {
-//         Ok(ZoneDataV95 {
-//             sample_start: reader.read_i32_le()?,
-//             sample_end: reader.read_i32_le()?,
-//             sample_start_mod_range: reader.read_i32_le()?,
-//             low_velocity: reader.read_i16_le()?,
-//             high_velocity: reader.read_i16_le()?,
-//             low_key: reader.read_i16_le()?,
-//             high_key: reader.read_i16_le()?,
-//             fade_low_velocity: reader.read_i16_le()?,
-//             fade_high_velocity: reader.read_i16_le()?,
-//             fade_low_key: reader.read_i16_le()?,
-//             fade_high_key: reader.read_i16_le()?,
-//             root_key: reader.read_i16_le()?,
-//             zone_volume: reader.read_f32_le()?,
-//             zone_pan: reader.read_f32_le()?,
-//             zone_tune: reader.read_f32_le()?,
-//             filename_id: reader.read_i32_le()?,
-//             sample_data_type: reader.read_i32_le()?,
-//             sample_rate: reader.read_i32_le()?,
-//             num_channels: reader.read_u8()?,
-//             num_frames: reader.read_i32_le()?,
-//             reserved1: reader.read_i32_le()?,
-//             reserved2: reader.read_i32_le()?,
-//             root_note: reader.read_i32_le()?,
-//             tuning: reader.read_f32_le()?,
-//             reserved3: reader.read_bool()?,
-//             reserved4: reader.read_i32_le()?,
-//         })
-//     }
-// }
+#[cfg(test)]
+mod tests {
+    use std::fs::File;
+
+    use super::*;
+    use crate::Error;
+
+    #[test]
+    fn test_zone_data_v9a_000() -> Result<(), Error> {
+        let file = File::open("tests/data/Objects/Kontakt/ZoneData/ZoneDataV9A/ZoneDataV9A-000")?;
+        let zone = ZoneData::read(file)?;
+        dbg!(zone.params()?);
+        Ok(())
+    }
+}

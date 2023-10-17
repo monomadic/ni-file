@@ -8,6 +8,10 @@ use crate::{
 
 use super::{program_data::ProgramPublicParams, zone_data::ZoneData, zone_list::ZoneList};
 
+/// SerType:        0x28
+/// Known Versions: 0x80 .. 0xAF
+/// Kontakt 7:      BProgram
+/// KontaktIO:      K4PL_Program
 #[derive(Debug)]
 pub struct Program(StructuredObject);
 
@@ -20,7 +24,7 @@ impl Program {
         self.0.version
     }
 
-    pub fn public_params(&self) -> Result<ProgramPublicParams, Error> {
+    pub fn params(&self) -> Result<ProgramPublicParams, Error> {
         let reader = Cursor::new(&self.0.public_data);
 
         ProgramPublicParams::read(reader, self.0.version)
@@ -164,7 +168,7 @@ mod tests {
 
     #[test]
     fn test_private_params_v80() -> Result<(), Error> {
-        let mut file = File::open("tests/data/Objects/KontaktV42/Program/v80/private_params/000")?;
+        let mut file = File::open("tests/data/Objects/Kontakt/Program/v80/private_params/000")?;
         let _params = ProgramDataPrivateParams::read(&mut file, 0x80)?;
         Ok(())
     }

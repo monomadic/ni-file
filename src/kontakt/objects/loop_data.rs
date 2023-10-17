@@ -1,5 +1,9 @@
 use crate::{read_bytes::ReadBytesExt, Error};
 
+/// Type:           Chunk
+/// SerType:        0x05
+/// Kontakt 7:      BLoop
+/// KontaktIO:      K4PL_Loop
 pub struct Loop {
     mode: i32,
     loop_start: i32,

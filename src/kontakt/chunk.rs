@@ -3,7 +3,7 @@ use std::io::Cursor;
 use crate::{read_bytes::ReadBytesExt, Error};
 
 use super::{
-    objects::{Bank, FNTableImpl, GroupList, Program, VoiceGroups},
+    objects::{BParFX, Bank, FNTableImpl, GroupList, LoopArray, Program, VoiceGroups},
     structured_object::StructuredObject,
 };
 
@@ -76,7 +76,7 @@ pub enum KontaktObject {
     BParFXRotator,
     BParFXTwang,
     BParFXCabinet,
-    BParFX,
+    BParFX(BParFX),
     BDyxMorphGroup,
     BDyxMorphMap,
     BProgram,
@@ -94,8 +94,8 @@ pub enum KontaktObject {
     PrivateRawObject,
     ProgramList,
     SlotList,
-    StarCritList,
-    LoopArray,
+    StartCritList,
+    LoopArray(LoopArray),
     BParameterArraySerBParFX8,
     BParameterArraySerBParInternalMod16,
     BParameterArraySerBParExternalMod32,
@@ -188,7 +188,7 @@ impl TryFrom<&Chunk> for KontaktObject {
             0x22 => KontaktObject::BParFXRotator,
             0x23 => KontaktObject::BParFXTwang,
             0x24 => KontaktObject::BParFXCabinet,
-            0x25 => KontaktObject::BParFX,
+            0x25 => KontaktObject::BParFX(chunk.try_into()?),
             0x26 => KontaktObject::BDyxMorphGroup,
             0x27 => KontaktObject::BDyxMorphMap,
             0x28 => KontaktObject::Program(chunk.try_into()?),
@@ -206,8 +206,8 @@ impl TryFrom<&Chunk> for KontaktObject {
             0x35 => KontaktObject::PrivateRawObject,
             0x36 => KontaktObject::ProgramList,
             0x37 => KontaktObject::SlotList,
-            0x38 => KontaktObject::StarCritList,
-            0x39 => KontaktObject::LoopArray,
+            0x38 => KontaktObject::StartCritList,
+            0x39 => KontaktObject::LoopArray(chunk.try_into()?),
             0x3a => KontaktObject::BParameterArraySerBParFX8,
             0x3b => KontaktObject::BParameterArraySerBParInternalMod16,
             0x3c => KontaktObject::BParameterArraySerBParExternalMod32,

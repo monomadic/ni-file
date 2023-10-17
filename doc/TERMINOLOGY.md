@@ -19,6 +19,7 @@
 - `NISD` Native Instruments Sound Domain. (a domainID).
 - `StructuredObject` Generic structure for Kontakt patch chunks.
 - `K4PO` Kontakt 4 Public Object
+- `K4PL` Kontakt 4 Patch Library
 - `Chunk` a block of data in a Kontakt preset. Generally has an id and a length followed by the data.
 - `SER` Serializer/Deserializer
 - `Stream` an open pointer to a file or memory

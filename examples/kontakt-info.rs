@@ -5,7 +5,7 @@ use ni_file::{
     kontakt::{
         objects::{BPatchHeader, FNTableImpl, Program},
         schemas::KontaktPreset,
-        KontaktChunks, KontaktObject,
+        Chunk, KontaktChunks, KontaktObject,
     },
     nis::Preset,
 };
@@ -21,22 +21,33 @@ pub fn main() -> Result<(), Report> {
     let file = File::open(&path)?;
     let kontakt = KontaktChunks::read(file)?;
 
-    for chunk in &kontakt.0 {
-        match chunk.into_object()? {
-            KontaktObject::Program(program) => {
-                print_kontakt_program(&program)?;
-                for chunk in program.children() {
-                    match chunk.into_object()? {
-                        KontaktObject::VoiceGroups(vg) => println!("{vg:?}"),
-                        _ => println!("Chunk(0x{:x}) {:?}", &chunk.id, chunk.into_object()?),
-                    }
-                }
-            }
-            KontaktObject::FNTableImpl(filetable) => print_filetable(&filetable),
-            KontaktObject::BBank(_bank) => println!("Bank"),
-            _ => println!("Chunk(0x{:x}) {:?}", &chunk.id, chunk.into_object()?),
-        }
+    for (i, chunk) in kontakt.0.iter().enumerate() {
+        print!("{i} ");
+        print_chunk(chunk)?;
     }
+
+    Ok(())
+}
+
+fn print_chunk(chunk: &Chunk) -> Result<(), Report> {
+    match &chunk.into_object()? {
+        KontaktObject::Program(program) => {
+            print_kontakt_program(program)?;
+            for (i, chunk) in program.children().iter().enumerate() {
+                print!("{i} ");
+                print_chunk(chunk)?;
+            }
+        }
+        KontaktObject::BParFX(bparfx) => println!("BParFX {bparfx:?}"),
+        KontaktObject::FNTableImpl(filetable) => print_filetable(&filetable),
+        KontaktObject::LoopArray(looparray) => println!("{looparray:?}"),
+        KontaktObject::BBank(bank) => println!("Bank {:?}", bank.params()?),
+        _ => println!(
+            "Unsupported Chunk(0x{:x}) {:?}",
+            &chunk.id,
+            chunk.into_object()?
+        ),
+    };
 
     Ok(())
 }
@@ -44,28 +55,28 @@ pub fn main() -> Result<(), Report> {
 fn print_kontakt_program(program: &Program) -> Result<(), Report> {
     println!("Program 0x{:X}:", program.version());
 
-    let params = program.public_params()?;
+    let params = program.params()?;
     println!("  name:\t\t\t{}", params.name);
     println!("  library_id:\t\t{}", params.library_id);
     println!("  children:\t\t{}", program.children().len());
     println!("");
 
-    if let Some(zones) = program.zones() {
-        let zones = zones?;
-
-        println!("ZoneList:");
-        println!("  zones:\t\t{}\n", &zones.len());
-
-        // for zone in zones {
-        //     let p = zone.public_params()?;
-        //     println!(
-        //         "  ZoneData: start={} end={}",
-        //         &p.sample_start, &p.sample_end
-        //     );
-        // }
-    }
-
-    println!("");
+    // if let Some(zones) = program.zones() {
+    //     let zones = zones?;
+    //
+    //     println!("ZoneList:");
+    //     println!("  zones:\t\t{}\n", &zones.len());
+    //
+    //     // for zone in zones {
+    //     //     let p = zone.public_params()?;
+    //     //     println!(
+    //     //         "  ZoneData: start={} end={}",
+    //     //         &p.sample_start, &p.sample_end
+    //     //     );
+    //     // }
+    // }
+    //
+    // println!("");
     Ok(())
 }
 

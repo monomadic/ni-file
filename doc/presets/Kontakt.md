@@ -63,14 +63,14 @@ ID | SIZE | DATA
 - 0x2e BZoneArraySer
 - 0x2f BGroupCompleteSer
 - 0x30 PresetImpl
-- 0x32 ? VoiceGroups
-- 0x33 ? GroupList
-- 0x34 ? ZoneList
-- 0x35 ? PrivateRawObject
-- 0x36 ? ProgramList
-- 0x37 ? SlotList
-- 0x38 ? StarCritList
-- 0x39 ? LoopArray
+- 0x32 VoiceGroups
+- 0x33 GroupList
+- 0x34 ZoneList
+- 0x35 PrivateRawObject
+- 0x36 ProgramList
+- 0x37 SlotList
+- 0x38 StarCritList
+- 0x39 LoopArray
 - 0x3a BParameterArraySer<BParFX,8>
 - 0x3b BParameterArraySer<BParInternalMod,16>
 - 0x3c BParameterArraySer<BParExternalMod,32>

@@ -126,7 +126,7 @@ pub fn main() -> Result<(), Report> {
 fn print_kontakt_program(program: &Program) -> Result<(), Report> {
     println!("\nProgram 0x{:X}:", program.version());
 
-    let params = program.public_params()?;
+    let params = program.params()?;
     println!("  name:\t\t\t{}", params.name);
     println!("  library_id:\t\t{}", params.library_id);
 

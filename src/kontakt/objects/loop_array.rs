@@ -1,29 +1,35 @@
 use std::io::Cursor;
 
 use crate::{
-    kontakt::{error::KontaktError, structured_object::StructuredObject, Chunk},
+    kontakt::{Chunk, KontaktError},
     read_bytes::ReadBytesExt,
     Error,
 };
 
-pub const KONTAKT_BPARFX_ID: u16 = 0x25;
-
+/// Type:           Chunk
+/// SerType:        0x39
+/// Kontakt 7:      ?
+/// KontaktIO:      LoopArray
 #[derive(Debug)]
-pub struct BParFX(StructuredObject);
+pub struct LoopArray;
 
-impl BParFX {
+impl LoopArray {
     pub fn read<R: ReadBytesExt>(mut reader: R) -> Result<Self, Error> {
-        Ok(Self(StructuredObject::read(&mut reader)?))
+        let num_items = reader.read_u8()?;
+
+        for _ in 0..num_items {}
+
+        Ok(Self)
     }
 }
 
-impl std::convert::TryFrom<&Chunk> for BParFX {
+impl std::convert::TryFrom<&Chunk> for LoopArray {
     type Error = Error;
 
     fn try_from(chunk: &Chunk) -> Result<Self, Self::Error> {
-        if chunk.id != KONTAKT_BPARFX_ID {
+        if chunk.id != 0x32 {
             return Err(KontaktError::IncorrectID {
-                expected: KONTAKT_BPARFX_ID,
+                expected: 0x32,
                 got: chunk.id,
             }
             .into());

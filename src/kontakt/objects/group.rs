@@ -2,7 +2,11 @@
 
 use std::io::Cursor;
 
-use crate::{kontakt::StructuredObject, read_bytes::ReadBytesExt, Error};
+use crate::{
+    kontakt::{objects::start_crit_list::StartCritList, StructuredObject},
+    read_bytes::ReadBytesExt,
+    Error,
+};
 
 #[derive(Debug)]
 pub struct Group(pub StructuredObject);
@@ -24,11 +28,25 @@ pub struct GroupParams {
     muted: bool,
     soloed: bool,
     interp_quality: i32,
+    // v90
+    //     BParameterArraySerBParInternalMod16 0x3B
+    //     BParameterArraySerBParExternalMod32 0x3C
+    //     StartCritList 0x38
+    // v95
+    //     BParGroupDynamics 0x4A
 }
 
 impl Group {
     pub fn params(&self) -> Result<GroupParams, Error> {
         let mut reader = Cursor::new(&self.0.public_data);
+
+        println!("{} {}", self.0.children.len(), self.0.version);
+
+        for chunk in &self.0.children {
+            println!("{:?} 0x{:x}", chunk.into_object()?, chunk.id);
+        }
+
+        // let start_crit_list: StartCritList = self.0.children[1].try_into()?;
 
         Ok(GroupParams {
             name: reader.read_widestring_utf16()?,

@@ -8,7 +8,12 @@ use crate::{
 
 use super::Group;
 
-// serType: 0x33
+pub const KONTAKT_GROUPLIST_ID: u16 = 0x33;
+
+/// Type:           Chunk
+/// SerType:        0x33
+/// Kontakt 7:      BProgram::readGroups()
+/// KontaktIO:      GroupList
 #[derive(Debug)]
 pub struct GroupList {
     groups: Vec<Group>,
@@ -21,7 +26,7 @@ impl GroupList {
 
         for _ in 0..num_groups {
             let group = Group(StructuredObject::read(&mut reader)?);
-            dbg!(&group.params());
+            group.params()?;
             groups.push(group);
         }
 
@@ -33,9 +38,9 @@ impl std::convert::TryFrom<&Chunk> for GroupList {
     type Error = Error;
 
     fn try_from(chunk: &Chunk) -> Result<Self, Self::Error> {
-        if chunk.id != 0x33 {
+        if chunk.id != KONTAKT_GROUPLIST_ID {
             return Err(KontaktError::IncorrectID {
-                expected: 0x33,
+                expected: KONTAKT_GROUPLIST_ID,
                 got: chunk.id,
             }
             .into());

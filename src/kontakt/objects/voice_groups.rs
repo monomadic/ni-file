@@ -8,6 +8,10 @@ use crate::{
 
 const MAX_VOICE_GROUPS: usize = 128;
 
+/// SerType:        0x32
+/// Known Versions: 0x60
+/// Kontakt 7:      BProgram::readVoiceGroups()
+/// KontaktIO:      VoiceGroups
 #[derive(Debug)]
 pub struct VoiceGroups {
     voice_limit: VoiceLimit,

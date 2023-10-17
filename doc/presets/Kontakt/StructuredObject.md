@@ -1,6 +1,6 @@
 # StructuredObject
 
-A generic container type that contains public data, private data, and children. Most chunks are StructuredObjects, but not all.
+A generic data type that provides versioning, public data, private data, and children. Many `Chunk`s are StructuredObjects, but not all.
 
 - LibKIO `StructuredObject`
 - Kontakt 7
