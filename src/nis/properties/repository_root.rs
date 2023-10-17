@@ -77,7 +77,6 @@ impl RepositoryRoot {
         // UUID::read
 
         // let a = reader.read_u64_le()?;
-        // dbg!(a);
 
         let mut buf = Vec::new();
         reader.read_to_end(&mut buf)?;

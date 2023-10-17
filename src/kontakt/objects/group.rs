@@ -16,8 +16,11 @@ pub struct GroupParams {
     name: String,
     volume: f32,
     pan: f32,
+    /// Change pitch in semitones.
     tune: f32,
+    /// Repitch samples to midi note played.
     key_tracking: bool,
+    /// Play samples in reverse.
     reverse: bool,
     release_trigger: bool,
     release_trigger_note_monophonic: bool,

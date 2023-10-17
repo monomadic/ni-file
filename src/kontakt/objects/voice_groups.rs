@@ -38,7 +38,7 @@ impl VoiceGroups {
 
         // let mut groups: [Option<VoiceGroup>; MAX_VOICE_GROUPS] = [None; MAX_VOICE_GROUPS];
         let groups = Vec::new();
-        for i in 0..MAX_VOICE_GROUPS {
+        for i in 0..8 {
             if indexes[i >> 3] & (1 << (i & 7)) != 0 {
                 // groups[i] = None;
                 // println!("{}: {:?}", i + 1, reader.read_u8()?);

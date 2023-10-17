@@ -1,4 +1,10 @@
-use crate::{kontakt::chunk::Chunk, read_bytes::ReadBytesExt, Error};
+use std::io::Cursor;
+
+use crate::{
+    kontakt::{chunk::Chunk, KontaktError},
+    read_bytes::ReadBytesExt,
+    Error,
+};
 
 use super::BParFX;
 
@@ -9,13 +15,16 @@ use super::BParFX;
 /// KontaktIO:      BParamArray<8>
 #[doc = include_str!("../../../doc/presets/Kontakt/BParamArray.md")]
 #[derive(Debug)]
-pub struct BParamArrayBParFX8(Vec<Option<BParFX>>);
+pub struct BParamArrayBParFX8 {
+    pub version: u16,
+    pub params: Vec<Option<BParFX>>,
+}
 
 impl BParamArrayBParFX8 {
     pub fn read<R: ReadBytesExt>(mut reader: R, num_items: u32) -> Result<Self, Error> {
         let is_structured_data = reader.read_bool()?;
         let version = reader.read_u16_le()?;
-        let mut items = Vec::new();
+        let mut params = Vec::new();
 
         assert!(!is_structured_data); // always false?
 
@@ -28,15 +37,31 @@ impl BParamArrayBParFX8 {
                     let has_item = reader.read_bool()?;
                     if has_item {
                         let chunk = Chunk::read(&mut reader)?;
-                        items.push(Some((&chunk).try_into()?));
+                        params.push(Some((&chunk).try_into()?));
                     } else {
-                        items.push(None);
+                        params.push(None);
                     }
                 }
             }
         }
 
-        Ok(Self(items))
+        Ok(Self { version, params })
+    }
+}
+
+impl std::convert::TryFrom<&Chunk> for BParamArrayBParFX8 {
+    type Error = Error;
+
+    fn try_from(chunk: &Chunk) -> Result<Self, Self::Error> {
+        if chunk.id != 0x3A {
+            return Err(KontaktError::IncorrectID {
+                expected: 0x3A,
+                got: chunk.id,
+            }
+            .into());
+        }
+        let reader = Cursor::new(&chunk.data);
+        Self::read(reader, 8)
     }
 }
 
@@ -53,7 +78,7 @@ mod tests {
         let file = File::open("tests/data/Objects/Kontakt/BParameterArray/BParameterArray-001")?;
         let arr = BParamArrayBParFX8::read(file, 8)?;
 
-        assert_eq!(arr.0.len(), 8);
+        assert_eq!(arr.params.len(), 8);
         Ok(())
     }
 
@@ -62,7 +87,7 @@ mod tests {
         let file = File::open("tests/data/Objects/Kontakt/BParameterArray/BParameterArray-000")?;
         let arr = BParamArrayBParFX8::read(file, 8)?;
 
-        assert_eq!(arr.0.len(), 8);
+        assert_eq!(arr.params.len(), 8);
         Ok(())
     }
 }

@@ -8,12 +8,21 @@ use crate::{
 
 pub const KONTAKT_BPARFX_ID: u16 = 0x25;
 
+/// Type:           StructuredObject
+/// SerType:        0x25
+/// Versions:       0x50
+/// Kontakt 7:      BParameterArraySerBParFX8
+/// KontaktIO:      BParamArray<8>
 #[derive(Debug)]
 pub struct BParFX(StructuredObject);
 
 impl BParFX {
     pub fn read<R: ReadBytesExt>(mut reader: R) -> Result<Self, Error> {
         Ok(Self(StructuredObject::read(&mut reader)?))
+    }
+
+    pub fn version(&self) -> u16 {
+        self.0.version
     }
 }
 

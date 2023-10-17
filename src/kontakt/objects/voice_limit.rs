@@ -4,10 +4,22 @@ use crate::{read_bytes::ReadBytesExt, Error};
 #[derive(Debug)]
 pub struct VoiceLimit {
     name: String,
+    /// Method to decide which voices will be killed.
+    /// - Options: Any, Oldest, Newest, Highest, Lowest
+    /// - Default: Oldest
     kill_mode: i16,
+    /// Prefer to keep already released voices.
+    /// - Default: true
     prefer_released: bool,
+    /// Maximum number of voices that can be used by this voice group.
+    /// - Default: 1
     max_num_voices: i32,
+    /// Time in ms for stolen voices to fade out.
+    /// - Default: 10
     ms_fade_time: i32,
+    /// Kills playing samples in other exclusion groups.
+    /// - Range: 1-16, off (0)
+    /// - Default: off
     exclusion_group: i32,
 }
 

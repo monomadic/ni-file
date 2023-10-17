@@ -16,7 +16,7 @@ pub const KONTAKT_GROUPLIST_ID: u16 = 0x33;
 /// KontaktIO:      GroupList
 #[derive(Debug)]
 pub struct GroupList {
-    groups: Vec<Group>,
+    pub groups: Vec<Group>,
 }
 
 impl GroupList {
@@ -26,7 +26,7 @@ impl GroupList {
 
         for _ in 0..num_groups {
             let group = Group(StructuredObject::read(&mut reader)?);
-            group.params()?;
+            // group.params()?;
             groups.push(group);
         }
 

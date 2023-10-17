@@ -3,7 +3,9 @@ use std::io::Cursor;
 use crate::{read_bytes::ReadBytesExt, Error};
 
 use super::{
-    objects::{BParFX, Bank, FNTableImpl, GroupList, LoopArray, Program, VoiceGroups},
+    objects::{
+        BParFX, BParamArrayBParFX8, Bank, FNTableImpl, GroupList, LoopArray, Program, VoiceGroups,
+    },
     structured_object::StructuredObject,
 };
 
@@ -96,7 +98,7 @@ pub enum KontaktObject {
     SlotList,
     StartCritList,
     LoopArray(LoopArray),
-    BParameterArraySerBParFX8,
+    BParameterArraySerBParFX8(BParamArrayBParFX8),
     BParameterArraySerBParInternalMod16,
     BParameterArraySerBParExternalMod32,
     BOutputConfiguration,
@@ -208,7 +210,7 @@ impl TryFrom<&Chunk> for KontaktObject {
             0x37 => KontaktObject::SlotList,
             0x38 => KontaktObject::StartCritList,
             0x39 => KontaktObject::LoopArray(chunk.try_into()?),
-            0x3a => KontaktObject::BParameterArraySerBParFX8,
+            0x3a => KontaktObject::BParameterArraySerBParFX8(chunk.try_into()?),
             0x3b => KontaktObject::BParameterArraySerBParInternalMod16,
             0x3c => KontaktObject::BParameterArraySerBParExternalMod32,
             0x3d => KontaktObject::FileNameListPreK51,
@@ -263,9 +265,7 @@ mod tests {
     fn test_structured_object() -> Result<(), Error> {
         let file = File::open("tests/data/Objects/KontaktV42/StructuredObject/0x28")?;
         let data = Chunk::read(file)?;
-        let chunk: KontaktObject = (&data).try_into()?;
-
-        dbg!(chunk);
+        let _chunk: KontaktObject = (&data).try_into()?;
 
         Ok(())
     }
@@ -274,9 +274,7 @@ mod tests {
     fn test_fntableimpl() -> Result<(), Error> {
         let file = File::open("tests/data/Objects/KontaktV42/FNTableImpl/FNTableImpl-001")?;
         let data = Chunk::read(file)?;
-        let chunk: KontaktObject = (&data).try_into()?;
-
-        dbg!(chunk);
+        let _chunk: KontaktObject = (&data).try_into()?;
 
         Ok(())
     }

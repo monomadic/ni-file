@@ -30,6 +30,7 @@ pub fn main() -> Result<(), Report> {
 }
 
 fn print_chunk(chunk: &Chunk) -> Result<(), Report> {
+    print!("0x{:X} ", chunk.id);
     match &chunk.into_object()? {
         KontaktObject::Program(program) => {
             print_kontakt_program(program)?;
@@ -42,6 +43,17 @@ fn print_chunk(chunk: &Chunk) -> Result<(), Report> {
         KontaktObject::FNTableImpl(filetable) => print_filetable(&filetable),
         KontaktObject::LoopArray(looparray) => println!("{looparray:?}"),
         KontaktObject::BBank(bank) => println!("Bank {:?}", bank.params()?),
+        KontaktObject::VoiceGroups(vg) => println!("VoiceGroups {:?}", vg),
+        KontaktObject::GroupList(gl) => println!("GroupList {:?}", gl.groups.len()),
+        KontaktObject::StartCritList => println!("StartCritList"),
+        KontaktObject::BParameterArraySerBParFX8(pa) => {
+            println!("BParamArrayBParFX8 v{:X}", pa.version);
+            for (i, param) in pa.params.iter().enumerate() {
+                if let Some(param) = param {
+                    println!("- [{}] BParFX v{:X}", i, param.version());
+                }
+            }
+        }
         _ => println!(
             "Unsupported Chunk(0x{:x}) {:?}",
             &chunk.id,
@@ -49,11 +61,12 @@ fn print_chunk(chunk: &Chunk) -> Result<(), Report> {
         ),
     };
 
+    println!("");
     Ok(())
 }
 
 fn print_kontakt_program(program: &Program) -> Result<(), Report> {
-    println!("Program 0x{:X}:", program.version());
+    println!("Program v{:X}:", program.version());
 
     let params = program.params()?;
     println!("  name:\t\t\t{}", params.name);
