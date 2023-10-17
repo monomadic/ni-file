@@ -1,6 +1,7 @@
 use crate::{read_bytes::ReadBytesExt, Error};
 
-/// SerType:        0xF
+/// Type:           Chunk
+/// SerType:        0x0F
 /// Known Versions: 0x70
 /// Kontakt 7:      BParStartCriteria
 /// KontaktIO:      K4PL\_StartCriteria

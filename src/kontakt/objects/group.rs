@@ -3,7 +3,7 @@
 use std::io::Cursor;
 
 use crate::{
-    kontakt::{objects::start_crit_list::StartCritList, StructuredObject},
+    kontakt::{objects::start_criteria_list::StartCriteriaList, StructuredObject},
     read_bytes::ReadBytesExt,
     Error,
 };
@@ -13,28 +13,28 @@ pub struct Group(pub StructuredObject);
 
 #[derive(Debug)]
 pub struct GroupParams {
-    name: String,
-    volume: f32,
-    pan: f32,
+    pub name: String,
+    pub volume: f32,
+    pub pan: f32,
     /// Change pitch in semitones.
-    tune: f32,
-    /// Repitch samples to midi note played.
-    key_tracking: bool,
+    pub tune: f32,
+    /// Repitch samples to midi note triggered.
+    pub key_tracking: bool,
     /// Play samples in reverse.
-    reverse: bool,
-    release_trigger: bool,
-    release_trigger_note_monophonic: bool,
-    rls_trig_counter: i32,
-    midi_channel: i16,
-    voice_group_index: i32,
-    fx_idx_amp_split_point: i32,
-    muted: bool,
-    soloed: bool,
-    interp_quality: i32,
+    pub reverse: bool,
+    pub release_trigger: bool,
+    pub release_trigger_note_monophonic: bool,
+    pub rls_trig_counter: i32,
+    pub midi_channel: i16,
+    pub voice_group_index: i32,
+    pub fx_idx_amp_split_point: i32,
+    pub muted: bool,
+    pub soloed: bool,
+    pub interp_quality: i32,
     // v90
     //     BParameterArraySerBParInternalMod16 0x3B
     //     BParameterArraySerBParExternalMod32 0x3C
-    //     StartCritList 0x38
+    pub start_criteria: StartCriteriaList,
     // v95
     //     BParGroupDynamics 0x4A
 }
@@ -43,13 +43,11 @@ impl Group {
     pub fn params(&self) -> Result<GroupParams, Error> {
         let mut reader = Cursor::new(&self.0.public_data);
 
-        println!("{} {}", self.0.children.len(), self.0.version);
+        // println!("{} {}", self.0.children.len(), self.0.version);
 
-        for chunk in &self.0.children {
-            println!("{:?} 0x{:x}", chunk.into_object()?, chunk.id);
-        }
-
-        // let start_crit_list: StartCritList = self.0.children[1].try_into()?;
+        // for chunk in &self.0.children {
+        //     println!("{:?} 0x{:x}", chunk.into_object()?, chunk.id);
+        // }
 
         Ok(GroupParams {
             name: reader.read_widestring_utf16()?,
@@ -67,6 +65,7 @@ impl Group {
             muted: reader.read_bool()?,
             soloed: reader.read_bool()?,
             interp_quality: reader.read_i32_le()?,
+            start_criteria: (&self.0.children[2]).try_into()?,
         })
     }
 }

@@ -255,9 +255,9 @@ fn print_kontakt_preset(preset: &KontaktPreset) -> Result<()> {
             println!("  master_tempo:\t\t{}", bank.master_tempo);
             println!("  name:\t\t\t{}", bank.name);
 
-            let slotlist = &p.bank.slot_list()?.params()?;
-            println!("\nSlotList:");
-            println!("  slots:\t{:?}", slotlist);
+            // let slotlist = &p.bank.slot_list()?.params()?;
+            // println!("\nSlotList:");
+            // println!("  slots:\t{:?}", slotlist);
 
             print_filetable(&p.filetable);
         }

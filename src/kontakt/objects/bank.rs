@@ -8,6 +8,27 @@ use crate::{
 
 pub const KONTAKT_BANK_ID: u16 = 0x03;
 
+/// Type:           Chunk
+/// SerType:        0x03
+/// Known Versions: 0x60, 0x71, 0x72, 0x73
+/// Kontakt 7:      BBank
+/// KontaktIO:      K4PL\_Bank
+///
+/// Children:
+///   SaveSettings 0x47
+///   BParScript 0x6
+///   BParScript 0x6
+///   BParScript 0x6
+///   BParScript 0x6
+///   BParScript 0x6
+///   BOutputConfiguration 0x3e
+///   SlotList 0x37
+///   Unsupported(72) 0x48
+///   Unsupported(73) 0x49
+///
+///   ProgramContainer? 0x29
+///   BMidiObject?
+///   BMultiChannelProcessBuffer?
 #[derive(Debug)]
 pub struct Bank(StructuredObject);
 
@@ -38,11 +59,9 @@ impl Bank {
     }
 
     pub fn slot_list(&self) -> Result<super::SlotList, Error> {
-        self.0.find_slot_list()
+        (&self.0.children[7]).try_into()
     }
 }
-
-impl StructuredObject {}
 
 impl std::convert::TryFrom<&Chunk> for Bank {
     type Error = Error;
@@ -75,11 +94,14 @@ mod tests {
 
     #[test]
     fn test_bank() -> Result<(), Error> {
-        let chunk: Chunk = Chunk::read(File::open("tests/data/Objects/Kontakt/Bank/Bank-000")?)?;
+        let chunk = Chunk::read(File::open(
+            "tests/data/Objects/Kontakt/Bank/BankV73-000.kon",
+        )?)?;
         let bank = Bank::try_from(&chunk)?;
+        dbg!(bank.0.version);
         dbg!(bank.params()?);
         for chunk in bank.0.children {
-            println!("{:?} {:x}", chunk.into_object()?, chunk.id);
+            println!("{:?} 0x{:x}", chunk.into_object()?, chunk.id);
 
             // let filename = format!("{:?}-{:x}.chunk", chunk.into_type()?, chunk.id);
             // std::fs::write(filename, chunk.data)?;

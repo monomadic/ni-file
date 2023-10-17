@@ -1,5 +1,10 @@
 use crate::{read_bytes::ReadBytesExt, Error};
 
+/// Type:           Chunk
+/// SerType:        0x0F
+/// Version:        0x70
+/// Kontakt 7:      BParStartCriteria
+/// KontaktIO:      K4PL_StartCriteria
 pub struct StartCriteria {
     mode: i32,
     next_criteria: i32,

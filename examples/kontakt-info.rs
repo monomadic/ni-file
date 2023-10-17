@@ -43,11 +43,49 @@ fn print_chunk(chunk: &Chunk) -> Result<(), Report> {
             println!("BParFX v{:X}", bparfx.version());
         }
         KontaktObject::FNTableImpl(filetable) => print_filetable(&filetable),
+        KontaktObject::FileNameListPreK51(fnl) => {
+            println!("\nFileNameListPreK51:");
+            for (_i, path) in &fnl.filenames {
+                println!("  {path}");
+            }
+        }
+        KontaktObject::SlotList(list) => {
+            println!("SlotList {list:?}");
+            for (_, prog) in &list.slots {
+                println!("  {:?}", prog.params()?);
+                for chunk in &prog.0.children {
+                    print_chunk(chunk)?;
+                }
+            }
+        }
         KontaktObject::LoopArray(looparray) => println!("{looparray:?}"),
-        KontaktObject::BBank(bank) => println!("Bank {:?}", bank.params()?),
+        KontaktObject::Bank(bank) => {
+            println!("Bank {:?}", bank.params()?);
+            let slots = bank.slot_list()?.slots;
+            println!("  slots: {}\n", slots.len());
+
+            for (_i, slot) in slots {
+                println!("{:?}", &slot.params()?);
+            }
+        }
         KontaktObject::VoiceGroups(vg) => println!("VoiceGroups {:?}", vg),
-        KontaktObject::GroupList(gl) => println!("GroupList {:?}", gl.groups.len()),
-        KontaktObject::StartCritList => println!("StartCritList"),
+        KontaktObject::GroupList(gl) => {
+            println!("GroupList");
+            println!("  groups: {}\n", gl.groups.len());
+            for group in &gl.groups {
+                println!("  Group v{:X}", group.0.version);
+                let p = group.params()?;
+                println!("  name {}", p.name);
+                println!("");
+                for chunk in &group.0.children {
+                    print_chunk(chunk)?;
+                }
+            }
+            println!("");
+        }
+        KontaktObject::StartCriteriaList(scl) => {
+            println!("StartCriteriaList: {}", scl.group_starts)
+        }
         KontaktObject::BParameterArraySerBParFX8(pa) => {
             println!("BParamArrayBParFX8 v{:X}", pa.version);
             println!("  params: {}", pa.len());
@@ -208,9 +246,9 @@ fn print_kontakt_preset(preset: &KontaktPreset) -> Result<()> {
             println!("  master_tempo:\t\t{}", bank.master_tempo);
             println!("  name:\t\t\t{}", bank.name);
 
-            let slotlist = &p.bank.slot_list()?.params()?;
-            println!("\nSlotList:");
-            println!("  slots:\t{:?}", slotlist);
+            // let slotlist = &p.bank.slot_list()?.params()?;
+            // println!("\nSlotList:");
+            // println!("  slots:\t{:?}", slotlist);
 
             print_filetable(&p.filetable);
         }

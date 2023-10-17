@@ -42,6 +42,11 @@ use crate::{
     Error,
 };
 
+/// Type:           Chunk
+/// SerType:        0x25
+/// Versions:       0x50
+/// Kontakt 7:      BParameterArraySerBParFX8
+/// KontaktIO:      BParamArray<8>
 #[derive(Debug)]
 pub struct FileNameListPreK51 {
     pub filenames: HashMap<u32, String>,
@@ -49,17 +54,18 @@ pub struct FileNameListPreK51 {
 
 impl FileNameListPreK51 {
     pub fn read<R: ReadBytesExt>(mut reader: R) -> Result<Self, Error> {
+        let mut filenames = HashMap::new();
         let _ = reader.read_u32_le()?;
         let file_count = reader.read_u32_le()?;
 
-        let mut filenames = HashMap::new();
         for i in 0..file_count {
+            let mut filename = Vec::new();
             let segments = reader.read_i32_le()?;
 
-            let mut filename = Vec::new();
             for _ in 0..segments {
                 let _segment_type = reader.read_i8()?;
                 let segment = reader.read_widestring_utf16()?;
+
                 filename.push(segment);
             }
 
