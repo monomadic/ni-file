@@ -99,9 +99,11 @@ mod tests {
 
     #[test]
     fn test_zone_data_v9a_000() -> Result<(), Error> {
-        let file = File::open("tests/data/Objects/Kontakt/ZoneData/ZoneDataV9A/ZoneDataV9A-000")?;
+        let file =
+            File::open("tests/data/Objects/Kontakt/ZoneData/ZoneDataV9A/ZoneDataV9A-000.kon")?;
         let zone = Zone::read(file)?;
-        dbg!(zone.params()?);
+        assert_eq!(zone.0.version, 0x9A);
+        zone.params()?;
         Ok(())
     }
 }

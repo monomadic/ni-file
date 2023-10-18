@@ -1,15 +1,27 @@
+use std::fmt::Debug;
+
 use crate::prelude::io;
 use crate::{read_bytes::ReadBytesExt, Error, NIFileError};
 
 use super::chunk::Chunk;
 
 #[doc = include_str!("../../doc/presets/Kontakt/StructuredObject.md")]
-#[derive(Debug)]
 pub struct StructuredObject {
     pub version: u16,
     pub public_data: Vec<u8>,
     pub private_data: Vec<u8>,
     pub children: Vec<Chunk>,
+}
+
+impl Debug for StructuredObject {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.debug_struct("StructuredObject")
+            .field("version", &format_args!("0x{:X}", self.version))
+            .field("public_data_bytes", &self.public_data.len())
+            .field("private_data_bytes", &self.private_data.len())
+            .field("child_count", &self.children.len())
+            .finish()
+    }
 }
 
 impl StructuredObject {

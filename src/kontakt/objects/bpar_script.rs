@@ -8,7 +8,7 @@ use crate::{
 
 const CHUNK_ID: u16 = 0x06;
 
-/// Type:           Chunk<Data>
+/// Type:           Chunk<StructuredObject>
 /// SerType:        0x06
 /// Versions:       0x50, 0x60
 /// Kontakt 7:      BParScript

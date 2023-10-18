@@ -1,5 +1,7 @@
 use crate::{read_bytes::ReadBytesExt, Error};
 
+// TODO: change to Chunk reader
+
 /// Type:           Chunk
 /// SerType:        0x05
 /// Kontakt 7:      BLoop

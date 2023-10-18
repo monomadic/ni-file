@@ -35,15 +35,16 @@ fn print_chunk(chunk: &Chunk, indent: usize) -> Result<(), Report> {
     print!("[0x{:X}] ", chunk.id);
     match &chunk.into_object()? {
         KontaktObject::Program(program) => {
-            println!("Program v{:X}:", program.version());
+            println!("Program v{:X}", program.version());
 
-            let params = program.params()?;
-            print!("{:>indent$}", " ");
-            println!("name:\t\t\t{}", params.name);
+            print!("{:indent$}", " ");
+            println!("{program:?}");
 
-            print!("{:>indent$}", " ");
-            println!("library_id:\t\t{}\n", params.library_id);
+            print!("{:indent$}", " ");
+            println!("{:?}", program.params()?);
 
+            print!("{:indent$}", " ");
+            println!("children:");
             for chunk in program.children() {
                 print_chunk(chunk, indent + INDENT_SIZE)?;
             }

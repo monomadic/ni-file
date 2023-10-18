@@ -4,7 +4,9 @@ use crate::{
     Error,
 };
 
-use super::zone_data::Zone;
+use super::Zone;
+
+const CHUNK_ID: u16 = 0x34;
 
 /// Type:           Chunk
 /// SerType:        0x34
@@ -33,9 +35,9 @@ impl std::convert::TryFrom<&Chunk> for ZoneList {
     type Error = Error;
 
     fn try_from(chunk: &Chunk) -> Result<Self, Self::Error> {
-        if chunk.id != 0x34 {
+        if chunk.id != CHUNK_ID {
             return Err(KontaktError::IncorrectID {
-                expected: 0x34,
+                expected: CHUNK_ID,
                 got: chunk.id,
             }
             .into());
@@ -52,17 +54,9 @@ mod tests {
     use super::*;
     use crate::Error;
 
-    // #[test]
-    // fn test_zone_list_empty() -> Result<(), Error> {
-    //     let file = File::open("tests/data/Objects/Kontakt/ZoneList/ZoneList-000")?;
-    //     let zonelist = ZoneList::read(file)?;
-    //     assert_eq!(zonelist.zones.len(), 0);
-    //     Ok(())
-    // }
-
     #[test]
     fn test_zone_list_001() -> Result<(), Error> {
-        let file = File::open("tests/data/Objects/Kontakt/ZoneList/ZoneList-001")?;
+        let file = File::open("tests/data/Objects/Kontakt/0x34-ZoneList/old/ZoneList-001.kon")?;
         let zonelist = ZoneList::read(file)?;
         assert_eq!(zonelist.zones.len(), 61);
         Ok(())
@@ -70,7 +64,7 @@ mod tests {
 
     #[test]
     fn test_zone_list_002() -> Result<(), Error> {
-        let file = File::open("tests/data/Objects/Kontakt/ZoneList/ZoneList-002")?;
+        let file = File::open("tests/data/Objects/Kontakt/0x34-ZoneList/old/ZoneList-002.kon")?;
         let zonelist = ZoneList::read(file)?;
         assert_eq!(zonelist.zones.len(), 31);
         Ok(())
@@ -78,7 +72,7 @@ mod tests {
 
     #[test]
     fn test_zone_list_003() -> Result<(), Error> {
-        let file = File::open("tests/data/Objects/Kontakt/ZoneList/ZoneList-003")?;
+        let file = File::open("tests/data/Objects/Kontakt/0x34-ZoneList/old/ZoneList-003.kon")?;
         let zonelist = ZoneList::read(file)?;
         assert_eq!(zonelist.zones.len(), 32);
         Ok(())
