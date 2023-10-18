@@ -4,9 +4,9 @@ use crate::{read_bytes::ReadBytesExt, Error};
 
 use super::{
     objects::{
-        BParFX, BParFXSendLevels, BParamArrayBParFX8, Bank, FNTableImpl, FileNameListPreK51,
-        GroupList, LoopArray, PrivateRawObject, Program, ProgramContainer, ProgramList, SlotList,
-        StartCriteriaList, VoiceGroup, VoiceGroups, ZoneList,
+        BParFX, BParFXSendLevels, BParScript, BParamArrayBParFX8, Bank, FNTableImpl,
+        FileNameListPreK51, GroupList, LoopArray, PrivateRawObject, Program, ProgramContainer,
+        ProgramList, SlotList, StartCriteriaList, VoiceGroup, VoiceGroups, ZoneList,
     },
     structured_object::StructuredObject,
 };
@@ -47,7 +47,7 @@ pub enum KontaktObject {
     Bank(Bank),
     BGroup,
     BLoop,
-    BParScript,
+    BParScript(BParScript),
     BParEnv,
     BParLFO,
     BParArp,
@@ -160,7 +160,7 @@ impl TryFrom<&Chunk> for KontaktObject {
             0x03 => KontaktObject::Bank(chunk.try_into()?),
             0x04 => KontaktObject::BGroup,
             0x05 => KontaktObject::BLoop,
-            0x06 => KontaktObject::BParScript,
+            0x06 => KontaktObject::BParScript(chunk.try_into()?),
             0x07 => KontaktObject::BParEnv,
             0x08 => KontaktObject::BParLFO,
             0x09 => KontaktObject::BParArp,

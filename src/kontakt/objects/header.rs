@@ -258,13 +258,14 @@ pub enum PatchType {
 }
 
 impl PatchType {
+    /// Get a meaningful string for a PatchType (FileTypeProxy).
     pub fn description(&self) -> String {
         match self {
-            PatchType::NKM => "Multi",
-            PatchType::NKI => "Instrument",
             PatchType::NKB => "Bank",
-            PatchType::NKP => "Preset",
             PatchType::NKG => "Group",
+            PatchType::NKI => "Instrument",
+            PatchType::NKM => "Multi",
+            PatchType::NKP => "Preset",
             PatchType::NKZ => todo!(),
             PatchType::Unknown(_) => "?",
         }

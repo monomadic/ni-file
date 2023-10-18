@@ -55,6 +55,9 @@ fn print_chunk(chunk: &Chunk, indent: usize) -> Result<(), Report> {
                 print_chunk(chunk, indent + INDENT_SIZE)?;
             }
         }
+        KontaktObject::BParScript(script) => {
+            println!("BParScript v{:X} {:?}", script.0.version, script.params()?);
+        }
         KontaktObject::BParFXSendLevel(fx) => {
             println!("BParFXSendLevel {:?}", fx);
         }

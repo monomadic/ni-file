@@ -142,6 +142,35 @@ pub trait ReadBytesExt: Read + Seek {
             .map_err(|e| io::Error::new(io::ErrorKind::InvalidData, e.utf8_error()))
     }
 
+    fn read_optional_sized_utf8(&mut self) -> Result<Option<String>, ReadBytesError> {
+        let length = self.read_u32_le()?;
+
+        if length == 0xFFFFFFFF {
+            return Ok(None);
+        }
+
+        if length == 0 {
+            return Ok(Some(String::new()));
+        }
+
+        let bytes = self.read_bytes(length as usize)?;
+
+        String::from_utf8(bytes)
+            .map_err(|e| ReadBytesError::Generic(format!("Error converting bytes to UTF8: {e}")))
+            .map(|s| Some(s))
+    }
+
+    fn read_sized_utf8(&mut self) -> Result<String, ReadBytesError> {
+        let size_field = self.read_u32_le()?;
+        if size_field == 0 {
+            return Ok(String::new());
+        }
+        let bytes = self.read_bytes(size_field as usize)?;
+
+        String::from_utf8(bytes)
+            .map_err(|e| ReadBytesError::Generic(format!("Error converting bytes to UTF8: {e}")))
+    }
+
     fn read_widestring_utf16(&mut self) -> Result<String, ReadBytesError> {
         let size_field = self.read_u32_le()?;
         if size_field == 0 {

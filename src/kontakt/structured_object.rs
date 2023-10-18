@@ -17,6 +17,7 @@ impl StructuredObject {
         let is_data_structured = reader.read_bool()?;
         if !is_data_structured {
             let mut buf = Vec::new();
+            // NOTE: I think a u16 for version is still read here...
             reader.read_to_end(&mut buf)?;
             return Ok(Self {
                 public_data: buf,
