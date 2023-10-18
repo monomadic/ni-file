@@ -1,4 +1,4 @@
-use std::{fs::write, io::Cursor};
+use std::io::Cursor;
 
 use crate::{
     kontakt::{error::KontaktError, structured_object::StructuredObject, Chunk},
@@ -29,7 +29,6 @@ pub struct BParScriptParams {
 
 impl BParScript {
     pub fn params(&self) -> Result<BParScriptParams, Error> {
-        write("ob", &self.0.public_data)?;
         let mut reader = Cursor::new(&self.0.public_data);
 
         let _version = reader.read_u16_le()?;
