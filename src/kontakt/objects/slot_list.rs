@@ -7,15 +7,20 @@ use crate::{
 
 use super::ProgramContainer;
 
-pub const KONTAKT_SLOTLIST_ID: u16 = 0x37;
+const CHUNK_ID: u16 = 0x37;
 
 type Error = crate::NIFileError;
 
-/// Type:           Chunk
+/// # SlotList
+///
+/// An array of ProgramContainer objects.
+///
+/// Type:           Chunk<Raw>
 /// SerType:        0x37
 /// Known Versions:
 /// Kontakt 7:      BBank::readSlotList()
 /// KontaktIO:      SlotList
+///
 #[derive(Debug)]
 pub struct SlotList {
     pub slots: HashMap<u16, ProgramContainer>,
@@ -35,10 +40,9 @@ impl SlotList {
         for i in 0..64 {
             // Check if the corresponding bit in fields[0..8] is set
             if (slot_flags[i >> 3] >> (i & 7) & 1) != 0 {
-                dbg!("Read");
                 // Read chunk data
                 let chunk = Chunk::read(&mut reader)?;
-                dbg!(&chunk.id);
+                assert_eq!(chunk.id, 0x29);
 
                 // Add 'obj' to slot
                 slots.insert(i as u16, (&chunk).try_into()?);
@@ -52,9 +56,9 @@ impl std::convert::TryFrom<&Chunk> for SlotList {
     type Error = Error;
 
     fn try_from(chunk: &Chunk) -> Result<Self, Self::Error> {
-        if chunk.id != KONTAKT_SLOTLIST_ID {
+        if chunk.id != CHUNK_ID {
             return Err(KontaktError::IncorrectID {
-                expected: KONTAKT_SLOTLIST_ID,
+                expected: CHUNK_ID,
                 got: chunk.id,
             }
             .into());
@@ -73,7 +77,7 @@ mod tests {
     #[test]
     fn test_bank() -> Result<(), Error> {
         let chunk = Chunk::read(File::open(
-            "tests/data/Objects/Kontakt/SlotList/SlotList-000.kon",
+            "tests/data/Objects/Kontakt/0x37-SlotList/SlotList-000.kon",
         )?)?;
         let slotlist = SlotList::try_from(&chunk)?;
         for (i, so) in slotlist.slots {

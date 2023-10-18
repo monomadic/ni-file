@@ -31,8 +31,6 @@ impl BParScript {
     pub fn params(&self) -> Result<BParScriptParams, Error> {
         let mut reader = Cursor::new(&self.0.public_data);
 
-        let _version = reader.read_u16_le()?;
-
         Ok(BParScriptParams {
             text: reader.read_optional_sized_utf8()?,
             source_editor_open: reader.read_bool()?,

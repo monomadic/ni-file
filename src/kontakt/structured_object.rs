@@ -27,19 +27,19 @@ impl Debug for StructuredObject {
 impl StructuredObject {
     pub fn read<R: ReadBytesExt>(mut reader: R) -> Result<Self, Error> {
         let is_data_structured = reader.read_bool()?;
+        let version = reader.read_u16_le()?;
+
         if !is_data_structured {
             let mut buf = Vec::new();
             // NOTE: I think a u16 for version is still read here...
             reader.read_to_end(&mut buf)?;
             return Ok(Self {
                 public_data: buf,
-                version: 0,
+                version,
                 private_data: Vec::new(),
                 children: Vec::new(),
             });
         }
-
-        let public_data_version = reader.read_u16_le()?;
 
         let private_data_length = reader.read_u32_le()?;
         let private_data = reader
@@ -55,7 +55,7 @@ impl StructuredObject {
             .read_bytes(public_data_length as usize)
             .map_err(|e| {
                 NIFileError::Generic(format!(
-                    "Failed to read StructuredObject public_data: length={public_data_length} version={public_data_version} error={e}",
+                    "Failed to read StructuredObject public_data: length={public_data_length} version={version} error={e}",
                 ))
             })?;
 
@@ -76,7 +76,7 @@ impl StructuredObject {
 
         Ok(Self {
             private_data,
-            version: public_data_version,
+            version,
             public_data,
             children,
         })

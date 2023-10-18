@@ -6,6 +6,8 @@ use crate::{
 
 use super::Program;
 
+const CHUNK_ID: u16 = 0x36;
+
 /// Type:           Chunk
 /// SerType:        0x36
 /// Kontakt 7:      ?
@@ -33,14 +35,35 @@ impl std::convert::TryFrom<&Chunk> for ProgramList {
     type Error = Error;
 
     fn try_from(chunk: &Chunk) -> Result<Self, Self::Error> {
-        if chunk.id != 0x36 {
+        if chunk.id != CHUNK_ID {
             return Err(KontaktError::IncorrectID {
-                expected: 0x36,
+                expected: CHUNK_ID,
                 got: chunk.id,
             }
             .into());
         }
         let mut reader = std::io::Cursor::new(&chunk.data);
         Self::read(&mut reader)
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::Error;
+    use std::fs::File;
+
+    #[test]
+    fn test_bank() -> Result<(), Error> {
+        let chunk = Chunk::read(File::open(
+            "tests/data/Objects/Kontakt/0x36-ProgramList/ProgramList-000.kon",
+        )?)?;
+        let pl = ProgramList::try_from(&chunk)?;
+        // assert_eq!(pl.0.version, 0x51);
+        // assert!(pl.params().is_ok());
+        // assert!(pl.voice_group().is_ok());
+        // pl.program_list()?;
+
+        Ok(())
     }
 }
