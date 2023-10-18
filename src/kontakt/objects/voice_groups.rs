@@ -6,6 +6,8 @@ use crate::{
     Error,
 };
 
+use super::VoiceGroup;
+
 const MAX_VOICE_GROUPS: usize = 128;
 
 /// An array of VoiceGroups.
@@ -17,12 +19,9 @@ const MAX_VOICE_GROUPS: usize = 128;
 ///
 #[derive(Debug)]
 pub struct VoiceGroups {
-    voice_limit: VoiceLimit,
-    groups: Vec<Option<VoiceGroup>>,
+    pub voice_limit: VoiceLimit,
+    pub groups: Vec<Option<VoiceGroup>>,
 }
-
-#[derive(Debug)]
-pub struct VoiceGroup;
 
 impl VoiceGroups {
     pub fn read<R: ReadBytesExt>(mut reader: R) -> Result<Self, Error> {

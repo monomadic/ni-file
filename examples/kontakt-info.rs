@@ -10,6 +10,8 @@ use ni_file::{
     nis::Preset,
 };
 
+const INDENT_SIZE: usize = 2;
+
 pub fn main() -> Result<(), Report> {
     color_eyre::install()?;
 
@@ -21,85 +23,147 @@ pub fn main() -> Result<(), Report> {
     let file = File::open(&path)?;
     let kontakt = KontaktChunks::read(file)?;
 
-    for (i, chunk) in kontakt.0.iter().enumerate() {
-        print!("{i} ");
-        print_chunk(chunk)?;
+    for chunk in &kontakt.0 {
+        print_chunk(chunk, INDENT_SIZE)?;
     }
 
     Ok(())
 }
 
-fn print_chunk(chunk: &Chunk) -> Result<(), Report> {
-    print!("0x{:X} ", chunk.id);
+fn print_chunk(chunk: &Chunk, indent: usize) -> Result<(), Report> {
+    print!("{:indent$}", " ");
+    print!("[0x{:X}] ", chunk.id);
     match &chunk.into_object()? {
         KontaktObject::Program(program) => {
-            print_kontakt_program(program)?;
-            for (i, chunk) in program.children().iter().enumerate() {
-                print!("{i} ");
-                print_chunk(chunk)?;
+            println!("Program v{:X}:", program.version());
+
+            let params = program.params()?;
+            print!("{:>indent$}", " ");
+            println!("name:\t\t\t{}", params.name);
+
+            print!("{:>indent$}", " ");
+            println!("library_id:\t\t{}\n", params.library_id);
+
+            for chunk in program.children() {
+                print_chunk(chunk, indent + INDENT_SIZE)?;
             }
         }
         KontaktObject::BParFX(bparfx) => {
             println!("BParFX v{:X}", bparfx.version());
+            println!("{}", format_hex(&bparfx.0.public_data));
+            for chunk in &bparfx.0.children {
+                print_chunk(chunk, indent + INDENT_SIZE)?;
+            }
+        }
+        KontaktObject::BParFXSendLevel(fx) => {
+            println!("BParFXSendLevel {:?}", fx);
         }
         KontaktObject::FNTableImpl(filetable) => print_filetable(&filetable),
         KontaktObject::FileNameListPreK51(fnl) => {
-            println!("\nFileNameListPreK51:");
+            println!("FileNameListPreK51:");
             for (_i, path) in &fnl.filenames {
-                println!("  {path}");
+                print!("{:>indent$}", " ");
+                println!("{path}");
             }
         }
         KontaktObject::SlotList(list) => {
-            println!("SlotList {list:?}");
+            println!("SlotList:");
             for (_, prog) in &list.slots {
-                println!("  {:?}", prog.params()?);
+                print!("{:>indent$}", " ");
+                println!("params: {:?}", prog.params()?);
                 for chunk in &prog.0.children {
-                    print_chunk(chunk)?;
-                }
-            }
-        }
-        KontaktObject::LoopArray(looparray) => println!("{looparray:?}"),
-        KontaktObject::Bank(bank) => {
-            println!("Bank {:?}", bank.params()?);
-            let slots = bank.slot_list()?.slots;
-            println!("  slots: {}\n", slots.len());
-
-            for (_i, slot) in slots {
-                println!("{:?}", &slot.params()?);
-            }
-        }
-        KontaktObject::VoiceGroups(vg) => println!("VoiceGroups {:?}", vg),
-        KontaktObject::GroupList(gl) => {
-            println!("GroupList");
-            println!("  groups: {}\n", gl.groups.len());
-            for group in &gl.groups {
-                println!("  Group v{:X}", group.0.version);
-                let p = group.params()?;
-                println!("  name {}", p.name);
-                println!("");
-                for chunk in &group.0.children {
-                    print_chunk(chunk)?;
+                    // print!("{:>indent$}", " ");
+                    // println!(" 0x{:X}", &chunk.id);
+                    print_chunk(chunk, indent + INDENT_SIZE)?;
                 }
             }
             println!("");
+        }
+        KontaktObject::PrivateRawObject(po) => {
+            print!("PrivateRawObject: ");
+            println!("0x{}", format_hex(po.data()));
+        }
+        KontaktObject::ProgramList(list) => {
+            println!("ProgramList {list:?}");
+            for program in &list.programs {
+                print_kontakt_program(program)?;
+                for chunk in program.children() {
+                    print_chunk(chunk, indent + INDENT_SIZE)?;
+                }
+            }
+        }
+        KontaktObject::BProgramContainer(pc) => {
+            println!("ProgramContainer {pc:?}");
+        }
+        KontaktObject::LoopArray(loops) => {
+            println!("LoopArray ({} items)", loops.items.len());
+            for l in &loops.items {
+                print!("{:>indent$}", " ");
+                println!("{:?}", l);
+            }
+        }
+        KontaktObject::Bank(bank) => {
+            println!("Bank {:?}", bank.params()?);
+            let slots = bank.slot_list()?.slots;
+
+            print!("{:>indent$}", " ");
+            println!("  slots: {}\n", slots.len());
+
+            for chunk in &bank.0.children {
+                print_chunk(chunk, indent + INDENT_SIZE)?;
+            }
+        }
+        KontaktObject::VoiceGroups(groups) => {
+            println!("VoiceGroups {:?}", groups);
+            for vg in &groups.groups {
+                if let Some(g) = vg {}
+            }
+        }
+        KontaktObject::VoiceGroup(vg) => {
+            println!("VoiceGroup {:?}", vg);
+        }
+        KontaktObject::GroupList(gl) => {
+            println!("GroupList");
+
+            print!("{:>indent$}", " ");
+            println!("  groups: {}\n", gl.groups.len());
+            for group in &gl.groups {
+                print!("{:>indent$}", " ");
+                println!("Group v{:X}", group.0.version);
+                let p = group.params()?;
+                print!("{:>indent$}", " ");
+                println!("name: {}", p.name);
+                for chunk in &group.0.children {
+                    print_chunk(chunk, indent + INDENT_SIZE)?;
+                }
+            }
         }
         KontaktObject::StartCriteriaList(scl) => {
             println!("StartCriteriaList: {}", scl.group_starts)
         }
         KontaktObject::BParameterArraySerBParFX8(pa) => {
             println!("BParamArrayBParFX8 v{:X}", pa.version);
-            println!("  params: {}", pa.len());
-            for (i, param) in pa.params.iter().enumerate() {
-                if let Some(param) = param {
-                    println!("  - [{}] BParFX v{:X}", i, param.version());
+            print!("{:>indent$}", " ");
+            println!("params ({}):", pa.len());
+
+            for chunk in &pa.items {
+                if let Some(chunk) = chunk {
+                    print_chunk(chunk, indent + INDENT_SIZE)?;
                 }
             }
         }
-        _ => println!(
-            "Unsupported Chunk(0x{:x}) {:?}",
-            &chunk.id,
-            chunk.into_object()?
-        ),
+        KontaktObject::ZoneList(zones) => {
+            println!("ZoneList ({} zones)", zones.zones.len());
+
+            for zone in &zones.zones {
+                print!("{:>indent$}", " ");
+                println!("ZoneData v{:X}", zone.0.version);
+                for chunk in &zone.0.children {
+                    print_chunk(&chunk, indent + INDENT_SIZE)?;
+                }
+            }
+        }
+        _ => println!("Unsupported {:?}", chunk.into_object()?),
     };
 
     println!("");
@@ -115,22 +179,6 @@ fn print_kontakt_program(program: &Program) -> Result<(), Report> {
     println!("  children:\t\t{}", program.children().len());
     println!("");
 
-    // if let Some(zones) = program.zones() {
-    //     let zones = zones?;
-    //
-    //     println!("ZoneList:");
-    //     println!("  zones:\t\t{}\n", &zones.len());
-    //
-    //     // for zone in zones {
-    //     //     let p = zone.public_params()?;
-    //     //     println!(
-    //     //         "  ZoneData: start={} end={}",
-    //     //         &p.sample_start, &p.sample_end
-    //     //     );
-    //     // }
-    // }
-    //
-    // println!("");
     Ok(())
 }
 
@@ -144,7 +192,7 @@ fn print_preset_properties(preset: Preset) {
 }
 
 fn print_filetable(ft: &FNTableImpl) {
-    println!("\nFNTableImpl:");
+    println!("FNTableImpl:");
 
     println!("  Special Table:");
     if ft.special_filetable.is_empty() {
@@ -246,19 +294,24 @@ fn print_kontakt_preset(preset: &KontaktPreset) -> Result<()> {
             println!("  master_tempo:\t\t{}", bank.master_tempo);
             println!("  name:\t\t\t{}", bank.name);
 
-            // let slotlist = &p.bank.slot_list()?.params()?;
-            // println!("\nSlotList:");
-            // println!("  slots:\t{:?}", slotlist);
-
             print_filetable(&p.filetable);
         }
         KontaktPreset::Unsupported(chunks) => {
             for chunk in &chunks.0 {
-                // println!("{:?} {:x}", chunk.into_type()?, chunk.id);
                 println!("Chunk(0x{:X})", chunk.id);
             }
         }
     };
 
     Ok(())
+}
+
+pub fn format_hex(buffer: &[u8]) -> String {
+    format!(
+        "{}",
+        &buffer
+            .iter()
+            .map(|x| format!("{:02x}", x))
+            .collect::<String>()
+    )
 }

@@ -1,0 +1,6 @@
+[book]
+authors = ["monomadic"]
+language = "en"
+multilingual = false
+src = "src"
+title = "Native Instruments File Formats"

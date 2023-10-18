@@ -3,13 +3,13 @@ use std::io::Cursor;
 use crate::{kontakt::structured_object::StructuredObject, read_bytes::ReadBytesExt, Error};
 
 #[derive(Debug)]
-pub struct ZoneData(StructuredObject);
+pub struct Zone(pub StructuredObject);
 
 /// Type:           StructuredObject
-/// Kontakt 7:      BProgram::readZones()
+/// Kontakt 7:      BZone, BProgram::readZones()
 /// KontaktIO:      K4PL_Zone<K4PO::K4PL_ZoneDataV95>
 #[derive(Debug)]
-pub struct ZoneDataParams {
+pub struct ZoneParams {
     pub sample_start: i32,
     pub sample_end: i32,
     pub sample_start_mod_range: i32,
@@ -41,19 +41,19 @@ pub struct ZoneDataParams {
     // PrivateRawObject 0x35
 }
 
-impl ZoneData {
+impl Zone {
     pub fn read<R: ReadBytesExt>(mut reader: R) -> Result<Self, Error> {
         Ok(Self(StructuredObject::read(&mut reader)?))
     }
 
-    pub fn params(&self) -> Result<ZoneDataParams, Error> {
+    pub fn params(&self) -> Result<ZoneParams, Error> {
         let mut reader = Cursor::new(&self.0.public_data);
 
         for chunk in &self.0.children {
             println!("{:?} {:x}", chunk.into_object()?, chunk.id);
         }
 
-        Ok(ZoneDataParams {
+        Ok(ZoneParams {
             sample_start: reader.read_i32_le()?,
             sample_end: reader.read_i32_le()?,
             sample_start_mod_range: reader.read_i32_le()?,
@@ -100,7 +100,7 @@ mod tests {
     #[test]
     fn test_zone_data_v9a_000() -> Result<(), Error> {
         let file = File::open("tests/data/Objects/Kontakt/ZoneData/ZoneDataV9A/ZoneDataV9A-000")?;
-        let zone = ZoneData::read(file)?;
+        let zone = Zone::read(file)?;
         dbg!(zone.params()?);
         Ok(())
     }

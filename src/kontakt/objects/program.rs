@@ -6,7 +6,7 @@ use crate::{
     Error,
 };
 
-use super::{program_data::ProgramPublicParams, zone_data::ZoneData, zone_list::ZoneList};
+use super::{program_data::ProgramPublicParams, zone_data::Zone, zone_list::ZoneList};
 
 /// SerType:        0x28
 /// Known Versions: 0x80 .. 0xAF
@@ -39,7 +39,7 @@ impl Program {
         // }
     }
 
-    pub fn zones(&self) -> Option<Result<Vec<ZoneData>, Error>> {
+    pub fn zones(&self) -> Option<Result<Vec<Zone>, Error>> {
         self.0
             .find_first(0x34)
             .map(|chunk| ZoneList::try_from(chunk).map(|z| z.zones))

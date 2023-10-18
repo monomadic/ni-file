@@ -4,14 +4,15 @@ use crate::{read_bytes::ReadBytesExt, Error};
 /// SerType:        0x05
 /// Kontakt 7:      BLoop
 /// KontaktIO:      K4PL_Loop
+#[derive(Debug)]
 pub struct Loop {
-    mode: i32,
-    loop_start: i32,
-    loop_length: i32,
-    loop_count: i32,
-    alternating_loop: bool,
-    loop_tuning: f32,
-    x_fade_length: i32,
+    pub mode: i32,
+    pub loop_start: i32,
+    pub loop_length: i32,
+    pub loop_count: i32,
+    pub alternating_loop: bool,
+    pub loop_tuning: f32,
+    pub x_fade_length: i32,
 }
 
 impl Loop {

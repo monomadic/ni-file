@@ -30,7 +30,7 @@ pub const KONTAKT_BANK_ID: u16 = 0x03;
 ///   BMidiObject?
 ///   BMultiChannelProcessBuffer?
 #[derive(Debug)]
-pub struct Bank(StructuredObject);
+pub struct Bank(pub StructuredObject);
 
 #[derive(Debug)]
 pub struct BankPublicParams {

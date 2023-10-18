@@ -1,6 +1,6 @@
-# ProgramData
+# Program
 
-The main object of a patch. Contains some high-level data such as global volume, pan, tune, program name and various other paramaters relating to the use of the patch as a whole.
+A single instance of an instrument, containing settings, zones, effects, etc. Multi (NKM) presets contain multiple `Programs`.
 
 | Offset | Length | Type     | Name              | Notes         |
 | ------ | ------ | -------- | ----------------- | ------------- |
@@ -18,8 +18,6 @@ The main object of a patch. Contains some high-level data such as global volume,
 ## V80
 
 ### Public Parameters
-
-- size: 144 bytes
 
 | Offset | Length | Type    | Name                     | Notes |
 | ------ | ------ | ------- | ------------------------ | ----- |
@@ -46,6 +44,14 @@ The main object of a patch. Contains some high-level data such as global volume,
 |        |        | int16   | instrument_cat1          |       |
 |        |        | int16   | instrument_cat2          |       |
 |        |        | int16   | instrument_cat3          |       |
+
+### Children
+
+- `BParamArrayBParFX8`
+- `BParamArrayBParFX8`
+- `VoiceGroups`
+- `GroupList`
+  - .. `Group`
 
 ## VA5
 

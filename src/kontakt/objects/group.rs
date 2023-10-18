@@ -8,6 +8,10 @@ use crate::{
     Error,
 };
 
+/// Type:           Chunk
+/// SerType:        0x04
+/// Kontakt 7:      BGroup?
+/// KontaktIO:      K4PL\_Group
 #[derive(Debug)]
 pub struct Group(pub StructuredObject);
 

@@ -17,14 +17,14 @@ use super::BParFX;
 #[derive(Debug)]
 pub struct BParamArrayBParFX8 {
     pub version: u16,
-    pub params: Vec<Option<BParFX>>,
+    pub items: Vec<Option<Chunk>>,
 }
 
 impl BParamArrayBParFX8 {
     pub fn read<R: ReadBytesExt>(mut reader: R, num_items: u32) -> Result<Self, Error> {
         let is_structured_data = reader.read_bool()?;
         let version = reader.read_u16_le()?;
-        let mut params = Vec::new();
+        let mut items = Vec::new();
 
         assert!(!is_structured_data); // always false?
 
@@ -36,20 +36,28 @@ impl BParamArrayBParFX8 {
                 for _ in 0..num_items {
                     let has_item = reader.read_bool()?;
                     if has_item {
-                        let chunk = Chunk::read(&mut reader)?;
-                        params.push(Some((&chunk).try_into()?));
+                        items.push(Some(Chunk::read(&mut reader)?));
                     } else {
-                        params.push(None);
+                        items.push(None);
                     }
                 }
             }
         }
 
-        Ok(Self { version, params })
+        Ok(Self { version, items })
+    }
+
+    pub fn fx_items(&self) -> Result<Vec<BParFX>, Error> {
+        Ok(self
+            .items
+            .iter()
+            .filter_map(|c| c.as_ref())
+            .filter_map(|c| BParFX::try_from(c).ok())
+            .collect())
     }
 
     pub fn len(&self) -> usize {
-        self.params
+        self.items
             .iter()
             .filter(|p| p.is_some())
             .collect::<Vec<&Option<_>>>()
@@ -86,7 +94,7 @@ mod tests {
         let file = File::open("tests/data/Objects/Kontakt/BParameterArray/BParameterArray-001")?;
         let arr = BParamArrayBParFX8::read(file, 8)?;
 
-        assert_eq!(arr.params.len(), 8);
+        assert_eq!(arr.items.len(), 8);
         Ok(())
     }
 
@@ -95,7 +103,7 @@ mod tests {
         let file = File::open("tests/data/Objects/Kontakt/BParameterArray/BParameterArray-000")?;
         let arr = BParamArrayBParFX8::read(file, 8)?;
 
-        assert_eq!(arr.params.len(), 8);
+        assert_eq!(arr.items.len(), 8);
         Ok(())
     }
 }

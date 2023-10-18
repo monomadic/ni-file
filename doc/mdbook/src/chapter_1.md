@@ -1,6 +1,6 @@
-# Overview of Native Instruments File Formats
+# Native Instruments File Formats
 
-This book documents and references the various file formats used by Native Instruments (NI) software. It is the result of a sole developer and years of painstaking research and reverse engineering.
+This book documents and references the various file formats used by Native Instruments (NI) over the years. It is the result of a sole developer and years of painstaking research and reverse engineering.
 
 ## Format Evolution
 
@@ -28,7 +28,7 @@ Given this ecosystem's complexity, the NIFile library aims to simplify interacti
 
 ## Container Formats
 
-- [NKS](containers/NKS.md) Kontakt Instrument container (Kontakt 1-4).
+- [NKS](./containers/NKS.md) Kontakt Instrument container (Kontakt 1-4).
 - [NISound](containers/NIS.md) Generic container format for all modern NI types.
 - [FileContainer](containers/FileContainer.md) Kontakt monolith (Kontakt 5.1+)
 
@@ -36,7 +36,7 @@ Given this ecosystem's complexity, the NIFile library aims to simplify interacti
 
 Embedded presets look like IFF files. They start with a 16-bit id followed by a 32-bit length, followed by the data.
 
-- [Kontakt](presets/Kontakt.md) Kontakt 4.22+
+- [Kontakt](./kontakt.md) Kontakt 4.22+
 - [FM8](presets/FM8.md) NI's DX7 emulator / FM synth
 
 ## Other

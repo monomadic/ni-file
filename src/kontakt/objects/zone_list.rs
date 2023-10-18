@@ -4,7 +4,7 @@ use crate::{
     Error,
 };
 
-use super::zone_data::ZoneData;
+use super::zone_data::Zone;
 
 /// Type:           Chunk
 /// SerType:        0x34
@@ -12,7 +12,7 @@ use super::zone_data::ZoneData;
 /// KontaktIO:      ZoneList<K4PL_Zone<K4PO::K4PL_ZoneDataV95>>
 #[derive(Debug)]
 pub struct ZoneList {
-    pub zones: Vec<ZoneData>,
+    pub zones: Vec<Zone>,
 }
 
 impl ZoneList {
@@ -22,7 +22,7 @@ impl ZoneList {
 
         for _ in 0..num_zones {
             let _ = reader.read_u32_le()?;
-            zones.push(ZoneData::read(&mut reader)?);
+            zones.push(Zone::read(&mut reader)?);
         }
 
         Ok(Self { zones })

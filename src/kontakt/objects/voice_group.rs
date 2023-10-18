@@ -6,33 +6,24 @@ use crate::{
     Error,
 };
 
-pub const KONTAKT_BPARFX_ID: u16 = 0x25;
+const CHUNK_ID: u16 = 0x2b;
 
-/// Type:           Chunk<StructuredObject>
-/// SerType:        0x25
-/// Versions:       0x50
-/// Kontakt 7:      BParameterArraySerBParFX8
-/// KontaktIO:      BParamArray<8>
 #[derive(Debug)]
-pub struct BParFX(pub StructuredObject);
+pub struct VoiceGroup;
 
-impl BParFX {
+impl VoiceGroup {
     pub fn read<R: ReadBytesExt>(mut reader: R) -> Result<Self, Error> {
-        Ok(Self(StructuredObject::read(&mut reader)?))
-    }
-
-    pub fn version(&self) -> u16 {
-        self.0.version
+        Ok(Self)
     }
 }
 
-impl std::convert::TryFrom<&Chunk> for BParFX {
+impl std::convert::TryFrom<&Chunk> for VoiceGroup {
     type Error = Error;
 
     fn try_from(chunk: &Chunk) -> Result<Self, Self::Error> {
-        if chunk.id != KONTAKT_BPARFX_ID {
+        if chunk.id != CHUNK_ID {
             return Err(KontaktError::IncorrectID {
-                expected: KONTAKT_BPARFX_ID,
+                expected: CHUNK_ID,
                 got: chunk.id,
             }
             .into());
