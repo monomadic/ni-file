@@ -8,10 +8,15 @@ use super::Zone;
 
 const CHUNK_ID: u16 = 0x34;
 
-/// Type:           Chunk
-/// SerType:        0x34
-/// Kontakt 7:      BZoneArraySer, BProgram::readZones()
-/// KontaktIO:      ZoneList<K4PL_Zone<K4PO::K4PL_ZoneDataV95>>
+/// # ZoneList
+///
+/// An array of key-zones.
+///
+/// - Type:           Chunk<Raw>
+/// - SerType:        0x34
+/// - Kontakt 7:      BZoneArraySer, BProgram::readZones()
+/// - KontaktIO:      ZoneList<K4PL_Zone<K4PO::K4PL_ZoneDataV95>>
+///
 #[derive(Debug)]
 pub struct ZoneList {
     pub zones: Vec<Zone>,
