@@ -1,7 +1,7 @@
 use std::{collections::HashMap, io::Cursor};
 
 use crate::{
-    kontakt::{structured_object::StructuredObject, Chunk, KontaktError},
+    kontakt::{Chunk, KontaktError},
     read_bytes::ReadBytesExt,
 };
 
@@ -42,8 +42,6 @@ impl SlotList {
             if (slot_flags[i >> 3] >> (i & 7) & 1) != 0 {
                 // Read chunk data
                 let chunk = Chunk::read(&mut reader)?;
-                assert_eq!(chunk.id, 0x29);
-
                 // Add 'obj' to slot
                 slots.insert(i as u16, (&chunk).try_into()?);
             }
@@ -80,10 +78,8 @@ mod tests {
             "tests/data/Objects/Kontakt/0x37-SlotList/SlotList-000.kon",
         )?)?;
         let slotlist = SlotList::try_from(&chunk)?;
-        for (i, so) in slotlist.slots {
-
-            // let filename = format!("{:?}-{:x}.chunk", chunk.into_type()?, chunk.id);
-            // std::fs::write(filename, chunk.data)?;
+        for (i, pc) in slotlist.slots {
+            println!("{:?}", pc);
         }
         Ok(())
     }

@@ -1,5 +1,5 @@
 use crate::{
-    kontakt::{chunk::Chunk, error::KontaktError},
+    kontakt::{chunk::Chunk, error::KontaktError, KontaktNode},
     read_bytes::ReadBytesExt,
     Error,
 };
@@ -10,7 +10,7 @@ const CHUNK_ID: u16 = 0x34;
 
 /// # ZoneList
 ///
-/// An array of key-zones.
+/// An array of Zones (key-zones).
 ///
 /// - Type:           Chunk<Raw>
 /// - SerType:        0x34
@@ -18,9 +18,7 @@ const CHUNK_ID: u16 = 0x34;
 /// - KontaktIO:      ZoneList<K4PL_Zone<K4PO::K4PL_ZoneDataV95>>
 ///
 #[derive(Debug)]
-pub struct ZoneList {
-    pub zones: Vec<Zone>,
-}
+pub struct ZoneList(Vec<Zone>);
 
 impl ZoneList {
     pub fn read<R: ReadBytesExt>(mut reader: R) -> Result<Self, Error> {
@@ -28,11 +26,25 @@ impl ZoneList {
         let mut zones = Vec::new();
 
         for _ in 0..num_zones {
-            let _ = reader.read_u32_le()?;
+            let _ = reader.read_u32_le()?; // mostly 0, sometimes 1, 2, etc
             zones.push(Zone::read(&mut reader)?);
         }
 
-        Ok(Self { zones })
+        Ok(Self(zones))
+    }
+
+    pub fn zones(&self) -> &Vec<Zone> {
+        &self.0
+    }
+}
+
+impl KontaktNode for ZoneList {
+    fn name(&self) -> String {
+        format!("[0x{:X}] ZoneList", CHUNK_ID)
+    }
+
+    fn children(&self) -> Vec<Box<dyn KontaktNode>> {
+        vec![]
     }
 }
 
@@ -63,7 +75,7 @@ mod tests {
     fn test_zone_list_001() -> Result<(), Error> {
         let file = File::open("tests/data/Objects/Kontakt/0x34-ZoneList/old/ZoneList-001.kon")?;
         let zonelist = ZoneList::read(file)?;
-        assert_eq!(zonelist.zones.len(), 61);
+        assert_eq!(zonelist.zones().len(), 61);
         Ok(())
     }
 
@@ -71,7 +83,7 @@ mod tests {
     fn test_zone_list_002() -> Result<(), Error> {
         let file = File::open("tests/data/Objects/Kontakt/0x34-ZoneList/old/ZoneList-002.kon")?;
         let zonelist = ZoneList::read(file)?;
-        assert_eq!(zonelist.zones.len(), 31);
+        assert_eq!(zonelist.zones().len(), 31);
         Ok(())
     }
 
@@ -79,7 +91,7 @@ mod tests {
     fn test_zone_list_003() -> Result<(), Error> {
         let file = File::open("tests/data/Objects/Kontakt/0x34-ZoneList/old/ZoneList-003.kon")?;
         let zonelist = ZoneList::read(file)?;
-        assert_eq!(zonelist.zones.len(), 32);
+        assert_eq!(zonelist.zones().len(), 32);
         Ok(())
     }
 }

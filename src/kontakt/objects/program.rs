@@ -1,12 +1,16 @@
 use std::io::Cursor;
 
 use crate::{
-    kontakt::{chunk::Chunk, error::KontaktError, structured_object::StructuredObject},
+    kontakt::{
+        chunk::Chunk, error::KontaktError, structured_object::StructuredObject, KontaktNode,
+    },
     read_bytes::ReadBytesExt,
     Error,
 };
 
 use super::{program_data::ProgramPublicParams, zone_data::Zone, zone_list::ZoneList};
+
+const CHUNK_ID: u16 = 0x28;
 
 /// SerType:        0x28
 /// Known Versions: 0x80 .. 0xAF
@@ -39,10 +43,10 @@ impl Program {
         // }
     }
 
-    pub fn zones(&self) -> Option<Result<Vec<Zone>, Error>> {
+    pub fn zone_list(&self) -> Option<Result<ZoneList, Error>> {
         self.0
             .find_first(0x34)
-            .map(|chunk| ZoneList::try_from(chunk).map(|z| z.zones))
+            .map(|chunk| ZoneList::try_from(chunk))
     }
 
     pub fn children(&self) -> &Vec<Chunk> {
@@ -53,29 +57,13 @@ impl Program {
     // 0x33 GroupList
 }
 
-// impl std::convert::TryFrom<Chunk> for Program {
-//     type Error = KontaktError;
-//
-//     fn try_from(chunk: Chunk) -> Result<Self, Self::Error> {
-//         if chunk.id != 0x28 {
-//             return Err(KontaktError::IncorrectID {
-//                 expected: 0x28,
-//                 got: chunk.id,
-//             }
-//             .into());
-//         }
-//         let reader = Cursor::new(&chunk.data);
-//         Self::read(reader)
-//     }
-// }
-
 impl std::convert::TryFrom<&Chunk> for Program {
     type Error = Error;
 
     fn try_from(chunk: &Chunk) -> Result<Self, Self::Error> {
-        if chunk.id != 0x28 {
+        if chunk.id != CHUNK_ID {
             return Err(KontaktError::IncorrectID {
-                expected: 0x28,
+                expected: CHUNK_ID,
                 got: chunk.id,
             }
             .into());

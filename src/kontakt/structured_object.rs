@@ -1,4 +1,5 @@
 use std::fmt::Debug;
+use std::io::Cursor;
 
 use crate::prelude::io;
 use crate::{read_bytes::ReadBytesExt, Error, NIFileError};
@@ -13,28 +14,14 @@ pub struct StructuredObject {
     pub children: Vec<Chunk>,
 }
 
-impl Debug for StructuredObject {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.debug_struct("StructuredObject")
-            .field("version", &format_args!("0x{:X}", self.version))
-            .field("public_data_bytes", &self.public_data.len())
-            .field("private_data_bytes", &self.private_data.len())
-            .field("child_count", &self.children.len())
-            .finish()
-    }
-}
-
 impl StructuredObject {
     pub fn read<R: ReadBytesExt>(mut reader: R) -> Result<Self, Error> {
         let is_data_structured = reader.read_bool()?;
         let version = reader.read_u16_le()?;
 
         if !is_data_structured {
-            let mut buf = Vec::new();
-            // NOTE: I think a u16 for version is still read here...
-            reader.read_to_end(&mut buf)?;
             return Ok(Self {
-                public_data: buf,
+                public_data: reader.read_all()?,
                 version,
                 private_data: Vec::new(),
                 children: Vec::new(),
@@ -84,6 +71,26 @@ impl StructuredObject {
 
     pub fn find_first(&self, id: u16) -> Option<&Chunk> {
         self.children.iter().find(|c| c.id == id)
+    }
+}
+
+impl Debug for StructuredObject {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.debug_struct("StructuredObject")
+            .field("version", &format_args!("0x{:X}", self.version))
+            .field("public_data_bytes", &self.public_data.len())
+            .field("private_data_bytes", &self.private_data.len())
+            .field("child_count", &self.children.len())
+            .finish()
+    }
+}
+
+impl std::convert::TryFrom<&Chunk> for StructuredObject {
+    type Error = Error;
+
+    fn try_from(chunk: &Chunk) -> Result<Self, Self::Error> {
+        let cursor = Cursor::new(&chunk.data);
+        Ok(StructuredObject::read(cursor)?)
     }
 }
 

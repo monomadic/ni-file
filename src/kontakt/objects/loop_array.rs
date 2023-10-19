@@ -22,7 +22,7 @@ impl LoopArray {
 
         for _ in 0..num_items {
             let so = StructuredObject::read(&mut reader)?;
-            assert_eq!(so.children.len(), 0);
+            assert_eq!(so.children.len(), 0, "Loop objects should have no children");
             let mut reader = Cursor::new(&so.public_data);
             items.push(Loop::read(&mut reader)?);
         }

@@ -1,6 +1,5 @@
 mod bank;
 mod bpar_script;
-mod bpar_start_criteria;
 mod bparam_array_ext_mod_32;
 mod bparam_array_fx_8;
 mod bparam_array_int_mod_16;
@@ -34,7 +33,6 @@ mod zone_list;
 
 pub use bank::*;
 pub use bpar_script::*;
-pub use bpar_start_criteria::*;
 pub use bparam_array_ext_mod_32::*;
 pub use bparam_array_fx_8::*;
 pub use bparam_array_int_mod_16::*;

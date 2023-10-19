@@ -5,12 +5,13 @@ use ni_file::{
     kontakt::{
         objects::{BPatchHeader, FNTableImpl, Program},
         schemas::KontaktPreset,
-        Chunk, KontaktChunks, KontaktObject,
+        Chunk, KontaktChunks, KontaktNode, KontaktObject,
     },
     nis::Preset,
 };
 
 const INDENT_SIZE: usize = 2;
+const INDENT_CHAR: char = ' ';
 
 pub fn main() -> Result<(), Report> {
     color_eyre::install()?;
@@ -27,24 +28,34 @@ pub fn main() -> Result<(), Report> {
         print_chunk(chunk, INDENT_SIZE)?;
     }
 
+    // for chunk in &kontakt.0 {
+    //     print_node(&chunk.into_node()?, INDENT_SIZE)?;
+    // }
+
     Ok(())
 }
 
+// fn print_node<T: KontaktNode + ?Sized>(node: &T, indent: usize) -> Result<(), Report> {
+//     let indent_str = INDENT_CHAR.to_string().repeat(indent);
+//     println!("{}{}", indent_str, node.name());
+//
+//     for child in node.children() {
+//         print_node(child.as_ref(), indent + INDENT_SIZE)?;
+//     }
+//
+//     Ok(())
+// }
+
 fn print_chunk(chunk: &Chunk, indent: usize) -> Result<(), Report> {
-    print!("{:indent$}", " ");
-    print!("[0x{:X}] ", chunk.id);
+    let indent_str = INDENT_CHAR.to_string().repeat(indent);
+
+    print!("{}[0x{:X}] ", indent_str, chunk.id);
     match &chunk.into_object()? {
         KontaktObject::Program(program) => {
             println!("Program v{:X}", program.version());
+            // println!("{}{program:?}", indent_str);
+            // println!("{}{:?}", indent_str, program.params()?);
 
-            print!("{:indent$}", " ");
-            println!("{program:?}");
-
-            print!("{:indent$}", " ");
-            println!("{:?}", program.params()?);
-
-            print!("{:indent$}", " ");
-            println!("children:");
             for chunk in program.children() {
                 print_chunk(chunk, indent + INDENT_SIZE)?;
             }
@@ -81,7 +92,6 @@ fn print_chunk(chunk: &Chunk, indent: usize) -> Result<(), Report> {
                     print_chunk(chunk, indent + INDENT_SIZE)?;
                 }
             }
-            println!("");
         }
         KontaktObject::PrivateRawObject(po) => {
             print!("PrivateRawObject: ");
@@ -108,11 +118,6 @@ fn print_chunk(chunk: &Chunk, indent: usize) -> Result<(), Report> {
         }
         KontaktObject::Bank(bank) => {
             println!("Bank {:?}", bank.params()?);
-            let slots = bank.slot_list()?.slots;
-
-            print!("{:>indent$}", " ");
-            println!("  slots: {}\n", slots.len());
-
             for chunk in &bank.0.children {
                 print_chunk(chunk, indent + INDENT_SIZE)?;
             }
@@ -157,9 +162,9 @@ fn print_chunk(chunk: &Chunk, indent: usize) -> Result<(), Report> {
             }
         }
         KontaktObject::ZoneList(zones) => {
-            println!("ZoneList ({} zones)", zones.zones.len());
+            println!("ZoneList ({} zones)", zones.zones().len());
 
-            for zone in &zones.zones {
+            for zone in zones.zones() {
                 print!("{:>indent$}", " ");
                 println!("ZoneData v{:X}", zone.0.version);
                 for chunk in &zone.0.children {
@@ -170,7 +175,6 @@ fn print_chunk(chunk: &Chunk, indent: usize) -> Result<(), Report> {
         _ => println!("Unsupported {:?}", chunk.into_object()?),
     };
 
-    println!("");
     Ok(())
 }
 
@@ -181,7 +185,6 @@ fn print_kontakt_program(program: &Program) -> Result<(), Report> {
     println!("  name:\t\t\t{}", params.name);
     println!("  library_id:\t\t{}", params.library_id);
     println!("  children:\t\t{}", program.children().len());
-    println!("");
 
     Ok(())
 }

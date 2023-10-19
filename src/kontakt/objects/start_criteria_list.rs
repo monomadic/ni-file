@@ -6,7 +6,7 @@ use crate::{
     Error,
 };
 
-/// Type:           Chunk
+/// Type:           Chunk<Raw>
 /// SerType:        ?
 /// Kontakt 7:      ?
 /// KontaktIO:      StartCritList

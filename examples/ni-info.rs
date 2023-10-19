@@ -130,16 +130,16 @@ fn print_kontakt_program(program: &Program) -> Result<(), Report> {
     println!("  name:\t\t\t{}", params.name);
     println!("  library_id:\t\t{}", params.library_id);
 
-    if let Some(zones) = program.zones() {
-        let zones = zones?;
-
-        println!("\nZoneList:");
-        println!("  zones:\t\t{}", &zones.len());
-
-        for zone in zones {
-            dbg!(zone);
-        }
-    }
+    // if let Some(zones) = program.zones() {
+    //     let zones = zones?;
+    //
+    //     println!("\nZoneList:");
+    //     println!("  zones:\t\t{}", &zones.len());
+    //
+    //     for zone in zones {
+    //         dbg!(zone);
+    //     }
+    // }
     Ok(())
 }
 

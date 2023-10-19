@@ -47,12 +47,6 @@ impl Group {
     pub fn params(&self) -> Result<GroupParams, Error> {
         let mut reader = Cursor::new(&self.0.public_data);
 
-        // println!("{} {}", self.0.children.len(), self.0.version);
-
-        // for chunk in &self.0.children {
-        //     println!("{:?} 0x{:x}", chunk.into_object()?, chunk.id);
-        // }
-
         Ok(GroupParams {
             name: reader.read_widestring_utf16()?,
             volume: reader.read_f32_le()?,

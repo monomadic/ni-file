@@ -8,7 +8,7 @@ use crate::{
 
 pub const KONTAKT_BANK_ID: u16 = 0x03;
 
-/// Type:           Chunk
+/// Type:           Chunk<StructuredObject>
 /// SerType:        0x03
 /// Known Versions: 0x60, 0x71, 0x72, 0x73
 /// Kontakt 7:      BBank

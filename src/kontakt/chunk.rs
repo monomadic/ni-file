@@ -1,5 +1,3 @@
-use std::io::Cursor;
-
 use crate::{read_bytes::ReadBytesExt, Error};
 
 use super::{
@@ -9,6 +7,7 @@ use super::{
         ProgramList, SlotList, StartCriteriaList, VoiceGroup, VoiceGroups, ZoneList,
     },
     structured_object::StructuredObject,
+    KontaktNode,
 };
 
 #[derive(Debug)]
@@ -28,15 +27,13 @@ impl Chunk {
     pub fn into_object(&self) -> Result<KontaktObject, Error> {
         Ok(KontaktObject::try_from(self)?)
     }
-}
 
-impl std::convert::TryFrom<&Chunk> for StructuredObject {
-    type Error = Error;
-
-    fn try_from(chunk: &Chunk) -> Result<Self, Self::Error> {
-        let cursor = Cursor::new(&chunk.data);
-        Ok(StructuredObject::read(cursor)?)
-    }
+    // pub fn into_node(&self) -> Result<impl KontaktNode, Error> {
+    //     match self.id {
+    //         0x28 => Program::try_from(self),
+    //         _ => unimplemented!(),
+    //     }
+    // }
 }
 
 #[derive(Debug)]

@@ -42,11 +42,12 @@ use crate::{
     Error,
 };
 
-/// Type:           Chunk
-/// SerType:        0x25
-/// Versions:       0x50
-/// Kontakt 7:      BParameterArraySerBParFX8
-/// KontaktIO:      BParamArray<8>
+const CHUNK_ID: u16 = 0x3D;
+
+/// Type:           Chunk<Raw>
+/// SerType:        0x3D
+/// Kontakt 7:      FNTablePreK51
+/// KontaktIO:      FileNameListPreK51
 #[derive(Debug)]
 pub struct FileNameListPreK51 {
     pub filenames: HashMap<u32, String>,
@@ -80,9 +81,9 @@ impl std::convert::TryFrom<&Chunk> for FileNameListPreK51 {
     type Error = Error;
 
     fn try_from(chunk: &Chunk) -> Result<Self, Self::Error> {
-        if chunk.id != 0x3d {
+        if chunk.id != CHUNK_ID {
             return Err(KontaktError::IncorrectID {
-                expected: 0x3d,
+                expected: CHUNK_ID,
                 got: chunk.id,
             }
             .into());
