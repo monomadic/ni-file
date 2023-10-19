@@ -36,5 +36,12 @@ impl NIFile {
         })
     }
 
-    // pub fn inner_preset(&self) -> Result<Vec<u8>, Error> {}
+    /// Extract raw preset data from this container (if applicable).
+    pub fn inner_preset(&self) -> Result<Vec<u8>, Error> {
+        match self {
+            Self::NKSContainer(nks) => unimplemented!(),
+            Self::NISContainer(nks) => unimplemented!(),
+            _ => panic!("No preset detected."),
+        }
+    }
 }

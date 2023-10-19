@@ -1,6 +1,6 @@
 # StructuredObject
 
-A generic data type that provides versioning, public data, private data, and children. Many `Chunk`s are StructuredObjects, but not all.
+A generic data type that provides versioning, public data, private data, and child `Chunks`. Many `Chunks` contain simple one `StructuredObject`, but not all.
 
 - LibKIO `StructuredObject`
 - Kontakt 7

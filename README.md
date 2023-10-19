@@ -4,7 +4,7 @@
 
 # Native Instruments File Format
 
-Native Instruments file format support for rust. This library will serve as a reference implementation is the result of countless hours of painstaking reverse engineering and research.
+Native Instruments file format support for rust. This library will serve as a reference implementation is the result of countless hours of painstaking reverse engineering and research. As this repository also serves as a research base, the implementation will shift drastically for a while and the code will be under a state of refactoring.
 
 This library is already semi-useful; the various NI compression algorithms, generic containers and wrappers, and the entire family of Kontakt formats are nearing a competent level of support. Kontakt files can mostly be read to some extent, but not all data is fully mapped.
 

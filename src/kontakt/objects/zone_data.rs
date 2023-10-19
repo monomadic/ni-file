@@ -25,6 +25,7 @@ pub struct ZoneParams {
     pub zone_volume: f32,
     pub zone_pan: f32,
     pub zone_tune: f32,
+    /// The index of the file in the filetable.
     pub filename_id: i32,
     pub sample_data_type: i32,
     pub sample_rate: i32,

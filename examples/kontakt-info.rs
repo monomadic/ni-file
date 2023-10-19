@@ -1,14 +1,7 @@
 use std::fs::File;
 
 use color_eyre::eyre::{Report, Result};
-use ni_file::{
-    kontakt::{
-        objects::{BPatchHeader, FNTableImpl, Program},
-        schemas::KontaktPreset,
-        Chunk, KontaktChunks, KontaktNode, KontaktObject,
-    },
-    nis::Preset,
-};
+use ni_file::kontakt::{objects::FNTableImpl, Chunk, KontaktChunks, KontaktObject};
 
 const INDENT_SIZE: usize = 2;
 const INDENT_CHAR: char = ' ';
@@ -28,23 +21,8 @@ pub fn main() -> Result<(), Report> {
         print_chunk(chunk, INDENT_SIZE)?;
     }
 
-    // for chunk in &kontakt.0 {
-    //     print_node(&chunk.into_node()?, INDENT_SIZE)?;
-    // }
-
     Ok(())
 }
-
-// fn print_node<T: KontaktNode + ?Sized>(node: &T, indent: usize) -> Result<(), Report> {
-//     let indent_str = INDENT_CHAR.to_string().repeat(indent);
-//     println!("{}{}", indent_str, node.name());
-//
-//     for child in node.children() {
-//         print_node(child.as_ref(), indent + INDENT_SIZE)?;
-//     }
-//
-//     Ok(())
-// }
 
 fn print_chunk(chunk: &Chunk, indent: usize) -> Result<(), Report> {
     let indent_str = INDENT_CHAR.to_string().repeat(indent);
@@ -53,22 +31,23 @@ fn print_chunk(chunk: &Chunk, indent: usize) -> Result<(), Report> {
     match &chunk.into_object()? {
         KontaktObject::Program(program) => {
             println!("Program v{:X}", program.version());
-            // println!("{}{program:?}", indent_str);
-            // println!("{}{:?}", indent_str, program.params()?);
-
             for chunk in program.children() {
                 print_chunk(chunk, indent + INDENT_SIZE)?;
             }
         }
         KontaktObject::BParFX(bparfx) => {
-            println!("BParFX v{:X}", bparfx.version());
-            println!("{}", format_hex(&bparfx.0.public_data));
+            print!("BParFX v{:X} ", bparfx.version());
+            println!("{}", format_hex(&bparfx.0.private_data));
             for chunk in &bparfx.0.children {
                 print_chunk(chunk, indent + INDENT_SIZE)?;
             }
         }
         KontaktObject::BParScript(script) => {
-            println!("BParScript v{:X} {:?}", script.0.version, script.params()?);
+            println!(
+                "BParScript v{:X} {}",
+                script.0.version,
+                script.params()?.description.unwrap_or_default()
+            );
         }
         KontaktObject::BParFXSendLevel(fx) => {
             println!("BParFXSendLevel {:?}", fx);
@@ -84,11 +63,7 @@ fn print_chunk(chunk: &Chunk, indent: usize) -> Result<(), Report> {
         KontaktObject::SlotList(list) => {
             println!("SlotList:");
             for (_, prog) in &list.slots {
-                print!("{:>indent$}", " ");
-                println!("params: {:?}", prog.params()?);
                 for chunk in &prog.0.children {
-                    // print!("{:>indent$}", " ");
-                    // println!(" 0x{:X}", &chunk.id);
                     print_chunk(chunk, indent + INDENT_SIZE)?;
                 }
             }
@@ -100,7 +75,7 @@ fn print_chunk(chunk: &Chunk, indent: usize) -> Result<(), Report> {
         KontaktObject::ProgramList(list) => {
             println!("ProgramList {list:?}");
             for program in &list.programs {
-                print_kontakt_program(program)?;
+                println!("Program v{:X}", program.version());
                 for chunk in program.children() {
                     print_chunk(chunk, indent + INDENT_SIZE)?;
                 }
@@ -111,9 +86,10 @@ fn print_chunk(chunk: &Chunk, indent: usize) -> Result<(), Report> {
         }
         KontaktObject::LoopArray(loops) => {
             println!("LoopArray ({} items)", loops.items.len());
+            let indent = indent + INDENT_SIZE;
+            let indent_str = INDENT_CHAR.to_string().repeat(indent);
             for l in &loops.items {
-                print!("{:>indent$}", " ");
-                println!("{:?}", l);
+                println!("{}{:?}", indent_str, l);
             }
         }
         KontaktObject::Bank(bank) => {
@@ -132,16 +108,16 @@ fn print_chunk(chunk: &Chunk, indent: usize) -> Result<(), Report> {
             println!("VoiceGroup {:?}", vg);
         }
         KontaktObject::GroupList(gl) => {
-            println!("GroupList");
-
-            print!("{:>indent$}", " ");
-            println!("  groups: {}\n", gl.groups.len());
+            println!("GroupList ({} groups)", gl.groups.len());
+            let indent = indent + INDENT_SIZE;
+            let indent_str = INDENT_CHAR.to_string().repeat(indent);
             for group in &gl.groups {
-                print!("{:>indent$}", " ");
-                println!("Group v{:X}", group.0.version);
-                let p = group.params()?;
-                print!("{:>indent$}", " ");
-                println!("name: {}", p.name);
+                println!(
+                    "{}Group v{:X} {:?}",
+                    indent_str,
+                    group.0.version,
+                    group.params()?
+                );
                 for chunk in &group.0.children {
                     print_chunk(chunk, indent + INDENT_SIZE)?;
                 }
@@ -152,9 +128,6 @@ fn print_chunk(chunk: &Chunk, indent: usize) -> Result<(), Report> {
         }
         KontaktObject::BParameterArraySerBParFX8(pa) => {
             println!("BParamArrayBParFX8 v{:X}", pa.version);
-            print!("{:>indent$}", " ");
-            println!("params ({}):", pa.len());
-
             for chunk in &pa.items {
                 if let Some(chunk) = chunk {
                     print_chunk(chunk, indent + INDENT_SIZE)?;
@@ -163,39 +136,19 @@ fn print_chunk(chunk: &Chunk, indent: usize) -> Result<(), Report> {
         }
         KontaktObject::ZoneList(zones) => {
             println!("ZoneList ({} zones)", zones.zones().len());
-
+            let indent = indent + INDENT_SIZE;
+            let indent_str = INDENT_CHAR.to_string().repeat(indent);
             for zone in zones.zones() {
-                print!("{:>indent$}", " ");
-                println!("ZoneData v{:X}", zone.0.version);
+                println!("{}ZoneData v{:X}", indent_str, zone.0.version);
                 for chunk in &zone.0.children {
                     print_chunk(&chunk, indent + INDENT_SIZE)?;
                 }
             }
         }
-        _ => println!("Unsupported {:?}", chunk.into_object()?),
+        _ => println!("!!! {:?}", chunk.into_object()?),
     };
 
     Ok(())
-}
-
-fn print_kontakt_program(program: &Program) -> Result<(), Report> {
-    println!("Program v{:X}:", program.version());
-
-    let params = program.params()?;
-    println!("  name:\t\t\t{}", params.name);
-    println!("  library_id:\t\t{}", params.library_id);
-    println!("  children:\t\t{}", program.children().len());
-
-    Ok(())
-}
-
-fn print_preset_properties(preset: Preset) {
-    println!("\nPreset:");
-    println!(
-        "  authoring_app:\t{:?} {}",
-        preset.authoring_app, preset.version
-    );
-    println!("  is_factory_preset:\t{}", preset.is_factory_preset);
 }
 
 fn print_filetable(ft: &FNTableImpl) {
@@ -225,92 +178,6 @@ fn print_filetable(ft: &FNTableImpl) {
         println!("    {path}");
     }
     println!("");
-}
-
-fn print_kontakt_header(header: &BPatchHeader) {
-    match header {
-        BPatchHeader::BPatchHeaderV1(ref h) => {
-            println!("\nBPatchHeaderV1:");
-            println!("  created_at:\t\t{}", h.created_at);
-            println!("  samples_size:\t\t{}", h.samples_size);
-        }
-        BPatchHeader::BPatchHeaderV2(ref h) => {
-            println!("\nBPatchHeaderV2:");
-            println!("  signature:\t\t{}", h.app_signature);
-            println!("  type:\t\t\t{:?}", h.patch_type);
-            println!("  is_monolith:\t\t{:?}", h.is_monolith);
-            println!("  kontakt_version:\t{}", h.patch_version);
-            println!("  author:\t\t{}", h.author);
-            println!("  zones:\t\t{}", h.number_of_zones);
-            println!("  groups:\t\t{}", h.number_of_groups);
-            println!("  instruments:\t\t{}", h.number_of_instruments);
-            println!("  created_at:\t\t{}", h.created_at);
-        }
-        BPatchHeader::BPatchHeaderV42(h) => {
-            println!("\nBPatchHeaderV42:");
-            println!("  signature:\t\t{}", h.app_signature);
-            println!("  type:\t\t\t{:?}", h.patch_type);
-            println!("  is_monolith:\t\t{:?}", h.is_monolith);
-            println!("  kontakt_version:\t{}", h.patch_version);
-            println!("  author:\t\t{}", h.author);
-            println!("  zones:\t\t{}", h.number_of_zones);
-            println!("  groups:\t\t{}", h.number_of_groups);
-            println!("  instruments:\t\t{}", h.number_of_instruments);
-            println!("  created_at:\t\t{}", h.created_at);
-        }
-    }
-    println!("");
-}
-
-fn print_kontakt_preset(preset: &KontaktPreset) -> Result<()> {
-    match preset {
-        KontaktPreset::KontaktV1(kon1) => {
-            println!("\nKon1:");
-            println!("\n{}", kon1.preset);
-        }
-        KontaktPreset::KontaktV2(kon2) => {
-            println!("\nKon2:");
-            println!("\n{}", kon2.preset);
-        }
-        KontaktPreset::KontaktV42(p) => {
-            print_kontakt_program(&p.program)?;
-
-            println!("\nFileNameListPreK51:");
-            for (_i, path) in &p.filetable.filenames {
-                println!("  {path}");
-            }
-        }
-        KontaktPreset::Kon5(p) => {
-            print_kontakt_program(&p.program)?;
-            print_filetable(&p.filetable);
-        }
-        KontaktPreset::Kon6(p) => {
-            print_kontakt_program(&p.program)?;
-            print_filetable(&p.filetable);
-        }
-        KontaktPreset::Kon7(p) => {
-            print_kontakt_program(&p.program)?;
-            print_filetable(&p.filetable);
-        }
-        KontaktPreset::NKM(p) => {
-            println!("\nBank:");
-
-            let bank = &p.bank.params()?;
-            println!("  master_volume:\t{}", bank.master_volume);
-            println!("  master_tune:\t\t{}", bank.master_tune);
-            println!("  master_tempo:\t\t{}", bank.master_tempo);
-            println!("  name:\t\t\t{}", bank.name);
-
-            print_filetable(&p.filetable);
-        }
-        KontaktPreset::Unsupported(chunks) => {
-            for chunk in &chunks.0 {
-                println!("Chunk(0x{:X})", chunk.id);
-            }
-        }
-    };
-
-    Ok(())
 }
 
 pub fn format_hex(buffer: &[u8]) -> String {

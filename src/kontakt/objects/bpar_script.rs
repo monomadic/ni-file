@@ -18,13 +18,13 @@ pub struct BParScript(pub StructuredObject);
 
 #[derive(Debug)]
 pub struct BParScriptParams {
-    text: Option<String>,
-    source_editor_open: bool,
-    touched_but_not_applied: bool,
-    bypass: bool,
-    password_hash: String,
-    description: Option<String>,
-    textfile_name: Option<String>,
+    pub text: Option<String>,
+    pub source_editor_open: bool,
+    pub touched_but_not_applied: bool,
+    pub bypass: bool,
+    pub password_hash: String,
+    pub description: Option<String>,
+    pub textfile_name: Option<String>,
 }
 
 impl BParScript {
