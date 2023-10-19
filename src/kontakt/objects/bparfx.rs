@@ -7,7 +7,7 @@ const CHUNK_ID: u16 = 0x25;
 
 /// # BParFX
 ///
-/// A wrapper for an effect parameter. The effect is the first child.
+/// An effect slot. The effect object is the first child.
 /// Contains private data but no public data.
 ///
 /// - Type:           Chunk<StructuredObject>

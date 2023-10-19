@@ -74,6 +74,12 @@ fn print_chunk(chunk: &Chunk, indent: usize) -> Result<(), Report> {
                 }
             }
         }
+        KontaktObject::BParameterArraySerBParInternalMod16(arr) => {
+            println!("InternalModArray16 v{:X}", arr.0.version);
+            for chunk in &arr.children()? {
+                print_chunk(chunk, indent + INDENT_SIZE)?;
+            }
+        }
         KontaktObject::PrivateRawObject(po) => {
             print!("PrivateRawObject: ");
             println!("0x{}", format_hex(po.data()));
