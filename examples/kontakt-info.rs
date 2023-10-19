@@ -52,6 +52,12 @@ fn print_chunk(chunk: &Chunk, indent: usize) -> Result<(), Report> {
         KontaktObject::BParFXSendLevel(fx) => {
             println!("BParFXSendLevel {:?}", fx);
         }
+        KontaktObject::QuickBrowseData(q) => {
+            println!("QuickBrowseData v{:X} {}", q.0.version, q.params()?.unknown);
+        }
+        KontaktObject::SaveSettings(_) => {
+            println!("SaveSettings");
+        }
         KontaktObject::FNTableImpl(filetable) => print_filetable(&filetable),
         KontaktObject::FileNameListPreK51(fnl) => {
             println!("FileNameListPreK51:");

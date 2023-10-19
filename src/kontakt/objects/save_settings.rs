@@ -28,14 +28,14 @@ impl SaveSettings {
         let is_structured = reader.read_bool()?; // is structured
         assert!(!is_structured);
 
-        dbg!(reader.read_u16_le()?);
-        dbg!(reader.read_i32_le()?);
-        dbg!(reader.read_i32_le()?);
-
-        dbg!(reader.read_i32_le()?);
-        dbg!(reader.read_bool()?);
-        dbg!(reader.read_bool()?);
-        dbg!(reader.read_bool()?);
+        // dbg!(reader.read_u16_le()?);
+        // dbg!(reader.read_i32_le()?);
+        // dbg!(reader.read_i32_le()?);
+        //
+        // dbg!(reader.read_i32_le()?);
+        // dbg!(reader.read_bool()?);
+        // dbg!(reader.read_bool()?);
+        // dbg!(reader.read_bool()?);
         Ok(Self)
     }
 }

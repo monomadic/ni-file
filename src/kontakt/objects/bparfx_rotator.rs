@@ -1,7 +1,7 @@
 use std::io::Cursor;
 
 use crate::{
-    kontakt::{error::KontaktError, structured_object::StructuredObject, Chunk},
+    kontakt::{error::KontaktError, Chunk},
     read_bytes::ReadBytesExt,
     Error,
 };
@@ -9,8 +9,8 @@ use crate::{
 const CHUNK_ID: u16 = 0x22;
 
 /// Type:           Chunk<Data>
-/// SerType:        0x17
-/// Versions:       0x50
+/// SerType:        0x22
+/// Versions:       ?
 /// Kontakt 7:      BParFXRotator
 /// KontaktIO:
 #[derive(Debug)]

@@ -29,6 +29,7 @@ pub const KONTAKT_BANK_ID: u16 = 0x03;
 ///   ProgramContainer? 0x29
 ///   BMidiObject?
 ///   BMultiChannelProcessBuffer?
+///
 #[derive(Debug)]
 pub struct Bank(pub StructuredObject);
 
