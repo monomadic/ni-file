@@ -6,16 +6,18 @@
 
 Native Instruments file format support for rust. This library will serve as a reference implementation is the result of countless hours of painstaking reverse engineering and research. As this repository also serves as a research base, the implementation will shift drastically for a while and the code will be under a state of refactoring.
 
-This library is already semi-useful; the various NI compression algorithms, generic containers and wrappers, and the entire family of Kontakt formats are nearing a competent level of support. Kontakt files can mostly be read to some extent, but not all data is fully mapped.
+The tests will break and you may get (intentional) panics. Right now finding gaps in the spec is more important than developer comfort. Once a 0.1 release is published to crates.io, the api and build process will be more reliable.
+
+Having said that, this library is already semi-useful; the various NI compression algorithms, generic containers and wrappers, and the entire family of Kontakt formats are nearing a competent level of support. Kontakt files can mostly be read to some extent, but not all data is fully mapped.
 
 If you'd like to join the effort or just learn more about reverse engineering, please join the telegram group at https://t.me/ni_file I'm on telegram at `@deathdisco`. I also run the [rust-audio telegram group](https://t.me/+TrgB_G5z0Yl6WYat).
 
 ## Features
 
 - ✅ **Kontakt v1** _100%: extract xml_
-- ✅ **Kontakt v2** _50%: extract xml, no monolith support yet_
-- ✅ **Kontakt v4.22+** _70%: NKS Container, Program, FileTable, Zones_
-- ✅ **Kontakt v5-v7** _50%: NIS Container, Program, FileTable, Zones_
+- ✅ **Kontakt v2** _90%: extract xml, no monolith support yet_
+- ✅ **Kontakt v4.22+** _75%: NKS Container, Program, FileTable, Zones_
+- ✅ **Kontakt v5-v7** _65%: NIS Container, Program, FileTable, Zones_
 - ✅ **Kontakt FileContainer (Modern Monolith)**: _read support_
 - ✅ **NCW Compression**: _read support - also available as a [cli utility](https://github.com/monomadic/ncw)_.
 - 🕒 **Kontakt NKS Monolith**: _coming soon_
