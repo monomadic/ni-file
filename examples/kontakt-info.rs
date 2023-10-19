@@ -80,6 +80,9 @@ fn print_chunk(chunk: &Chunk, indent: usize) -> Result<(), Report> {
                 print_chunk(chunk, indent + INDENT_SIZE)?;
             }
         }
+        KontaktObject::BParInternalMod(imod) => {
+            println!("InternalMod v{:X}", imod.0.version);
+        }
         KontaktObject::PrivateRawObject(po) => {
             print!("PrivateRawObject: ");
             println!("0x{}", format_hex(po.data()));
