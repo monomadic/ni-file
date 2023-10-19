@@ -23,6 +23,10 @@ impl BParFX {
     pub fn version(&self) -> u16 {
         self.0.version
     }
+
+    pub fn effect(&self) -> Option<&Chunk> {
+        self.0.children.get(0)
+    }
 }
 
 impl std::convert::TryFrom<&Chunk> for BParFX {

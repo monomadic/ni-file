@@ -4,16 +4,11 @@
 
 # Native Instruments File Format
 
-[![github]](https://github.com/monomadic/ni-file)//!
-[github]: https://img.shields.io/badge/github-8da0cb?style=for-the-badge&labelColor=555555&logo=github
-
 Native Instruments file format support for rust. This library will serve as a reference implementation is the result of countless hours of painstaking reverse engineering and research.
 
-This library is almost at a state of being useful; the various NI compression algorithms, generic containers and wrappers, and the entire family of Kontakt formats are nearing a competent level of support. If you'd like to join the effort or just learn more about reverse engineering, please join the telegram group at https://t.me/ni_file
+This library is already semi-useful; the various NI compression algorithms, generic containers and wrappers, and the entire family of Kontakt formats are nearing a competent level of support. Kontakt files can mostly be read to some extent, but not all data is fully mapped.
 
-I'm on telegram at `@deathdisco`.
-
-I also run the [rust-audio telegram group](https://t.me/+TrgB_G5z0Yl6WYat).
+If you'd like to join the effort or just learn more about reverse engineering, please join the telegram group at https://t.me/ni_file I'm on telegram at `@deathdisco`. I also run the [rust-audio telegram group](https://t.me/+TrgB_G5z0Yl6WYat).
 
 ## Features
 
