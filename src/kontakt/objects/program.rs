@@ -17,7 +17,7 @@ const CHUNK_ID: u16 = 0x28;
 /// Kontakt 7:      BProgram
 /// KontaktIO:      K4PL_Program
 #[derive(Debug)]
-pub struct Program(StructuredObject);
+pub struct Program(pub StructuredObject);
 
 impl Program {
     pub fn read<R: ReadBytesExt>(mut reader: R) -> Result<Self, Error> {

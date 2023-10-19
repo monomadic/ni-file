@@ -1,5 +1,5 @@
 use crate::{
-    kontakt::{Chunk, KontaktError},
+    kontakt::{Chunk, KontaktError, StructuredObject},
     read_bytes::ReadBytesExt,
     Error,
 };
@@ -23,8 +23,9 @@ impl ProgramList {
         let mut programs = Vec::new();
 
         for _ in 0..num_programs {
-            let chunk = Chunk::read(&mut reader)?;
-            programs.push((&chunk).try_into()?);
+            let _ = reader.read_i16_le()?;
+            let so = Program(StructuredObject::read(&mut reader)?);
+            programs.push(so);
         }
 
         Ok(Self { programs })

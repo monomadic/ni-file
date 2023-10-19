@@ -85,11 +85,15 @@ mod tests {
         let pc = ProgramContainer::try_from(&chunk)?;
 
         assert_eq!(pc.0.version, 0x51);
+        assert_eq!(pc.0.children.len(), 3);
+        assert_eq!(pc.0.children[0].id, 0x2B); // VoiceGroup
+        assert_eq!(pc.0.children[1].id, 0x47); // SaveSettings
+        assert_eq!(pc.0.children[2].id, 0x36); // ProgramList
 
         pc.params()?;
         pc.voice_group()?;
         pc.program_list()?;
-
+        // println!("{:X}", pc.0.children[2].id);
         Ok(())
     }
 }
