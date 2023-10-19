@@ -11,7 +11,7 @@ use super::BParFX;
 /// Type:           StructuredObject
 /// SerType:        0x3A
 /// Versions:       0x10, 0x11, 0x12
-/// Kontakt 7:      BParameterArraySerBParFX8
+/// Kontakt 7:      BParameterArraySer<BParFX,8>
 /// KontaktIO:      BParamArray<8>
 #[doc = include_str!("../../../doc/presets/Kontakt/BParamArray.md")]
 #[derive(Debug)]

@@ -23,6 +23,7 @@ mod program_list;
 mod quick_browse_data;
 mod save_settings;
 mod slot_list;
+mod src_mode;
 mod start_criteria;
 mod start_criteria_list;
 mod voice_group;
