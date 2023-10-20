@@ -139,7 +139,10 @@ fn print_chunk(chunk: &Chunk, indent: usize) -> Result<(), Report> {
             }
         }
         KontaktObject::StartCriteriaList(scl) => {
-            println!("StartCriteriaList: {}", scl.group_starts)
+            println!("StartCriteriaList ({} items)", scl.items.len());
+            for item in &scl.items {
+                println!("{}StartCriteria v{:?}", indent_str, item)
+            }
         }
         KontaktObject::BParameterArraySerBParFX8(pa) => {
             println!("BParamArrayBParFX8 v{:X}", pa.version);

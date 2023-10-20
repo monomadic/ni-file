@@ -8,6 +8,10 @@ use super::Program;
 
 const CHUNK_ID: u16 = 0x36;
 
+/// ProgramList
+///
+/// An array of `Program` objects.
+///
 /// Type:           Chunk
 /// SerType:        0x36
 /// Kontakt 7:      ?

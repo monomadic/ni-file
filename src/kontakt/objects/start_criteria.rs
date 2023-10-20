@@ -1,11 +1,24 @@
-use crate::{read_bytes::ReadBytesExt, Error};
+use std::io::Cursor;
+
+use crate::{
+    kontakt::{Chunk, KontaktError, StructuredObject},
+    read_bytes::ReadBytesExt,
+    Error,
+};
+
+const CHUNK_ID: u16 = 0x0F;
 
 /// Type:           Chunk
 /// SerType:        0x0F
 /// Version:        0x70
 /// Kontakt 7:      BParStartCriteria
 /// KontaktIO:      K4PL_StartCriteria
-pub struct StartCriteria {
+#[derive(Debug)]
+pub struct StartCriteria(pub StructuredObject);
+
+#[derive(Debug)]
+pub struct StartCriteriaParams {
+    /// Mode: Always, Start On Key, Start On Controller, Cycle Round Robin, Cycle Random, Slice Trigger
     mode: i32,
     next_criteria: i32,
     key_min: i16,
@@ -19,9 +32,10 @@ pub struct StartCriteria {
     sequencer_only: bool,
 }
 
-impl StartCriteria {
+impl StartCriteriaParams {
+    // 33 bytes
     pub fn read<R: ReadBytesExt>(mut reader: R) -> Result<Self, Error> {
-        Ok(Self {
+        Ok(StartCriteriaParams {
             mode: reader.read_i32_le()?,
             next_criteria: reader.read_i32_le()?,
             key_min: reader.read_i16_le()?,
@@ -34,5 +48,26 @@ impl StartCriteria {
             slice_zone_slice_idx: reader.read_i32_le()?,
             sequencer_only: reader.read_bool()?,
         })
+    }
+}
+
+impl StartCriteria {
+    pub fn params(&self) -> Result<StartCriteriaParams, Error> {
+        StartCriteriaParams::read(&mut Cursor::new(&self.0.public_data))
+    }
+}
+
+impl std::convert::TryFrom<&Chunk> for StartCriteria {
+    type Error = Error;
+
+    fn try_from(chunk: &Chunk) -> Result<Self, Self::Error> {
+        if chunk.id != CHUNK_ID {
+            return Err(KontaktError::IncorrectID {
+                expected: CHUNK_ID,
+                got: chunk.id,
+            }
+            .into());
+        }
+        Ok(Self(chunk.try_into()?))
     }
 }
