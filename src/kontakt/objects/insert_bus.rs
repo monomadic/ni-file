@@ -23,13 +23,23 @@ const CHUNK_ID: u16 = 0x45;
 pub struct InsertBus(pub StructuredObject);
 
 #[derive(Debug)]
-pub struct InsertBusParams {}
+pub struct InsertBusParams {
+    name: String,
+    pan: f32,
+    volume: f32,
+    output: i32,
+}
 
 impl InsertBus {
     pub fn params(&self) -> Result<InsertBusParams, Error> {
         let mut reader = Cursor::new(&self.0.public_data);
 
-        Ok(InsertBusParams {})
+        Ok(InsertBusParams {
+            name: reader.read_widestring_utf16()?,
+            pan: reader.read_f32_le()?,
+            volume: reader.read_f32_le()?,
+            output: reader.read_i32_le()?,
+        })
     }
 }
 

@@ -59,7 +59,7 @@ fn print_chunk(chunk: &Chunk, indent: usize) -> Result<(), Report> {
             println!("SaveSettings");
         }
         KontaktObject::BInsertBus(bus) => {
-            println!("InsertBus v{:X}", bus.0.version);
+            println!("InsertBus v{:X} {:?}", bus.0.version, bus.params()?);
             for chunk in &bus.0.children {
                 print_chunk(chunk, indent + INDENT_SIZE)?;
             }
