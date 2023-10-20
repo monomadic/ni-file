@@ -3,7 +3,7 @@ use crate::{read_bytes::ReadBytesExt, Error};
 use super::{
     objects::{
         BParFX, BParFXSendLevels, BParScript, BParamArrayBParFX8, Bank, FNTableImpl,
-        FileNameListPreK51, GroupList, InternalMod, InternalModArray16, LoopArray,
+        FileNameListPreK51, GroupList, InsertBus, InternalMod, InternalModArray16, LoopArray,
         PrivateRawObject, Program, ProgramContainer, ProgramList, QuickBrowseData, SaveSettings,
         SlotList, StartCriteriaList, VoiceGroup, VoiceGroups, ZoneList,
     },
@@ -109,7 +109,7 @@ pub enum KontaktObject {
     BParFXTape,
     BParFXTrans,
     BParFXSSLGEQ,
-    BInsertBus,
+    BInsertBus(InsertBus),
     BParFXSSLGBusComp,
     SaveSettings(SaveSettings),
     BParGroupDynamics,
@@ -220,7 +220,7 @@ impl TryFrom<&Chunk> for KontaktObject {
             0x42 => KontaktObject::BParFXTape,
             0x43 => KontaktObject::BParFXTrans,
             0x44 => KontaktObject::BParFXSSLGEQ,
-            0x45 => KontaktObject::BInsertBus,
+            0x45 => KontaktObject::BInsertBus(chunk.try_into()?),
             0x46 => KontaktObject::BParFXSSLGBusComp,
             0x47 => KontaktObject::SaveSettings(chunk.try_into()?),
             0x4a => KontaktObject::BParGroupDynamics,

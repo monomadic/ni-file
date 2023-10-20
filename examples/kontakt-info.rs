@@ -58,6 +58,12 @@ fn print_chunk(chunk: &Chunk, indent: usize) -> Result<(), Report> {
         KontaktObject::SaveSettings(_) => {
             println!("SaveSettings");
         }
+        KontaktObject::BInsertBus(bus) => {
+            println!("InsertBus v{:X}", bus.0.version);
+            for chunk in &bus.0.children {
+                print_chunk(chunk, indent + INDENT_SIZE)?;
+            }
+        }
         KontaktObject::FNTableImpl(filetable) => print_filetable(&filetable),
         KontaktObject::FileNameListPreK51(fnl) => {
             println!("FileNameListPreK51:");
@@ -98,6 +104,9 @@ fn print_chunk(chunk: &Chunk, indent: usize) -> Result<(), Report> {
         }
         KontaktObject::BProgramContainer(pc) => {
             println!("ProgramContainer {pc:?}");
+            for chunk in &pc.0.children {
+                print_chunk(chunk, indent + INDENT_SIZE)?;
+            }
         }
         KontaktObject::LoopArray(loops) => {
             println!("LoopArray ({} items)", loops.items.len());
