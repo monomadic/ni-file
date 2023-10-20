@@ -78,7 +78,7 @@ mod tests {
             "tests/data/Objects/Kontakt/0x37-SlotList/SlotList-000.kon",
         )?)?;
         let slotlist = SlotList::try_from(&chunk)?;
-        for (i, pc) in slotlist.slots {
+        for (_, pc) in slotlist.slots {
             println!("{:?}", pc);
         }
         Ok(())

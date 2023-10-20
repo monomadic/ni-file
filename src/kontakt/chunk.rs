@@ -8,7 +8,6 @@ use super::{
         SlotList, StartCriteriaList, VoiceGroup, VoiceGroups, ZoneList,
     },
     structured_object::StructuredObject,
-    KontaktNode,
 };
 
 #[derive(Debug)]

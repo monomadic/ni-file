@@ -125,7 +125,7 @@ fn print_chunk(chunk: &Chunk, indent: usize) -> Result<(), Report> {
         KontaktObject::VoiceGroups(groups) => {
             println!("VoiceGroups {:?}", groups);
             for vg in &groups.groups {
-                if let Some(g) = vg {}
+                if let Some(_g) = vg {}
             }
         }
         KontaktObject::VoiceGroup(vg) => {

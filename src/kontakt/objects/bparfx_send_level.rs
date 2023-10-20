@@ -1,7 +1,7 @@
 use std::io::Cursor;
 
 use crate::{
-    kontakt::{error::KontaktError, structured_object::StructuredObject, Chunk},
+    kontakt::{error::KontaktError, Chunk},
     read_bytes::ReadBytesExt,
     Error,
 };
@@ -17,7 +17,7 @@ const CHUNK_ID: u16 = 0x17;
 pub struct BParFXSendLevels;
 
 impl BParFXSendLevels {
-    pub fn read<R: ReadBytesExt>(mut reader: R) -> Result<Self, Error> {
+    pub fn read<R: ReadBytesExt>(mut _reader: R) -> Result<Self, Error> {
         Ok(Self)
     }
 }

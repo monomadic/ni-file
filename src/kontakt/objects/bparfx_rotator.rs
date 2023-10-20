@@ -17,7 +17,7 @@ const CHUNK_ID: u16 = 0x22;
 pub struct BParFXRotator;
 
 impl BParFXRotator {
-    pub fn read<R: ReadBytesExt>(mut reader: R) -> Result<Self, Error> {
+    pub fn read<R: ReadBytesExt>(mut _reader: R) -> Result<Self, Error> {
         Ok(Self)
     }
 }

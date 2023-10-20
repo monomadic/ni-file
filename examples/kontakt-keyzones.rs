@@ -14,7 +14,7 @@ pub fn main() -> Result<(), Report> {
     };
 
     let file = File::open(&path)?;
-    let ni = NIFile::read(file)?;
+    let _ni = NIFile::read(file)?;
 
     // .. loop zone data
 

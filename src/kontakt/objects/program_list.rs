@@ -63,11 +63,7 @@ mod tests {
         let chunk = Chunk::read(File::open(
             "tests/data/Objects/Kontakt/0x36-ProgramList/ProgramList-000.kon",
         )?)?;
-        let pl = ProgramList::try_from(&chunk)?;
-        // assert_eq!(pl.0.version, 0x51);
-        // assert!(pl.params().is_ok());
-        // assert!(pl.voice_group().is_ok());
-        // pl.program_list()?;
+        let _pl = ProgramList::try_from(&chunk)?;
 
         Ok(())
     }

@@ -1,14 +1,12 @@
 use std::io::Cursor;
 
 use crate::{
-    kontakt::{
-        chunk::Chunk, error::KontaktError, structured_object::StructuredObject, KontaktNode,
-    },
+    kontakt::{chunk::Chunk, error::KontaktError, structured_object::StructuredObject},
     read_bytes::ReadBytesExt,
     Error,
 };
 
-use super::{program_data::ProgramPublicParams, zone_data::Zone, zone_list::ZoneList};
+use super::zone_list::ZoneList;
 
 const CHUNK_ID: u16 = 0x28;
 
@@ -18,6 +16,75 @@ const CHUNK_ID: u16 = 0x28;
 /// KontaktIO:      K4PL_Program
 #[derive(Debug)]
 pub struct Program(pub StructuredObject);
+
+#[derive(Debug, Default)]
+pub struct ProgramPublicParams {
+    pub name: String,
+    pub num_bytes_samples_total: f64,
+    pub transpose: i8,
+    pub volume: f32,
+    pub pan: f32,
+    pub tune: f32,
+    pub low_velocity: u8,
+    pub high_velocity: u8,
+    pub low_key: u8,
+    pub high_key: u8,
+    pub default_key_switch: i16,
+    pub dfd_channel_preload_size: i32,
+    pub library_id: i32,
+    pub fingerprint: u32,
+    pub loading_flags: u32,
+    pub group_solo: bool,
+    pub cat_icon_idx: i32,
+    pub instrument_credits: String,
+    pub instrument_author: String,
+    pub instrument_url: String,
+    pub instrument_cat1: i16,
+    pub instrument_cat2: i16,
+    pub instrument_cat3: i16,
+    pub resource_container_filename: Option<i32>,
+    pub wallpaper_filename: Option<i32>,
+}
+
+impl ProgramPublicParams {
+    pub fn read<R: ReadBytesExt>(mut reader: R, version: u16) -> Result<Self, Error> {
+        Ok(Self {
+            name: reader.read_widestring_utf16()?,
+            num_bytes_samples_total: reader.read_f64_le()?,
+            transpose: reader.read_i8()?,
+            volume: reader.read_f32_le()?,
+            pan: reader.read_f32_le()?,
+            tune: reader.read_f32_le()?,
+            low_velocity: reader.read_u8()?,
+            high_velocity: reader.read_u8()?,
+            low_key: reader.read_u8()?,
+            high_key: reader.read_u8()?,
+            default_key_switch: reader.read_i16_le()?,
+            dfd_channel_preload_size: reader.read_i32_le()?,
+            library_id: reader.read_i32_le()?,
+            fingerprint: reader.read_u32_le()?,
+            loading_flags: reader.read_u32_le()?,
+            group_solo: reader.read_bool()?,
+            cat_icon_idx: reader.read_i32_le()?,
+            instrument_credits: reader.read_widestring_utf16()?,
+            instrument_author: reader.read_widestring_utf16()?,
+            instrument_url: reader.read_widestring_utf16()?,
+            instrument_cat1: reader.read_i16_le()?,
+            instrument_cat2: reader.read_i16_le()?,
+            instrument_cat3: reader.read_i16_le()?,
+            resource_container_filename: {
+                match version {
+                    _ => None,
+                }
+            },
+            wallpaper_filename: {
+                match version {
+                    _ => None,
+                }
+            },
+        })
+    }
+}
 
 impl Program {
     pub fn read<R: ReadBytesExt>(mut reader: R) -> Result<Self, Error> {

@@ -1,5 +1,3 @@
-use std::io::Cursor;
-
 use crate::{
     kontakt::{error::KontaktError, structured_object::StructuredObject, Chunk},
     Error,

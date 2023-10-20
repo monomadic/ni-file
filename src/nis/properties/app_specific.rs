@@ -48,10 +48,10 @@ impl std::convert::TryFrom<&ItemData> for AppSpecific {
 
 #[cfg(test)]
 mod tests {
-    use std::{fs::File, io::Read};
-
-    use super::*;
-
+    // use std::{fs::File, io::Read};
+    //
+    // use super::*;
+    //
     // #[test]
     // fn test_app_specific_read() -> Result<()> {
     //     let mut file = File::open("tests/data/Containers/NIS/objects/AppSpecific/AppSpecific-000")?;

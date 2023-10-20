@@ -55,5 +55,3 @@ impl KontaktChunks {
         None
     }
 }
-
-pub struct Zone {}
