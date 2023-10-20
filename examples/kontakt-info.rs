@@ -147,6 +147,9 @@ fn print_chunk(chunk: &Chunk, indent: usize) -> Result<(), Report> {
                 }
             }
         }
+        KontaktObject::BParFXDelay(fx) => {
+            println!("BParamArrayBParFX8 v{:X}", fx.0.version);
+        }
         KontaktObject::StartCriteriaList(scl) => {
             println!("StartCriteriaList ({} items)", scl.items.len());
             for item in &scl.items {
