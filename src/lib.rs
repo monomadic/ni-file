@@ -10,12 +10,10 @@ pub use nifile::NIFile;
 
 // containers:
 pub mod file_container; // monoliths
-pub mod nis; // nisound document // kontakt 4.2 preset
+pub mod nis; // nisound document
 pub mod nkr; // kontakt resource container
 pub mod nks; // native instruments kontakt sound file format
 pub mod nksf; // native instruments kore format
-
-pub use nis::Repository;
 
 // app domains:
 pub mod fm8;

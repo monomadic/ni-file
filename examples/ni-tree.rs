@@ -2,7 +2,7 @@
 
 use std::{error::Error, path::PathBuf};
 
-use ni_file::nis::ItemContainer;
+use ni_file::nis::{ItemContainer, Repository};
 
 fn get_files(path: &str) -> Result<Vec<PathBuf>, Box<dyn Error>> {
     Ok(glob::glob(path)?
@@ -50,7 +50,7 @@ pub fn main() -> Result<(), Box<dyn std::error::Error>> {
     // repository containers (used in most instruments)
     for path in paths {
         let file = std::fs::File::open(path)?;
-        let repository = ni_file::Repository::read(&file)?;
+        let repository = Repository::read(&file)?;
         let item = repository.item();
 
         if let Some(Ok(root)) = repository.find_repository_root() {
