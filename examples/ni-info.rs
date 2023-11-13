@@ -187,6 +187,10 @@ fn print_kontakt_header(header: &BPatchHeader) {
             println!("\nBPatchHeaderV1:");
             println!("  created_at:\t\t{}", h.created_at);
             println!("  samples_size:\t\t{}", h.samples_size);
+            println!("  u_version:\t\t{}", h.u_version);
+            println!("  u_a:\t\t\t{}", h.u_a);
+            println!("  u_b:\t\t\t{}", h.u_b);
+            println!("  u_c:\t\t\t{}", h.u_c);
         }
         BPatchHeader::BPatchHeaderV2(ref h) => {
             println!("\nBPatchHeaderV2:");

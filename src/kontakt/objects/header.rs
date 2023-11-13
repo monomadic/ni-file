@@ -64,16 +64,20 @@ pub struct BPatchHeaderV2 {
 /// The header of a Kontakt1 NKS File.
 #[derive(Debug, PartialEq)]
 pub struct BPatchHeaderV1 {
+    pub u_version: u16,
+    pub u_a: u32,
+    pub u_b: u32,
+    pub u_c: u32,
     pub created_at: time::Date,
     pub samples_size: u32,
 }
 
 impl BPatchHeaderV1 {
     pub fn read_le<R: ReadBytesExt>(mut reader: R) -> Result<Self, NKSError> {
-        reader.read_u16_le()?; // version? usually 2
-        reader.read_u32_le()?; // ?
-        reader.read_u32_le()?; // ?
-        reader.read_u32_le()?; // ?
+        let u_version = reader.read_u16_le()?; // version? usually 2
+        let u_a = reader.read_u32_le()?; // ?
+        let u_b = reader.read_u32_le()?; // ?
+        let u_c = reader.read_u32_le()?; // ?
 
         let timestamp = OffsetDateTime::from_unix_timestamp(reader.read_u32_le()? as i64).unwrap();
         let created_at: time::Date = timestamp.date();
@@ -82,6 +86,10 @@ impl BPatchHeaderV1 {
         reader.read_u32_le()?; // always 0
 
         Ok(Self {
+            u_version,
+            u_a,
+            u_b,
+            u_c,
             created_at,
             samples_size,
         })

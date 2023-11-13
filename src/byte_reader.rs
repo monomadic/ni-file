@@ -1,4 +1,7 @@
 //! Byte reading utilities
+//!
+//! This module is not used yet but will replace ReadBytes when LE/BE support is implemented.
+//!
 
 use std::{
     any::TypeId,

@@ -3,6 +3,10 @@ use crate::{
     nks::container::NKSContainer, read_bytes::*, Error,
 };
 
+pub enum NIPreset {
+    KontaktInstrument,
+}
+
 pub enum NIFile {
     NKSContainer(NKSContainer),
     NISContainer(ItemContainer),
@@ -40,7 +44,7 @@ impl NIFile {
     pub fn inner_preset(&self) -> Result<Vec<u8>, Error> {
         match self {
             Self::NKSContainer(_nks) => unimplemented!(),
-            Self::NISContainer(_nks) => unimplemented!(),
+            Self::NISContainer(_nis) => unimplemented!(),
             _ => panic!("No preset detected."),
         }
     }

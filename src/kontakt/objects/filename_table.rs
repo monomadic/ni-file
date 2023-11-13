@@ -3,10 +3,12 @@ use std::collections::HashMap;
 use time::OffsetDateTime;
 
 use crate::{
-    kontakt::{chunk::Chunk, objects::BFileName},
+    kontakt::{chunk::Chunk, objects::BFileName, KontaktError},
     read_bytes::ReadBytesExt,
     Error,
 };
+
+const CHUNK_ID: u16 = 0x4B;
 
 /// A table representing external files of different kinds, used in Kontakt 5.1+.
 /// Kontakt: FNTableImpl
@@ -27,8 +29,12 @@ impl std::convert::TryFrom<&Chunk> for FNTableImpl {
     type Error = Error;
 
     fn try_from(chunk: &Chunk) -> Result<Self, Self::Error> {
-        if chunk.id != 0x4b {
-            panic!("fixme: error here");
+        if chunk.id != CHUNK_ID {
+            return Err(KontaktError::IncorrectID {
+                expected: CHUNK_ID,
+                got: chunk.id,
+            }
+            .into());
         }
         let reader = std::io::Cursor::new(&chunk.data);
         Self::read(reader)

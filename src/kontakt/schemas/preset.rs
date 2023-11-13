@@ -17,6 +17,7 @@ pub enum KontaktPreset {
     Kon6(Kon6),
     Kon7(Kon7),
     NKM(KontaktMulti),
+    // NKI(KontaktInstrument),
     Unsupported(KontaktChunks),
 }
 
