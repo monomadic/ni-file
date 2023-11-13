@@ -34,16 +34,25 @@ impl BPatchHeader {
 #[derive(Debug, PartialEq)]
 pub struct BPatchHeaderV42 {
     pub patch_type: PatchType,
+    /// Patch version (often higher than the Kontakt version that created it)
     pub patch_version: NKIAppVersion,
     pub icon: u32,
     pub author: String,
     pub created_at: time::Date,
+    pub u_a: u32,
     pub app_signature: String,
     pub number_of_zones: u16,
     pub number_of_groups: u16,
     pub number_of_instruments: u16,
+    /// Total length of all PCM sample data in bytes (not including RIFF header data)
+    pub pcm_data_len: u32,
     pub is_monolith: bool,
+    pub min_supported_version: NKIAppVersion,
     pub decompressed_length: u32,
+    pub u_c: u32,
+    pub checksum: Vec<u8>,
+    pub svn_revision: u32,
+    pub crc32_fast: Vec<u8>,
 }
 
 /// The header of a Kontakt2 NKS File.
@@ -59,6 +68,7 @@ pub struct BPatchHeaderV2 {
     pub number_of_groups: u16,
     pub number_of_instruments: u16,
     pub is_monolith: bool,
+    pub min_supported_version: NKIAppVersion,
 }
 
 /// The header of a Kontakt1 NKS File.
@@ -83,7 +93,7 @@ impl BPatchHeaderV1 {
         let created_at: time::Date = timestamp.date();
         let samples_size = reader.read_u32_le()?; // total size of all samples
 
-        reader.read_u32_le()?; // always 0
+        assert_eq!(reader.read_u32_le()?, 0); // always 0
 
         Ok(Self {
             u_version,
@@ -127,11 +137,14 @@ impl BPatchHeaderV2 {
         let _u = reader.read_u16_le()?; // 2
         let is_monolith = reader.read_u32_le()? == 1; // 4
 
-        let _u = reader.read_u8()?; // 1
-        let _u = reader.read_u8()?; // 1
-        let _u = reader.read_u8()?; // 1
-        let _u = reader.read_u32_le()?; // 4
-        let _u = reader.read_u8()?; // 1
+        let min_supported_version = NKIAppVersion {
+            minor_3: reader.read_u8()?,
+            minor_2: reader.read_u8()?,
+            minor_1: reader.read_u8()?,
+            major: reader.read_u8()?,
+        };
+
+        let _u = reader.read_u32_le()?;
 
         let icon = reader.read_u32_le()?;
 
@@ -151,6 +164,7 @@ impl BPatchHeaderV2 {
             number_of_groups,
             number_of_instruments,
             is_monolith,
+            min_supported_version,
             created_at,
             app_signature,
         })
@@ -160,6 +174,7 @@ impl BPatchHeaderV2 {
 impl BPatchHeaderV42 {
     pub fn read_le<R: ReadBytesExt>(mut reader: R) -> Result<Self, NKSError> {
         let data = reader.read_bytes(212)?; // 222 - 10
+        std::fs::write("header", &data)?;
         let mut reader = Cursor::new(data);
         let magic: u32 = reader.read_le()?;
 
@@ -169,7 +184,7 @@ impl BPatchHeaderV42 {
         );
 
         let patch_type: PatchType = reader.read_u16_le()?.into();
-        let app_version = NKIAppVersion {
+        let patch_version = NKIAppVersion {
             minor_3: reader.read_u8()?,
             minor_2: reader.read_u8()?,
             minor_1: reader.read_u8()?,
@@ -182,20 +197,22 @@ impl BPatchHeaderV42 {
 
         let datetime = OffsetDateTime::from_unix_timestamp(reader.read_u32_le()? as i64).unwrap();
         let created_at: time::Date = datetime.date();
-        let _unknown = reader.read_u32_le()?;
+        let u_a = reader.read_u32_le()?;
         let number_of_zones = reader.read_u16_le()?;
         let number_of_groups = reader.read_u16_le()?;
         let number_of_instruments = reader.read_u16_le()?;
+        let pcm_data_len = reader.read_u32_le()?;
 
-        let _u = reader.read_u16_le()?;
-        let _u = reader.read_u16_le()?;
         let is_monolith = reader.read_u32_le()? == 1;
 
-        let _u = reader.read_u8()?;
-        let _u = reader.read_u8()?;
-        let _u = reader.read_u8()?;
-        let _u = reader.read_u32_le()?;
-        let _u = reader.read_u8()?;
+        let min_supported_version = NKIAppVersion {
+            minor_3: reader.read_u8()?,
+            minor_2: reader.read_u8()?,
+            minor_1: reader.read_u8()?,
+            major: reader.read_u8()?,
+        };
+
+        let u_c = reader.read_u32_le()?;
 
         let icon = reader.read_u32_le()?;
 
@@ -203,9 +220,9 @@ impl BPatchHeaderV42 {
         let mut strings = Cursor::new(embedded_strings);
         let author = strings.read_string_utf8()?;
 
-        let _checksum = reader.read_bytes(16)?;
-        let _unknown = reader.read_u32_le()?;
-        let _unknown = reader.read_u32_le()?;
+        let checksum = reader.read_bytes(16)?;
+        let svn_revision = reader.read_u32_le()?;
+        let crc32_fast = reader.read_bytes(4)?;
         let decompressed_length = reader.read_u32_le()?;
 
         // seems all zero bytes
@@ -213,15 +230,22 @@ impl BPatchHeaderV42 {
 
         Ok(Self {
             patch_type,
-            patch_version: app_version,
-            icon,
-            author,
+            patch_version,
             number_of_zones,
             number_of_groups,
             number_of_instruments,
+            pcm_data_len,
             is_monolith,
+            min_supported_version,
             created_at,
+            u_a,
             app_signature,
+            u_c,
+            icon,
+            author,
+            checksum,
+            svn_revision,
+            crc32_fast,
             decompressed_length,
         })
     }

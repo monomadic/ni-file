@@ -194,27 +194,40 @@ fn print_kontakt_header(header: &BPatchHeader) {
         }
         BPatchHeader::BPatchHeaderV2(ref h) => {
             println!("\nBPatchHeaderV2:");
-            println!("  signature:\t\t{}", h.app_signature);
-            println!("  type:\t\t\t{:?}", h.patch_type);
+            println!("  app_signature:\t{}", h.app_signature);
+            println!("  patch_type:\t\t{:?}", h.patch_type);
             println!("  is_monolith:\t\t{:?}", h.is_monolith);
-            println!("  kontakt_version:\t{}", h.patch_version);
+            println!("  patch_version:\t{}", h.patch_version);
             println!("  author:\t\t{}", h.author);
             println!("  zones:\t\t{}", h.number_of_zones);
             println!("  groups:\t\t{}", h.number_of_groups);
             println!("  instruments:\t\t{}", h.number_of_instruments);
             println!("  created_at:\t\t{}", h.created_at);
+            println!("  min_supported_version:{}", h.min_supported_version);
         }
         BPatchHeader::BPatchHeaderV42(h) => {
             println!("\nBPatchHeaderV42:");
-            println!("  signature:\t\t{}", h.app_signature);
-            println!("  type:\t\t\t{:?}", h.patch_type);
-            println!("  is_monolith:\t\t{:?}", h.is_monolith);
-            println!("  kontakt_version:\t{}", h.patch_version);
-            println!("  author:\t\t{}", h.author);
+            println!("  patch_type:\t\t{:?}", h.patch_type);
+            println!("  patch_version:\t{}", h.patch_version);
+            println!("  app_signature:\t{}", h.app_signature);
+            println!("  created_at:\t\t{}", h.created_at);
+            println!("  u_a:\t\t\t{}", h.u_a);
+
             println!("  zones:\t\t{}", h.number_of_zones);
             println!("  groups:\t\t{}", h.number_of_groups);
             println!("  instruments:\t\t{}", h.number_of_instruments);
-            println!("  created_at:\t\t{}", h.created_at);
+            println!("  pcm_data_len:\t\t{} bytes", h.pcm_data_len);
+
+            println!("  is_monolith:\t\t{:?}", h.is_monolith);
+            println!("  min_supported_version:{}", h.min_supported_version);
+            println!("  u_c:\t\t\t{}", h.u_c);
+            println!("  icon:\t\t\t{}", h.icon);
+
+            println!("  author:\t\t{}", h.author);
+            println!("  checksum:\t\t{}", format_hex(&h.checksum));
+            println!("  svn_revision:\t\t{}", h.svn_revision);
+            println!("  crc32_fast:\t\t{}", format_hex(&h.crc32_fast));
+            println!("  decompressed_length:\t{}", h.decompressed_length);
         }
     }
     println!("");
@@ -274,4 +287,14 @@ fn print_kontakt_preset(preset: &KontaktPreset) -> Result<()> {
     };
 
     Ok(())
+}
+
+pub fn format_hex(buffer: &[u8]) -> String {
+    format!(
+        "{}",
+        &buffer
+            .iter()
+            .map(|x| format!("{:02x}", x))
+            .collect::<String>()
+    )
 }
