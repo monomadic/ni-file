@@ -3,10 +3,6 @@ use crate::{
     nks::container::NKSContainer, read_bytes::*, Error,
 };
 
-pub enum NIPreset {
-    KontaktInstrument,
-}
-
 pub enum NIFile {
     NKSContainer(NKSContainer),
     NISContainer(ItemContainer),
@@ -15,6 +11,10 @@ pub enum NIFile {
     NICompressedWave,
     NICache,
     FM8Preset,
+}
+
+pub enum NIPreset {
+    KontaktInstrument,
 }
 
 impl NIFile {

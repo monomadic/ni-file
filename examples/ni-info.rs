@@ -194,16 +194,19 @@ fn print_kontakt_header(header: &BPatchHeader) {
         }
         BPatchHeader::BPatchHeaderV2(ref h) => {
             println!("\nBPatchHeaderV2:");
-            println!("  app_signature:\t{}", h.app_signature);
             println!("  patch_type:\t\t{:?}", h.patch_type);
-            println!("  is_monolith:\t\t{:?}", h.is_monolith);
             println!("  patch_version:\t{}", h.patch_version);
-            println!("  author:\t\t{}", h.author);
+            println!("  app_signature:\t{}", h.app_signature);
+            println!("  created_at:\t\t{}", h.created_at);
+
             println!("  zones:\t\t{}", h.number_of_zones);
             println!("  groups:\t\t{}", h.number_of_groups);
             println!("  instruments:\t\t{}", h.number_of_instruments);
-            println!("  created_at:\t\t{}", h.created_at);
+
+            println!("  is_monolith:\t\t{:?}", h.is_monolith);
             println!("  min_supported_version:{}", h.min_supported_version);
+
+            println!("  author:\t\t{}", h.author);
         }
         BPatchHeader::BPatchHeaderV42(h) => {
             println!("\nBPatchHeaderV42:");

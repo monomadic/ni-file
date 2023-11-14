@@ -67,7 +67,7 @@ Also, I am a reverse engineer at heart, it's fun, and this is a good cause.
 
 Q: What is the purpose of this library?
 
-A: First, to document and expose these file types so that artists can have actual control of their own work, and second, to allow anyone to convert out of proprietary formats into open source standards. There are other use cases for this software, such as file support in third party software, but those are not interesting to me and not the primary focus of this knowledge work. Note that the focus is on reversing file formats for user-created NI files, not the proprietary heavily encrypted libraries - we are not trying to make it easy to pirate. But you should be able to convert libraries you created or bought that have nothing to do with NI.
+A: First, to document and expose these file types so that artists can have actual control of their own work, and second, to allow anyone to convert out of proprietary formats into open source standards. There are other use cases for this software, such as file support in third party software, but those are not interesting to me and not the primary focus of this knowledge work.
 
 ---
 
