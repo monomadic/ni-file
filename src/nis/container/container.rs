@@ -68,9 +68,7 @@ impl ItemContainer {
     where
         I: TryFrom<&'a ItemData, Error = NIFileError>,
     {
-        self.find_data(&kind)
-            // .and_then(|item_data| item_data.child())
-            .map(I::try_from)
+        self.find_data(&kind).map(I::try_from)
     }
 
     fn read_children<R: ReadBytesExt>(mut buf: R) -> Result<Vec<ItemContainer>> {

@@ -1,6 +1,9 @@
 mod container;
 mod error;
 mod properties;
+mod schema;
+
+// TODO: remove
 mod schemas;
 
 pub mod items;

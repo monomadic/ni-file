@@ -24,6 +24,7 @@ impl NKSContainer {
     pub fn read<R: ReadBytesExt>(mut reader: R) -> Result<Self, NKSError> {
         let magic = reader.read_u32_le()?;
 
+        // NOTE: 0xab85ef01 is also valid
         match magic {
             0xB36EE55E | 0x7FA89012 | 0xA4D6E55A | 0x10874353 =>{
             },

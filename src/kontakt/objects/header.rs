@@ -10,7 +10,10 @@ use std::io::Cursor;
 
 use time::OffsetDateTime;
 
-use crate::{nks::error::NKSError, read_bytes::ReadBytesExt};
+use crate::{
+    nks::error::NKSError,
+    read_bytes::{ReadBytesError, ReadBytesExt},
+};
 
 #[derive(Debug, PartialEq)]
 pub enum BPatchHeader {
@@ -49,12 +52,14 @@ pub struct BPatchHeaderV42 {
     pub u_c: u32,
     pub icon: u32,
     pub author: String,
+    pub url: String,
+    pub u_sc: u32,
     /// MD5 checksum of the decompressed chunk data
     pub checksum: Vec<u8>,
     pub svn_revision: u32,
     /// CRC32 checksum of the compressed binary data
     pub crc32_fast: [u8; 4],
-    /// Length in bytes of the decompressed inner preset chunk
+    /// Length in bytes of the decompressed inner preset chunk (unused in NISound documents)
     pub decompressed_length: u32,
 }
 
@@ -153,7 +158,10 @@ impl BPatchHeaderV2 {
 
         let embedded_strings = reader.read_bytes(104)?;
         let mut strings = Cursor::new(embedded_strings);
-        let author = strings.read_string_utf8()?;
+
+        let buf = strings.read_bytes(8)?;
+        let author = String::from_utf8(buf)
+            .map_err(|e| ReadBytesError::Generic(format!("Error converting bytes to UTF8: {e}")))?;
 
         let _svn_revision = reader.read_u32_le()?;
         let _patch_level = reader.read_u32_le()?;
@@ -223,9 +231,16 @@ impl BPatchHeaderV42 {
 
         let icon = reader.read_u32_le()?;
 
-        let embedded_strings = reader.read_bytes(104)?;
-        let mut strings = Cursor::new(embedded_strings);
-        let author = strings.read_string_utf8()?;
+        let mut buf = Cursor::new(reader.read_bytes(9)?);
+        let author = buf.read_string_utf8()?;
+
+        let _u_sa = reader.read_bytes(2)?;
+
+        let mut buf = Cursor::new(reader.read_bytes(87)?);
+        let url = buf.read_string_utf8()?;
+
+        let _u_sb = reader.read_bytes(2)?;
+        let u_sc = reader.read_u32_le()?;
 
         // TODO: read as le bytes
         let checksum = reader.read_bytes(16)?;
@@ -252,6 +267,8 @@ impl BPatchHeaderV42 {
             u_c,
             icon,
             author,
+            url,
+            u_sc,
             checksum,
             svn_revision,
             crc32_fast,
