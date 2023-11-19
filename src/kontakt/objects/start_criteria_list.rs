@@ -10,13 +10,14 @@ const CHUNK_ID: u16 = 0x38;
 
 /// StartCriteriaList
 ///
-/// Group start options - determines conditions for which a group
+/// Group Start Options - determines conditions for which a group
 /// is triggered. Maximum of 4 conditions per group.
 ///
 /// Type:           Chunk<Raw>
 /// SerType:        ?
 /// Kontakt 7:      ?
 /// KontaktIO:      StartCritList
+///
 #[derive(Debug)]
 pub struct StartCriteriaList {
     pub items: Vec<StartCriteriaParams>,

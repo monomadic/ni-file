@@ -3,6 +3,7 @@ use crate::read_bytes::ReadBytesExt;
 use crate::string_reader::StringReader;
 
 const FC_TOC_MARKER_END: u64 = 0xF1F1F1F1F1F1F1F1;
+const FC_MTD_MARKER_START: &[u8; 16] = b"/\\ NI FC MTD  /\\";
 
 /// Kontakt archive that bundles a preset, samples and other files.
 pub struct NIFileContainer {
@@ -23,7 +24,7 @@ impl NIFileContainer {
         // Native Instruments FileContainer MetaData
         let mtd_magic = reader.read_bytes(16)?;
         debug_assert_eq!(
-            mtd_magic, b"/\\ NI FC MTD  /\\",
+            mtd_magic, FC_MTD_MARKER_START,
             "Monolith header tag not found."
         );
 

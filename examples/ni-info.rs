@@ -228,7 +228,7 @@ fn print_kontakt_header(header: &BPatchHeader) {
 
             println!("  author:\t\t{}", h.author);
             println!("  url:\t\t\t{}", h.url);
-            println!("  u_sc:\t\t\t{}", h.u_sc);
+            println!("  flags:\t\t\t{}", h.flags);
 
             println!("  checksum:\t\t{}", format_hex(&h.checksum));
             println!("  svn_revision:\t\t{}", h.svn_revision);

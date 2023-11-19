@@ -3,7 +3,7 @@ mod error;
 mod properties;
 mod schema;
 
-// TODO: remove
+#[deprecated]
 mod schemas;
 
 pub mod items;

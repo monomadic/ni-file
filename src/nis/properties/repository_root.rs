@@ -10,8 +10,9 @@ use crate::{
 #[derive(Debug)]
 pub struct RepositoryRoot {
     pub nisound_version: RepositoryVersion,
+    // Always 0?
     pub repository_magic: u32,
-    /// Usually 0, 1, 2, or 3
+    // Always 1?
     pub repository_type: u32,
 }
 

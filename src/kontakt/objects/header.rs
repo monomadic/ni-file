@@ -53,7 +53,7 @@ pub struct BPatchHeaderV42 {
     pub icon: u32,
     pub author: String,
     pub url: String,
-    pub u_sc: u32,
+    pub flags: u32,
     /// MD5 checksum of the decompressed chunk data
     pub checksum: Vec<u8>,
     pub svn_revision: u32,
@@ -240,7 +240,10 @@ impl BPatchHeaderV42 {
         let url = buf.read_string_utf8()?;
 
         let _u_sb = reader.read_bytes(2)?;
-        let u_sc = reader.read_u32_le()?;
+
+        // NOTE: most likely some kind of bitflag field, as values
+        // in the wild are 0x00 (0) or 0x01 (32)
+        let flags = reader.read_u32_le()?;
 
         // TODO: read as le bytes
         let checksum = reader.read_bytes(16)?;
@@ -268,7 +271,7 @@ impl BPatchHeaderV42 {
             icon,
             author,
             url,
-            u_sc,
+            flags,
             checksum,
             svn_revision,
             crc32_fast,

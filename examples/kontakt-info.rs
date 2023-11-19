@@ -53,7 +53,12 @@ fn print_chunk(chunk: &Chunk, indent: usize) -> Result<(), Report> {
             println!("BParFXSendLevel {:?}", fx);
         }
         KontaktObject::QuickBrowseData(q) => {
-            println!("QuickBrowseData v{:X} {}", q.0.version, q.params()?.unknown);
+            println!(
+                "QuickBrowseData v{:X} {} ({} children)",
+                q.0.version,
+                q.params()?.unknown,
+                q.0.children.len()
+            );
         }
         KontaktObject::SaveSettings(_) => {
             println!("SaveSettings");

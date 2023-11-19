@@ -3,6 +3,8 @@ use crate::{
     prelude::*,
 };
 
+use super::nis_object::NISObject;
+
 #[derive(Debug)]
 pub struct Repository(ItemContainer);
 
@@ -14,6 +16,14 @@ impl Repository {
 
     pub fn children(&self) -> &Vec<ItemContainer> {
         &self.0.children
+    }
+
+    pub fn infer_object(&self) -> NISObject {
+        if let Some(child) = self.0.children.get(0) {
+            child.into()
+        } else {
+            NISObject::Unknown
+        }
     }
 }
 
