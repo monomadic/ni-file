@@ -68,7 +68,11 @@ impl SubtreeItem {
     /// Decompress and return compressed internal Item.
     pub fn read<R: ReadBytesExt>(mut reader: R) -> Result<Self> {
         let prop_version = reader.read_u32_le()?; // num items?
-        assert_eq!(prop_version, 1);
+        assert_eq!(
+            prop_version, 1,
+            "Unsupported property version: {}",
+            prop_version
+        );
 
         let is_compressed = reader.read_bool()?;
         let inner_data = match is_compressed {

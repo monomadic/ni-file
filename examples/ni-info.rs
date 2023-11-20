@@ -210,14 +210,18 @@ fn print_kontakt_header(header: &BPatchHeader) {
             println!("  min_supported_version:{}", h.min_supported_version);
             println!("  u_c:\t\t\t{}", h.u_c);
 
-            println!("  icon:\t\t\t{}", h.icon);
-            println!("  author:\t\t{}", h.author);
-            println!("  u_sa:\t\t\t{}", h.u_sa);
-            println!("  url:\t\t\t{}", h.url);
-            println!("  u_sb:\t\t\t{}", h.u_sb);
+            println!("  cat_icon_idx:\t{}", h.cat_icon_idx);
+            println!("  author:\t\t{}", h.instrument_author);
+            println!("  cat_1:\t\t{}", h.instrument_cat1);
+            println!("  cat_2:\t\t{}", h.instrument_cat2);
+            println!("  cat_3:\t\t{}", h.instrument_cat3);
+            println!("  url:\t\t\t{}", h.instrument_url);
 
-            println!("  svn_revision:\t\t{}", h.svn_revision);
+            // println!("  u_b:\t\t\t{}", h.u_b);
+
             println!("  patch_level:\t\t{}", h.patch_level);
+            println!("  svn_revision:\t\t{}", h.svn_revision);
+            println!("  unknown_offset:\t{}", h.unknown_offset);
         }
         BPatchHeader::BPatchHeaderV42(h) => {
             println!("\nBPatchHeaderV42:");
@@ -235,13 +239,18 @@ fn print_kontakt_header(header: &BPatchHeader) {
             println!("  is_monolith:\t\t{:?}", h.is_monolith);
             println!("  min_supported_version:{}", h.min_supported_version);
             println!("  u_c:\t\t\t{}", h.u_c);
-            println!("  icon:\t\t\t{}", h.icon);
 
-            println!("  author:\t\t{}", h.author);
-            println!("  url:\t\t\t{}", h.url);
+            println!("  cat_icon_idx:\t{}", h.cat_icon_idx);
+            println!("  author:\t\t{}", h.instrument_author);
+            println!("  cat_1:\t\t{}", h.instrument_cat1);
+            println!("  cat_2:\t\t{}", h.instrument_cat2);
+            println!("  cat_3:\t\t{}", h.instrument_cat3);
+            println!("  url:\t\t\t{}", h.instrument_url);
+            println!("  u_b:\t\t\t{}", h.u_b);
+
             println!("  flags:\t\t{}", h.flags);
 
-            println!("  checksum:\t\t{}", format_hex(&h.checksum));
+            println!("  checksum:\t\t{}", format_hex(&h.md5_checksum));
             println!("  svn_revision:\t\t{}", h.svn_revision);
             println!("  crc32_fast:\t\t{}", format_hex(&h.crc32_fast));
             println!("  decompressed_length:\t{}", h.decompressed_length);

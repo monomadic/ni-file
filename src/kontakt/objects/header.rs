@@ -44,17 +44,24 @@ pub struct BPatchHeaderV42 {
     pub number_of_groups: u16,
     pub number_of_instruments: u16,
     /// Total length of all PCM sample data in bytes (not including RIFF header data)
+    /// Should be: numBytesSamplesTotal
     pub pcm_data_len: u32,
     pub is_monolith: bool,
     pub min_supported_version: NKIAppVersion,
     pub u_c: u32,
-    pub icon: u32,
-    pub author: String,
-    pub url: String,
-    /// Unknown bit flags. Known values: 0, 32, 36, 44
+    pub cat_icon_idx: u32,
+    pub instrument_author: String,
+    pub instrument_cat1: u8,
+    pub instrument_cat2: u8,
+    pub instrument_cat3: u8,
+    pub instrument_url: String,
+    pub u_b: u32,
+    /// Unknown bit flags. Known values: 0, 32, 36, 37, 44
     pub flags: u32,
     /// MD5 checksum of the decompressed chunk data
-    pub checksum: Vec<u8>,
+    pub md5_checksum: Vec<u8>,
+    /// The final part (patch level) of the authoring app version number.
+    /// For example, for Kontakt 5.0.2.5641, the svn revision is 5641.
     pub svn_revision: u32,
     /// CRC32 checksum of the compressed binary data
     pub crc32_fast: [u8; 4],
@@ -76,17 +83,21 @@ pub struct BPatchHeaderV2 {
     pub number_of_groups: u16,
     pub number_of_instruments: u16,
     /// Total length of all PCM sample data in bytes (not including RIFF header data)
+    /// Should be: numBytesSamplesTotal
     pub pcm_data_len: u32,
     pub is_monolith: bool,
     pub min_supported_version: NKIAppVersion,
     pub u_c: u32,
-    pub icon: u32,
-    pub author: String,
-    pub u_sa: u16,
-    pub url: String,
-    pub u_sb: u16,
+    pub cat_icon_idx: u32,
+    pub instrument_author: String,
+    pub instrument_url: String,
+    pub instrument_cat1: u8,
+    pub instrument_cat2: u8,
+    pub instrument_cat3: u8,
     pub svn_revision: u32,
     pub patch_level: u32,
+    pub u_b: u32,
+    pub unknown_offset: u32,
 }
 
 /// The header of a Kontakt1 NKS File.
@@ -148,7 +159,6 @@ impl BPatchHeaderV2 {
         let created_at: time::Date = datetime.date();
 
         let u_a = reader.read_u32_le()?;
-        // assert_eq!(u_a, 0, "u_a should be 0");
 
         let number_of_zones = reader.read_u16_le()?;
         let number_of_groups = reader.read_u16_le()?;
@@ -166,20 +176,22 @@ impl BPatchHeaderV2 {
 
         let u_c = reader.read_u32_le()?;
 
-        let icon = reader.read_u32_le()?;
+        let cat_icon_idx = reader.read_u32_le()?;
 
-        let mut buf = Cursor::new(reader.read_bytes(9)?);
-        let author = buf.read_string_utf8()?;
+        let mut buf = Cursor::new(reader.read_bytes(8)?);
+        let instrument_author = buf.read_string_utf8()?;
 
-        let u_sa = reader.read_u16_le()?;
+        let instrument_cat1 = reader.read_u8()?;
+        let instrument_cat2 = reader.read_u8()?;
+        let instrument_cat3 = reader.read_u8()?;
 
-        let mut buf = Cursor::new(reader.read_bytes(87)?);
-        let url = buf.read_string_utf8()?;
+        let mut buf = Cursor::new(reader.read_bytes(85)?);
+        let instrument_url = buf.read_string_utf8()?;
 
-        let u_sb = reader.read_u16_le()?;
-
-        let svn_revision = reader.read_u32_le()?;
+        let u_b = reader.read_u32_le()?;
         let patch_level = reader.read_u32_le()?;
+        let svn_revision = reader.read_u32_le()?;
+        let unknown_offset = reader.read_u32_le()?;
 
         Ok(Self {
             patch_type,
@@ -194,13 +206,16 @@ impl BPatchHeaderV2 {
             number_of_instruments,
             is_monolith,
             min_supported_version,
-            icon,
-            author,
-            u_sa,
-            url,
-            u_sb,
+            cat_icon_idx,
+            instrument_author,
+            instrument_url,
+            instrument_cat1,
+            instrument_cat2,
+            instrument_cat3,
             svn_revision,
+            u_b,
             patch_level,
+            unknown_offset,
         })
     }
 }
@@ -250,31 +265,33 @@ impl BPatchHeaderV42 {
 
         let u_c = reader.read_u32_le()?;
 
-        let icon = reader.read_u32_le()?;
+        let cat_icon_idx = reader.read_u32_le()?;
 
-        let mut buf = Cursor::new(reader.read_bytes(9)?);
-        let author = buf.read_string_utf8()?;
+        let mut buf = Cursor::new(reader.read_bytes(8)?);
+        let instrument_author = buf.read_string_utf8()?;
 
-        let _u_sa = reader.read_bytes(2)?;
+        let instrument_cat1 = reader.read_u8()?;
+        let instrument_cat2 = reader.read_u8()?;
+        let instrument_cat3 = reader.read_u8()?;
 
-        let mut buf = Cursor::new(reader.read_bytes(87)?);
-        let url = buf.read_string_utf8()?;
+        let mut buf = Cursor::new(reader.read_bytes(86)?);
+        let instrument_url = buf.read_string_utf8()?;
 
-        let _u_sb = reader.read_bytes(2)?;
+        let u_b = reader.read_u32_le()?;
 
         // NOTE: most likely some kind of bitflag field, as values
         // in the wild are 0x00 (0) or 0x01 (32)
         let flags = reader.read_u32_le()?;
 
         // TODO: read as le bytes
-        let checksum = reader.read_bytes(16)?;
+        let md5_checksum = reader.read_bytes(16)?;
         let svn_revision = reader.read_u32_le()?;
 
         let crc32_fast = reader.read_u32_le()?.to_be_bytes();
         let decompressed_length = reader.read_u32_le()?;
 
         // seems all zero bytes
-        let _unknown = reader.read_bytes(32)?;
+        let _padding = reader.read_bytes(32)?;
 
         Ok(Self {
             patch_type,
@@ -290,11 +307,15 @@ impl BPatchHeaderV42 {
             min_supported_version,
             /// Almost always 0, 1 in Rise and Hit Library
             u_c,
-            icon,
-            author,
-            url,
+            cat_icon_idx,
+            instrument_author,
+            instrument_cat1,
+            instrument_cat2,
+            instrument_cat3,
+            instrument_url,
+            u_b,
             flags,
-            checksum,
+            md5_checksum,
             svn_revision,
             crc32_fast,
             decompressed_length,
