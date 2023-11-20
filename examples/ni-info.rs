@@ -30,6 +30,7 @@ pub fn main() -> Result<(), Report> {
                 println!("  version:\t\tNISound {}", root.nisound_version);
                 println!("  repository_magic:\t{}", root.repository_magic);
                 println!("  repository_type:\t{}", root.repository_type);
+                println!("  segments:\t\t{:?}", root.segments);
                 println!("");
             } else {
                 println!("Not a RepositoryRoot\n");
@@ -228,7 +229,7 @@ fn print_kontakt_header(header: &BPatchHeader) {
 
             println!("  author:\t\t{}", h.author);
             println!("  url:\t\t\t{}", h.url);
-            println!("  flags:\t\t\t{}", h.flags);
+            println!("  flags:\t\t{}", h.flags);
 
             println!("  checksum:\t\t{}", format_hex(&h.checksum));
             println!("  svn_revision:\t\t{}", h.svn_revision);

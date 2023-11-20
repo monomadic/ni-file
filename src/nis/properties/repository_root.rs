@@ -10,10 +10,11 @@ use crate::{
 #[derive(Debug)]
 pub struct RepositoryRoot {
     pub nisound_version: RepositoryVersion,
-    // Always 0?
+    /// Found values: 0
     pub repository_magic: u32,
-    // Always 1?
+    /// Found values: 1, 2
     pub repository_type: u32,
+    pub segments: Vec<String>,
 }
 
 #[derive(Debug, PartialEq)]
@@ -64,25 +65,26 @@ impl RepositoryRoot {
 
         assert_eq!(reader.read_u32_le()?, 1);
 
-        let a = reader.read_u32_le()?;
-        assert_eq!(a, 0);
+        let num_segments = reader.read_u32_le()?;
+        let mut segments = Vec::new();
+        for _ in 0..num_segments {
+            segments.push(reader.read_widestring_utf16()?);
+        }
 
-        let a = reader.read_widestring_utf16()?;
-        assert_eq!(a, "");
-
-        let a = reader.read_widestring_utf16()?;
-        assert_eq!(a, "");
-
-        // SNPID::read
-
-        // UUID::read
-
+        // // SNPID::read
+        // let a = reader.read_widestring_utf16()?;
+        // // assert_eq!(a, "");
+        //
+        // // UUID::read
+        // let a = reader.read_widestring_utf16()?;
+        // // assert_eq!(a, "");
+        //
         // let a = reader.read_u64_le()?;
-
-        let mut buf = Vec::new();
-        reader.read_to_end(&mut buf)?;
-
-        // dbg!(buf.len());
+        //
+        // let mut buf = Vec::new();
+        // reader.read_to_end(&mut buf)?;
+        //
+        // dbg!(&buf, buf.len());
 
         // repository-type
         // referenced-item-uuid
@@ -91,6 +93,7 @@ impl RepositoryRoot {
             nisound_version,
             repository_magic,
             repository_type,
+            segments,
         })
     }
 }
@@ -103,7 +106,8 @@ mod tests {
 
     #[test]
     fn test_repository_root_read_000() -> Result<()> {
-        let file = File::open("tests/data/NIS/properties/RepositoryRoot/RepositoryRoot-000")?;
+        let file =
+            File::open("tests/data/Containers/NIS/objects/RepositoryRoot/RepositoryRoot-000")?;
         let item = RepositoryRoot::read(file)?;
 
         assert_eq!(
@@ -120,22 +124,23 @@ mod tests {
         Ok(())
     }
 
-    // #[test]
-    // fn test_repository_root_read_001() -> Result<()> {
-    //     let file = File::open("test-data/NIS/properties/RepositoryRoot/RepositoryRoot-001")?;
-    //     let item = RepositoryRoot::read(file)?;
-    //
-    //     assert_eq!(
-    //         item.nisound_version,
-    //         RepositoryVersion {
-    //             major: 1,
-    //             minor: 7,
-    //             patch: 14,
-    //         }
-    //     );
-    //     assert_eq!(0, item.repository_magic);
-    //     assert_eq!(1, item.repository_type);
-    //
-    //     Ok(())
-    // }
+    #[test]
+    fn test_repository_root_read_001() -> Result<()> {
+        let file =
+            File::open("tests/data/Containers/NIS/objects/RepositoryRoot/RepositoryRoot-001")?;
+        let item = RepositoryRoot::read(file)?;
+
+        assert_eq!(
+            item.nisound_version,
+            RepositoryVersion {
+                major: 1,
+                minor: 4,
+                patch: 0,
+            }
+        );
+        assert_eq!(0, item.repository_magic);
+        assert_eq!(2, item.repository_type);
+
+        Ok(())
+    }
 }

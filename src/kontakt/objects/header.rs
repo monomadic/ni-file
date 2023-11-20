@@ -53,6 +53,7 @@ pub struct BPatchHeaderV42 {
     pub icon: u32,
     pub author: String,
     pub url: String,
+    /// Unknown bit flags. Known values: 0, 32, 36, 44
     pub flags: u32,
     /// MD5 checksum of the decompressed chunk data
     pub checksum: Vec<u8>,
@@ -210,7 +211,7 @@ impl BPatchHeaderV42 {
         let created_at: time::Date = datetime.date();
 
         let u_a = reader.read_u32_le()?;
-        assert_eq!(u_a, 0);
+        assert_eq!(u_a, 0, "u_a should be 0");
 
         let number_of_zones = reader.read_u16_le()?;
         let number_of_groups = reader.read_u16_le()?;
@@ -227,7 +228,7 @@ impl BPatchHeaderV42 {
         };
 
         let u_c = reader.read_u32_le()?;
-        assert_eq!(u_c, 0);
+        // assert_eq!(u_c, 0);
 
         let icon = reader.read_u32_le()?;
 
@@ -267,6 +268,7 @@ impl BPatchHeaderV42 {
             pcm_data_len,
             is_monolith,
             min_supported_version,
+            /// Almost always 0, 1 in Rise and Hit Library
             u_c,
             icon,
             author,
