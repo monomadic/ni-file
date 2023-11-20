@@ -34,7 +34,7 @@ impl ItemHeader {
         if magic != b"hsin" {
             let magic = crate::utils::format_hex(&magic);
             return Err(NIFileError::Generic(format!(
-                "Error reading ItemHeader magic: expected 0x6873696E, got 0x{magic}"
+                "Error reading ItemHeader magic: expected hsin 0x6873696E, got 0x{magic}"
             )));
         };
 

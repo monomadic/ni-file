@@ -13,23 +13,31 @@ pub struct BPatchMetaInfoHeader {
 
 impl BPatchMetaInfoHeader {
     pub fn read<R: ReadBytesExt>(mut reader: R) -> Result<Self, NKSError> {
+        // let mut buf = Vec::new();
+        // reader.read_to_end(&mut buf)?;
+        // std::fs::write("header", buf)?;
+
         let magic: u32 = reader.read_le()?;
+        // assert_eq!(magic, 0xB00EE1AE);
+        // match magic {
+        //     0xB00EE1AE => {},
+        //     _ => panic!("Invalid BPatchMetaInfoHeader magic number: expected 0xB00EE1AE | 0xBDEC0178 got 0x{magic:x}")
+        // };
 
-        assert_eq!(
-            magic, 0xB00EE1AE,
-            "Invalid BPatchMetaInfoHeader magic number: expected 0xaee10eb0 got 0x{magic:X}"
-        );
+        // Found: 1
+        let _u_a = reader.read_u8()?;
 
-        // unknown
-        assert_eq!(reader.read_u8()?, 1);
-        assert_eq!(reader.read_u8()?, 1);
+        // always 1
+        let _u_b = reader.read_u8()?;
 
         // chunk id
-        assert_eq!(reader.read_u16_le()?, 12);
+        let _u_c = reader.read_u16_le()?;
+        // assert_eq!(reader.read_u16_le()?, 12);
 
-        let soundinfo_length = reader.read_u32_le()? as usize;
-        let soundinfo = reader.read_bytes(soundinfo_length)?;
-        let soundinfo = String::from_utf8(soundinfo).unwrap();
+        // let soundinfo_length = reader.read_u32_le()? as usize;
+        // let soundinfo = reader.read_bytes(soundinfo_length)?;
+        // let soundinfo = String::from_utf8(soundinfo).unwrap();
+        let soundinfo = String::new();
 
         Ok(Self { soundinfo })
     }

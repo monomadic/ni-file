@@ -199,15 +199,25 @@ fn print_kontakt_header(header: &BPatchHeader) {
             println!("  patch_version:\t{}", h.patch_version);
             println!("  app_signature:\t{}", h.app_signature);
             println!("  created_at:\t\t{}", h.created_at);
+            println!("  u_a:\t\t\t{}", h.u_a);
 
             println!("  zones:\t\t{}", h.number_of_zones);
             println!("  groups:\t\t{}", h.number_of_groups);
             println!("  instruments:\t\t{}", h.number_of_instruments);
+            println!("  pcm_data_len:\t\t{} bytes", h.pcm_data_len);
 
             println!("  is_monolith:\t\t{:?}", h.is_monolith);
             println!("  min_supported_version:{}", h.min_supported_version);
+            println!("  u_c:\t\t\t{}", h.u_c);
 
+            println!("  icon:\t\t\t{}", h.icon);
             println!("  author:\t\t{}", h.author);
+            println!("  u_sa:\t\t\t{}", h.u_sa);
+            println!("  url:\t\t\t{}", h.url);
+            println!("  u_sb:\t\t\t{}", h.u_sb);
+
+            println!("  svn_revision:\t\t{}", h.svn_revision);
+            println!("  patch_level:\t\t{}", h.patch_level);
         }
         BPatchHeader::BPatchHeaderV42(h) => {
             println!("\nBPatchHeaderV42:");

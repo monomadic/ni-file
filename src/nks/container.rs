@@ -28,7 +28,7 @@ impl NKSContainer {
         match magic {
             0xB36EE55E | 0x7FA89012 | 0xA4D6E55A | 0x10874353 =>{
             },
-            _ => panic!("Invalid BPatchMetaInfoHeader magic number: expected 0xB36EE55E | 0x7FA89012 | 0xA4D6E55A got 0x{magic:x}")
+            _ => panic!("Invalid NKSContainer magic number: expected 0xB36EE55E | 0x7FA89012 | 0xA4D6E55A got 0x{magic:x}")
         };
 
         // For BPatchHeaderV1, this field is zlib_start
@@ -39,7 +39,15 @@ impl NKSContainer {
             BPatchHeader::BPatchHeaderV1(_) => reader.read_all()?,
             BPatchHeader::BPatchHeaderV2(ref h) => match h.is_monolith {
                 true => unimplemented!("monolith"),
-                false => reader.read_bytes(compressed_length)?,
+                false => {
+                    if compressed_length == 0 {
+                        let mut buf = Vec::new();
+                        reader.read_to_end(&mut buf)?;
+                        buf
+                    } else {
+                        reader.read_bytes(compressed_length)?
+                    }
+                }
             },
             BPatchHeader::BPatchHeaderV42(ref h) => match h.is_monolith {
                 true => unimplemented!("monolith"),
@@ -52,7 +60,8 @@ impl NKSContainer {
         let footer_raw = reader.read_all()?;
         let meta_info = match header {
             BPatchHeader::BPatchHeaderV1(_) => None,
-            BPatchHeader::BPatchHeaderV2(_) | BPatchHeader::BPatchHeaderV42(_) => {
+            BPatchHeader::BPatchHeaderV2(_) => None,
+            BPatchHeader::BPatchHeaderV42(_) => {
                 Some(BPatchMetaInfoHeader::read(&mut Cursor::new(footer_raw))?)
             }
         };
@@ -70,7 +79,7 @@ impl NKSContainer {
 
     /// Decompress raw internal preset data
     pub fn preset_data(&self) -> Result<Vec<u8>, Error> {
-        assert!(self.compressed_data.len() > 0);
+        assert!(self.compressed_data.len() > 0, "no compressed data");
         let reader = Cursor::new(&self.compressed_data);
 
         Ok(match &self.header {
@@ -103,7 +112,8 @@ impl NKSContainer {
 
     /// Decompress internal preset data
     pub fn preset(&self) -> Result<KontaktPreset, Error> {
-        assert!(self.compressed_data.len() > 0);
+        assert!(self.compressed_data.len() > 0, "No compressed data");
+
         let reader = Cursor::new(&self.compressed_data);
 
         Ok(match &self.header {

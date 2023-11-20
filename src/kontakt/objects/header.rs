@@ -10,10 +10,7 @@ use std::io::Cursor;
 
 use time::OffsetDateTime;
 
-use crate::{
-    nks::error::NKSError,
-    read_bytes::{ReadBytesError, ReadBytesExt},
-};
+use crate::{nks::error::NKSError, read_bytes::ReadBytesExt};
 
 #[derive(Debug, PartialEq)]
 pub enum BPatchHeader {
@@ -41,6 +38,7 @@ pub struct BPatchHeaderV42 {
     pub patch_version: NKIAppVersion,
     pub app_signature: String,
     pub created_at: time::Date,
+    /// Only used in V2
     pub u_a: u32,
     pub number_of_zones: u16,
     pub number_of_groups: u16,
@@ -68,16 +66,27 @@ pub struct BPatchHeaderV42 {
 #[derive(Debug, PartialEq)]
 pub struct BPatchHeaderV2 {
     pub patch_type: PatchType,
+    /// Patch version (often higher than the Kontakt version that created it)
     pub patch_version: NKIAppVersion,
-    pub icon: u32,
-    pub author: String,
-    pub created_at: time::Date,
     pub app_signature: String,
+    pub created_at: time::Date,
+    /// Only used in V2. Seems to be related to filesize.
+    pub u_a: u32,
     pub number_of_zones: u16,
     pub number_of_groups: u16,
     pub number_of_instruments: u16,
+    /// Total length of all PCM sample data in bytes (not including RIFF header data)
+    pub pcm_data_len: u32,
     pub is_monolith: bool,
     pub min_supported_version: NKIAppVersion,
+    pub u_c: u32,
+    pub icon: u32,
+    pub author: String,
+    pub u_sa: u16,
+    pub url: String,
+    pub u_sb: u16,
+    pub svn_revision: u32,
+    pub patch_level: u32,
 }
 
 /// The header of a Kontakt1 NKS File.
@@ -124,7 +133,7 @@ impl BPatchHeaderV2 {
         assert_eq!(header_magic, u32::swap_bytes(0x722A013E));
 
         let patch_type: PatchType = reader.read_u16_le()?.into();
-        let app_version = NKIAppVersion {
+        let patch_version = NKIAppVersion {
             minor_3: reader.read_u8()?,
             minor_2: reader.read_u8()?,
             minor_1: reader.read_u8()?,
@@ -137,14 +146,16 @@ impl BPatchHeaderV2 {
 
         let datetime = OffsetDateTime::from_unix_timestamp(reader.read_u32_le()? as i64).unwrap();
         let created_at: time::Date = datetime.date();
-        let _unknown = reader.read_u32_le()?;
+
+        let u_a = reader.read_u32_le()?;
+        // assert_eq!(u_a, 0, "u_a should be 0");
+
         let number_of_zones = reader.read_u16_le()?;
         let number_of_groups = reader.read_u16_le()?;
         let number_of_instruments = reader.read_u16_le()?;
 
-        let _u = reader.read_u16_le()?; // 2
-        let _u = reader.read_u16_le()?; // 2
-        let is_monolith = reader.read_u32_le()? == 1; // 4
+        let pcm_data_len = reader.read_u32_le()?;
+        let is_monolith = reader.read_u32_le()? == 1;
 
         let min_supported_version = NKIAppVersion {
             minor_3: reader.read_u8()?,
@@ -153,32 +164,43 @@ impl BPatchHeaderV2 {
             major: reader.read_u8()?,
         };
 
-        let _u = reader.read_u32_le()?;
+        let u_c = reader.read_u32_le()?;
 
         let icon = reader.read_u32_le()?;
 
-        let embedded_strings = reader.read_bytes(104)?;
-        let mut strings = Cursor::new(embedded_strings);
+        let mut buf = Cursor::new(reader.read_bytes(9)?);
+        let author = buf.read_string_utf8()?;
 
-        let buf = strings.read_bytes(8)?;
-        let author = String::from_utf8(buf)
-            .map_err(|e| ReadBytesError::Generic(format!("Error converting bytes to UTF8: {e}")))?;
+        let u_sa = reader.read_u16_le()?;
 
-        let _svn_revision = reader.read_u32_le()?;
-        let _patch_level = reader.read_u32_le()?;
+        let mut buf = Cursor::new(reader.read_bytes(87)?);
+        let url = buf.read_string_utf8()?;
+
+        let u_sb = reader.read_u16_le()?;
+
+        let svn_revision = reader.read_u32_le()?;
+        let patch_level = reader.read_u32_le()?;
 
         Ok(Self {
             patch_type,
-            patch_version: app_version,
-            icon,
-            author,
+            patch_version,
+            app_signature,
+            created_at,
+            u_a,
+            u_c,
+            pcm_data_len,
             number_of_zones,
             number_of_groups,
             number_of_instruments,
             is_monolith,
             min_supported_version,
-            created_at,
-            app_signature,
+            icon,
+            author,
+            u_sa,
+            url,
+            u_sb,
+            svn_revision,
+            patch_level,
         })
     }
 }
@@ -186,7 +208,6 @@ impl BPatchHeaderV2 {
 impl BPatchHeaderV42 {
     pub fn read_le<R: ReadBytesExt>(mut reader: R) -> Result<Self, NKSError> {
         let data = reader.read_bytes(212)?; // 222 - 10
-                                            // std::fs::write("header", &data)?;
         let mut reader = Cursor::new(data);
 
         let magic: u32 = reader.read_le()?;
@@ -216,8 +237,8 @@ impl BPatchHeaderV42 {
         let number_of_zones = reader.read_u16_le()?;
         let number_of_groups = reader.read_u16_le()?;
         let number_of_instruments = reader.read_u16_le()?;
-        let pcm_data_len = reader.read_u32_le()?;
 
+        let pcm_data_len = reader.read_u32_le()?;
         let is_monolith = reader.read_u32_le()? == 1;
 
         let min_supported_version = NKIAppVersion {
@@ -228,7 +249,6 @@ impl BPatchHeaderV42 {
         };
 
         let u_c = reader.read_u32_le()?;
-        // assert_eq!(u_c, 0);
 
         let icon = reader.read_u32_le()?;
 
@@ -359,21 +379,21 @@ mod tests {
 
     #[test]
     fn test_header_v1_read() -> Result<(), NKSError> {
-        let file = File::open("tests/data/Objects/BPatchHeaderV1/BPatchHeaderV1-000")?;
+        let file = File::open("tests/data/Objects/Kontakt/BPatchHeaderV1/BPatchHeaderV1-000")?;
         println!("{:?}", BPatchHeader::read_le(file)?);
         Ok(())
     }
 
     #[test]
     fn test_header_v2_read() -> Result<(), NKSError> {
-        let file = File::open("tests/data/Objects/BPatchHeaderV2/BPatchHeaderV2-000")?;
+        let file = File::open("tests/data/Objects/Kontakt/BPatchHeaderV2/BPatchHeaderV2-000")?;
         println!("{:?}", BPatchHeader::read_le(file)?);
         Ok(())
     }
 
     #[test]
     fn test_header_v42_read() -> Result<(), NKSError> {
-        let file = File::open("tests/data/Objects/BPatchHeaderV42/BPatchHeaderV42-000")?;
+        let file = File::open("tests/data/Objects/Kontakt/BPatchHeaderV42/BPatchHeaderV42-000")?;
         println!("{:?}", BPatchHeader::read_le(file)?);
         Ok(())
     }
