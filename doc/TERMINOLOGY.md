@@ -5,7 +5,7 @@
 - `Container` the structure of a NISound file.
 - `NKI` Native Instruments Kontakt Instrument
 - `NKS` Native Instruments Kontakt Secure Monolith (encrypted)
-- `NKX` Native Instruments Kontakt Xtra Secure Monolith (encrypted plus drm)
+- `NKX` Native Instruments Kontakt Xtra Secure Monolith (encrypted plus library key needed)
 - `NKM` Native Instruments Kontakt Multi
 - `NKB` Native Instruments Kontakt Bank
 - `NKP` Native Instruments Preset
