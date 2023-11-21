@@ -22,6 +22,7 @@ pub mod kontakt;
 // utils:
 mod byte_reader; // for reading bytestreams
 mod detect; // detect filetype
+#[deprecated]
 mod prelude;
 mod read_bytes; // for reading bytestreams
 mod string_reader;

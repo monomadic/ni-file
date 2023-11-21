@@ -19,7 +19,10 @@ pub struct ItemHeader {
     /// Integer that resolves to a [`DomainID`](super::DomainID).
     pub magic: Vec<u8>, // (+0xC, uint, 'hsin')
     pub header_flags: u32, // (0x10, uint)
-    pub uuid: Vec<u8>,     // (0x14, 16 bytes, randomly generated)
+    /// # Boost-compatible GUID
+    ///
+    /// https://www.boost.org/doc/libs/1\_43\_0/libs/uuid/index.html
+    pub uuid: Vec<u8>, // (0x14, 16 bytes, randomly generated)
 }
 
 impl ItemHeader {

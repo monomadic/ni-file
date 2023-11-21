@@ -1,3 +1,16 @@
+/// # Boost UUID Implementation
+///
+/// Based on RFC-4122 UUIDs.
+///
+/// https://www.boost.org/doc/libs/1_43_0/libs/uuid/index.html
+///
+/// examples:
+///
+/// 01234567-89ab-cdef-0123-456789abcdef
+/// {01234567-89ab-cdef-0123-456789abcdef}
+/// 0123456789abcdef0123456789abcdef
+/// 01234567-89AB-CDEF-0123-456789ABCDEF
+///
 use std::fmt::Display;
 
 use crate::{read_bytes::ReadBytesExt, NIFileError};
@@ -18,6 +31,11 @@ pub struct Uuid {
 }
 
 impl Display for Uuid {
+    /// Boost accepted formats:
+    ///   hhhhhhhh-hhhh-hhhh-hhhh-hhhhhhhhhhhh
+    ///   {hhhhhhhh-hhhh-hhhh-hhhh-hhhhhhhhhhhh}
+    ///   hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh
+    ///   {hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh}
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         f.write_fmt(format_args!(
             "{:x}-{:x}-{:x}-{:x}{:x}-{:x}{:x}{:x}{:x}{:x}{:x}",

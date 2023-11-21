@@ -8,8 +8,8 @@ use std::io::Cursor;
 
 use crate::{
     nis::{ItemData, ItemType},
-    prelude::*,
     read_bytes::ReadBytesExt,
+    NIFileError,
 };
 
 #[derive(Debug)]
@@ -28,7 +28,7 @@ impl std::convert::TryFrom<&ItemData> for Authorization {
 }
 
 impl Authorization {
-    pub fn read<R: ReadBytesExt>(mut reader: R) -> Result<Self> {
+    pub fn read<R: ReadBytesExt>(mut reader: R) -> Result<Self, NIFileError> {
         // version == 1
         assert_eq!(reader.read_u32_le()?, 1);
 
@@ -62,7 +62,7 @@ mod tests {
     use super::*;
 
     #[test]
-    fn test_authorization_read() -> Result<()> {
+    fn test_authorization_read() -> Result<(), NIFileError> {
         let file = File::open(
             "tests/data/nisound/chunks/item-frame-property/kontakt-5/106-Authorization.data",
         )?;
