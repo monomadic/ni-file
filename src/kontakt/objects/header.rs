@@ -178,20 +178,21 @@ impl BPatchHeaderV2 {
 
         let cat_icon_idx = reader.read_u32_le()?;
 
-        let mut buf = Cursor::new(reader.read_bytes(8)?);
-        let instrument_author = buf.read_string_utf8()?;
+        let instrument_author = String::from_utf8(reader.read_bytes(8)?)
+            .map_err(|e| std::io::Error::new(std::io::ErrorKind::InvalidData, e.utf8_error()))?;
 
         let instrument_cat1 = reader.read_u8()?;
         let instrument_cat2 = reader.read_u8()?;
         let instrument_cat3 = reader.read_u8()?;
 
-        let mut buf = Cursor::new(reader.read_bytes(85)?);
-        let instrument_url = buf.read_string_utf8()?;
+        let instrument_url = String::from_utf8(reader.read_bytes(85)?)
+            .map_err(|e| std::io::Error::new(std::io::ErrorKind::InvalidData, e.utf8_error()))?;
 
         let u_b = reader.read_u32_le()?;
         let patch_level = reader.read_u32_le()?;
         let svn_revision = reader.read_u32_le()?;
-        let unknown_offset = reader.read_u32_le()?;
+        // let unknown_offset = reader.read_u32_le()?;
+        let unknown_offset = 0;
 
         Ok(Self {
             patch_type,
@@ -267,15 +268,15 @@ impl BPatchHeaderV42 {
 
         let cat_icon_idx = reader.read_u32_le()?;
 
-        let mut buf = Cursor::new(reader.read_bytes(8)?);
-        let instrument_author = buf.read_string_utf8()?;
+        let instrument_author = String::from_utf8(reader.read_bytes(8)?)
+            .map_err(|e| std::io::Error::new(std::io::ErrorKind::InvalidData, e.utf8_error()))?;
 
         let instrument_cat1 = reader.read_u8()?;
         let instrument_cat2 = reader.read_u8()?;
         let instrument_cat3 = reader.read_u8()?;
 
-        let mut buf = Cursor::new(reader.read_bytes(86)?);
-        let instrument_url = buf.read_string_utf8()?;
+        let instrument_url = String::from_utf8(reader.read_bytes(85)?)
+            .map_err(|e| std::io::Error::new(std::io::ErrorKind::InvalidData, e.utf8_error()))?;
 
         let u_b = reader.read_u32_le()?;
 
