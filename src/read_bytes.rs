@@ -73,6 +73,7 @@ pub trait ReadBytesExt: Read + Seek {
     }
 
     fn read_bool(&mut self) -> io::Result<bool> {
+        // TODO: return an error if not 1 or 0
         Ok(self.read_le::<u8>()? == 1)
     }
 

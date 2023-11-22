@@ -47,8 +47,8 @@
 use std::io::Cursor;
 
 use crate::nis::{ItemContainer, ItemData, ItemType};
-use crate::prelude::*;
 use crate::read_bytes::ReadBytesExt;
+use crate::Error;
 
 #[derive(Debug)]
 pub struct SubtreeItem {
@@ -56,9 +56,9 @@ pub struct SubtreeItem {
 }
 
 impl std::convert::TryFrom<&ItemData> for SubtreeItem {
-    type Error = NIFileError;
+    type Error = Error;
 
-    fn try_from(frame: &ItemData) -> Result<Self> {
+    fn try_from(frame: &ItemData) -> Result<Self, Error> {
         debug_assert_eq!(frame.header.item_type(), ItemType::SubtreeItem);
         Self::read(Cursor::new(&frame.data))
     }
@@ -66,7 +66,7 @@ impl std::convert::TryFrom<&ItemData> for SubtreeItem {
 
 impl SubtreeItem {
     /// Decompress and return compressed internal Item.
-    pub fn read<R: ReadBytesExt>(mut reader: R) -> Result<Self> {
+    pub fn read<R: ReadBytesExt>(mut reader: R) -> Result<Self, Error> {
         let prop_version = reader.read_u32_le()?; // num items?
         assert_eq!(
             prop_version, 1,
@@ -83,7 +83,7 @@ impl SubtreeItem {
 
                 let output = &mut vec![0_u8; decompressed_size];
                 fastlz::decompress(&compressed_data, output)
-                    .map_err(|_| NIFileError::Generic("lz77".into()))?
+                    .map_err(|_| Error::Generic("lz77".into()))?
                     .to_vec()
 
                 // lz77::decompress(&mut Cursor::new(compressed_data))
@@ -91,7 +91,7 @@ impl SubtreeItem {
             }
             false => {
                 let decompressed_size = reader.read_u64_le()? as usize;
-                reader.seek(io::SeekFrom::Current(-8))?;
+                reader.seek(std::io::SeekFrom::Current(-8))?;
                 reader.read_bytes(decompressed_size as usize)?
             }
         };
@@ -99,7 +99,7 @@ impl SubtreeItem {
         Ok(SubtreeItem { inner_data })
     }
 
-    pub fn item(&self) -> Result<ItemContainer> {
+    pub fn item(&self) -> Result<ItemContainer, Error> {
         let container = ItemContainer::read(Cursor::new(&self.inner_data))?;
         Ok(container)
     }
@@ -112,7 +112,7 @@ mod tests {
     use super::*;
 
     #[test]
-    fn test_read_subtree() -> Result<()> {
+    fn test_read_subtree() -> Result<(), Error> {
         let mut data = File::open("tests/data/Containers/NIS/objects/SubtreeItem/SubtreeItem-000")?;
         let subtree = SubtreeItem::read(&mut data)?;
 

@@ -7,15 +7,15 @@ use crate::{
         KontaktInstrument,
     },
     nis::{
-        BNISoundHeader, BNISoundPreset, EncryptionItem, ItemContainer, ItemType, Preset,
-        PresetChunkItem,
+        BNISoundHeader, BNISoundPresetProperties, EncryptionItem, ItemContainer, ItemType, Preset,
+        PresetChunkItemProperties,
     },
     Error,
 };
 
 impl ItemContainer {
     pub fn find_kontakt_preset_item(&self) -> Option<Result<Preset, Error>> {
-        if let Ok(b) = self.find_item::<BNISoundPreset>(&ItemType::BNISoundPreset)? {
+        if let Ok(b) = self.find_item::<BNISoundPresetProperties>(&ItemType::BNISoundPreset)? {
             return Some(Ok(b.preset));
         }
         None
@@ -41,7 +41,7 @@ impl ItemContainer {
             Ok(enc) => {
                 let item = enc.subtree.item().unwrap();
 
-                match item.find_item::<PresetChunkItem>(&ItemType::PresetChunkItem) {
+                match item.find_item::<PresetChunkItemProperties>(&ItemType::PresetChunkItem) {
                     Some(preset_chunk_item) => {
                         let chunk = preset_chunk_item.unwrap();
                         let chunk = chunk.chunk();
@@ -49,6 +49,7 @@ impl ItemContainer {
                             &mut Cursor::new(&chunk),
                             &header.app_signature,
                             &header.patch_type,
+                            &header.min_supported_version,
                         )
                         .unwrap()
                     }
@@ -70,8 +71,8 @@ pub struct BNISoundPresetContainer(ItemContainer);
 
 impl BNISoundPresetContainer {
     /// Parses the BNISoundPreset Items property data
-    pub fn properties(&self) -> Result<BNISoundPreset, Error> {
-        BNISoundPreset::try_from(&self.0.data)
+    pub fn properties(&self) -> Result<BNISoundPresetProperties, Error> {
+        BNISoundPresetProperties::try_from(&self.0.data)
     }
 
     /// Attempts to fetch and parse the BNISoundHeader object
@@ -91,7 +92,7 @@ impl BNISoundPresetContainer {
 
                 let item = enc.subtree.item().unwrap();
 
-                match item.find_item::<PresetChunkItem>(&ItemType::PresetChunkItem) {
+                match item.find_item::<PresetChunkItemProperties>(&ItemType::PresetChunkItem) {
                     Some(preset_chunk_item) => {
                         let chunk = preset_chunk_item.unwrap();
                         let data = chunk.chunk();
@@ -111,6 +112,7 @@ impl BNISoundPresetContainer {
                     &mut Cursor::new(preset_data),
                     &header.0.app_signature,
                     &header.0.patch_type,
+                    &header.0.min_supported_version,
                 )
             }),
             Err(e) => return Some(Err(e)),

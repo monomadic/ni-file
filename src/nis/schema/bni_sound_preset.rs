@@ -1,8 +1,10 @@
 use crate::{
     kontakt::{objects::BPatchHeaderV42, KontaktPatch},
-    nis::{BNISoundHeader, EncryptionItem, ItemContainer, ItemType},
+    nis::{BNISoundHeader, BNISoundPresetProperties, EncryptionItem, ItemContainer, ItemType},
     Error,
 };
+
+use super::PresetChunkItem;
 
 #[derive(Debug)]
 pub struct BNISoundPreset(ItemContainer);
@@ -22,7 +24,16 @@ impl BNISoundPreset {
     }
 
     pub fn patch(&self) -> Result<KontaktPatch, Error> {
-        unimplemented!()
+        let preset_chunks: PresetChunkItem = self.encryption_item()?.subtree.item()?.into();
+
+        Ok(KontaktPatch {
+            header: self.header()?,
+            data: preset_chunks.properties()?.0,
+        })
+    }
+
+    pub fn properties(&self) -> Result<BNISoundPresetProperties, Error> {
+        (&self.0.data).try_into()
     }
 
     // pub fn sound_info_item(&self) -> Result<SoundInfoItem, Error> {}

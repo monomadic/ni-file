@@ -25,9 +25,15 @@ pub struct KontaktV42 {
 impl KontaktV42 {
     pub fn read<R: ReadBytesExt>(mut reader: R) -> Result<Self, Error> {
         let program: Program = Chunk::read(&mut reader).and_then(|chunk| (&chunk).try_into())?;
-        let filetable: FileNameListPreK51 = Chunk::read(&mut reader)
-            .and_then(|chunk| (&chunk).try_into())
-            .map_err(|_| NIFileError::Generic("FileNameListPreK51".into()))?;
+
+        // TODO: convert to into()
+        let chunk = Chunk::read(&mut reader)?;
+        let filetable: FileNameListPreK51 = (&chunk).try_into().map_err(|e| {
+            NIFileError::Generic(format!(
+                "Could not read FileNameListPreK51. Found ChunkID: 0x{:X}, error: {:?}",
+                &chunk.id, &e
+            ))
+        })?;
 
         Ok(Self { program, filetable })
     }

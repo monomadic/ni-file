@@ -17,7 +17,7 @@ mod bni_sound_header;
 pub use bni_sound_header::BNISoundHeader;
 
 mod bni_sound_preset;
-pub use bni_sound_preset::BNISoundPreset;
+pub use bni_sound_preset::BNISoundPresetProperties;
 
 pub mod controller_assignments;
 
@@ -37,7 +37,7 @@ mod subtree_item;
 pub use subtree_item::SubtreeItem;
 
 mod preset_chunk_item;
-pub use preset_chunk_item::PresetChunkItem;
+pub use preset_chunk_item::PresetChunkItemProperties;
 
 mod preset;
 pub use preset::{AuthoringApplication, Preset};

@@ -1,5 +1,5 @@
 use crate::{
-    nis::{ItemContainer, ItemType, Preset, PresetChunkItem},
+    nis::{ItemContainer, ItemType, Preset, PresetChunkItemProperties},
     Error,
 };
 
@@ -21,7 +21,7 @@ impl PresetContainer {
 
                 let item = enc.subtree.item().unwrap();
 
-                match item.find_item::<PresetChunkItem>(&ItemType::PresetChunkItem) {
+                match item.find_item::<PresetChunkItemProperties>(&ItemType::PresetChunkItem) {
                     Some(preset_chunk_item) => {
                         let chunk = preset_chunk_item.unwrap();
                         let data = chunk.chunk();

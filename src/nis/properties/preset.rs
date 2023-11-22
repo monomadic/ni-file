@@ -19,13 +19,14 @@
 use std::io::Cursor;
 
 use crate::nis::{ItemData, ItemType};
-use crate::prelude::*;
 use crate::read_bytes::ReadBytesExt;
+use crate::Error;
 
 pub struct Preset {
     pub is_factory_preset: bool,
     pub authoring_app: AuthoringApplication,
     pub version: String,
+    // TODO: authorization: Authorization,
 }
 
 #[derive(Debug, PartialEq)]
@@ -66,13 +67,13 @@ pub enum AuthoringApplication {
 }
 
 impl Preset {
-    pub fn read<R: ReadBytesExt>(mut reader: R) -> Result<Self> {
+    pub fn read<R: ReadBytesExt>(mut reader: R) -> Result<Self, Error> {
         assert_eq!(reader.read_u32_le()?, 1);
 
         let is_factory_preset = reader.read_bool()?;
         let authoring_app: AuthoringApplication = reader.read_u32_le()?.into();
 
-        assert_eq!(reader.read_u32_le()?, 1);
+        assert_eq!(reader.read_u32_le()?, 1, "Preset expected value: 1");
 
         let version = reader.read_widestring_utf16()?;
 
@@ -85,9 +86,9 @@ impl Preset {
 }
 
 impl std::convert::TryFrom<&ItemData> for Preset {
-    type Error = NIFileError;
+    type Error = Error;
 
-    fn try_from(frame: &ItemData) -> Result<Self> {
+    fn try_from(frame: &ItemData) -> Result<Self, Error> {
         debug_assert_eq!(frame.header.item_type(), ItemType::Preset);
         Preset::read(Cursor::new(frame.data.clone()))
     }
@@ -139,7 +140,7 @@ mod tests {
     use super::*;
 
     #[test]
-    fn test_app_specific_read() -> Result<()> {
+    fn test_app_specific_read() -> Result<(), Error> {
         let file = File::open("test-data/NIS/properties/Preset/Preset-000")?;
         let item = Preset::read(file)?;
 

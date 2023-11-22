@@ -2,25 +2,25 @@ use std::io::Cursor;
 
 use crate::{
     nis::{ItemData, ItemType},
-    prelude::*,
     read_bytes::ReadBytesExt,
+    NIFileError,
 };
 
 /// Typically contains the binary chunk for the inner NISound document.
 #[derive(Debug, Clone)]
-pub struct PresetChunkItem(Vec<u8>);
+pub struct PresetChunkItemProperties(pub Vec<u8>);
 
-impl std::convert::TryFrom<&ItemData> for PresetChunkItem {
+impl std::convert::TryFrom<&ItemData> for PresetChunkItemProperties {
     type Error = NIFileError;
 
     fn try_from(frame: &ItemData) -> std::result::Result<Self, Self::Error> {
         debug_assert_eq!(frame.header.item_type(), ItemType::PresetChunkItem);
-        PresetChunkItem::read(Cursor::new(&frame.data))
+        PresetChunkItemProperties::read(Cursor::new(&frame.data))
     }
 }
 
-impl PresetChunkItem {
-    pub fn read<R: ReadBytesExt>(mut reader: R) -> Result<Self> {
+impl PresetChunkItemProperties {
+    pub fn read<R: ReadBytesExt>(mut reader: R) -> Result<Self, NIFileError> {
         // version == 1
         assert_eq!(reader.read_u32_le()?, 1);
 

@@ -1,7 +1,7 @@
 use crate::{
     kontakt::objects::BPatchHeaderV42,
     nis::{
-        properties::{BNISoundPreset, Preset},
+        properties::{BNISoundPresetProperties, Preset},
         AppSpecific, AuthoringApplication, BNISoundHeader, EncryptionItem, ItemContainer, ItemType,
         RepositoryRoot,
     },
@@ -79,7 +79,9 @@ impl Repository {
         // not a good way of detecting the authoring app
         // there must be a better solution
         match self.0.find_data(&ItemType::BNISoundPreset) {
-            Some(item) => Ok(BNISoundPreset::try_from(item)?.preset.authoring_app),
+            Some(item) => Ok(BNISoundPresetProperties::try_from(item)?
+                .preset
+                .authoring_app),
             None => self
                 .0
                 .find_data(&ItemType::Preset)
@@ -132,7 +134,7 @@ impl Repository {
                 .0
                 .find_data(&ItemType::BNISoundPreset)
                 .ok_or(NIFileError::Static("Missing chunk: BNISoundPreset"))
-                .and_then(|item| BNISoundPreset::try_from(item))
+                .and_then(|item| BNISoundPresetProperties::try_from(item))
                 .map(|preset| preset.preset),
             _ => self
                 .0
