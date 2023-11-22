@@ -1,6 +1,8 @@
 use crate::{
-    kontakt::objects::{FileNameListPreK51, Program},
-    read_bytes::ReadBytesExt,
+    kontakt::{
+        objects::{FileNameListPreK51, Program},
+        KontaktChunks,
+    },
     Error, NIFileError,
 };
 
@@ -14,27 +16,27 @@ use crate::{
 //  0x34 ZoneList
 // 0x3d FileNameListPreK1
 
-use crate::kontakt::Chunk;
-
 #[derive(Debug)]
 pub struct KontaktV42 {
     pub program: Program,
     pub filetable: FileNameListPreK51,
 }
 
-impl KontaktV42 {
-    pub fn read<R: ReadBytesExt>(mut reader: R) -> Result<Self, Error> {
-        let program: Program = Chunk::read(&mut reader).and_then(|chunk| (&chunk).try_into())?;
+impl std::convert::TryFrom<KontaktChunks> for KontaktV42 {
+    type Error = Error;
 
-        // TODO: convert to into()
-        let chunk = Chunk::read(&mut reader)?;
-        let filetable: FileNameListPreK51 = (&chunk).try_into().map_err(|e| {
-            NIFileError::Generic(format!(
-                "Could not read FileNameListPreK51. Found ChunkID: 0x{:X}, error: {:?}",
-                &chunk.id, &e
-            ))
-        })?;
-
-        Ok(Self { program, filetable })
+    fn try_from(chunks: KontaktChunks) -> Result<Self, Self::Error> {
+        Ok(Self {
+            program: chunks
+                .first()
+                .ok_or(NIFileError::Static("Could not find Program".into()))?
+                .try_into()?,
+            filetable: chunks
+                .last()
+                .ok_or(NIFileError::Static(
+                    "Could not find FileNameListPreK51".into(),
+                ))?
+                .try_into()?,
+        })
     }
 }

@@ -6,6 +6,7 @@ use ni_file::{
     kontakt::{
         objects::{BPatchHeader, FNTableImpl, Program},
         schemas::KontaktPreset,
+        KontaktPatch,
     },
     nifile::NIFile,
     nis::{
@@ -29,7 +30,6 @@ pub fn main() -> Result<(), Report> {
             println!("Detected: NISound Container\n");
 
             let repository: Repository = container.into();
-
             match repository.repository_root() {
                 Some(root) => {
                     let root = root?;
@@ -43,7 +43,7 @@ pub fn main() -> Result<(), Report> {
                 None => panic!("RepositoryRoot not found!"),
             }
 
-            // determine the type of document (preset, custom, etc)
+            // Determine the type of document (preset, custom, etc)
             match repository.infer_schema() {
                 NISObject::Repository(_) => todo!(),
                 NISObject::BNISoundPreset(preset) => {
@@ -59,18 +59,7 @@ pub fn main() -> Result<(), Report> {
                     println!("  is_encrypted: {:?}", encryption_item.is_encrypted);
 
                     if !encryption_item.is_encrypted {
-                        match preset.patch()?.preset()? {
-                            KontaktPreset::KontaktV42(p) => {
-                                print_kontakt_program(&p.program)?;
-                            }
-                            KontaktPreset::Kon5(p) => {
-                                print_kontakt_program(&p.program)?;
-                            }
-                            _ => todo!(
-                                "KontaktPreset not implemented: {:?}",
-                                preset.patch()?.preset()?
-                            ),
-                        }
+                        print_kontakt_patch(preset.patch()?)?;
                     }
                 }
                 NISObject::Unknown => {
@@ -111,6 +100,13 @@ pub fn main() -> Result<(), Report> {
         }
     };
 
+    Ok(())
+}
+
+fn print_kontakt_patch(patch: KontaktPatch) -> Result<(), Report> {
+    if let Some(program) = &patch.program()? {
+        print_kontakt_program(program)?;
+    };
     Ok(())
 }
 
@@ -182,6 +178,7 @@ fn print_kontakt_header(header: &BPatchHeader) {
             println!("  u_a:\t\t\t{}", h.u_a);
             println!("  u_b:\t\t\t{}", h.u_b);
             println!("  u_c:\t\t\t{}", h.u_c);
+            println!("  u_d:\t\t\t{}", h.u_d);
         }
         BPatchHeader::BPatchHeaderV2(ref h) => {
             println!("\nBPatchHeaderV2:");

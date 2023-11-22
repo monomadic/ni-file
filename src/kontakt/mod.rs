@@ -15,5 +15,5 @@ pub use chunk_set::*;
 pub use error::*;
 pub use instrument::*;
 pub use node::*;
-pub use patch::*;
+pub use patch::KontaktPatch;
 pub use structured_object::*;

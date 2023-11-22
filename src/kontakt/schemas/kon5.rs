@@ -12,15 +12,11 @@
 // 0x47 SaveSettings
 // 0x4B FNTableImpl
 
-use std::io::Cursor;
-
 use crate::{
     kontakt::{
         objects::{FNTableImpl, Program},
-        Chunk,
+        KontaktChunks,
     },
-    nks::error::NKSError,
-    read_bytes::ReadBytesExt,
     Error,
 };
 
@@ -30,40 +26,19 @@ pub struct Kon5 {
     pub filetable: FNTableImpl,
 }
 
-impl Kon5 {
-    pub fn read<R: ReadBytesExt>(mut reader: R) -> Result<Self, Error> {
-        let program: Program = Chunk::read(&mut reader).and_then(|chunk| (&chunk).try_into())?;
+impl std::convert::TryFrom<KontaktChunks> for Kon5 {
+    type Error = Error;
 
-        // SaveSettings
-        let _ = Chunk::read(&mut reader)?;
-
-        let filetable: FNTableImpl =
-            Chunk::read(&mut reader).and_then(|chunk| (&chunk).try_into())?;
-
-        Ok(Self { program, filetable })
-    }
-
-    /// Decompress internal patch data
-    pub fn from_compressed(
-        compressed_data: Vec<u8>,
-        _decompressed_length: usize,
-    ) -> Result<Vec<Chunk>, Error> {
-        Ok(Self::from(
-            lz77::decompress(&mut Cursor::new(compressed_data))
-                // TODO: error should be KontaktError
-                .map_err(|e| NKSError::Decompression(e.to_string()))?,
-        )?)
-    }
-
-    /// Parse patch data into Chunks
-    pub fn from(decompressed_data: Vec<u8>) -> Result<Vec<Chunk>, Error> {
-        let mut objects = Vec::new();
-        let mut decompressed_data = Cursor::new(decompressed_data);
-
-        while let Ok(chunk) = Chunk::read(&mut decompressed_data) {
-            objects.push(chunk);
-        }
-
-        Ok(objects)
+    fn try_from(chunks: KontaktChunks) -> Result<Self, Self::Error> {
+        Ok(Self {
+            program: chunks
+                .first()
+                .ok_or(Error::Static("Could not find Program".into()))?
+                .try_into()?,
+            filetable: chunks
+                .last()
+                .ok_or(Error::Static("Could not find FNTableImpl".into()))?
+                .try_into()?,
+        })
     }
 }

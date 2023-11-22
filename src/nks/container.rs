@@ -4,8 +4,9 @@ use flate2::read::ZlibDecoder;
 
 use crate::{
     kontakt::{
-        objects::{BPatchHeader, BPatchMetaInfoHeader},
+        objects::{BPatchHeader, BPatchHeaderV42, BPatchMetaInfoHeader},
         schemas::{KontaktPreset, KontaktV1, KontaktV2, KontaktV42},
+        KontaktChunks, KontaktPatch,
     },
     read_bytes::ReadBytesExt,
     Error,
@@ -78,7 +79,7 @@ impl NKSContainer {
     }
 
     /// Decompress raw internal preset data
-    pub fn preset_data(&self) -> Result<Vec<u8>, Error> {
+    pub fn decompressed_preset(&self) -> Result<Vec<u8>, Error> {
         assert!(self.compressed_data.len() > 0, "no compressed data");
         let reader = Cursor::new(&self.compressed_data);
 
@@ -117,7 +118,7 @@ impl NKSContainer {
         })
     }
 
-    /// Decompress internal preset data
+    /// Decompress internal preset data and return a KontaktPreset
     pub fn preset(&self) -> Result<KontaktPreset, Error> {
         assert!(self.compressed_data.len() > 0, "No compressed data");
 
@@ -142,10 +143,12 @@ impl NKSContainer {
 
                 KontaktPreset::KontaktV2(KontaktV2::read(raw_preset)?)
             }
-            BPatchHeader::BPatchHeaderV42(ref h) => {
+            BPatchHeader::BPatchHeaderV42(header) => {
                 // fastlz compression
-                let raw_preset = self.preset_data()?;
-                KontaktPreset::KontaktV42(KontaktV42::read(&mut Cursor::new(raw_preset))?)
+                let data = self.decompressed_preset()?;
+                let header: BPatchHeaderV42 = header.clone(); // an ugly clone
+
+                KontaktPatch { header, data }.preset()?
             }
         })
     }

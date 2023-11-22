@@ -7,7 +7,7 @@ mod utils;
 #[test]
 #[ignore]
 fn test_kontakt_obj_version_is_schema() -> Result<(), Box<dyn std::error::Error>> {
-    for path in utils::get_test_files("../ni-file-data/Kontakt/NKI/*.*")? {
+    for path in utils::get_test_files("../ni-file-data/Kontakt/NKI/*/Kon4/*.kon")? {
         dbg!(&path);
 
         let file = File::open(&path)?;

@@ -2,7 +2,10 @@ use std::io::Cursor;
 
 use crate::Error;
 
-use super::{objects::BPatchHeaderV42, schemas::KontaktPreset};
+use super::{
+    objects::{BPatchHeaderV42, Program},
+    schemas::KontaktPreset,
+};
 
 #[derive(Debug)]
 pub struct KontaktPatch {
@@ -19,5 +22,17 @@ impl KontaktPatch {
             &self.header.patch_type,
             &self.header.min_supported_version,
         )
+    }
+
+    pub fn program(&self) -> Result<Option<Program>, Error> {
+        Ok(match self.preset()? {
+            KontaktPreset::KontaktV1(_) | KontaktPreset::KontaktV2(_) => None,
+            KontaktPreset::KontaktV42(p) => Some(p.program),
+            KontaktPreset::Kon5(p) => Some(p.program),
+            KontaktPreset::Kon6(p) => Some(p.program),
+            KontaktPreset::Kon7(p) => Some(p.program),
+            KontaktPreset::NKM(_) => None,
+            KontaktPreset::Unsupported(_) => None,
+        })
     }
 }

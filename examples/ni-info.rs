@@ -192,6 +192,7 @@ fn print_kontakt_header(header: &BPatchHeader) {
             println!("  u_a:\t\t\t{}", h.u_a);
             println!("  u_b:\t\t\t{}", h.u_b);
             println!("  u_c:\t\t\t{}", h.u_c);
+            println!("  u_d:\t\t\t{}", h.u_d);
         }
         BPatchHeader::BPatchHeaderV2(ref h) => {
             println!("\nBPatchHeaderV2:");

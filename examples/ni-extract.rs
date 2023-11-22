@@ -93,20 +93,22 @@ pub fn main() -> Result<(), Box<dyn std::error::Error>> {
             }
         }
         NIFile::NKSContainer(nks) => match nks.header {
-            BPatchHeader::BPatchHeaderV1(_) => std::fs::write("kon1.xml", &nks.preset_data()?)?,
+            BPatchHeader::BPatchHeaderV1(_) => {
+                std::fs::write("kon1.xml", &nks.decompressed_preset()?)?
+            }
             BPatchHeader::BPatchHeaderV2(ref h) => {
                 if h.is_monolith {
                     unimplemented!("NKSv2 Monolith {:?}", h.is_monolith);
                 } else {
                     let filename =
                         format!("{:?}.{:?}.xml", h.app_signature, h.patch_type).to_lowercase();
-                    std::fs::write(filename, &nks.preset_data()?)?;
+                    std::fs::write(filename, &nks.decompressed_preset()?)?;
                 }
             }
             BPatchHeader::BPatchHeaderV42(ref h) => {
                 let filename =
                     format!("{:?}.{:?}.kon", h.app_signature, h.patch_type).to_lowercase();
-                std::fs::write(filename, &nks.preset_data()?)?;
+                std::fs::write(filename, &nks.decompressed_preset()?)?;
             }
         },
         //  => std::fs::write("preset.xml", v1.preset_xml()?)?,

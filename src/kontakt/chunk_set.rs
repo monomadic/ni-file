@@ -21,6 +21,14 @@ impl KontaktChunks {
         Ok(Self(objects))
     }
 
+    pub fn first(&self) -> Option<&Chunk> {
+        self.0.first()
+    }
+
+    pub fn last(&self) -> Option<&Chunk> {
+        self.0.last()
+    }
+
     pub fn find_first(&self, id: u16) -> Option<&Chunk> {
         self.0.iter().find(|c| c.id == id)
     }

@@ -31,7 +31,7 @@ impl BPatchHeader {
 }
 
 /// The header of a Kontakt42 NKS File.
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone)]
 pub struct BPatchHeaderV42 {
     pub patch_type: PatchType,
     /// Patch version (often higher than the Kontakt version that created it)
@@ -107,6 +107,7 @@ pub struct BPatchHeaderV1 {
     pub u_a: u32,
     pub u_b: u32,
     pub u_c: u32,
+    pub u_d: u32,
     pub created_at: time::Date,
     pub samples_size: u32,
 }
@@ -120,15 +121,17 @@ impl BPatchHeaderV1 {
 
         let timestamp = OffsetDateTime::from_unix_timestamp(reader.read_u32_le()? as i64).unwrap();
         let created_at: time::Date = timestamp.date();
+
         let samples_size = reader.read_u32_le()?; // total size of all samples
 
-        assert_eq!(reader.read_u32_le()?, 0); // always 0
+        let u_d = reader.read_u32_le()?; // mostly 0, found 1
 
         Ok(Self {
             u_version,
             u_a,
             u_b,
             u_c,
+            u_d,
             created_at,
             samples_size,
         })
@@ -332,7 +335,7 @@ impl BPatchHeaderV42 {
     }
 }
 
-#[derive(PartialEq)]
+#[derive(PartialEq, Clone)]
 pub struct NKIAppVersion {
     pub major: u8,
     pub minor_1: u8,
@@ -359,7 +362,7 @@ impl std::fmt::Display for NKIAppVersion {
     }
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone)]
 pub enum PatchType {
     NKM,
     NKI,

@@ -27,13 +27,6 @@ impl Chunk {
     pub fn into_object(&self) -> Result<KontaktObject, Error> {
         Ok(KontaktObject::try_from(self)?)
     }
-
-    // pub fn into_node(&self) -> Result<impl KontaktNode, Error> {
-    //     match self.id {
-    //         0x28 => Program::try_from(self),
-    //         _ => unimplemented!(),
-    //     }
-    // }
 }
 
 #[derive(Debug)]
@@ -261,7 +254,8 @@ mod tests {
 
     #[test]
     fn test_structured_object() -> Result<(), Error> {
-        let file = File::open("tests/data/Objects/KontaktV42/StructuredObject/0x28")?;
+        let file =
+            File::open("tests/data/Objects/Kontakt/0x28-Program/ProgramV80/ProgramV80-000.kon")?;
         let data = Chunk::read(file)?;
         let _chunk: KontaktObject = (&data).try_into()?;
 
@@ -270,7 +264,7 @@ mod tests {
 
     #[test]
     fn test_fntableimpl() -> Result<(), Error> {
-        let file = File::open("tests/data/Objects/KontaktV42/FNTableImpl/FNTableImpl-001")?;
+        let file = File::open("tests/data/Objects/Kontakt/0x4B-FNTableImpl/FNTableImpl-000.kon")?;
         let data = Chunk::read(file)?;
         let _chunk: KontaktObject = (&data).try_into()?;
 

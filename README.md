@@ -4,7 +4,9 @@
 
 # Native Instruments File Format
 
-Native Instruments file format support for rust. This library will serve as a reference implementation is the result of countless hours of painstaking reverse engineering and research. As this repository also serves as a research base, the implementation will shift drastically for a while and the code will be under a state of refactoring.
+A clean room (legal) reverse engineering effort for the Native Instruments file formats.
+
+This Rust library will serve as a reference implementation and is the result of countless hours of painstaking reverse engineering and research. As this repository also serves as a research base, the implementation will shift drastically for a while and the code will be under a state of refactoring.
 
 The tests will break and you may get (intentional) panics. Right now finding gaps in the spec is more important than developer comfort. Once a 0.1 release is published to crates.io, the api and build process will be more reliable.
 
@@ -25,7 +27,7 @@ If you'd like to join the effort or just learn more about reverse engineering, p
 ## Planned Features
 
 - 🕒 FM8 _partial_
-- ❌ WebAssembly _needs testing_
+- ❌ WebAssembly _will return_
 - ❌ All other NI formats...
 - ❌ BigEndian file support (generally very very old presets... probably not worth bothering about)
 
