@@ -1,5 +1,5 @@
 use crate::{
-    nis::{kontakt::BNISoundPresetContainer, ItemContainer, ItemType, RepositoryRoot},
+    nis::{schemas::kontakt::BNISoundPresetContainer, ItemContainer, ItemType, RepositoryRoot},
     Error, NIFileError,
 };
 

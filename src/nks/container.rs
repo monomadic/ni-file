@@ -100,12 +100,19 @@ impl NKSContainer {
                 decompressed_data
             }
             BPatchHeader::BPatchHeaderV42(ref h) => {
-                // fastlz compression
-                let decompressed_data = lz77::decompress(reader).expect("lz77");
+                // fastlz decompression
+                // let decompressed_data = lz77::decompress(reader).expect("lz77");
+
+                let decompressed_size = h.decompressed_length as usize;
+
+                let decompressed_data = &mut vec![0_u8; decompressed_size];
+                fastlz::decompress(&self.compressed_data, decompressed_data)
+                    .map_err(|_| Error::Generic("fastlz".into()))?
+                    .to_vec();
 
                 assert_eq!(h.decompressed_length as usize, decompressed_data.len());
 
-                decompressed_data
+                decompressed_data.to_vec()
             }
         })
     }
@@ -137,10 +144,7 @@ impl NKSContainer {
             }
             BPatchHeader::BPatchHeaderV42(ref h) => {
                 // fastlz compression
-                let raw_preset = lz77::decompress(reader).expect("lz77");
-
-                assert_eq!(h.decompressed_length as usize, raw_preset.len());
-
+                let raw_preset = self.preset_data()?;
                 KontaktPreset::KontaktV42(KontaktV42::read(&mut Cursor::new(raw_preset))?)
             }
         })

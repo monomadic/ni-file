@@ -1,6 +1,9 @@
 mod utils;
 
-use ni_file::nis::{AuthoringApplication, Repository};
+use ni_file::nis::{
+    schemas::{Repository, RepositoryType},
+    AuthoringApplication,
+};
 use std::fs;
 
 #[test]
@@ -30,12 +33,12 @@ fn test_nis_read_all() -> Result<(), Box<dyn std::error::Error>> {
         assert_eq!(root.repository_type, 1);
 
         match repo.detect() {
-            ni_file::nis::RepositoryType::KontaktPreset => {
+            RepositoryType::KontaktPreset => {
                 let _preset = repo.item().extract_kontakt_preset().unwrap()?;
             }
-            ni_file::nis::RepositoryType::AppSpecific => todo!(),
-            ni_file::nis::RepositoryType::Preset => todo!(),
-            ni_file::nis::RepositoryType::Unknown => todo!(),
+            RepositoryType::AppSpecific => todo!(),
+            RepositoryType::Preset => todo!(),
+            RepositoryType::Unknown => todo!(),
         }
     }
 

@@ -2,7 +2,7 @@
 
 use std::{error::Error, path::PathBuf};
 
-use ni_file::nis::{ItemContainer, Repository};
+use ni_file::nis::{schemas::Repository, ItemContainer};
 
 fn get_files(path: &str) -> Result<Vec<PathBuf>, Box<dyn Error>> {
     Ok(glob::glob(path)?

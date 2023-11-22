@@ -8,7 +8,10 @@ use ni_file::{
         schemas::KontaktPreset,
     },
     nifile::NIFile,
-    nis::{items::RepositoryRootContainer, Preset},
+    nis::{
+        schema::{NISObject, Repository},
+        Preset,
+    },
 };
 
 pub fn main() -> Result<(), Report> {
@@ -23,73 +26,99 @@ pub fn main() -> Result<(), Report> {
 
     match NIFile::read(file)? {
         NIFile::NISContainer(container) => {
-            // let repository: Repository = container.try_into()?;
+            println!("Detected: NISound Container");
 
-            let repository = RepositoryRootContainer::try_from(&container)?;
+            let repository: Repository = container.into();
 
-            if let Ok(root) = repository.properties() {
-                println!("RepositoryRoot:");
-                println!("  version:\t\tNISound {}", root.nisound_version);
-                println!("  repository_magic:\t{}", root.repository_magic);
-                println!("  repository_type:\t{}", root.repository_type);
-                println!("  segments:\t\t{:?}", root.segments);
-                println!("");
-            } else {
-                println!("Not a RepositoryRoot\n");
-            }
-
-            // regular preset
-            if let Some(preset) = repository.preset() {
-                println!("Preset detected.\n");
-                print_preset_properties(preset?.properties()?);
-            }
-
-            // kontakt preset
-            if let Some(preset) = repository.kontakt_preset() {
-                println!("Kontakt instrument detected.\n");
-
-                let preset = preset?;
-
-                print_preset_properties(preset.properties()?.preset);
-
-                if let Some(header) = preset.header() {
-                    print_kontakt_header(&BPatchHeader::BPatchHeaderV42(header?.0));
+            match repository.repository_root() {
+                Some(root) => {
+                    let root = root?;
+                    println!("RepositoryRoot:");
+                    println!("  version:\t\tNISound {}", root.nisound_version);
+                    println!("  repository_magic:\t{}", root.repository_magic);
+                    println!("  repository_type:\t{}", root.repository_type);
+                    println!("  segments:\t\t{:?}", root.segments);
+                    println!("");
                 }
-
-                if let Some(preset) = preset.preset() {
-                    print_kontakt_preset(&preset?)?;
-                }
+                None => panic!("RepositoryRoot not found!"),
             }
 
-            // multi
-            if let Some(app_specific) = repository.app_specific() {
-                println!("Kontakt multi detected.\n");
-
-                let app = app_specific?;
-                let props = app.properties()?;
-
-                println!("\nAppSpecific:");
-                println!(
-                    "  authoring_app:\t{:?} {}",
-                    props.authoring_app, props.version
-                );
-
-                let inner = RepositoryRootContainer(props.subtree_item.item()?);
-                if let Some(preset) = inner.kontakt_preset() {
-                    let preset = preset?;
-
-                    println!("\nKontakt preset detected.");
-                    print_preset_properties(preset.properties()?.preset);
-
-                    if let Some(header) = preset.header() {
-                        print_kontakt_header(&BPatchHeader::BPatchHeaderV42(header?.0));
-                    }
-
-                    if let Some(preset) = preset.preset() {
-                        print_kontakt_preset(&preset?)?;
-                    }
+            match repository.infer_schema() {
+                NISObject::Repository(_) => todo!(),
+                NISObject::BNISoundPreset(_preset) => {
+                    println!("NISound Type: BNISoundPreset");
+                    // print_preset_properties(preset.properties()?);
                 }
-            }
+                NISObject::Unknown => {
+                    println!("Could not infer schema.");
+                }
+            };
+
+            // let repository = RepositoryRootContainer::try_from(&container)?;
+            //
+            // if let Ok(root) = repository.properties() {
+            //     println!("RepositoryRoot:");
+            //     println!("  version:\t\tNISound {}", root.nisound_version);
+            //     println!("  repository_magic:\t{}", root.repository_magic);
+            //     println!("  repository_type:\t{}", root.repository_type);
+            //     println!("  segments:\t\t{:?}", root.segments);
+            //     println!("");
+            // } else {
+            //     println!("Not a RepositoryRoot\n");
+            // }
+            //
+            // // regular preset
+            // if let Some(preset) = repository.preset() {
+            //     println!("Preset detected.\n");
+            //     print_preset_properties(preset?.properties()?);
+            // }
+            //
+            // // kontakt preset
+            // if let Some(preset) = repository.kontakt_preset() {
+            //     println!("Kontakt instrument detected.\n");
+            //
+            //     let preset = preset?;
+            //
+            //     print_preset_properties(preset.properties()?.preset);
+            //
+            //     if let Some(header) = preset.header() {
+            //         print_kontakt_header(&BPatchHeader::BPatchHeaderV42(header?.0));
+            //     }
+            //
+            //     if let Some(preset) = preset.preset() {
+            //         print_kontakt_preset(&preset?)?;
+            //     }
+            // }
+            //
+            // // multi
+            // if let Some(app_specific) = repository.app_specific() {
+            //     println!("Kontakt multi detected.\n");
+            //
+            //     let app = app_specific?;
+            //     let props = app.properties()?;
+            //
+            //     println!("\nAppSpecific:");
+            //     println!(
+            //         "  authoring_app:\t{:?} {}",
+            //         props.authoring_app, props.version
+            //     );
+            //
+            //     let inner = RepositoryRootContainer(props.subtree_item.item()?);
+            //     if let Some(preset) = inner.kontakt_preset() {
+            //         let preset = preset?;
+            //
+            //         println!("\nKontakt preset detected.");
+            //         print_preset_properties(preset.properties()?.preset);
+            //
+            //         if let Some(header) = preset.header() {
+            //             print_kontakt_header(&BPatchHeader::BPatchHeaderV42(header?.0));
+            //         }
+            //
+            //         if let Some(preset) = preset.preset() {
+            //             print_kontakt_preset(&preset?)?;
+            //         }
+            //     }
+            // }
         }
         NIFile::KontaktResource => {
             println!("Detected format:\tKontaktResource");

@@ -25,5 +25,7 @@
 - `Stream` an open pointer to a file or memory
 - `ReadContext` a more detailed structure containing the position in the context of the entire file with error data etc.
 - `factory` creates instances of classes (usually from chunks read from the file) based on id and version.
-- `UPID` Unique ProductID a (library?) uuid. eg: d67d59a2-0a55-4574-8577-99c5220b96fb
-- `SNPID` product id. eg: 540
+- `SNPID` serial number product id. eg: 540 - older form of decryption
+- `UPID` Unique ProductID a (library?) uuid. eg: d67d59a2-0a55-4574-8577-99c5220b96fb - newer form of encryption
+- `HU` initialization vector
+- `JDX` decryption key

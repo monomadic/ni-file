@@ -1,14 +1,13 @@
 mod container;
 mod error;
 mod properties;
-mod schema;
+pub mod schema;
 
 #[deprecated]
-mod schemas;
-// TODO: deprecate
 pub mod items;
+#[deprecated]
+pub mod schemas;
 
 pub use container::*;
 pub use error::*;
 pub use properties::*;
-pub use schemas::*;

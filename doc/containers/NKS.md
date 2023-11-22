@@ -2,6 +2,8 @@
 
 Prior to NISound containers, Kontakt instruments had their own file format known as NKS. They are fairly simple formats with a header and a compressed preset following.
 
+All compression in NKS is zlib/deflate using libzip (libz.dylib).
+
 - `GetHeaderVersionPreNIS(file);` returns:
   - 1: 36 bytes PreV2
   - 2: 170 bytes BPatchHeaderV2
