@@ -8,7 +8,12 @@ impl BFileName {
         let segments = reader.read_i32_le()?;
         let mut filename = Vec::new();
         for _ in 0..segments {
-            filename.push(BFileNameSegment::read(&mut reader)?);
+            match BFileNameSegment::read(&mut reader) {
+                Ok(segment) => filename.push(segment),
+                Err(e) => {
+                    dbg!(e, &filename);
+                }
+            };
         }
         Ok(filename)
     }
@@ -42,6 +47,10 @@ impl BFileNameSegment {
             6 => {
                 // set special location
                 String::new()
+            }
+            8 => {
+                // Library (nkx)
+                reader.read_widestring_utf16()?
             }
             9 => {
                 // multi file (used like a dir)

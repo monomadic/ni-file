@@ -211,7 +211,7 @@ fn print_kontakt_header(header: &BPatchHeader) {
             println!("  min_supported_version:{}", h.min_supported_version);
             println!("  u_c:\t\t\t{}", h.u_c);
 
-            println!("  cat_icon_idx:\t{}", h.cat_icon_idx);
+            println!("  cat_icon_idx:\t\t{}", h.cat_icon_idx);
             println!("  author:\t\t{}", h.instrument_author);
             println!("  cat_1:\t\t{}", h.instrument_cat1);
             println!("  cat_2:\t\t{}", h.instrument_cat2);
@@ -241,7 +241,7 @@ fn print_kontakt_header(header: &BPatchHeader) {
             println!("  min_supported_version:{}", h.min_supported_version);
             println!("  u_c:\t\t\t{}", h.u_c);
 
-            println!("  cat_icon_idx:\t{}", h.cat_icon_idx);
+            println!("  cat_icon_idx:\t\t{}", h.cat_icon_idx);
             println!("  author:\t\t{}", h.instrument_author);
             println!("  cat_1:\t\t{}", h.instrument_cat1);
             println!("  cat_2:\t\t{}", h.instrument_cat2);
