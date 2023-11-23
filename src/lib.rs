@@ -9,9 +9,9 @@ pub mod nifile; // simplified api for all supported filetypes
 pub use nifile::NIFile;
 
 // containers:
-pub mod file_container; // monoliths, ncint
+pub mod file_container; // monoliths, nicint
 pub mod nis; // nisound document
-pub mod nkr; // kontakt resource container
+pub mod nkr; // kontakt resource container; NKIv2 monoliths, nkr, nkx
 pub mod nks; // native instruments kontakt sound file format
 pub mod nksf; // native instruments kore format
 
