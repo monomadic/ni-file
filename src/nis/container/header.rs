@@ -1,5 +1,4 @@
-use crate::prelude::*;
-use crate::read_bytes::ReadBytesExt;
+use crate::{read_bytes::ReadBytesExt, Error, NIFileError};
 
 /// The header chunk of an [`Item`](crate::nisound::Item).
 /// 40 bytes
@@ -26,7 +25,7 @@ pub struct ItemHeader {
 }
 
 impl ItemHeader {
-    pub fn read<R: ReadBytesExt>(mut reader: R) -> Result<Self> {
+    pub fn read<R: ReadBytesExt>(mut reader: R) -> Result<Self, Error> {
         let length = reader.read_u64_le()?;
         let version = reader.read_u32_le()?;
         let magic = reader.read_bytes(4)?;
@@ -65,7 +64,7 @@ mod tests {
     use std::fs::File;
 
     #[test]
-    fn test_item_frame_read() -> Result<()> {
+    fn test_item_frame_read() -> Result<(), Error> {
         let file = File::open("tests/patchdata/NISD/ItemHeader/ItemHeader-RepositoryRoot-000")?;
         let item = ItemHeader::read(file)?;
         assert_eq!(item.magic, b"hsin");

@@ -1,6 +1,6 @@
 use std::io::Cursor;
 
-use crate::{prelude::*, read_bytes::ReadBytesExt};
+use crate::{read_bytes::ReadBytesExt, Error, NIFileError};
 
 use super::{ItemData, ItemHeader, ItemType};
 
@@ -13,7 +13,7 @@ pub struct ItemContainer {
 }
 
 impl ItemContainer {
-    pub fn read<R: ReadBytesExt>(mut reader: R) -> Result<Self> {
+    pub fn read<R: ReadBytesExt>(mut reader: R) -> Result<Self, Error> {
         let header = ItemHeader::read(&mut reader)?;
         let length = header.length - 40;
         let mut chunk_data = Cursor::new(reader.read_bytes(length as usize)?);
@@ -64,14 +64,14 @@ impl ItemContainer {
     }
 
     /// Find the first Item of type ItemID in the document and return it
-    pub fn find_item<'a, I>(&'a self, kind: &'a ItemType) -> Option<Result<I>>
+    pub fn find_item<'a, I>(&'a self, kind: &'a ItemType) -> Option<Result<I, Error>>
     where
         I: TryFrom<&'a ItemData, Error = NIFileError>,
     {
         self.find_data(&kind).map(I::try_from)
     }
 
-    fn read_children<R: ReadBytesExt>(mut buf: R) -> Result<Vec<ItemContainer>> {
+    fn read_children<R: ReadBytesExt>(mut buf: R) -> Result<Vec<ItemContainer>, Error> {
         let version = buf.read_u32_le()?;
         debug_assert_eq!(version, 1);
 
@@ -92,7 +92,7 @@ impl ItemContainer {
                 // buf.seek(io::SeekFrom::Start(pos))?;
 
                 let len = buf.read_u64_le()? as usize;
-                buf.seek(io::SeekFrom::Current(-8))?;
+                buf.seek(std::io::SeekFrom::Current(-8))?;
 
                 let data = Cursor::new(buf.read_bytes(len)?);
 
@@ -109,7 +109,7 @@ mod tests {
     use std::fs::File;
 
     #[test]
-    fn test_item_read() -> Result<()> {
+    fn test_item_read() -> Result<(), Error> {
         let data = File::open("test-data/NIS/Item/BNISoundPreset/BNISoundPreset-000")?;
         let item = ItemContainer::read(data)?;
         assert_eq!(item.children.len(), 0);
@@ -117,7 +117,7 @@ mod tests {
     }
 
     #[test]
-    fn test_item_with_children_read() -> Result<()> {
+    fn test_item_with_children_read() -> Result<(), Error> {
         let data = File::open("tests/filetype/NISD/kontakt/7.1.3.0/000-default.nki")?;
         let item = ItemContainer::read(data)?;
         assert_eq!(item.children.len(), 1);

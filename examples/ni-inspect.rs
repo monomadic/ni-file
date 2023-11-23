@@ -29,7 +29,7 @@ pub fn main() -> Result<(), Report> {
         NIFile::NISContainer(container) => {
             println!("Detected: NISound Container\n");
 
-            let repository: Repository = container.into();
+            let repository = Repository::from(container);
             match repository.repository_root() {
                 Some(root) => {
                     let root = root?;

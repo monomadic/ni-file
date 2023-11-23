@@ -8,7 +8,7 @@ use std::{
 };
 
 use color_eyre::eyre::Result;
-use ni_file::{kontakt::objects::BPatchHeader, nis::items::RepositoryRootContainer, NIFile};
+use ni_file::{kontakt::objects::BPatchHeader, nis::schema::Repository, NIFile};
 
 pub fn main() -> Result<(), Box<dyn std::error::Error>> {
     std::env::set_var("RUST_BACKTRACE", "1");
@@ -23,56 +23,21 @@ pub fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     match NIFile::read(file)? {
         NIFile::NISContainer(container) => {
-            let repository = RepositoryRootContainer::try_from(&container)?;
+            println!("Detected format: NISound Container\n");
 
-            if let Ok(root) = repository.properties() {
-                println!("NISound {}", root.nisound_version);
-            }
+            let repository = Repository::from(container);
 
-            if let Some(app_specific) = repository.app_specific() {
-                println!("\nKontakt multi detected.");
-                let app = app_specific?;
-                let props = app.properties()?;
-                let inner = RepositoryRootContainer(props.subtree_item.item()?);
-
-                if let Some(preset) = inner.kontakt_preset() {
-                    println!("\nKontakt instrument detected.");
-
-                    if let Some(preset) = preset?.preset_data() {
-                        std::fs::write("kontakt.nkm.kon", &preset?)?;
-                    }
+            match repository.infer_schema() {
+                ni_file::nis::schema::NISObject::AppSpecific(_) => todo!(),
+                ni_file::nis::schema::NISObject::Repository(_) => todo!(),
+                ni_file::nis::schema::NISObject::BNISoundPreset(p) => {
+                    std::fs::write("bni-preset.kon", &p.patch()?.data)?;
+                    println!("write bni-preset.kon");
                 }
-            }
-
-            if let Some(preset) = repository.kontakt_preset() {
-                println!("\nKontakt instrument detected.");
-
-                if let Some(preset) = preset?.preset_data() {
-                    std::fs::write("kontakt.nki.kon", &preset?)?;
-                }
-            }
-
-            // if let Some(subtree) = repo.subtree_item() {
-            //     std::fs::write("subtree_item.nki", &subtree?.inner_data)?;
-            //     println!("Wrote: subtree_item.nki");
-            // }
-
-            // if let Some(single) = repo.encryption_item() {
-            //     let preset = single.preset_raw()?;
-            //     std::fs::write("inner.nki", &preset)?;
-            //     println!("Wrote: inner.nki");
-            // }
-
-            // let item = ItemContainer::read(Cursor::new(preset))?;
-            // match item.find(&ItemID::PresetChunkItem) {
-            //     Some(preset_item_frame) => {
-            //         let preset_chunk_item: PresetChunkItem =
-            //             preset_item_frame.clone().try_into()?;
-            //         std::fs::write("preset.chunk", &preset_chunk_item.chunk())?;
-            //         println!("Wrote: preset.chunk");
-            //     }
-            //     None => todo!(),
-            // }
+                ni_file::nis::schema::NISObject::Preset(_) => todo!(),
+                ni_file::nis::schema::NISObject::PresetChunkItem(_) => todo!(),
+                ni_file::nis::schema::NISObject::Unknown => todo!(),
+            };
         }
         NIFile::Monolith(container) => {
             println!("Detected format:\t\tMonolith (FileContainer Archive)\n");
@@ -92,30 +57,28 @@ pub fn main() -> Result<(), Box<dyn std::error::Error>> {
                 output.write_all(&buf)?;
             }
         }
-        NIFile::NKSContainer(nks) => match nks.header {
-            BPatchHeader::BPatchHeaderV1(_) => {
-                std::fs::write("kon1.xml", &nks.decompressed_preset()?)?
-            }
-            BPatchHeader::BPatchHeaderV2(ref h) => {
-                if h.is_monolith {
-                    unimplemented!("NKSv2 Monolith {:?}", h.is_monolith);
-                } else {
+        NIFile::NKSContainer(nks) => {
+            println!("Detected format: Kontakt Container\n");
+            match nks.header {
+                BPatchHeader::BPatchHeaderV1(_) => {
+                    std::fs::write("kon1.xml", &nks.decompressed_preset()?)?
+                }
+                BPatchHeader::BPatchHeaderV2(ref h) => {
+                    if h.is_monolith {
+                        unimplemented!("NKSv2 Monolith {:?}", h.is_monolith);
+                    } else {
+                        let filename =
+                            format!("{:?}.{:?}.xml", h.app_signature, h.patch_type).to_lowercase();
+                        std::fs::write(filename, &nks.decompressed_preset()?)?;
+                    }
+                }
+                BPatchHeader::BPatchHeaderV42(ref h) => {
                     let filename =
-                        format!("{:?}.{:?}.xml", h.app_signature, h.patch_type).to_lowercase();
+                        format!("{:?}.{:?}.kon", h.app_signature, h.patch_type).to_lowercase();
                     std::fs::write(filename, &nks.decompressed_preset()?)?;
                 }
             }
-            BPatchHeader::BPatchHeaderV42(ref h) => {
-                let filename =
-                    format!("{:?}.{:?}.kon", h.app_signature, h.patch_type).to_lowercase();
-                std::fs::write(filename, &nks.decompressed_preset()?)?;
-            }
-        },
-        //  => std::fs::write("preset.xml", v1.preset_xml()?)?,
-        // KontaktPreset::Kon2(_) => todo!(),
-        // KontaktPreset::Kon4(v42) => {
-        //     std::fs::write("chunk_data.kontakt", v42.decompress_patch_data()?)?
-        // }
+        }
         _ => todo!(),
     }
 

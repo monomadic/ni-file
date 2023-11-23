@@ -1,8 +1,9 @@
-use crate::prelude::*;
 use std::path::PathBuf;
 
+use crate::NIFileError;
+
 #[allow(dead_code)]
-pub(crate) fn get_test_files() -> Result<Vec<PathBuf>> {
+pub(crate) fn get_test_files() -> Result<Vec<PathBuf>, NIFileError> {
     let path = "tests/data/files/**/*.*";
     Ok(glob::glob(path)
         .map_err(|_| NIFileError::Generic(format!("error globbing: {}", path)))?
@@ -12,7 +13,7 @@ pub(crate) fn get_test_files() -> Result<Vec<PathBuf>> {
 }
 
 #[allow(dead_code)]
-pub(crate) fn get_files(path: &str) -> Result<Vec<PathBuf>> {
+pub(crate) fn get_files(path: &str) -> Result<Vec<PathBuf>, NIFileError> {
     let files: Vec<PathBuf> = glob::glob(path)
         .map_err(|_| NIFileError::Generic(format!("error globbing: {}", path)))?
         .filter_map(|path| path.ok())
@@ -57,7 +58,7 @@ fn format_hex_spaced(buffer: &[u8]) -> String {
 }
 
 #[allow(dead_code)]
-fn hex_string_to_bytes(hex: &str) -> Result<Vec<u8>> {
+fn hex_string_to_bytes(hex: &str) -> Result<Vec<u8>, NIFileError> {
     // Remove "0x" prefix if it exists.
     let hex = if hex.starts_with("0x") || hex.starts_with("0X") {
         &hex[2..]

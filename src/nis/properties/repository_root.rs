@@ -2,8 +2,8 @@ use std::{fmt::Display, io::Cursor};
 
 use crate::{
     nis::{ItemData, ItemType},
-    prelude::*,
     read_bytes::ReadBytesExt,
+    NIFileError,
 };
 
 /// Usually the top-level [`Item`][crate::nisound::Item] of a repository. Contains NISound version information.
@@ -55,7 +55,7 @@ impl std::convert::TryFrom<&ItemData> for RepositoryRoot {
 }
 
 impl RepositoryRoot {
-    pub fn read<R: ReadBytesExt>(mut reader: R) -> Result<Self> {
+    pub fn read<R: ReadBytesExt>(mut reader: R) -> Result<Self, NIFileError> {
         // itemVersion == 1
         assert_eq!(reader.read_u32_le()?, 1);
 
@@ -105,7 +105,7 @@ mod tests {
     use super::*;
 
     #[test]
-    fn test_repository_root_read_000() -> Result<()> {
+    fn test_repository_root_read_000() -> Result<(), NIFileError> {
         let file =
             File::open("tests/data/Containers/NIS/objects/RepositoryRoot/RepositoryRoot-000")?;
         let item = RepositoryRoot::read(file)?;
@@ -125,7 +125,7 @@ mod tests {
     }
 
     #[test]
-    fn test_repository_root_read_001() -> Result<()> {
+    fn test_repository_root_read_001() -> Result<(), NIFileError> {
         let file =
             File::open("tests/data/Containers/NIS/objects/RepositoryRoot/RepositoryRoot-001")?;
         let item = RepositoryRoot::read(file)?;

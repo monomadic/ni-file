@@ -4,7 +4,7 @@ pub mod item_type;
 pub use item_data_header::*;
 pub use item_type::*;
 
-use crate::{prelude::*, read_bytes::ReadBytesExt};
+use crate::{read_bytes::ReadBytesExt, Error};
 use std::io::{Cursor, Read};
 
 #[derive(Clone, Debug)]
@@ -19,7 +19,7 @@ impl ItemData {
         self.inner.as_ref().map(Box::as_ref)
     }
 
-    pub fn read<R: ReadBytesExt>(mut reader: R) -> Result<Self> {
+    pub fn read<R: ReadBytesExt>(mut reader: R) -> Result<Self, Error> {
         let header = ItemDataHeader::read(&mut reader)?;
         let length = header.length as usize - 20;
 
@@ -56,7 +56,7 @@ mod tests {
     use super::*;
 
     #[test]
-    fn test_item_frame_read_000() -> Result<()> {
+    fn test_item_frame_read_000() -> Result<(), Error> {
         let file = File::open("tests/patchdata/NISD/ItemFrame/RepositoryRoot-000")?;
         let item = ItemData::read(file)?;
 
@@ -71,7 +71,7 @@ mod tests {
     }
 
     #[test]
-    fn test_item_frame_read_001() -> Result<()> {
+    fn test_item_frame_read_001() -> Result<(), Error> {
         let file = File::open("tests/patchdata/NISD/ItemFrame/RepositoryRoot-001")?;
         let item = ItemData::read(file)?;
 

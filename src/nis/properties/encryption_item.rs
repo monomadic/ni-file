@@ -2,7 +2,8 @@ use std::{convert::TryInto, io::Cursor};
 
 use crate::{
     nis::{ItemData, ItemType},
-    prelude::*,
+    read_bytes::ReadBytesExt,
+    NIFileError,
 };
 
 use super::subtree_item::SubtreeItem;
@@ -17,7 +18,7 @@ pub struct EncryptionItem {
 impl std::convert::TryFrom<&ItemData> for EncryptionItem {
     type Error = NIFileError;
 
-    fn try_from(frame: &ItemData) -> Result<Self> {
+    fn try_from(frame: &ItemData) -> Result<Self, NIFileError> {
         debug_assert_eq!(frame.header.item_type(), ItemType::EncryptionItem);
 
         let subtree_frame = &*frame.inner.clone().unwrap();
@@ -41,7 +42,7 @@ mod tests {
     use super::*;
 
     #[test]
-    fn test_authorization_read() -> Result<()> {
+    fn test_authorization_read() -> Result<(), NIFileError> {
         let mut file =
             File::open("tests/data/Containers/NIS/objects/EncryptionItem/000-EncryptionItem")?;
 

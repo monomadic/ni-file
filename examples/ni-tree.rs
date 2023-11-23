@@ -2,7 +2,7 @@
 
 use std::{error::Error, path::PathBuf};
 
-use ni_file::nis::{schemas::Repository, ItemContainer};
+use ni_file::nis::{schema::Repository, ItemContainer};
 
 fn get_files(path: &str) -> Result<Vec<PathBuf>, Box<dyn Error>> {
     Ok(glob::glob(path)?
@@ -49,17 +49,14 @@ pub fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     // repository containers (used in most instruments)
     for path in paths {
-        let file = std::fs::File::open(path)?;
-        let repository = Repository::read(&file)?;
-        let item = repository.item();
+        let container = ItemContainer::read(std::fs::File::open(path)?)?;
+        let repository = Repository::from(container.clone());
 
-        if let Some(Ok(root)) = repository.find_repository_root() {
+        if let Some(Ok(root)) = repository.repository_root() {
             println!("NISound {}\n", root.nisound_version);
         }
 
-        println!("{:?}", item.data.header.item_type());
-
-        print_item_ids(&item, 1)?;
+        print_item_ids(&container, 1)?;
 
         println!("\n");
     }

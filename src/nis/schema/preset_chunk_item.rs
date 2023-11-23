@@ -34,7 +34,7 @@ mod tests {
     fn ni_container_read_test() -> Result<(), Error> {
         let file = std::fs::File::open("tests/filetype/NISD/kontakt/7.1.3.0/000-default.nki")?;
         let ic = ItemContainer::read(file)?;
-        let item: PresetChunkItem = ic.into();
+        let _item: PresetChunkItem = ic.into();
         Ok(())
     }
 }

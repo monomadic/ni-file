@@ -1,20 +1,17 @@
 mod utils;
 
-use ni_file::nis::{
-    schemas::{Repository, RepositoryType},
-    AuthoringApplication,
-};
-use std::fs;
+use ni_file::nis::{schema::Repository, ItemContainer};
 
 #[test]
 #[ignore]
 fn test_nis_kontakt_custom_dir() -> Result<(), Box<dyn std::error::Error>> {
     for path in utils::get_test_files("../ni-file-data/NISound/**/Kontakt/**/*.*")? {
         dbg!(&path);
-        let file = fs::File::open(path.as_path())?;
-        let nis = Repository::read(&file)?;
 
-        assert_eq!(nis.authoring_application()?, AuthoringApplication::Kontakt);
+        let container = ItemContainer::read(std::fs::File::open(path)?)?;
+        let _repository = Repository::from(container.clone());
+
+        // assert_eq!(nis.authoring_application()?, AuthoringApplication::Kontakt);
     }
 
     Ok(())
@@ -25,20 +22,20 @@ fn test_nis_kontakt_custom_dir() -> Result<(), Box<dyn std::error::Error>> {
 fn test_nis_read_all() -> Result<(), Box<dyn std::error::Error>> {
     for path in utils::get_test_files("../ni-file-data/NISound/**/*.*")? {
         dbg!(&path);
-        let file = fs::File::open(path.as_path())?;
-        let repo = Repository::read(&file)?;
+        let container = ItemContainer::read(std::fs::File::open(path)?)?;
+        let repository = Repository::from(container.clone());
 
-        let root = repo.find_repository_root().unwrap()?;
+        let root = repository.repository_root().unwrap()?;
         assert_eq!(root.repository_magic, 0);
         assert_eq!(root.repository_type, 1);
 
-        match repo.detect() {
-            RepositoryType::KontaktPreset => {
-                let _preset = repo.item().extract_kontakt_preset().unwrap()?;
-            }
-            RepositoryType::AppSpecific => todo!(),
-            RepositoryType::Preset => todo!(),
-            RepositoryType::Unknown => todo!(),
+        match repository.infer_schema() {
+            ni_file::nis::schema::NISObject::AppSpecific(_) => todo!(),
+            ni_file::nis::schema::NISObject::Repository(_) => todo!(),
+            ni_file::nis::schema::NISObject::BNISoundPreset(_) => todo!(),
+            ni_file::nis::schema::NISObject::Preset(_) => todo!(),
+            ni_file::nis::schema::NISObject::PresetChunkItem(_) => todo!(),
+            ni_file::nis::schema::NISObject::Unknown => todo!(),
         }
     }
 

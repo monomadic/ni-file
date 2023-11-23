@@ -1,6 +1,6 @@
-use crate::prelude::*;
 use crate::read_bytes::ReadBytesExt;
 use crate::string_reader::StringReader;
+use crate::Error;
 
 const FC_TOC_MARKER_END: u64 = 0xF1F1F1F1F1F1F1F1;
 const FC_MTD_MARKER_START: &[u8; 16] = b"/\\ NI FC MTD  /\\";
@@ -19,7 +19,7 @@ pub struct FileContainerItem {
 }
 
 impl NIFileContainer {
-    pub fn read<R: ReadBytesExt>(mut reader: R) -> Result<Self> {
+    pub fn read<R: ReadBytesExt>(mut reader: R) -> Result<Self, Error> {
         // NI FC MTD
         // Native Instruments FileContainer MetaData
         let mtd_magic = reader.read_bytes(16)?;
@@ -48,7 +48,7 @@ impl NIFileContainer {
             let _ = reader.read_bytes(16)?;
 
             let buf = reader.read_bytes(600)?;
-            let filename = StringReader::read_nullterminated_utf16(&mut io::Cursor::new(buf))?;
+            let filename = StringReader::read_nullterminated_utf16(&mut std::io::Cursor::new(buf))?;
 
             let _ = reader.read_u64_le()?;
 
@@ -94,14 +94,14 @@ mod tests {
     use super::*;
 
     #[test]
-    fn test_filecontainer_nki() -> Result<()> {
+    fn test_filecontainer_nki() -> Result<(), Error> {
         let file = File::open("tests/data/Containers/FileContainer/files/000-default.nki")?;
         NIFileContainer::read(file)?;
         Ok(())
     }
 
     #[test]
-    fn test_filecontainer_nkm() -> Result<()> {
+    fn test_filecontainer_nkm() -> Result<(), Error> {
         let file = File::open("tests/data/Containers/FileContainer/files/001-multi.nkm")?;
         NIFileContainer::read(file)?;
         Ok(())

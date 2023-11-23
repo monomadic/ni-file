@@ -5,8 +5,8 @@ use flate2::read::ZlibDecoder;
 use crate::{
     kontakt::{
         objects::{BPatchHeader, BPatchHeaderV42, BPatchMetaInfoHeader},
-        schemas::{KontaktPreset, KontaktV1, KontaktV2, KontaktV42},
-        KontaktChunks, KontaktPatch,
+        schemas::{KontaktPreset, KontaktV1, KontaktV2},
+        KontaktPatch,
     },
     read_bytes::ReadBytesExt,
     Error,
