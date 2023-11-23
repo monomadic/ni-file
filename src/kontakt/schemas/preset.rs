@@ -37,6 +37,8 @@ impl KontaktPreset {
             PatchType::NKI => match id {
                 "Kon4" => Self::KontaktV42(chunks.try_into()?),
                 "Kon5" => Self::Kon5(chunks.try_into()?),
+                "Kon6" => Self::Kon6(chunks.try_into()?),
+                "Kon7" => Self::Kon7(chunks.try_into()?),
                 _ => todo!(),
             },
             _ => todo!(),

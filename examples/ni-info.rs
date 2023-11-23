@@ -274,7 +274,7 @@ fn print_kontakt_preset(preset: &KontaktPreset) -> Result<()> {
             print_kontakt_program(&p.program)?;
 
             println!("\nFileNameListPreK51:");
-            for (_i, path) in &p.filetable.filenames {
+            for (_i, path) in &p.filetable.sample_filetable {
                 println!("  {path}");
             }
         }

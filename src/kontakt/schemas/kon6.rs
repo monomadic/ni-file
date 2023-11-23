@@ -15,9 +15,8 @@
 use crate::{
     kontakt::{
         objects::{FNTableImpl, Program},
-        Chunk,
+        KontaktChunks,
     },
-    read_bytes::ReadBytesExt,
     Error,
 };
 
@@ -27,16 +26,19 @@ pub struct Kon6 {
     pub filetable: FNTableImpl,
 }
 
-impl Kon6 {
-    pub fn read<R: ReadBytesExt>(mut reader: R) -> Result<Self, Error> {
-        let program: Program = Chunk::read(&mut reader).and_then(|chunk| (&chunk).try_into())?;
+impl std::convert::TryFrom<KontaktChunks> for Kon6 {
+    type Error = Error;
 
-        // SaveSettings
-        let _ = Chunk::read(&mut reader)?;
-
-        let filetable: FNTableImpl =
-            Chunk::read(&mut reader).and_then(|chunk| (&chunk).try_into())?;
-
-        Ok(Self { program, filetable })
+    fn try_from(chunks: KontaktChunks) -> Result<Self, Self::Error> {
+        Ok(Self {
+            program: chunks
+                .first()
+                .ok_or(Error::Static("Could not find Program".into()))?
+                .try_into()?,
+            filetable: chunks
+                .last()
+                .ok_or(Error::Static("Could not find FNTableImpl".into()))?
+                .try_into()?,
+        })
     }
 }

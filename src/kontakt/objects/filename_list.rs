@@ -36,11 +36,15 @@
 
 use std::{collections::HashMap, io::Cursor};
 
+use time::OffsetDateTime;
+
 use crate::{
     kontakt::{chunk::Chunk, KontaktError},
     read_bytes::ReadBytesExt,
     Error,
 };
+
+use super::BFileName;
 
 const CHUNK_ID: u16 = 0x3D;
 
@@ -50,30 +54,54 @@ const CHUNK_ID: u16 = 0x3D;
 /// KontaktIO:      FileNameListPreK51
 #[derive(Debug)]
 pub struct FileNameListPreK51 {
-    pub filenames: HashMap<u32, String>,
+    /// List of resources and paths (nkr, search paths)
+    pub special_filetable: HashMap<u32, String>,
+    /// List of samples (wav, ncw)
+    pub sample_filetable: HashMap<u32, String>,
+    /// List of sample timestamps
+    pub sample_timestamp_table: HashMap<u32, time::Date>,
+    /// List of instruments (nki) and internal files (ir samples)
+    pub other_filetable: HashMap<u32, String>,
 }
 
 impl FileNameListPreK51 {
     pub fn read<R: ReadBytesExt>(mut reader: R) -> Result<Self, Error> {
-        let mut filenames = HashMap::new();
-        let _ = reader.read_u32_le()?;
+        // special filetable
         let file_count = reader.read_u32_le()?;
-
+        let mut special_filetable = HashMap::new();
         for i in 0..file_count {
-            let mut filename = Vec::new();
-            let segments = reader.read_i32_le()?;
-
-            for _ in 0..segments {
-                let _segment_type = reader.read_i8()?;
-                let segment = reader.read_widestring_utf16()?;
-
-                filename.push(segment);
-            }
-
-            filenames.insert(i, filename.join("/"));
+            special_filetable.insert(i, BFileName::read(&mut reader)?.join("/"));
         }
 
-        Ok(Self { filenames })
+        // sample filetable
+        let file_count = reader.read_u32_le()?;
+        let mut sample_filetable = HashMap::new();
+        for i in 0..file_count {
+            sample_filetable.insert(i, BFileName::read(&mut reader)?.join("/"));
+        }
+
+        // sample timestamps
+        let mut sample_timestamp_table = HashMap::new();
+        for i in 0..file_count {
+            let unix_timestamp = reader.read_u64_le()? as i64;
+            let datetime = OffsetDateTime::from_unix_timestamp(unix_timestamp).unwrap();
+            let timestamp: time::Date = datetime.date();
+            sample_timestamp_table.insert(i, timestamp);
+        }
+
+        // other filetable
+        let file_count = reader.read_u32_le()?;
+        let mut other_filetable = HashMap::new();
+        for i in 0..file_count {
+            other_filetable.insert(i, BFileName::read(&mut reader)?.join("/"));
+        }
+
+        Ok(Self {
+            special_filetable,
+            sample_filetable,
+            sample_timestamp_table,
+            other_filetable,
+        })
     }
 }
 
@@ -100,9 +128,11 @@ mod tests {
     use super::*;
 
     #[test]
-    fn test_structured_object() -> Result<(), Error> {
-        let file = File::open("tests/data/Objects/KontaktV42/filename_list_pre_k5/4.2.2.4504/000")?;
-        FileNameListPreK51::read(file)?;
+    fn test_fntable_prek51_003() -> Result<(), Error> {
+        let file =
+            File::open("tests/data/Objects/Kontakt/0x3D-FNTablePreK51/FNTablePreK51-003.kon")?;
+        let chunk = Chunk::read(file)?.data;
+        FileNameListPreK51::read(&mut Cursor::new(chunk))?;
         Ok(())
     }
 }

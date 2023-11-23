@@ -57,7 +57,7 @@ impl KontaktChunks {
         }
 
         if let Some(chunk) = self.find_first(0x3d) {
-            return Some(FileNameListPreK51::try_from(chunk).map(|f| f.filenames));
+            return Some(FileNameListPreK51::try_from(chunk).map(|f| f.sample_filetable));
         }
 
         None

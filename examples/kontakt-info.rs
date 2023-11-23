@@ -72,7 +72,7 @@ fn print_chunk(chunk: &Chunk, indent: usize) -> Result<(), Report> {
         KontaktObject::FNTableImpl(filetable) => print_filetable(&filetable),
         KontaktObject::FileNameListPreK51(fnl) => {
             println!("FileNameListPreK51:");
-            for (_i, path) in &fnl.filenames {
+            for (_i, path) in &fnl.sample_filetable {
                 print!("{:>indent$}", " ");
                 println!("{path}");
             }
