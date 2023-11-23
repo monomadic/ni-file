@@ -5,22 +5,23 @@ use std::io::Cursor;
 
 use crate::{
     nis::{ItemData, ItemType, SubtreeItem},
-    prelude::*,
+    read_bytes::ReadBytesExt,
+    NIFileError,
 };
 
 use super::preset::AuthoringApplication;
 
 #[derive(Debug)]
-pub struct AppSpecific {
+pub struct AppSpecificProperties {
     pub subtree_item: SubtreeItem,
     pub authoring_app: AuthoringApplication,
     pub version: String,
 }
 
-impl std::convert::TryFrom<&ItemData> for AppSpecific {
+impl std::convert::TryFrom<&ItemData> for AppSpecificProperties {
     type Error = NIFileError;
 
-    fn try_from(item: &ItemData) -> Result<Self> {
+    fn try_from(item: &ItemData) -> Result<Self, NIFileError> {
         if item.header.item_type() != ItemType::AppSpecific {
             return Err(NIFileError::ItemWrapError {
                 expected: ItemType::AppSpecific,
@@ -38,7 +39,7 @@ impl std::convert::TryFrom<&ItemData> for AppSpecific {
         let authoring_app: AuthoringApplication = reader.read_u32_le()?.into();
         let version = reader.read_widestring_utf16()?;
 
-        Ok(AppSpecific {
+        Ok(AppSpecificProperties {
             subtree_item,
             authoring_app,
             version,

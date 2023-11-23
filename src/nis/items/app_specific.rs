@@ -1,5 +1,5 @@
 use crate::{
-    nis::{AppSpecific, ItemContainer, ItemType},
+    nis::{AppSpecificProperties, ItemContainer, ItemType},
     Error,
 };
 
@@ -8,8 +8,8 @@ use super::SubtreeItemItem;
 pub struct AppSpecificItem(ItemContainer);
 
 impl AppSpecificItem {
-    pub fn properties(&self) -> Result<AppSpecific, Error> {
-        AppSpecific::try_from(&self.0.data)
+    pub fn properties(&self) -> Result<AppSpecificProperties, Error> {
+        AppSpecificProperties::try_from(&self.0.data)
     }
 
     pub fn subtree_item(&self) -> Option<Result<SubtreeItemItem, Error>> {

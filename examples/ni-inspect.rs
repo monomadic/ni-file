@@ -62,6 +62,12 @@ pub fn main() -> Result<(), Report> {
                         print_kontakt_patch(preset.patch()?)?;
                     }
                 }
+                NISObject::AppSpecific(_) => {
+                    println!("NISound Type:\tAppSpecific");
+                }
+                NISObject::Preset(_) => {
+                    println!("NISound Type:\tPreset");
+                }
                 NISObject::Unknown => {
                     println!("Could not infer schema.");
                 }

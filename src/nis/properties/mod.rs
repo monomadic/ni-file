@@ -1,7 +1,7 @@
 //! Kinds of [`Item`](crate::nisound::Item) - the building blocks of NISound containers.
 
 mod app_specific;
-pub use app_specific::AppSpecific;
+pub use app_specific::AppSpecificProperties;
 
 pub mod audio_sample_item;
 

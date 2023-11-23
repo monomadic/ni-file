@@ -2,8 +2,8 @@ use crate::{
     kontakt::objects::BPatchHeaderV42,
     nis::{
         properties::{BNISoundPresetProperties, Preset},
-        AppSpecific, AuthoringApplication, BNISoundHeader, EncryptionItem, ItemContainer, ItemType,
-        RepositoryRoot,
+        AppSpecificProperties, AuthoringApplication, BNISoundHeader, EncryptionItem, ItemContainer,
+        ItemType, RepositoryRoot,
     },
     prelude::*,
     read_bytes::ReadBytesExt,
@@ -54,7 +54,7 @@ impl Repository {
         }
     }
 
-    pub fn app_specific(&self) -> Option<Result<AppSpecific>> {
+    pub fn app_specific(&self) -> Option<Result<AppSpecificProperties>> {
         self.0.find_item(&ItemType::AppSpecific)
     }
 
@@ -73,7 +73,7 @@ impl Repository {
         // first, lets try find the AppSpecific item
         // (which means this is a multi)
         if let Some(item) = self.0.find_data(&ItemType::AppSpecific) {
-            return Ok(AppSpecific::try_from(item)?.authoring_app);
+            return Ok(AppSpecificProperties::try_from(item)?.authoring_app);
         }
 
         // not a good way of detecting the authoring app
@@ -111,7 +111,7 @@ impl Repository {
         // first, lets try find the AppSpecific item
         // (which means this is a multi)
         if let Some(item) = self.0.find_data(&ItemType::AppSpecific) {
-            return Ok(AppSpecific::try_from(item)?.version);
+            return Ok(AppSpecificProperties::try_from(item)?.version);
         }
 
         self.preset_item().map(|p| p.version)
