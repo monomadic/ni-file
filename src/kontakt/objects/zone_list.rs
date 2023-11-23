@@ -1,5 +1,5 @@
 use crate::{
-    kontakt::{chunk::Chunk, error::KontaktError, KontaktNode},
+    kontakt::{chunk::Chunk, error::KontaktError},
     read_bytes::ReadBytesExt,
     Error,
 };
@@ -35,16 +35,6 @@ impl ZoneList {
 
     pub fn zones(&self) -> &Vec<Zone> {
         &self.0
-    }
-}
-
-impl KontaktNode for ZoneList {
-    fn name(&self) -> String {
-        format!("[0x{:X}] ZoneList", CHUNK_ID)
-    }
-
-    fn children(&self) -> Vec<Box<dyn KontaktNode>> {
-        vec![]
     }
 }
 
