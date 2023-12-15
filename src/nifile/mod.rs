@@ -5,7 +5,7 @@ use crate::{
 
 pub enum NIFile {
     NKSContainer(NKSContainer),
-    NISContainer(ItemContainer),
+    NISoundContainer(ItemContainer),
     Monolith(NIFileContainer),
     KontaktResource,
     NICompressedWave,
@@ -23,7 +23,7 @@ impl NIFile {
         reader.rewind()?;
 
         Ok(match filetype {
-            NIFileType::NISContainer => NIFile::NISContainer(ItemContainer::read(reader)?),
+            NIFileType::NISContainer => NIFile::NISoundContainer(ItemContainer::read(reader)?),
             NIFileType::Monolith => NIFile::Monolith(NIFileContainer::read(reader)?),
             NIFileType::NICompressedWave => NIFile::NICompressedWave,
             NIFileType::KoreSound => todo!(),
@@ -44,7 +44,7 @@ impl NIFile {
     pub fn inner_preset(&self) -> Result<Vec<u8>, Error> {
         match self {
             Self::NKSContainer(_nks) => unimplemented!(),
-            Self::NISContainer(_nis) => unimplemented!(),
+            Self::NISoundContainer(_nis) => unimplemented!(),
             _ => panic!("No preset detected."),
         }
     }

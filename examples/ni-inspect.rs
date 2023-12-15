@@ -26,7 +26,7 @@ pub fn main() -> Result<(), Report> {
     let file = File::open(&path)?;
 
     match NIFile::read(file)? {
-        NIFile::NISContainer(container) => {
+        NIFile::NISoundContainer(container) => {
             println!("Detected: NISound Container\n");
 
             let repository = Repository::from(container);

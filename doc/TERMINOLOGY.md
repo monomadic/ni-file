@@ -1,6 +1,9 @@
 # Terminology
 
 - `NI` abbreviation for Native Instruments.
+- `Patch/Instrument` A configuration of an instrument, including samples and settings.
+- `Preset` A pre-configured setting within a patch.
+- `Multi` A group of patches/instruments.
 - `NISound` / `NIS` most modern format for NI presets and instruments.
 - `Container` the structure of a NISound file.
 - `NKI` Native Instruments Kontakt Instrument

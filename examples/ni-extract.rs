@@ -22,7 +22,7 @@ pub fn main() -> Result<(), Box<dyn std::error::Error>> {
     let file = File::open(&path)?;
 
     match NIFile::read(file)? {
-        NIFile::NISContainer(container) => {
+        NIFile::NISoundContainer(container) => {
             println!("Detected format: NISound Container\n");
 
             let repository = Repository::from(container);

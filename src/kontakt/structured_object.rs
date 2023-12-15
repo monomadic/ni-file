@@ -1,7 +1,6 @@
 use std::fmt::Debug;
 use std::io::Cursor;
 
-use crate::prelude::io;
 use crate::{read_bytes::ReadBytesExt, Error, NIFileError};
 
 use super::chunk::Chunk;
@@ -54,7 +53,7 @@ impl StructuredObject {
                     "Failed to read StructuredObject private_data: length={children_data_length} error={e}",
                 ))
             })?;
-        let mut children_reader = io::Cursor::new(children_data);
+        let mut children_reader = std::io::Cursor::new(children_data);
 
         let mut children = Vec::new();
         while let Ok(object) = Chunk::read(&mut children_reader) {

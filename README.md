@@ -4,7 +4,7 @@
 
 # Native Instruments File Format
 
-A clean room (legal) reverse engineering effort for the Native Instruments file formats.
+A reverse engineering effort for the Native Instruments file formats.
 
 This Rust library will serve as a reference implementation and is the result of countless hours of painstaking reverse engineering and research. As this repository also serves as a research base, the implementation will shift drastically for a while and the code will be under a state of refactoring.
 
@@ -16,13 +16,20 @@ If you'd like to join the effort or just learn more about reverse engineering, p
 
 ## Features
 
-- ✅ **Kontakt v1** _100%: extract xml_
+- ✅ **KontaktV1**
+	- Read Metadata
+	- Decompress Patch
+	- Extract KontaktXML
 - ✅ **Kontakt v2** _90%: extract xml, no monolith support yet_
 - ✅ **Kontakt v4.22+** _75%: NKS Container, Program, FileTable, Zones_
 - ✅ **Kontakt v5-v7** _65%: NIS Container, Program, FileTable, Zones_
 - ✅ **Kontakt FileContainer (Modern Monolith)**: _read support_
 - ✅ **NCW Compression**: _read support - also available as a [cli utility](https://github.com/monomadic/ncw)_.
 - 🕒 **Kontakt NKS Monolith**: _coming soon_
+
+### Notably Unsupported
+
+- `KontaktV2`
 
 ## Planned Features
 
