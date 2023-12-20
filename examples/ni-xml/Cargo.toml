@@ -1,7 +1,0 @@
-[package]
-name = "ni-xml"
-version = "0.0.1"
-edition = "2021"
-
-[dependencies]
-ni-file = { path = "../.." }
